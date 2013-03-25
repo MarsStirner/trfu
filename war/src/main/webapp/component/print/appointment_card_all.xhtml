@@ -1,0 +1,679 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Направление</title>
+</h:head>
+
+<h:body>
+	<!-- #{examination.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+	    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+	        <tbody>
+	            <tr>
+	                <td width="50%">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+
+	                <td style="text-align:center;">
+                         <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{examination.document.number}"  converter="Code128Converter" /><br />
+                         Донация: <h:outputText value="#{examination.document.number}"/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                </td>
+                    <td>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2">
+	                    <p align="center">
+	                        <b>На первичное обследование донора крови</b>
+                            <br />
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        Донор: &nbsp;&nbsp;<h:outputText value="#{examination.document.donor.description}" style="font-weight:bold;" />
+	                    </p>
+	                </td>
+                    <td>
+	                    <p>
+	                        № <h:outputText style="font-weight:bold;" value="#{examination.document.donor.number}" />
+	                    </p>
+                    </td>
+	            </tr>
+	            <tr>
+	                <td>
+                        <p>Пол: <h:outputText value="#{examination.document.donor.gender eq 0? 'женский': 'мужской'}" /></p>
+
+	                </td>
+                    <td>
+                        <p>Дата рождения:
+	                         <h:outputText value="#{examination.document.donor.birth}">
+	                        	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+	                        </h:outputText>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+                        <p>Биоматериал: капиллярная кровь</p>
+                    </td>
+                    <td>
+                        <p>Прибор: ____________________________</p>
+	                </td>
+	            </tr>
+	            <tr>
+                    <td colspan="2"><br />
+                        <table class="printtable">
+                            <tbody>
+                                <tr>
+                                    <td rowspan="2" valign="top" ><p><b>Показатель</b></p></td>
+                                    <td rowspan="2" valign="top" ><p><b>N</b></p></td>
+                                    <td rowspan="2" valign="top" ><p><b>Значение</b></p></td>
+                                    <td rowspan="2" valign="top" ><p><b>Ед. измерения</b></p></td>
+                                    <td colspan="2" valign="top" ><p><b>Норма</b></p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p><b>муж</b></p></td>
+                                    <td valign="top" ><p><b>жен</b></p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p>Гемоглобин (HGB)</p></td>
+                                    <td valign="top" ><p>N</p></td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" ><p>г/л</p></td>
+                                    <td valign="top" ><p>130-170</p></td>
+                                    <td valign="top" ><p>120-150</p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p>Гематокрит (Ht)</p></td>
+                                    <td valign="top" ><p>N</p></td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" ><p></p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p>Тромбоциты (Plt)</p></td>
+                                    <td valign="top" ><p>&lt;!</p></td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" ><p>т/мкл</p></td>
+                                    <td valign="top" ><p>150-400</p></td>
+                                    <td valign="top" ><p>150-400</p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p>Аланиноминотрансфераза (Alt)</p></td>
+                                    <td valign="top" ><p>&gt;!</p></td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" ><p>Ед/л</p></td>
+                                    <td valign="top" ><p>10-41</p></td>
+                                    <td valign="top" ><p>10-31</p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p>Группа крови (экспресс диагностика)</p></td>
+                                    <td valign="top" > </td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" > </td>
+                                    <td valign="top" > </td>
+                                    <td valign="top" > </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+	                <td>
+	                    <p>
+	                        Врач: <h:outputText value="#{examination.document.therapist.description}" />  ______________
+                     </p>
+
+	                </td>
+	                <td>
+                        <p>Дата:
+                        <h:outputText value="#{examination.document.created}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>
+                        </p>
+	                </td>
+	            </tr>
+	        </tbody>
+	    </table>
+	</div>
+	<div style="margin-left:30px; page-break-before:always;">
+	    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+	        <tbody>
+	            <tr>
+	                <td width="50%">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+
+	                <td width="50%" style="text-align:center;">
+                         <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{examination.document.number}"  converter="Code128Converter" /><br />
+                         Донация: <h:outputText value="#{examination.document.number}"/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2">
+	                    <p align="center">
+                            <b>Направление на исследование</b>
+
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        Донор &nbsp;&nbsp;<h:outputText style="font-weight:bold;" value="#{examination.document.donor.description}" />
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                        № <h:outputText style="font-weight:bold;" value="#{examination.document.donor.number}" />
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+                        <p>Пол: <h:outputText value="#{examination.document.donor.gender eq 0? 'женский': 'мужской'}" /></p>
+
+	                </td>
+                    <td>
+                        <p>Дата рождения:
+	                         <h:outputText value="#{examination.document.donor.birth}">
+	                        	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+	                        </h:outputText>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+                        <p>Биоматериал: венозная кровь</p>
+                    </td>
+                    <td>
+                        <p>Прибор: ____________________________</p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+                        <p>Дата забора материала</p>
+
+	                </td>
+                    <td>
+                        <p>_________________________20____г. </p>
+	                </td>
+	            </tr>
+	            <tr>
+                    <td colspan="2"><br />
+                        <table class="printtable">
+                            <tbody>
+                                <tr>
+                                    <td><b>Определение группы крови по системе</b></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>АВО</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Резус-фактор</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Келл-антиген</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Фенотип по системе резус</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Антиэритраонные антитела (АЭТ)</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="font-size:12px; font-weight:bold;">ПРОБИРКА ФИОЛЕТОВАЯ</p>
+                        <br />
+                        <table class="printtable">
+                            <tbody>
+                                <tr>
+                                    <td valign="top" ><p>Общий белок</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Белковые фракции</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>АЛТ</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Биллирубин</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Дополнительно</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                             </tbody>
+                        </table>
+                        <p style="font-size:12px; font-weight:bold;">ПРОБИРКА ОРАНЖЕВАЯ</p>
+                        <br />
+
+                        <table class="printtable">
+                            <tbody>
+                                <tr>
+                                    <td valign="top" ><p>Hb</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Эритроциты</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Тромбоциты</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Ретикулоциты</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Лейкоциты</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Лейко формула</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>СОЭ</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="font-size:12px; font-weight:bold;">ПРОБИРКА ОРАНЖЕВАЯ</p>
+                        <br />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+	                <td>
+	                    <p>
+	                        Врач, направивший на обследование: <h:outputText value="#{examination.document.therapist.description}" /> __________________
+
+	                    </p>
+	                </td>
+	                <td>
+                        <p>Дата:
+                        <h:outputText value="#{examination.document.created}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>
+                        </p>
+	                </td>
+	            </tr>
+	        </tbody>
+	    </table>
+
+	</div>
+
+	<div id="donor_form2" style="margin-left:30px; page-break-before:always;">
+	    <table border="0" cellspacing="0" cellpadding="0"  width="100%">
+	        <tbody>
+	            <tr>
+	                <td width="50%">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+
+	                <td width="50%" style="text-align:center;">
+                        Приложение № 1-А<br />
+                        к методическим указаниям,<br />
+                        Утвержденным приказом №82<br />
+                        от 23 февраля 1999г<br />
+                         <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{examination.document.number}"  converter="Code128Converter" /><br />
+                         Донация: <h:outputText value="#{examination.document.number}"/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2">
+	                    <p align="center">
+	                        <b>ИНДИВИДУАЛЬНОЕ НАПРАВЛЕНИЕ-СПРАВКА</b>
+
+	                    </p>
+                        <p align="center">
+                        На исследование сыворотки  донора крови на ВИЧ, гепатиты В и С, сифилис<br /> в бактериологическую лабораторию из отделения трансфузиологии, процессинга и заготовки ГСК
+                        </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        Донор &nbsp;&nbsp;<h:outputText style="font-weight:bold;" value="#{examination.document.donor.description}" />
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                        № <h:outputText style="font-weight:bold;" value="#{examination.document.donor.number}" />
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+                        <p>Пол: <h:outputText value="#{examination.document.donor.gender eq 0? 'женский': 'мужской'}" /></p>
+
+	                </td>
+                    <td>
+                        <p>Дата рождения:
+	                         <h:outputText value="#{examination.document.donor.birth}">
+	                        	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+	                        </h:outputText>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+                        <p>Дата забора материала</p>
+
+	                </td>
+                    <td>
+                        <p>_________________________20____г. </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+                        <p>Дата исследования</p>
+
+	                </td>
+                    <td>
+                        <p>_________________________20____г. </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="2" valign="top">
+	                    <table width="100%" class="printtable">
+	                        <tbody>
+	                            <tr>
+                                    <td>
+                                        <p>ВИЧ(1+2)<br />( Ag\At)</p>
+                                    </td>
+                                    <td>
+                                        <p>Гепатит В<br />(HBs-Ag)</p>
+                                    </td>
+                                    <td>
+                                        <p>Гепатит С<br />(AVH-C)</p>
+                                    </td>
+                                    <td>
+                                        <p>Сифилис<br />РПГА ИФ</p>
+                                    </td>
+                                </tr>
+	                            <tr>
+                                    <td>
+                                        <br /><br /><br /><br /><br /><br />
+                                    </td>
+                                    <td>&nbsp;
+                                    </td>
+                                    <td>&nbsp;
+                                    </td>
+                                    <td>&nbsp;
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+	                </td>
+                    <td>
+                        <p><br /><br /><br /><br /><br /></p>
+	                </td>
+	            </tr>              <tr>
+	                <td>
+	                    <p>
+	                        Врач бактериолог
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>_________________________________________<br /><i>(подпись)</i>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+	                    <p>
+	                        Дата
+
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>_________________________20____г.
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+	                    <p>
+	                        Врач, направивший на обследование: <h:outputText value="#{examination.document.therapist.description}" /> _______________
+
+	                    </p>
+	                </td>
+	                <td>
+                        <p>Дата:
+                        <h:outputText value="#{examination.document.created}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>
+                        </p>
+	                </td>
+	            </tr>
+
+	        </tbody>
+	    </table>
+	</div>
+	<div style="margin-left:30px; border-top:2px #000000 solid;">
+        <br />
+	    <table border="0" cellspacing="0" cellpadding="0" width="100%">
+	        <tbody>
+	            <tr>
+	                <td width="50%">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+
+	                <td width="100" valign="top" style="text-align:center;">
+                        Приложение № 1-А<br />
+                        к методическим указаниям,<br />
+                        Утвержденным приказом №82<br />
+                        от 23 февраля 1999г<br />
+                         <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{examination.document.number}"  converter="Code128Converter" /><br />
+                         Донация: <h:outputText value="#{examination.document.number}"/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2">
+	                    <p align="center">
+	                        <b>ИНДИВИДУАЛЬНОЕ НАПРАВЛЕНИЕ-СПРАВКА</b>
+
+	                    </p>
+                        <p align="center">
+                          На исследование крови (плазмы) донора на ВИЧ, гепатиты В и С<br /> в лабораторию молекулярных исследований из отделения трансфузиологии,<br /> процессинга и заготовки ГСК
+                        </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        Донор &nbsp;&nbsp;<h:outputText style="font-weight:bold;" value="#{examination.document.donor.description}" />
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                        № <h:outputText style="font-weight:bold;" value="#{examination.document.donor.number}" />
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+                        <p>Пол: <h:outputText value="#{examination.document.donor.gender eq 0? 'женский': 'мужской'}" /></p>
+
+	                </td>
+                    <td>
+                        <p>Дата рождения:
+	                         <h:outputText value="#{examination.document.donor.birth}">
+	                        	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+	                        </h:outputText>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+                        <p>Дата забора материала</p>
+
+	                </td>
+                    <td>
+                        <p>_________________________20____г. </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+                        <p>Метод исследования</p>
+
+	                </td>
+                    <td>
+                        <p>ПЦР-ДИАГНОСТИКА </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+                        <p>Дата исследования</p>
+
+	                </td>
+                    <td>
+                        <p>_________________________20____г. </p>
+	                </td>
+	            </tr>
+                <tr>
+                    <td colspan="2">
+	                    <table width="100%" class="printtable">
+	                        <tbody>
+	                            <tr>
+                                    <td>
+                                        <p>ВИЧ(1+2)</p>
+                                    </td>
+                                    <td>
+                                        <p>Гепатит В</p>
+                                    </td>
+                                    <td>
+                                        <p>Гепатит С</p>
+                                    </td>
+
+                                </tr>
+	                            <tr>
+                                    <td>
+                                        <br /><br /><br /><br /><br /><br />
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+	            </tr>
+                <tr>
+	                <td>
+	                    <p>
+	                        Врач-лаборант
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>_________________________________________<br /><i>(подпись)</i>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+	                    <p>
+	                        Дата
+
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>_________________________20____г.
+
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td>
+	                    <p>
+	                        Врач, направивший на обследование: <h:outputText value="#{examination.document.therapist.description}" /> _________________
+
+	                    </p>
+	                </td>
+	                <td>
+                        <p>Дата:
+                        <h:outputText value="#{examination.document.created}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>
+                        </p>
+	                </td>
+	            </tr>
+
+	        </tbody>
+	    </table>
+	</div>
+</h:body>
+
+</html>

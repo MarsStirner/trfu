@@ -1,0 +1,242 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Направление</title>
+</h:head>
+
+<h:body>
+	<!-- #{examination.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+	    <table border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+	                <td valign="top" colspan="2">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+	                <td style="text-align:center;">
+                         <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{examination.document.number}"  converter="Code128Converter" /><br />
+                         Донация: <h:outputText value="#{examination.document.number}"/>
+	                </td>
+	                <td valign="top">
+	                    <p align="center">
+	                        Медицинская документация
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        Форма N 400/у
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        Утверждена Приказом
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        Минздрава СССР
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        от 7 августа 1985 г. N 1055
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="93" colspan="2" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="285" valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="93" colspan="2" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="285" valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p align="center">
+	                        <b>Направление в поликлинику, санэпидстанцию</b>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        Донор: &nbsp;&nbsp;<h:outputText value="#{examination.document.donor.description}" style="font-weight:bold;" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        <i>
+	                            (фамилия, имя, отчество)
+	                            <p>
+	                            </p>
+	                        </i>
+	                    </p>
+	                    <p align="center">
+	                        <b>
+	                            <p>
+	                                 
+	                            </p>
+	                        </b>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        проживающий по адресу <h:outputText value="#{examination.document.donor.registrationAddress}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        <i>
+	                            (адрес регистрации)
+	                            <p>
+	                            </p>
+	                        </i>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        направляется на обследование, для получения справки о контакте с инфекционными больными, о перенесенных заболеваниях, операциях с
+	                        указанием их дат, согласно имеющейся медицинской документации за время с _________
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                                                                                             
+	                        <i>
+	                            (дата)
+	                            <p>
+	                            </p>
+	                        </i>
+	                    </p>
+
+	                </td>
+	            </tr>
+
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        На очередную дачу крови донор приглашен к ____________ час.
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        "_____ " __________________ 20______ г.
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="272" colspan="2" valign="top">
+	                    <p>
+	                        Врач:
+	                    </p>
+
+	                </td>
+	                <td width="352" colspan="2" valign="top">
+	                    <p align="center">
+	                        <h:outputText value="#{examination.document.therapist.description}" /> ________________________
+	                    </p>
+	                </td>
+	            </tr>
+                <tr><td colspan="4">
+                
+                <h:dataTable border="0" cellpadding="0" cellspacing="0" styleClass="printtable" value="#{examination.document.recommendations}" style="width:100%;" var="row">
+					<h:column style="width:220px;">
+						<h:outputText value="#{row.type}" converter="ClassifierConverter" />
+					</h:column>
+					<h:column style="min-width:7em;">
+						<f:facet name="header">
+							<p>Назначена</p>
+						</f:facet>
+						<h:selectBooleanCheckbox value="#{row.prescripted}" disabled="true" />
+					</h:column>
+					<h:column style="min-width:7em;">
+						<f:facet name="header">
+							<p>Заключение<br/>получено</p>
+						</f:facet>
+						<h:selectBooleanCheckbox value="#{row.decisionReceived}" disabled="true" />
+					</h:column>
+					<h:column style="min-width:12em;">
+						<f:facet name="header">
+							<p>Комментарий</p>
+						</f:facet>
+						<h:outputText value="#{row.value}" class="wide" />
+					</h:column>
+				</h:dataTable>
+				
+                </td>
+                </tr>
+	        </tbody>
+	    </table>
+	</div>
+</h:body>
+
+</html>

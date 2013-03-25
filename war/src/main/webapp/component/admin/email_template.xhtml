@@ -1,0 +1,356 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:e5ui="http://efive.ru/uitemplates"
+      xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+
+<ui:define name="running_head">
+    <!-- #{emailTemplate.document.id}  -->
+    <e5ui-comp:userSessionUpdate interval="300"/>
+</ui:define>
+
+<ui:define name="left_menu"></ui:define>
+
+<ui:define name="header">
+    <div id="form_header">
+        <div class="actionbar">
+            <div class="menu">
+                <div class="defbutton">
+                    <h:commandLink action="#{emailTemplate.edit}" rendered="#{emailTemplate.viewState}">
+                        <h:graphicImage value="#{resource['images:edit_buttn.png']}"/>
+                        Редактировать
+                    </h:commandLink>
+                </div>
+                <div class="defbutton">
+                    <h:commandLink action="#{emailTemplate.cancel}"
+                                   rendered="#{emailTemplate.editState or emailTemplate.createState}">
+                        <h:graphicImage value="#{resource['images:button-cancel.png']}"/>
+                        Отменить
+                    </h:commandLink>
+                </div>
+                <div class="defbutton">
+                    <h:commandLink action="#{emailTemplate.save}"
+                                   rendered="#{emailTemplate.editState or emailTemplate.createState}">
+                        <h:graphicImage value="#{resource['images:save_buttn.png']}"/>
+                        Сохранить
+                    </h:commandLink>
+                </div>
+            </div>
+        </div>
+    </div>
+</ui:define>
+
+<ui:define name="content">
+<div id="header_content">
+    <h:panelGroup rendered="#{emailTemplate.createState}">
+        <div class="name">Новый шаблон</div>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{emailTemplate.editState or emailTemplate.viewState}">
+        <div class="name">
+            <div>
+                <h:outputText value="#{emailTemplate.document.name}"/>
+            </div>
+        </div>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{emailTemplate.notFoundState}">
+        <div class="name">404 - Шаблон не найден</div>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{emailTemplate.forbiddenState}">
+        <div class="name">403 - Действие запрещено</div>
+    </h:panelGroup>
+    <h:panelGroup
+            rendered="#{not(emailTemplate.createState or emailTemplate.editState or emailTemplate.viewState or emailTemplate.notFoundState or emailTemplate.forbiddenState)}">
+        <div class="name">В доступе отказано</div>
+    </h:panelGroup>
+</div>
+
+<div class="main_content">
+    <h:panelGroup rendered="#{emailTemplate.viewState}">
+        <div class="row">
+            <table class="form_grid">
+                <tr class="row">
+                    <td class="first">Название:</td>
+                    <td>
+                        <h:outputText value="#{emailTemplate.document.name}" class="wide"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Тема:</td>
+                    <td>
+                        <h:outputText value="#{emailTemplate.document.subject}" class="wide"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Текст сообщения:</td>
+                    <td>
+                        <h:outputText value="#{emailTemplate.document.body}" class="wide"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first" colspan="2">
+                        <fieldset>
+                            <legend>
+                                <label><span class="title">Адресаты:</span> </label>
+                            </legend>
+                            <div class="wrap" style="width:100%; margin:0px">
+                                <div class="inner">
+                                    <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" var="row"
+                                                    id="sendto_list_view" style="width:100%;"
+                                                    value="#{emailTemplate.document.sendTo}">
+                                        <e5ui:column>
+                                            <f:facet name="header">
+                                                <p>Адрес</p>
+                                            </f:facet>
+                                            <h:outputText value="#{row.value}" class="wide"/>
+                                        </e5ui:column>
+                                    </e5ui:dataTable>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first" colspan="2">
+                        <fieldset>
+                            <legend>
+                                <label><span class="title">Копии:</span> </label>
+                            </legend>
+                            <div class="wrap" style="width:100%; margin:0px">
+                                <div class="inner">
+                                    <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" var="row"
+                                                    id="copyto_list_view" style="width:100%;"
+                                                    value="#{emailTemplate.document.copyTo}">
+                                        <e5ui:column>
+                                            <f:facet name="header">
+                                                <p>Адрес</p>
+                                            </f:facet>
+                                            <h:outputText value="#{row.value}" class="wide"/>
+                                        </e5ui:column>
+                                    </e5ui:dataTable>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first" colspan="2">
+                        <fieldset>
+                            <legend>
+                                <label><span class="title">Скрытые копии:</span> </label>
+                            </legend>
+                            <div class="wrap" style="width:100%; margin:0px">
+                                <div class="inner">
+                                    <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" var="row"
+                                                    id="blindcopy_list_view" style="width:100%;"
+                                                    value="#{emailTemplate.document.blindCopyTo}">
+                                        <e5ui:column>
+                                            <f:facet name="header">
+                                                <p>Адрес</p>
+                                            </f:facet>
+                                            <h:outputText value="#{row.value}" class="wide"/>
+                                        </e5ui:column>
+                                    </e5ui:dataTable>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </h:panelGroup>
+
+    <h:panelGroup rendered="#{emailTemplate.createState or emailTemplate.editState}">
+        <div class="row">
+            <table class="form_grid">
+                <tr class="row">
+                    <td class="first">Название:</td>
+                    <td>
+                        <h:inputText value="#{emailTemplate.document.name}" class="wide"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Тема:</td>
+                    <td>
+                        <h:inputText value="#{emailTemplate.document.subject}" class="wide"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Текст сообщения:</td>
+                    <td>
+                        <h:inputTextarea value="#{emailTemplate.document.body}" class="wide"/>
+                    </td>
+                </tr>
+
+                <tr class="row">
+                    <td class="first" colspan="2">
+                        <fieldset>
+                            <legend>
+                                <label><span class="title">Адресаты:</span> </label>
+                            </legend>
+                            <h:panelGroup id="sendto_editable">
+                                <div class="row">
+                                    <div class="actionbar">
+                                        <div class="menu">
+                                            <div class="defbutton">
+                                                <h:commandLink action="#{emailTemplate.sendToAdd()}">
+                                                    <f:ajax render=":main_content_form:sendto_editable"/>
+                                                    <h:graphicImage value="#{resource['images:plus.png']}"/>
+                                                </h:commandLink>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wrap" style="width:100%; margin:0px">
+                                    <div class="inner">
+                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" var="row"
+                                                        id="sendto_list_edit" style="width:100%;"
+                                                        value="#{emailTemplate.document.sendTo}">
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>Адрес</p>
+                                                </f:facet>
+                                                <h:inputText value="#{row.value}" class="wide"/>
+                                            </e5ui:column>
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>Удалить</p>
+                                                </f:facet>
+                                                <div class="defbutton">
+                                                    <h:commandLink action="#{emailTemplate.document.sendTo.remove(row)}">
+                                                        <f:ajax render=":main_content_form:sendto_editable"/>
+                                                        <h:graphicImage value="#{resource['images:minus.png']}"/>
+                                                    </h:commandLink>
+                                                </div>
+                                            </e5ui:column>
+                                        </e5ui:dataTable>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                        </fieldset>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first" colspan="2">
+                        <fieldset>
+                            <legend>
+                                <label><span class="title">Копии:</span> </label>
+                            </legend>
+                            <h:panelGroup id="copyto_editable">
+                                <div class="row">
+                                    <div class="actionbar">
+                                        <div class="menu">
+                                            <div class="defbutton">
+                                                <h:commandLink action="#{emailTemplate.copyToAdd()}">
+                                                    <f:ajax render=":main_content_form:copyto_editable"/>
+                                                    <h:graphicImage value="#{resource['images:plus.png']}"/>
+                                                </h:commandLink>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wrap" style="width:100%; margin:0px">
+                                    <div class="inner">
+                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" var="row"
+                                                        id="copyto_list_edit" style="width:100%;"
+                                                        value="#{emailTemplate.document.copyTo}">
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>Адрес</p>
+                                                </f:facet>
+                                                <h:inputText value="#{row.value}" class="wide"/>
+                                            </e5ui:column>
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>Удалить</p>
+                                                </f:facet>
+                                                <div class="defbutton">
+                                                    <h:commandLink action="#{emailTemplate.document.copyTo.remove(row)}">
+                                                        <f:ajax render=":main_content_form:copyto_editable"/>
+                                                        <h:graphicImage value="#{resource['images:minus.png']}"/>
+                                                    </h:commandLink>
+                                                </div>
+                                            </e5ui:column>
+                                        </e5ui:dataTable>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                        </fieldset>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first" colspan="2">
+                        <fieldset>
+                            <legend>
+                                <label><span class="title">Скрытые копии:</span> </label>
+                            </legend>
+                            <h:panelGroup id="blindCopyTo_editable">
+                                <div class="row">
+                                    <div class="actionbar">
+                                        <div class="menu">
+                                            <div class="defbutton">
+                                                <h:commandLink action="#{emailTemplate.blindCopyToAdd()}">
+                                                    <f:ajax render=":main_content_form:blindCopyTo_editable"/>
+                                                    <h:graphicImage value="#{resource['images:plus.png']}"/>
+                                                </h:commandLink>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wrap" style="width:100%; margin:0px">
+                                    <div class="inner">
+                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" var="row"
+                                                        id="blindCopyTo_list_edit" style="width:100%;"
+                                                        value="#{emailTemplate.document.blindCopyTo}">
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>Адрес</p>
+                                                </f:facet>
+                                                <h:inputText value="#{row.value}" class="wide"/>
+                                            </e5ui:column>
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>Удалить</p>
+                                                </f:facet>
+                                                <div class="defbutton">
+                                                    <h:commandLink action="#{emailTemplate.document.blindCopyTo.remove(row)}">
+                                                        <f:ajax render=":main_content_form:blindCopyTo_editable"/>
+                                                        <h:graphicImage value="#{resource['images:minus.png']}"/>
+                                                    </h:commandLink>
+                                                </div>
+                                            </e5ui:column>
+                                        </e5ui:dataTable>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                        </fieldset>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </h:panelGroup>
+</div>
+
+</ui:define>
+
+<ui:define name="footer">
+    <e5ui-comp:splashScreen id="splash_screen" timeout="0">
+        <f:facet name="timeoutPanel">
+            <div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+                Пожалуйста, подождите...
+            </div>
+        </f:facet>
+    </e5ui-comp:splashScreen>
+    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+    <h:outputStylesheet library="css" name="datatable.css"/>
+    <h:outputStylesheet library="css" name="modalWindow.css"/>
+</ui:define>
+
+</ui:composition>
+
+</html>

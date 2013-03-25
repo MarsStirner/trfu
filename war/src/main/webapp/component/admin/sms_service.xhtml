@@ -1,0 +1,245 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:e5ui="http://efive.ru/uitemplates"
+      xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="#{sessionManagement.templateName}">
+    <ui:define name="running_head">
+        <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+        <h:outputScript>
+            jQuery(document).ready(function() {
+            update_content();
+            });
+        </h:outputScript>
+        <h:outputScript>
+            var resizeTimer = null;
+            jQuery(window).bind('resize', function() {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(update_content, 100);
+            });
+        </h:outputScript>
+        <h:outputScript>
+            function update_content() {
+            var height = document.body.clientHeight - jQuery("#view_header").height() - jQuery("#footer").height() -
+            jQuery("#searchbar").height() - jQuery("#table_paging").height()-26;
+            jQuery("#table_wrap").height(height);
+            jQuery("#table_inner").height(height);
+            };
+        </h:outputScript>
+    </ui:define>
+
+
+    <ui:define name="left_menu"></ui:define>
+
+    <ui:define name="header">
+        <div id="form_header">
+            <div class="actionbar">
+                <div class="menu">
+                    <div class="defbutton">
+                        <h:commandLink action="#{smsService.send}">
+                            <h:graphicImage value="#{resource['images:blank.png']}"/>
+                            Отправить
+                        </h:commandLink>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <div class="main_content" style="float: left; width: 95%;">
+            <div class="row">
+                <table class="form_grid">
+                    <tr class="row">
+                        <td>
+                            <h:outputLink title="Пользователи:"
+                                          onclick="usersSelectVar.clickOpen('usersSelectModal'); return false;">
+                                Сотрудники
+                            </h:outputLink>
+                        </td>
+                        <td>
+                            <h:panelGroup id="users_list">
+                                <div>
+                                    <ui:repeat value="#{smsService.users}" var="element">
+                                        <h:outputText value="#{element.descriptionShort}" class="width"/>
+                                        <br/>
+                                    </ui:repeat>
+                                </div>
+                            </h:panelGroup>
+                            <e5ui-comp:modalWindow id="usersSelectModal"
+                                                   modalWindowHolder="#{smsService.usersSelectModal}"
+                                                   render=":main_content_form:users_list"
+                                                   execute="select_table" showButtons="false"
+                                                   style="width: 500px;" widgetVar="usersSelectVar">
+                                <div id="title">Выбор пользователей</div>
+                                <div id="users_modal_container" style="margin-top: 0;">
+                                    <div class="searchbar">
+                                        <span style="float: left; margin-top: 3px">Поиск:&nbsp;</span>
+                                        <h:inputText id="filter_string"
+                                                     value="#{smsService.usersSelectModal.userList.filter}"
+                                                     style="display:block; float:left; margin-right:10px;"
+                                                     title="Поиск"/>
+                                        <h:commandButton value=" "
+                                                         action="#{smsService.usersSelectModal.userList.changePageOffset(0)}"
+                                                         styleClass="searchbutton">
+                                            <f:ajax execute=":main_content_form:usersSelectModal:filter_string"
+                                                    render=":main_content_form:usersSelectModal:select_table :main_content_form:usersSelectModal:modal_paging"/>
+                                        </h:commandButton>
+                                    </div>
+                                    <div class="wrap" style="height: 300px;">
+                                        <div class="inner" style="height: 300px;">
+                                            <e5ui:dataTable id="select_table" border="0" cellpadding="0" cellspacing="0"
+                                                            value="#{userList.documents}" var="row" grouping="false"
+                                                            width="100%">
+                                                <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+                                                          styleClass="#{smsService.usersSelectModal.selected(row)? 'grid_row_selected': ''}"/>
+                                                <e5ui:column>
+                                                    <f:facet name="header">
+                                                        <p>Сотрудник</p>
+                                                    </f:facet>
+                                                    <h:outputText value="#{row.description}"/>
+                                                    <h:commandLink id="selectLink" style="display: none;"
+                                                                   rendered="#{not smsService.usersSelectModal.selected(row)}"
+                                                                   action="#{smsService.usersSelectModal.select(row)}"/>
+                                                    <h:commandLink id="unselectLink" style="display: none;"
+                                                                   rendered="#{smsService.usersSelectModal.selected(row)}"
+                                                                   action="#{smsService.usersSelectModal.unselect(row)}"/>
+                                                </e5ui:column>
+                                            </e5ui:dataTable>
+                                        </div>
+                                    </div>
+                                    <div style="clear: both;">
+                                        <h:panelGroup id="modal_paging">
+                                            <e5ui-comp:tablePager id="pager"
+                                                                  documentListHolder="#{smsService.usersSelectModal.userList}"/>
+                                        </h:panelGroup>
+                                    </div>
+                                </div>
+                                <div class="e5ui-modal-bottombuttons">
+                                    <h:button onclick="usersSelectVar.clickSave(); return false;" value="Выбрать"/>
+                                    <h:button onclick="usersSelectVar.clickClose(); return false;" value="Отмена"/>
+                                </div>
+                            </e5ui-comp:modalWindow>
+                        </td>
+                    </tr>
+
+                    <tr class="row">
+                        <td>
+                            <h:outputLink title="Доноры:"
+                                          onclick="donorsSelectVar.clickOpen('donorsSelectModal'); return false;">
+                                Доноры
+                            </h:outputLink>
+                        </td>
+                        <td>
+                            <h:panelGroup id="donors_list">
+                                <div>
+                                    <ui:repeat value="#{smsService.donors}" var="element">
+                                        <h:outputText value="#{element.descriptionShort}" class="width"/>
+                                        <br/>
+                                    </ui:repeat>
+                                </div>
+                            </h:panelGroup>
+                            <e5ui-comp:modalWindow id="donorsSelectModal"
+                                                   modalWindowHolder="#{smsService.donorsSelectModal}"
+                                                   render=":main_content_form:donors_list"
+                                                   execute="select_table" showButtons="false"
+                                                   style="width: 500px;" widgetVar="donorsSelectVar">
+                                <div id="title">Выбор доноров</div>
+                                <div id="donors_modal_container" style="margin-top: 0;">
+                                    <div class="searchbar">
+                                        <span style="float: left; margin-top: 3px">Поиск:&nbsp;</span>
+                                        <h:inputText id="filter_string"
+                                                     value="#{smsService.donorsSelectModal.donorList.filter}"
+                                                     style="display:block; float:left; margin-right:10px;"
+                                                     title="Поиск"/>
+                                        <h:commandButton value=" "
+                                                         action="#{smsService.donorsSelectModal.donorList.changePageOffset(0)}"
+                                                         styleClass="searchbutton">
+                                            <f:ajax execute=":main_content_form:donorsSelectModal:filter_string"
+                                                    render=":main_content_form:donorsSelectModal:select_table :main_content_form:donorsSelectModal:modal_paging"/>
+                                        </h:commandButton>
+                                    </div>
+                                    <div class="wrap" style="height: 300px;">
+                                        <div class="inner" style="height: 300px;">
+                                            <e5ui:dataTable id="select_table" border="0" cellpadding="0" cellspacing="0"
+                                                            value="#{donorList.documents}" var="row" grouping="false"
+                                                            width="100%">
+                                                <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+                                                          styleClass="#{smsService.donorsSelectModal.selected(row)? 'grid_row_selected': ''}"/>
+                                                <e5ui:column>
+                                                    <f:facet name="header">
+                                                        <p>Донор</p>
+                                                    </f:facet>
+                                                    <h:outputText value="#{row.description}"/>
+                                                    <h:commandLink id="selectLink" style="display: none;"
+                                                                   rendered="#{not smsService.donorsSelectModal.selected(row)}"
+                                                                   action="#{smsService.donorsSelectModal.select(row)}"/>
+                                                    <h:commandLink id="unselectLink" style="display: none;"
+                                                                   rendered="#{smsService.donorsSelectModal.selected(row)}"
+                                                                   action="#{smsService.donorsSelectModal.unselect(row)}"/>
+                                                </e5ui:column>
+                                            </e5ui:dataTable>
+                                        </div>
+                                    </div>
+                                    <div style="clear: both;">
+                                        <h:panelGroup id="modal_paging">
+                                            <e5ui-comp:tablePager id="pager"
+                                                                  documentListHolder="#{smsService.donorsSelectModal.donorList}"/>
+                                        </h:panelGroup>
+                                    </div>
+                                </div>
+                                <div class="e5ui-modal-bottombuttons">
+                                    <h:button onclick="donorsSelectVar.clickSave(); return false;" value="Выбрать"/>
+                                    <h:button onclick="donorsSelectVar.clickClose(); return false;" value="Отмена"/>
+                                </div>
+                            </e5ui-comp:modalWindow>
+                        </td>
+                    </tr>
+
+
+                    <tr class="row">
+                        <td class="first">Текст СМС-сообщения:</td>
+                        <td>
+                            <p:inputTextarea value="#{smsService.message}" styleClass="wide" label="Текст СМС-сообщения"
+                                             rows="6"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </ui:define>
+
+    <ui:define name="footer">
+        <e5ui-comp:splashScreen id="splash_screen" timeout="0">
+            <f:facet name="timeoutPanel">
+                <div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+                    Пожалуйста, подождите...
+                </div>
+            </f:facet>
+        </e5ui-comp:splashScreen>
+        <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+
+        <e5ui:multiMarker id="main_form_marker" rendered="true" hintWindowStyleClass="e5ui-marker-hintWindow"
+                          hintWindowInfoStyleClass="e5ui-marker-hintWindow-info"
+                          hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
+                          hintWindowErrorStyleClass="e5ui-marker-hintWindow-error"
+                          hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal" displayMode="window">
+            <h:button onclick="e5ui_multiMarker.remove('main_form_marker'); return false;" value="ОК"/>
+        </e5ui:multiMarker>
+
+        <h:outputStylesheet library="css" name="datatable.css"/>
+        <h:outputStylesheet library="css" name="modalWindow.css"/>
+        <h:outputStylesheet library="css" name="multiMarker.css"/>
+    </ui:define>
+
+</ui:composition>
+
+</html>

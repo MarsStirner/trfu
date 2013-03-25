@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:e5ui="http://efive.ru/uitemplates"
+      xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+
+    <ui:define name="running_head">
+        <!-- #{bloodSystemType.document.id}  -->
+        <e5ui-comp:userSessionUpdate interval="300" />
+    </ui:define>
+
+    <ui:define name="left_menu"></ui:define>
+
+    <ui:define name="header">
+        <div id="form_header">
+            <div class="actionbar">
+                <div class="menu">
+                    <div class="defbutton">
+                        <h:commandLink action="#{bloodSystemType.edit}" rendered="#{bloodSystemType.viewState}">
+                            <h:graphicImage value="#{resource['images:edit_buttn.png']}" />
+                            Редактировать
+                        </h:commandLink>
+                    </div>
+                    <div class="defbutton">
+                        <h:commandLink action="#{bloodSystemType.cancel}" rendered="#{bloodSystemType.editState or bloodSystemType.createState}">
+                            <h:graphicImage value="#{resource['images:button-cancel.png']}" />
+                            Отменить
+                        </h:commandLink>
+                    </div>
+                    <div class="defbutton">
+                        <h:commandLink action="#{bloodSystemType.save}" rendered="#{bloodSystemType.editState or bloodSystemType.createState}">
+                            <h:graphicImage value="#{resource['images:save_buttn.png']}" />
+                            Сохранить
+                        </h:commandLink>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+    <ui:define name="content">
+        <div id="header_content">
+            <h:panelGroup rendered="#{bloodSystemType.createState}">
+                <div class="name">Новая роль</div>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{bloodSystemType.editState or bloodSystemType.viewState}">
+                <div class="name">
+                    <div>
+                        <h:outputText value="#{bloodSystemType.document.value}" />
+                    </div>
+                </div>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{bloodSystemType.notFoundState}">
+                <div class="name">404 - Система крови не найдена</div>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{bloodSystemType.forbiddenState}">
+                <div class="name">403 - Действие запрещено</div>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{not(bloodSystemType.createState or bloodSystemType.editState or bloodSystemType.viewState or bloodSystemType.notFoundState or bloodSystemType.forbiddenState)}">
+                <div class="name">В доступе отказано</div>
+            </h:panelGroup>
+        </div>
+
+        <div class="main_content">
+            <h:panelGroup rendered="#{bloodSystemType.viewState}">
+                <div class="row">
+                    <table class="form_grid">
+                        <tr class="row">
+                            <td class="first">Название:</td>
+                            <td><h:outputText value="#{bloodSystemType.document.value}" class="wide" /></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="first">Код:</td>
+                            <td><h:outputText value="#{bloodSystemType.document.code}" class="wide" /></td>
+                        </tr>
+                    </table>
+                </div>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{bloodSystemType.createState or bloodSystemType.editState}">
+                <div class="row">
+                    <table class="form_grid">
+                        <tr class="row">
+                            <td class="first">Название:</td>
+                            <td><h:inputText value="#{bloodSystemType.document.value}" class="wide" /></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="first">Код:</td>
+                            <td>
+                                <h:inputText value="#{bloodSystemType.document.code}" class="wide" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </h:panelGroup>
+        </div>
+
+    </ui:define>
+
+    <ui:define name="footer">
+        <e5ui-comp:splashScreen id="splash_screen" timeout="0">
+            <f:facet name="timeoutPanel">
+                <div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+                    Пожалуйста, подождите...
+                </div>
+            </f:facet>
+        </e5ui-comp:splashScreen>
+        <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+        <h:outputStylesheet library="css" name="datatable.css" />
+        <h:outputStylesheet library="css" name="modalWindow.css" />
+    </ui:define>
+
+</ui:composition>
+
+</html>

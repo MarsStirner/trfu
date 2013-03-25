@@ -1,0 +1,399 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Направление</title>
+</h:head>
+
+<h:body>
+	<!-- #{donor.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+	    <table border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+	                <td width="339" valign="top" colspan="3">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+
+	                <td width="100" valign="top" style="text-align:center;">
+                        Приложение № 1-А<br />
+                        к методическим указаниям,<br />
+                        Утвержденным приказом №82<br />
+                        от 23 февраля 1999г<br />
+                        <p align="center">
+                        <p style="font-family:Code128bWin; font-size:24px;">š<h:outputText style="font-size:24px; font-family:Code128bWin;" value="#{donor.document.number}" />Jœ</p>
+                        <h:outputText value="#{donor.document.number}" /></p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+                    <td width="45" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+                    <td width="48" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+
+	                <td valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p align="center">
+	                        <b>ИНДИВИДУАЛЬНОЕ НАПРАВЛЕНИЕ-СПРАВКА</b>
+
+	                    </p>
+                        <p align="center">
+                        На исследование сыворотки  донора крови на ВИЧ, гепатиты В и С, сифилис<br /> в бактериологическую лабораторию из отделения трансфузиологии, процессинга и заготовки ГСК
+                        </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        Донор <h:outputText style="font-size:10px; font-weight:bold;" value="#{donor.document.description}" />
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        № <h:outputText style="font-weight:bold;" value="#{donor.document.id}" />
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2" valign="top">
+                        <p>Пол: <h:outputText value="#{donor.document.gender eq 0? 'женский': 'мужской'}" /></p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>Дата рождения: 
+	                         <h:outputText value="#{donor.document.birth}">
+	                        	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+	                        </h:outputText>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="2" valign="top">
+                        <p>Дата забора материала</p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>_________________________20____г. </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="2" valign="top">
+                        <p>Дата исследования</p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>_________________________20____г. </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="4" valign="top">
+	                    <table width="100%" class="printtable">
+	                        <tbody>
+	                            <tr>
+                                    <td>
+                                        <p>ВИЧ(1+2)<br />( Ag\At)</p>
+                                    </td>
+                                    <td>
+                                        <p>Гепатит В<br />(HBs-Ag)</p>
+                                    </td>
+                                    <td>
+                                        <p>Гепатит С<br />(AVH-C)</p>
+                                    </td>
+                                    <td>
+                                        <p>Сифилис<br />РПГА ИФ</p>
+                                    </td>
+                                </tr>
+	                            <tr>
+                                    <td>
+                                        <br /><br /><br /><br /><br /><br />
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p><br /><br /><br /><br /><br /></p>
+	                </td>
+	            </tr>              <tr>
+	                <td valign="top" colspan="2">
+	                    <p>
+	                        Врач бактериолог
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        _________________________________________                                                                       <i>(подпись)</i>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td valign="top" colspan="2">
+	                    <p>
+	                        Дата
+
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p>_________________________20____г.
+
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td valign="top" colspan="2">
+	                    <p>
+                        Врач направивший на исследование
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        _________________________________________                                                                       <i>(подпись)</i>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+
+	        </tbody>
+	    </table>
+	</div>
+	<div style="margin-left:30px; border-top:2px #000000 solid;">
+        <br />
+	    <table border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+	                <td width="339" valign="top" colspan="3">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+
+	                <td width="100" valign="top" style="text-align:center;">
+                        Приложение № 1-А<br />
+                        к методическим указаниям,<br />
+                        Утвержденным приказом №82<br />
+                        от 23 февраля 1999г<br />
+                         <p style="font-family:Code128bWin; font-size:24px;">š<h:outputText style="font-size:24px; font-family:Code128bWin;" value="#{donor.document.number}" />Jœ</p>
+                         <h:outputText value="#{donor.document.number}" />
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+                    <td width="45" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+                    <td width="48" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+
+	                <td valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p align="center">
+	                        <b>ИНДИВИДУАЛЬНОЕ НАПРАВЛЕНИЕ-СПРАВКА</b>
+
+	                    </p>
+                        <p align="center">
+                          На исследование крови (плазмы) донора на ВИЧ, гепатиты В и С<br /> в лабораторию молекулярных исследований из отделения трансфузиологии,<br /> процессинга и заготовки ГСК
+                        </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        Донор <h:outputText style="font-size:10px; font-weight:bold;" value="#{donor.document.description}" />
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        № <h:outputText style="font-weight:bold;" value="#{donor.document.id}" />
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2" valign="top">
+                        <p>Пол: <h:outputText value="#{donor.document.gender eq 0? 'женский': 'мужской'}" /></p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>Возраст: <h:outputText value="#{donor.document.ageFull}" /></p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="2" valign="top">
+                        <p>Дата забора материала</p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>_________________________20____г. </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="2" valign="top">
+                        <p>Метод исследования</p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>ПЦР-ДИАГНОСТИКА </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="2" valign="top">
+                        <p>Дата исследования</p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>_________________________20____г. </p>
+	                </td>
+	            </tr>
+                <tr>
+                    <td colspan="4">
+	                    <table width="100%" class="printtable">
+	                        <tbody>
+	                            <tr>
+                                    <td>
+                                        <p>ВИЧ(1+2)</p>
+                                    </td>
+                                    <td>
+                                        <p>Гепатит В</p>
+                                    </td>
+                                    <td>
+                                        <p>Гепатит С</p>
+                                    </td>
+
+                                </tr>
+	                            <tr>
+                                    <td>
+                                        <br /><br /><br /><br /><br /><br />
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+	            </tr>
+                <tr>
+	                <td valign="top" colspan="2">
+	                    <p>
+	                        Врач-лаборант
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        _________________________________________                                                                       <i>(подпись)</i>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td valign="top" colspan="2">
+	                    <p>
+	                        Дата
+
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p>_________________________20____г.
+
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td valign="top" colspan="2">
+	                    <p>
+                        Врач направивший на исследование
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        _________________________________________                                                                       <i>(подпись)</i>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+
+	        </tbody>
+	    </table>
+	</div>
+</h:body>
+
+</html>

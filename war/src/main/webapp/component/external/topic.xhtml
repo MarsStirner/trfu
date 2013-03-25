@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>#{information.document.shortDescription}</title>
+    <h:outputStylesheet library="css" name="portal.css" />
+</h:head>
+
+<h:body>
+    <div class="taglib-header">
+        <h1 class="header-title">
+            <span> <h:outputText value="#{information.document.title}" class="wide" /></span>
+        </h1>
+    </div>
+    <div class="asset-full-content default-asset-publisher show-asset-title">
+        <div class="asset-content">
+            <div class="journal-content-article">
+                <div class="news-body">
+                    <h:outputText value="#{information.document.description}" escape="false" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+</h:body>
+
+</html>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project 
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <artifactId>transfusion</artifactId>
+    <packaging>war</packaging>
+	
+    <name>NIIDG Transfusion WebApp</name>
+    <description>NIIDG Transfusion WebApp</description>
+    
+    <parent>
+	<groupId>ru.efive.medicine.niidg</groupId>
+        <artifactId>trfu</artifactId>
+        <version>0.0.3-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+    	<dependency>
+            <groupId>org.glassfish.extras</groupId>
+            <artifactId>glassfish-embedded-all</artifactId>
+            <version>3.1.1</version>
+            <scope>test</scope>
+		</dependency>
+	    
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
+        
+        <dependency>
+	    	<groupId>mysql</groupId>
+	    	<artifactId>mysql-connector-java</artifactId>
+	    	<version>5.1.9</version>
+		</dependency>
+		
+        <dependency>
+            <groupId>ru.efive.workflow</groupId>
+            <artifactId>workflow-core</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>ru.efive.dao</groupId>
+            <artifactId>sql-dao</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+		<dependency>
+			<groupId>ru.efive.dao</groupId>
+			<artifactId>alfresco-dao</artifactId>
+			<scope>provided</scope>
+		</dependency>
+        
+        <dependency>
+            <groupId>ru.efive.ui-templates</groupId>
+            <artifactId>ui-templates-core</artifactId>
+	    	<version>0.0.1-SNAPSHOT</version>
+	    	<scope>system</scope>
+      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ui-templates-core-0.0.1-SNAPSHOT.jar</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>4.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-bridge</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.barcode4j</groupId>
+			<artifactId>barcode4j</artifactId>
+			<version>2.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>ru.efive.fonts</groupId>
+			<artifactId>fonts-ext</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/fonts-ext-1.0.jar</systemPath>
+		</dependency>
+		
+		<dependency>  
+			<groupId>org.primefaces</groupId>  
+			<artifactId>primefaces</artifactId>  
+			<version>3.3.1</version>  
+		</dependency>
+		
+    </dependencies>
+    
+</project>

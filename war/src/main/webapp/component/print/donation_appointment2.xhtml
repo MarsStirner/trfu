@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="print.css" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<!--<h:outputStylesheet library="css" name="print.css" /> -->
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Направление</title>
+</h:head>
+
+<h:body>
+	<!-- #{bloodDonation.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+    <tbody>
+		<tr>
+			<td nowrap="" align="left" valign="top"></td>
+
+			<td nowrap="" align="left" valign="top">МИНЗДРАВ СССР</td>
+
+			<td nowrap="" align="left" valign="top"></td>
+
+			<td nowrap="" align="left" valign="top" rowspan="2" colspan="2">  Медицинская документация<br />
+                Форма N 404/у<br />
+                Утверждена Минздравом СССР<br />
+                07.08.85 г. N 1055<br />
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+                ФНКЦ ДГОИ<br />
+                им. Дмитрия Рогачева
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top" colspan="4">                                                            <br />
+                <p align="center" style="font-weight:bold;"><b>НАПРАВЛЕНИЕ НА КРОВОДАЧУ, ПЛАЗМАФЕРЕЗ И ДР.</b>        <br />
+                <br />
+                <b>Первичный, первый раз в текущем году, повторный, родственник</b><br />
+                </p>
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top" style="text-align:center;">
+                         <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{bloodDonation.document.number}"  converter="Code128Converter" /><br />
+                         Донация: <h:outputText value="#{bloodDonation.document.number}"/>
+
+            </td>
+			<td nowrap="" align="left" valign="top" colspan="3">
+                <br />
+                <br />
+                Группа крови <h:outputText value="#{bloodDonation.document.donorBloodGroup}" /><br />
+                Rh-фактор <h:outputText value="#{bloodDonation.document.donorRhesusFactor}" /><br />
+                <br />
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            <br />
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top" colspan="4">Донор: &nbsp;&nbsp; <h:outputText value="#{bloodDonation.document.donor.description}" style="font-weight:bold;" /> направляется на:                                                <br />
+                <p>кроводачу ______________________________________ Доза _____ мл.</p> <br />
+                <p>плазма (цита) ферез ____________________________ Доза _____ мл.</p> <br />
+                <p>гранулоцитаферез ________________________________ Доза _____ мл.</p> <br />
+                <p>обследование ___________________________________ (указать вид).</p> <br />
+                <p>Дата: ____________                  Врач:  <h:outputText value="#{bloodDonation.document.therapist.description}" /> ____________ (подпись).</p> <br />
+
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top" colspan="4" style="border-top:2px #000000 solid;">
+                                   линия отрыва
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top" colspan="4">
+                <p align="center" style="font-weight:bold;">ОТМЕТКА<br />
+                о         количестве сданной крови (плазмы),         </p><br />
+
+                                                                <br />
+                Донор: &nbsp;&nbsp; <h:outputText value="#{bloodDonation.document.donor.description}" style="font-weight:bold;" /><br />
+                <p>1)  дал кровь, плазму, гранулоциты _____________________ (нужное подчеркнуть, вписать)</p><br />
+                <p>в количестве _____________________________________________  мл. </p><br />
+                <p>2) прошел обследование _______________________    (указать вид).</p><br />
+                <p>с _____ до ______ час.                                          </p><br />
+                <p>"____"__________ 20____ г. Ответственное лицо ________________  </p><br />
+
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+        </tr>
+    </tbody>
+</table>
+	</div>
+
+
+</h:body>
+
+</html>

@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
+		<h:outputScript library="js" name="views.js" target="head" />
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+	
+	<ui:define name="header">
+		<div id="view_header" style="width:100%;">
+			<div id="header">
+				<div class="menu">
+					<e5ui:formPart id="header_title">
+						<div id="viewtitle">Лаборатория</div>
+					</e5ui:formPart>
+					<div class="role">
+						<div class="top">
+							<h:commandLink styleClass="top_link" onclick="return false;">
+		                   		<span>
+									<h:outputText value="#{sessionManagement.currentRole}" converter="RoleConverter" />
+								</span>
+							</h:commandLink>
+							<div class="sub">
+								<ui:repeat value="#{sessionManagement.availableRoles}" var="element">
+									<div class="item">
+										<h:commandLink action="#{sessionManagement.setCurrentRole(element)}">
+											<h:outputText value="#{element}" converter="RoleConverter" />
+										</h:commandLink>
+									</div>
+								</ui:repeat>
+							</div>
+						</div>
+					</div>
+					<div class="username">
+						<div class="top">
+		                   	<h:commandLink styleClass="top_link" onclick="return false;">
+		                   		<span>
+									<h:outputText value="#{sessionManagement.loggedUser.description}" />
+								</span>
+							</h:commandLink>
+							<div class="sub">
+					        	<div class="item">
+					        		<h:commandLink action="#{sessionManagement.logOut}">
+								        Выход
+							        </h:commandLink>
+					        	</div>
+					        </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="actionbar">
+				<div class="menu">
+					<div class="defbutton">
+						<h:commandLink action="#{laboratory.refresh()}">
+							<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+			            	Обновить
+			            	<e5ui:formPartTarget formPart="main_table_part"/>
+			           	</h:commandLink>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="content">
+		<script type="text/javascript">
+			document.ondblclick = function DoubleClick(evt) {
+				if (window.getSelection)
+					window.getSelection().removeAllRanges();
+				else if (document.selection)
+					document.selection.empty();
+			}
+		</script>
+		<h:outputScript>
+        	function goToDocument(id) {
+        		if (id != 0) {
+        			window.open('#{facesContext.externalContext.requestContextPath}/component/laboratory_entity.xhtml?docId=' + id,'_blank');
+				}
+			}
+        </h:outputScript>
+        <e5ui:formPart id="main_table_part">
+			<div id="main_table" style="width:100%;">
+				<div id="searchbar" class="main_searchbar">
+					<h:inputText id="filter_string" value="#{laboratory.filter}" 
+								style="display:block; float:left; width:60%; margin:2px 10px;" title="Поиск" />
+					<h:commandButton value=" " action="#{laboratory.changePageOffset(0)}" styleClass="searchbutton">
+						<f:ajax execute=":main_content_form:filter_string" render=":main_content_form:main_data_tbl :main_content_form:main_data_paging" />
+					</h:commandButton>
+				</div>
+				<div class="wrap_main" id="table_wrap">
+					<div class="inner" id="table_inner">
+						<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl"
+									value="#{laboratory.documents}" var="row" grouping="false">
+							<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+							<e5ui:column>
+								<f:facet name="header">
+					        		<p>Номер</p>
+					            </f:facet>
+					            <h:outputText value="#{row.number}" />
+							</e5ui:column>
+							<e5ui:column>
+								<f:facet name="header">
+				                    <p>Дата создания</p>
+				                </f:facet>
+								<h:outputText value="#{row.created}">
+									<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+								</h:outputText>
+							</e5ui:column>
+							<e5ui:column>
+								<f:facet name="header">
+			                        <p>Требуемые анализы</p>
+			                    </f:facet>
+								<ui:repeat value="#{row.testList}" var="element">
+                                	<div><h:outputText value="#{element.type}" converter="AnalysisTypeConverter" /></div>
+                                </ui:repeat>
+							</e5ui:column>
+							<e5ui:column>
+								<f:facet name="header">
+			                        <p>Комментарии</p>
+			                    </f:facet>
+								<h:outputText value="#{row.commentary}" />
+							</e5ui:column>
+						</e5ui:dataTable>
+					</div>
+				</div>
+				<div id="table_paging">
+					<h:panelGroup id="main_data_paging">
+						<e5ui-comp:tablePager documentListHolder="#{laboratory}" style="display:inline;" />
+						<e5ui-comp:tablePageSizeSelector documentListHolder="#{laboratory}" style="display:inline;float:right;" pageSizes="10,25,50,100" />
+					</h:panelGroup>
+				</div>
+			</div>
+		</e5ui:formPart>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+			<f:facet name="timeoutPanel">
+				<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+					Пожалуйста, подождите...</div>
+			</f:facet>
+		</e5ui-comp:splashScreen>
+		<script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+		<h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="tablePager.css" />
+	</ui:define>
+	
+</ui:composition>
+
+</html>

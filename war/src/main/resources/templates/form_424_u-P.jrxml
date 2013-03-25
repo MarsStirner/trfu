@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 424_у-П" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.6105100000000039"/>
+	<property name="ireport.x" value="67"/>
+	<property name="ireport.y" value="166"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 1"/>
+	<parameter name="CreateDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("dd.MM.yyyy ")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Institution" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="Division" class="java.lang.String"/>
+	<parameter name="HeadDoctor" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     sum(trfu_blood_components.`volume`) AS sum_all,
+     sum(CASE WHEN (trfu_blood_components.`bloodGroup_id` = 1 AND trfu_blood_components.`rhesusFactor_id` = 3) THEN trfu_blood_components.`volume` ELSE NULL END) AS sum_1_pos,
+     sum(CASE WHEN (trfu_blood_components.`bloodGroup_id` = 1 AND trfu_blood_components.`rhesusFactor_id` = 4) THEN trfu_blood_components.`volume` ELSE NULL END) AS sum_1_neg,
+     sum(CASE WHEN (trfu_blood_components.`bloodGroup_id` = 2 AND trfu_blood_components.`rhesusFactor_id` = 3) THEN trfu_blood_components.`volume` ELSE NULL END) AS sum_2_pos,
+     sum(CASE WHEN (trfu_blood_components.`bloodGroup_id` = 2 AND trfu_blood_components.`rhesusFactor_id` = 4) THEN trfu_blood_components.`volume` ELSE NULL END) AS sum_2_neg,
+     sum(CASE WHEN (trfu_blood_components.`bloodGroup_id` = 3 AND trfu_blood_components.`rhesusFactor_id` = 3) THEN trfu_blood_components.`volume` ELSE NULL END) AS sum_3_pos,
+     sum(CASE WHEN (trfu_blood_components.`bloodGroup_id` = 3 AND trfu_blood_components.`rhesusFactor_id` = 4) THEN trfu_blood_components.`volume` ELSE NULL END) AS sum_3_neg,
+    sum(CASE WHEN (trfu_blood_components.`bloodGroup_id` = 4 AND trfu_blood_components.`rhesusFactor_id` = 3) THEN trfu_blood_components.`volume` ELSE NULL END) AS sum_4_pos,
+    sum(CASE WHEN (trfu_blood_components.`bloodGroup_id` = 4 AND trfu_blood_components.`rhesusFactor_id` = 4) THEN trfu_blood_components.`volume` ELSE NULL END) AS sum_4_neg,
+     trfu_blood_component_types.`value` AS trfu_blood_component_types_value,
+     trfu_blood_components.`volume` AS trfu_blood_components_volume,
+     trfu_blood_component_types.`id` AS trfu_blood_component_types_id
+FROM
+     `trfu_blood_component_types` trfu_blood_component_types INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
+WHERE
+     trfu_blood_components.`status_id` = 3
+ AND trfu_blood_components.`deleted` = 0
+ AND trfu_blood_components.`rhesusFactor_id` <> 5
+ AND trfu_blood_components.`bloodGroup_id` <> 5
+and trfu_blood_components.`expirationDate` > date($P{CreateDate})
+GROUP BY
+     trfu_blood_component_types.`id`
+ORDER BY
+     trfu_blood_components.`productionDate` ASC]]>
+	</queryString>
+	<field name="sum_all" class="java.math.BigDecimal"/>
+	<field name="sum_1_pos" class="java.math.BigDecimal"/>
+	<field name="sum_1_neg" class="java.math.BigDecimal"/>
+	<field name="sum_2_pos" class="java.math.BigDecimal"/>
+	<field name="sum_2_neg" class="java.math.BigDecimal"/>
+	<field name="sum_3_pos" class="java.math.BigDecimal"/>
+	<field name="sum_3_neg" class="java.math.BigDecimal"/>
+	<field name="sum_4_pos" class="java.math.BigDecimal"/>
+	<field name="sum_4_neg" class="java.math.BigDecimal"/>
+	<field name="trfu_blood_component_types_value" class="java.lang.String"/>
+	<field name="trfu_blood_components_volume" class="java.lang.Integer"/>
+	<field name="trfu_blood_component_types_id" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="67" splitType="Stretch">
+			<staticText>
+				<reportElement x="252" y="39" width="222" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[СВОДКА О НАЛИЧИИ КОМПОНЕНТОВ КРОВИ на     ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="716" y="0" width="86" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Форма 424/у-П]]></text>
+			</staticText>
+			<textField pattern="dd.MM.yyyy">
+				<reportElement x="474" y="39" width="100" height="20"/>
+				<box leftPadding="6"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="90" y="15" width="622" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Division}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="90" y="0" width="622" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TD" x="0" y="0" width="300" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Наименование]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="300" y="0" width="40" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Ед.
+изм.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="340" y="0" width="62" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Всего]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="402" y="0" width="100" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[0(I)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="402" y="15" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[RH+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="452" y="15" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[RH-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="552" y="15" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[RH-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="502" y="15" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[RH+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="502" y="0" width="100" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[A(II)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="652" y="15" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[RH-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="602" y="15" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[RH+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="602" y="0" width="100" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[B(III)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="752" y="15" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[RH-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="702" y="15" width="50" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[RH+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="702" y="0" width="100" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[AB(IV)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="0" y="0" width="300" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_blood_component_types_value}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="402" y="0" width="50" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_1_pos}==null?"0":$F{sum_1_pos}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="340" y="0" width="62" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_all}==null?"0":$F{sum_all}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="452" y="0" width="50" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_1_neg}==null?"0":$F{sum_1_neg}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="502" y="0" width="50" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_2_pos}==null?"0":$F{sum_2_pos}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="552" y="0" width="50" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_2_neg}==null?"0":$F{sum_2_neg}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="602" y="0" width="50" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_3_pos}==null?"0":$F{sum_3_pos}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="652" y="0" width="50" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_3_neg}==null?"0":$F{sum_3_neg}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="702" y="0" width="50" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_4_pos}==null?"0":$F{sum_4_pos}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="752" y="0" width="50" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_4_neg}==null?"0":$F{sum_4_neg}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="300" y="0" width="40" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[л]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="123" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="10" width="81" height="43"/>
+				<textElement>
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[дата и время
+формирования
+отчета:
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="247" y="9" width="242" height="61"/>
+				<textElement>
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[Внимание!!!
+Продукты с неопределенной группой крови или
+резус-принадлежностью в данный отчет НЕ ВКЛЮЧАЮТСЯ !!!
+]]></text>
+			</staticText>
+			<textField pattern="dd.MM.yyyy">
+				<reportElement x="0" y="53" width="103" height="18"/>
+				<textElement>
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="247" y="102" width="316" height="21"/>
+				<textElement>
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[Сформировал ____________________________________]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="247" y="81" width="316" height="21"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Главный врач " + $P{HeadDoctor}+" _________________________"]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

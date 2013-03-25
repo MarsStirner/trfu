@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 410_у-П1" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.4641000000000162"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="StartDate" class="java.util.Date"/>
+	<parameter name="EndDate" class="java.util.Date"/>
+	<parameter name="Institution" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="Division" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+     IF(trfu_donors.`middleName` IS NULL OR trfu_donors.`middleName`='','НЕ ЗАПОЛНЕНО!',trfu_donors.`middleName`) AS trfu_donors_middleName,
+     IF(trfu_donors.`firstName` IS NULL OR trfu_donors.`firstName`='','НЕ ЗАПОЛНЕНО!',trfu_donors.`firstName`) AS trfu_donors_firstName,
+     IF(trfu_donors.`lastName` IS NULL OR trfu_donors.`lastName`='','НЕ ЗАПОЛНЕНО!',trfu_donors.`lastName`) AS trfu_donors_lastName,
+     trfu_blood_donation_requests.`factDate` AS trfu_blood_donation_requests_factDate,
+     person.`lastName` AS person_lastName,
+     person_A.`lastName` AS person_A_lastName,
+     person_B.`lastName` AS person_B_lastName,
+     trfu_blood_donation_requests.`created` AS trfu_blood_donation_requests_created,
+     trfu_blood_donation_types.`value` AS trfu_blood_donation_types_value,
+     trfu_blood_donation_requests.`number` AS trfu_blood_donation_requests_number,
+     trfu_donors.`id` AS trfu_donors_id,
+     trfu_donor_types.`value` AS trfu_donor_types_value
+FROM
+     `trfu_donors` trfu_donors RIGHT OUTER JOIN `trfu_blood_donation_requests` trfu_blood_donation_requests ON trfu_donors.`id` = trfu_blood_donation_requests.`donor_id`
+     LEFT OUTER JOIN `trfu_blood_donation_request_fact_entries` trfu_blood_donation_request_fact_entries ON trfu_blood_donation_requests.`id` = trfu_blood_donation_request_fact_entries.`donation_id`
+     LEFT OUTER JOIN `person` person ON trfu_blood_donation_requests.`therapist_id` = person.`id`
+     LEFT OUTER JOIN `person` person_B ON trfu_blood_donation_requests.`transfusiologist_id` = person_B.`id`
+     LEFT OUTER JOIN `person` person_A ON trfu_blood_donation_requests.`staffNurse_id` = person_A.`id`
+     LEFT OUTER JOIN `trfu_blood_donation_entries` trfu_blood_donation_entries ON trfu_blood_donation_request_fact_entries.`entry_id` = trfu_blood_donation_entries.`id`
+     LEFT OUTER JOIN `trfu_blood_donation_types` trfu_blood_donation_types ON trfu_blood_donation_entries.`donationType_id` = trfu_blood_donation_types.`id`
+     INNER JOIN `trfu_donor_types` trfu_donor_types ON trfu_donors.`donorType_id` = trfu_donor_types.`id`
+WHERE
+     DATE(trfu_blood_donation_requests.`created`) >= DATE($P{StartDate})
+ AND DATE(trfu_blood_donation_requests.`created`) <= DATE($P{EndDate})
+ AND ((trfu_donors.`middleName` IS NULL OR trfu_donors.`middleName`='')
+ OR (trfu_donors.`firstName` IS NULL OR trfu_donors.`firstName`='')
+ OR (trfu_donors.`lastName` IS NULL OR trfu_donors.`lastName`='')
+ OR (trfu_donor_types.`value` IS NULL)
+ OR (person.`lastName`IS NULL)
+ OR (person_A.`lastName`IS NULL)
+ OR (person_B.`lastName`IS NULL))
+and trfu_blood_donation_requests.`deleted` = 0
+ORDER BY
+     trfu_donors.`lastName` ASC]]>
+	</queryString>
+	<field name="trfu_donors_middleName" class="java.lang.String"/>
+	<field name="trfu_donors_firstName" class="java.lang.String"/>
+	<field name="trfu_donors_lastName" class="java.lang.String"/>
+	<field name="trfu_blood_donation_requests_factDate" class="java.sql.Timestamp"/>
+	<field name="person_lastName" class="java.lang.String"/>
+	<field name="person_A_lastName" class="java.lang.String"/>
+	<field name="person_B_lastName" class="java.lang.String"/>
+	<field name="trfu_blood_donation_requests_created" class="java.sql.Timestamp"/>
+	<field name="trfu_blood_donation_types_value" class="java.lang.String"/>
+	<field name="trfu_blood_donation_requests_number" class="java.lang.String"/>
+	<field name="trfu_donors_id" class="java.lang.Integer"/>
+	<field name="trfu_donor_types_value" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="64" splitType="Stretch">
+			<textField pattern="dd.MM.yyyy">
+				<reportElement positionType="Float" x="280" y="34" width="242" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Перечень незаполненных полей, обращения на донацию за период с "+new SimpleDateFormat("dd.MM.yyyy").format($P{StartDate})+" по "+new SimpleDateFormat("dd.MM.yyyy").format($P{EndDate})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="15" width="802" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Division}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="0" width="802" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TD" x="0" y="0" width="52" height="35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Номер донации]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="352" y="0" width="105" height="35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Первичный осмотр]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="272" y="0" width="80" height="35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Дата/время регистрации]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="52" y="0" width="146" height="35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[ФИО донора]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="198" y="0" width="74" height="35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Тип донора]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="457" y="0" width="92" height="35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Операционная]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="549" y="0" width="88" height="35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Врач-трансфузиолог]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="637" y="0" width="87" height="35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Вид донорства (фактический)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="724" y="0" width="78" height="35"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Фактическая дата/время донации]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="52" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_blood_donation_requests_number}]]></textFieldExpression>
+			</textField>
+			<elementGroup/>
+			<textField isBlankWhenNull="false">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="198" y="0" width="74" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_donor_types_value}==null?"НЕ ЗАПОЛНЕНО!":$F{trfu_donor_types_value}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="52" y="0" width="146" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{trfu_donors_lastName}+" "+$F{trfu_donors_firstName}+" "+$F{trfu_donors_middleName}).replace("НЕ ЗАПОЛНЕНО! НЕ ЗАПОЛНЕНО! НЕ ЗАПОЛНЕНО!","НЕ ЗАПОЛНЕНО!")]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd.MM.yyyy HH:mm" isBlankWhenNull="false">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="272" y="0" width="80" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_blood_donation_requests_created}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="false">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="352" y="0" width="105" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{person_lastName}==null?"НЕ ЗАПОЛНЕНО!":""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="457" y="0" width="92" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{person_A_lastName}==null?"НЕ ЗАПОЛНЕНО!":""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="549" y="0" width="88" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{person_B_lastName}==null?"НЕ ЗАПОЛНЕНО!":""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="637" y="0" width="87" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_blood_donation_types_value}==null?"НЕ ЗАПОЛНЕНО!":""]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd.MM.yyyy" isBlankWhenNull="false">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="724" y="0" width="78" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_blood_donation_requests_factDate}==null?"НЕ ЗАПОЛНЕНО!":""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

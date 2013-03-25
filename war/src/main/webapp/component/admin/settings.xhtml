@@ -1,0 +1,723 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
+		<h:outputScript>
+        	jQuery(document).ready(function() {
+        		update_content();
+ 			});
+        </h:outputScript>
+        <h:outputScript>
+        	var resizeTimer = null;
+			jQuery(window).bind('resize', function() {
+    			if (resizeTimer) clearTimeout(resizeTimer);
+    			resizeTimer = setTimeout(update_content, 100);
+			});
+        </h:outputScript>
+        <h:outputScript>
+        	function update_content() {
+    			var height = document.body.clientHeight - jQuery("#view_header").height() - jQuery("#footer").height() - jQuery("#searchbar").height() - jQuery("#table_paging").height()-26;
+    			jQuery("#table_wrap").height(height);
+    			jQuery("#table_inner").height(height);
+    			jQuery("#main_edit_form").height(height);
+    			jQuery("#split").height(document.body.clientHeight);
+    			jQuery(".e5ui-menu").height(document.body.clientHeight-30);
+    			
+    			var tablewidth = $("#main_table").width();
+                jQuery("#table_wrap").width(tablewidth-326);
+			};
+        </h:outputScript>
+	</ui:define>
+	
+	<ui:define name="header">
+		<div id="view_header">
+			<div id="header">
+				<div class="menu">
+					<e5ui:formPart id="header_title">
+						<div id="viewtitle">Классификаторы: <h:outputText value="#{requests_personal.filterName}"/></div>
+					</e5ui:formPart>
+					<div class="role">
+						<div class="top">
+							<h:commandLink styleClass="top_link" onclick="return false;">
+		                   		<span>
+									<h:outputText value="#{sessionManagement.currentRole}" converter="RoleConverter" />
+								</span>
+							</h:commandLink>
+							<div class="sub">
+								<ui:repeat value="#{sessionManagement.availableRoles}" var="element">
+									<div class="item">
+										<h:commandLink action="#{sessionManagement.setCurrentRole(element)}">
+											<h:outputText value="#{element}" converter="RoleConverter" />
+										</h:commandLink>
+									</div>
+								</ui:repeat>
+							</div>
+						</div>
+					</div>
+					<div class="username">
+						<div class="top">
+		                   	<h:commandLink styleClass="top_link" onclick="return false;">
+		                   		<span>
+									<h:outputText value="#{sessionManagement.loggedUser.description}" />
+								</span>
+							</h:commandLink>
+							<div class="sub">
+					        	<div class="item">
+					        		<h:commandLink action="#{sessionManagement.logOut}">
+								        Выход
+							        </h:commandLink>
+					        	</div>
+					        </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="actionbar">
+				<div class="menu">
+					<div class="defbutton">
+						<h:commandLink action="#{settings.refresh()}">
+							<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+			            	Обновить
+			            	<e5ui:formPartTarget formPart="main_table_part"/>
+			           	</h:commandLink>
+					</div>
+				</div>
+				<e5ui:formPart id="tab_selector">
+					<div class="view_header_tab">
+						<h:commandLink action="#{settings.doFilterAnalysisType()}" styleClass="#{settings.filterAnalysisType?'selected_tab' :''}">
+					        <e5ui:formPartTarget formPart="main_table_part header_title tab_selector" />
+					        <span><span>Типы анализов</span></span>
+					    </h:commandLink>
+					    
+						<h:commandLink action="#{settings.doFilterBloodGroup()}" styleClass="#{settings.filterBloodGroup?'selected_tab' :''}">
+							<e5ui:formPartTarget formPart="main_table_part header_title tab_selector" />
+					        <span><span>Группы крови</span></span>
+					    </h:commandLink>
+					    
+					    <h:commandLink action="#{settings.doFilterExaminationEntryType()}" styleClass="#{settings.filterExaminationEntryType?'selected_tab' :''}">
+							<e5ui:formPartTarget formPart="main_table_part header_title tab_selector" />
+					        <span><span>Осмотр</span></span>
+					    </h:commandLink>
+					    
+						<h:commandLink action="#{settings.doFilterBloodComponentType()}" styleClass="#{settings.filterBloodComponentType?'selected_tab' :''}">
+							<e5ui:formPartTarget formPart="main_table_part header_title tab_selector" />
+					        <span><span>Типы КК</span></span>
+					    </h:commandLink>
+					    
+						<h:commandLink action="#{settings.doFilterBloodDonationType()}" styleClass="#{settings.filterBloodDonationType?'selected_tab' :''}">
+							<e5ui:formPartTarget formPart="main_table_part header_title tab_selector" />
+					        <span><span>Типы донации</span></span>
+					    </h:commandLink>
+					    
+						<h:commandLink action="#{settings.doFilterDonorRejectionType()}" styleClass="#{settings.filterDonorRejectionType?'selected_tab' :''}">
+							<e5ui:formPartTarget formPart="main_table_part header_title tab_selector" />
+					        <span><span>Типы отводов</span></span>
+					    </h:commandLink>
+					    
+						<h:commandLink action="#{settings.doFilterClassifier()}" styleClass="#{settings.filterClassifier?'selected_tab' :''}">
+							<e5ui:formPartTarget formPart="main_table_part header_title tab_selector" />
+					        <span><span>Классификаторы</span></span>
+					    </h:commandLink>
+					    
+					    <h:commandLink action="#{settings.doFilterQualityControl()}" styleClass="#{settings.filterQualityControl?'selected_tab' :''}">
+							<e5ui:formPartTarget formPart="main_table_part header_title tab_selector" />
+					        <span><span>Контроль качества</span></span>
+					    </h:commandLink>
+					    
+					</div>
+				</e5ui:formPart>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="content">
+        <e5ui:formPart id="main_table_part">
+			<div id="main_table">
+				<h:panelGroup rendered="#{settings.filterClassifier}">
+					<div id="searchbar" class="main_searchbar">
+						<h:inputText id="filter_string" value="#{settings.filter}" style="display:block; float:left; width:60%; margin:2px 10px;" title="Поиск" />
+						<h:commandButton value=" " action="#{settings.changePageOffset(0)}" styleClass="searchbutton">
+							<f:ajax execute=":main_content_form:filter_string" render=":main_content_form:settings_tbl" />
+						</h:commandButton>
+					</div>
+				</h:panelGroup>
+				<div class="wrap_main" id="table_wrap">
+					<div class="inner" id="table_inner">
+						<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" value="#{settings.documents}" id="settings_tbl" var="row" grouping="false">
+							<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');" styleClass="#{settings.selected(row)? 'grid_row_selected': ''}" />
+							
+							<e5ui:column rendered="#{settings.filterAnalysisType}" style="min-width:5em;">
+								<f:facet name="header">
+				                    <p>Категория</p>
+				                </f:facet>
+								<h:outputText value="#{(settings.filterAnalysisType)? row.category: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column style="min-width:12em;">
+								<f:facet name="header">
+			                        <p>Значение</p>
+			                    </f:facet>
+								<h:outputText value="#{row.value}" /> 
+								<h:commandLink id="selectLink" style="display: none;" rendered="#{not settings.selected(row)}" action="#{settings.select(row)}"/>
+							</e5ui:column>
+
+							<e5ui:column rendered="#{settings.filterAnalysisType or settings.filterExaminationEntryType}" style="min-width:5em;">
+								<f:facet name="header">
+			                        <p>Тип поля</p>
+			                    </f:facet>
+								<h:outputText value="#{(settings.filterAnalysisType or settings.filterExaminationEntryType)? row.fieldType: ''}" converter="FieldTypeConverter" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterBloodGroup}"  style="min-width:7em;">
+								<f:facet name="header">
+			                        <p>Номер</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterBloodGroup? row.number: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterExaminationEntryType}" style="min-width:7em;">
+								<f:facet name="header">
+									<h:commandLink action="#{settings.sort('level')}">
+			                        	Уровень
+			                        	<f:ajax render="settings_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterExaminationEntryType? row.level: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterExaminationEntryType}"  style="min-width:5em;">
+								<f:facet name="header">
+			                        <p>Редакт.</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterExaminationEntryType? (row.writable? 'Нет': 'Да'): ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterExaminationEntryType}"  style="min-width:10em;">
+								<f:facet name="header">
+			                        <p>Значение по умолчанию</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterExaminationEntryType? row.defaultValue: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterExaminationEntryType}"  style="min-width:10em;">
+								<f:facet name="header">
+			                        <p>Категория</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterExaminationEntryType? row.parentEntry: ''}" converter="ExaminationEntryTypeConverter" />
+							</e5ui:column>
+						
+							<e5ui:column rendered="#{settings.filterBloodComponentType}"  style="min-width:12em;">
+								<f:facet name="header">
+			                        <p>Легковесный компонент</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterBloodComponentType? row.lite: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterBloodComponentType}"  style="min-width:10em;">
+								<f:facet name="header">
+			                        <p>Используется</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterBloodComponentType? row.used: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterBloodComponentType}"  style="min-width:9em;">
+								<f:facet name="header">
+			                        <p>Код компонента</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterBloodComponentType? row.code: ''}" />
+							</e5ui:column>
+
+							<e5ui:column rendered="#{settings.filterDonorRejectionType}"  style="min-width:10em;">
+								<f:facet name="header">
+			                        <p>Категория отвода</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterDonorRejectionType? row.category: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterDonorRejectionType}"  style="min-width:10em;">
+								<f:facet name="header">
+			                        <p>Тип отвода</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterDonorRejectionType? row.type: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterDonorRejectionType}"  style="min-width:8em;">
+								<f:facet name="header">
+			                        <p>Код отвода</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterDonorRejectionType? row.code: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterDonorRejectionType}"  style="min-width:8em;">
+								<f:facet name="header">
+			                        <p>Отвод на (дни)</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterDonorRejectionType? row.days: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterDonorRejectionType}" style="min-width:8em;">
+								<f:facet name="header">
+			                        <p>Отвод на (месяцы)</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterDonorRejectionType? row.months: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column  rendered="#{settings.filterDonorRejectionType}"  style="min-width:8em;">
+								<f:facet name="header">
+			                        <p>Отвод на (года)</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterDonorRejectionType? row.years: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterDonorRejectionType}"  style="min-width:12em;">
+								<f:facet name="header">
+			                        <p>Комментарии к отводу</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterDonorRejectionType? row.commentary: ''}" />
+							</e5ui:column>
+						
+							<e5ui:column  rendered="#{settings.filterClassifier}"  style="min-width:12em;">
+								<f:facet name="header">
+			                        <p>Категория классификатора</p>
+			                    </f:facet>
+								<h:outputText value="#{settings.filterClassifier? row.category: ''}" />
+							</e5ui:column>
+							
+							<e5ui:column rendered="#{settings.filterQualityControl}" style="min-width:10em;">
+								<f:facet name="header">
+			                        <p>Типы компонентов</p>
+			                    </f:facet>
+			                    <ui:repeat value="#{settings.filterQualityControl? row.componentTypes: null}" var="element">
+                                	<div><h:outputText value="#{element}" converter="BloodComponentTypeConverter" /></div>
+                                </ui:repeat>
+							</e5ui:column>
+							<e5ui:column rendered="#{settings.filterQualityControl}" style="min-width:14em;">
+								<f:facet name="header">
+			                        <p>Типы показателей контроля качества</p>
+			                    </f:facet>
+			                    <ui:repeat value="#{settings.filterQualityControl? row.analysisTypes: null}" var="element">
+                                	<div><h:outputText value="#{element}" converter="AnalysisTypeConverter" /></div>
+                                </ui:repeat>
+							</e5ui:column>
+							
+						</e5ui:dataTable>
+					</div>
+				</div>
+				
+				
+				 <div id= "main_edit_form">
+						<div id= "edit_form_buttons">
+
+					  		<div class="defbutton">
+								<h:commandLink action="#{settings.newDocument}">
+									<h:graphicImage value="#{resource['images:newf_buttn_icon.png']}" />
+	            					Новый
+								</h:commandLink>
+							</div>
+					  		<div class="defbutton">
+								<h:commandLink action="#{settings.saveNewDocument}">
+									<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+									Сохранить
+								</h:commandLink>
+							</div>
+							<div class="defbutton">
+								<h:commandLink action="#{settings.newDelete}">
+									<h:graphicImage value="#{resource['images:dell_buttn.png']}" />
+									Удалить
+								</h:commandLink>
+							</div>
+						</div>
+						
+						<h:panelGroup id="analysis_type_form" rendered="#{settings.filterAnalysisType}">
+                            <table>
+                                <tr>
+								    <td>Значение:</td>
+                                    <td><h:inputText size="25" value="#{settings.document.value}" /></td>
+							    </tr>
+							    <tr>
+								    <td>Категория: </td>
+                                    <td><h:inputText size="25" value="#{settings.filterAnalysisType? settings.document.category: ''}" /></td>
+							    </tr>
+							    <tr>
+								    <td>Тип поля: </td>
+                                    <td>
+                                    	<h:selectOneMenu value="#{settings.filterAnalysisType? settings.document.fieldType: ''}">
+											<f:selectItem itemLabel="Text" itemValue="0" />
+											<f:selectItem itemLabel="Textarea" itemValue="1" />
+											<f:selectItem itemLabel="Drop-down list" itemValue="3" />
+											<f:selectItem itemLabel="Radio button" itemValue="4" />
+										</h:selectOneMenu>
+                                    </td>
+							    </tr>
+							    <tr>
+                                    <td colspan="2">
+								        <h:selectBooleanCheckbox value="#{settings.filterAnalysisType? settings.document.laboratoryTest: ''}" />
+								        <h:outputText value="Внешнее исследование" />
+                                    </td>
+							    </tr>
+                            </table>
+
+							<fieldset>
+								<legend>
+									<label><span class="title">Внешние исследования</span></label>
+								</legend>
+								<div class="actionbar">
+									<div class="menu">
+										<div class="defbutton">
+											<h:commandLink action="#{settings.document.addIndicator()}">
+												<h:graphicImage value="#{resource['images:plus.png']}" />
+												<f:ajax render=":main_content_form:analysis_type_form" execute=":main_content_form:analysis_type_form" />
+												Добавить
+											</h:commandLink>
+										</div>
+									</div>
+								</div>
+								<div class="wrap" style="height:300px;">
+									<div class="inner" style="height:300px;">
+										<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" width="100%" id="indicators"
+													value="#{settings.filterAnalysisType? settings.document.indicators: null}" var="row" grouping="false">
+											<e5ui:column>
+												<f:facet name="header">
+													<p>Код</p>
+												</f:facet>
+												<h:inputText value="#{row.code}" size="3" />
+											</e5ui:column>
+											<e5ui:column>
+												<f:facet name="header">
+													<p>Наименование</p>
+												</f:facet>
+												<h:inputText value="#{row.name}" />
+											</e5ui:column>
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>CN</p>
+                                                </f:facet>
+                                                <h:commandLink action="#{settings.initConverterNameSelect(row)}">
+                                                    ...
+                                                </h:commandLink>
+                                            </e5ui:column>
+										</e5ui:dataTable>
+									</div>
+								</div>
+							</fieldset>
+							
+							<e5ui-comp:modalWindow id="converterNameSelector" modalWindowHolder="#{settings.converterNameSelect}"
+                                               render=":main_content_form:indicators" execute="selectedConverterName"
+                                               style="min-width:400px;" showButtons="false" widgetVar="converterNameSelector">
+                            <div id="title">Выбор конвертера</div>
+                            <div id="modal_container" style="margin-top: 0;">
+                                <div class="wrap" style="height:300px;">
+                                    <div class="inner" style="height:300px;">
+                                        <e5ui:dataTable id="selectedConverterName" border="0" cellpadding="0" cellspacing="0" width="100%"
+                                                        value="#{settings.converterNameSelect.allNames}" var="row" grouping="false">
+                                            <e5ui:row onclick="e5ui_util.clickElement(this, 'converter_selectLink$');"
+                                                      styleClass="#{settings.converterNameSelect.selected(row)? 'grid_row_selected': ''}" />
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>Название конвертера</p>
+                                                </f:facet>
+                                                <h:outputText value="#{row}" />
+                                                <h:commandLink id="converter_selectLink" style="display: none;"
+                                                               rendered="#{not settings.converterNameSelect.selected(row)}"
+                                                               action="#{settings.converterNameSelect.setSelected(row)}" />
+                                            </e5ui:column>
+                                        </e5ui:dataTable>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="e5ui-modal-bottombuttons">
+                                <h:button onclick="converterNameSelector.clickSave(); return false;" value="Выбрать2"/>
+                                <h:button onclick="converterNameSelector.clickClose(); return false;" value="Закрыть"/>
+                            </div>
+                        </e5ui-comp:modalWindow>
+							
+						</h:panelGroup>
+						
+						<h:panelGroup rendered="#{settings.filterBloodDonationType}">
+							<div>
+								Значение: <h:inputText size="25" value="#{settings.document.value}" />
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup rendered="#{settings.filterBloodGroup}">
+						<div>
+							Значение: <h:inputText size="25" value="#{settings.document.value}" />
+						</div>
+							<div>
+								Код: <h:inputText size="5" value="#{settings.filterBloodGroup? settings.document.number: ''}" />
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup rendered="#{settings.filterExaminationEntryType}">
+						<div>
+							Значение: <h:inputText size="25" value="#{settings.document.value}" />
+						</div>
+							<div>
+								Тип поля:
+								<h:selectOneMenu value="#{settings.filterExaminationEntryType? settings.document.fieldType: ''}">
+									<f:selectItem itemLabel="Text" itemValue="0" />
+									<f:selectItem itemLabel="Textarea" itemValue="1" />
+									<f:selectItem itemLabel="Drop-down list" itemValue="3" />
+									<f:selectItem itemLabel="Radio button" itemValue="4" />
+								</h:selectOneMenu>
+							</div>
+							<div>
+								Уровень: <h:inputText size="26" value="#{settings.filterExaminationEntryType? settings.document.level: ''}" />
+							</div>
+							<div>
+								Значение по умолчанию: <h:inputText  size="18" value="#{settings.filterExaminationEntryType? settings.document.defaultValue: ''}" /> 
+							</div>
+							<div>
+								Категория:
+								<h:selectOneMenu value="#{settings.document.parentEntry}" converter="ExaminationEntryTypeConverter">
+									<f:selectItems value="#{dictionaryManagement.examinationEntryTypesWithEmpty}" />
+								</h:selectOneMenu> 
+							</div>						
+							<div>
+								Разрешено редактировать: 
+								<h:selectOneRadio layout="lineDirection" value="#{settings.filterExaminationEntryType? settings.document.writable: ''}">
+									<f:selectItem itemLabel="Нет" itemValue="false" />
+									<f:selectItem itemLabel="Да" itemValue="true" />
+								</h:selectOneRadio>
+							</div>
+						</h:panelGroup>
+					
+						<h:panelGroup rendered="#{settings.filterBloodComponentType}">
+						<div>
+							Значение: <h:inputText size="25" value="#{settings.document.value}" />
+						</div>
+							<div>
+								Код компонента: <h:inputText size="20" value="#{settings.filterBloodComponentType? settings.document.code: ''}" />
+							</div>
+							<div>
+								<h:selectBooleanCheckbox value="#{settings.filterBloodComponentType? settings.document.lite: ''}" />
+								<h:outputText value="Легковесный компонент" />
+							</div>
+							<div>
+								<h:selectBooleanCheckbox value="#{settings.filterBloodComponentType? settings.document.used: ''}" />
+								<h:outputText value="Используется" />
+							</div>
+						</h:panelGroup>
+
+						<h:panelGroup rendered="#{settings.filterDonorRejectionType}">
+						<div>
+							Значение: <h:inputText size="25" value="#{settings.document.value}" />
+						</div>
+							<div>
+								Код компонента: <h:inputText size="20" value="#{settings.filterDonorRejectionType? settings.document.code: ''}" />
+							</div>
+							<div>
+								Категория отвода: <h:inputText size="19" value="#{settings.filterDonorRejectionType? settings.document.category: ''}" />
+							</div>
+							<div>
+								Тип отвода: <h:inputText size="5" value="#{settings.filterDonorRejectionType? settings.document.type: ''}" />
+							</div>
+							<div>
+								Комментарии к отводу: <h:inputText size="16" value="#{settings.filterDonorRejectionType? settings.document.commentary: ''}" />
+							</div>
+							<div>
+								Отвод на (дни): <h:inputText size="6" value="#{settings.filterDonorRejectionType? settings.document.days: ''}" />
+							</div>
+							<div>
+								Отвод на (месяца)т: <h:inputText size="2" value="#{settings.filterDonorRejectionType? settings.document.months: ''}" />
+							</div>
+							<div>
+								Отвод на (года): <h:inputText size="6" value="#{settings.filterDonorRejectionType? settings.document.years: ''}" />
+							</div>
+						</h:panelGroup>
+
+
+						<h:panelGroup rendered="#{settings.filterClassifier}">
+						<div>
+							Значение: <h:inputText size="25" value="#{settings.document.value}" />
+						</div>
+							<div>
+								<h:outputLink title="Категория классификатора:" onclick="classifierCategorySelect.clickOpen('classifierCategorySelect'); return false;">
+									Категория классификатора:
+								</h:outputLink>
+								<h:inputText size="17" id="classifier_category" value="#{settings.filterClassifier? settings.document.category: ''}" />
+
+                                <e5ui-comp:modalWindow id="classifierCategorySelect" modalWindowHolder="#{settings.classifierCategorySelect}"
+											render=":main_content_form:classifier_category" execute="select_table" showButtons="false"
+											style="width:400px;" widgetVar="classifierCategorySelect">
+									<div id="title">Выбор категории классификатора</div>
+									<div id="modal_container" style="margin-top: 0;">
+										<div class="wrap" style="height:300px;">
+											<div class="inner" style="height:300px;">
+												<e5ui:dataTable id="select_table" border="0" cellpadding="0" cellspacing="0" width="100%"
+															value="#{settings.classifierCategorySelect.categories}" var="row" grouping="false">
+													<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																styleClass="#{settings.classifierCategorySelect.selected(row)? 'grid_row_selected': ''}" />
+													<e5ui:column>
+														<f:facet name="header">
+															<p>Категория</p>
+														</f:facet>
+														<h:outputText value="#{row}" />
+														<h:commandLink id="selectLink" style="display: none;"
+																	rendered="#{not settings.classifierCategorySelect.selected(row)}"
+																	action="#{settings.classifierCategorySelect.select(row)}" />
+													</e5ui:column>
+												</e5ui:dataTable>
+											</div>
+										</div>
+									</div>
+									<div class="e5ui-modal-bottombuttons">
+										<h:button onclick="classifierCategorySelect.clickSave(); return false;" value="Выбрать" />
+										<h:button onclick="classifierCategorySelect.clickClose(); return false;" value="Отмена" />
+									</div>
+								</e5ui-comp:modalWindow>
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup rendered="#{settings.filterQualityControl}">
+						<div>
+							Значение: <h:inputText size="25" value="#{settings.document.value}" />
+						</div>
+							<div>
+								<h:outputLink title="Типы компонентов:" onclick="componentTypeSelect.clickOpen('componentTypeSelect'); return false;">
+									Типы компонентов:
+								</h:outputLink>
+								<div>
+									<h:panelGroup id="component_types">
+										<ui:repeat value="#{settings.filterQualityControl? settings.document.componentTypes: null}" var="element">
+											<h:outputText value="#{element}" converter="BloodComponentTypeConverter" /><br />
+										</ui:repeat>
+									</h:panelGroup>
+								</div>
+								<e5ui-comp:modalWindow id="componentTypeSelect" modalWindowHolder="#{settings.componentTypeSelect}"
+											render=":main_content_form:component_types" execute="select_table" showButtons="false"
+											style="width:500px;" widgetVar="componentTypeSelect">
+									<div id="title">Выбор типов компонентов крови</div>
+									<div id="modal_container" style="margin-top: 0;">
+										<div class="searchbar">
+											<h:inputText id="filter_string" value="#{settings.componentTypeSelect.filter}" 
+														style="display:block; float:left; margin-right:10px;" title="Поиск" />
+											<h:commandButton value=" " action="#{settings.componentTypeSelect.search()}"
+														styleClass="searchbutton">
+												<f:ajax execute=":main_content_form:componentTypeSelect:filter_string"
+															render=":main_content_form:componentTypeSelect:ajaxModal" />
+											</h:commandButton>
+										</div>
+										<div class="wrap" style="height:300px;">
+											<div class="inner" style="height:300px;">
+												<e5ui:dataTable id="select_table" border="0" cellpadding="0" cellspacing="0" width="100%"
+															value="#{settings.componentTypeSelect.availableBloodComponentTypeList}" var="row" grouping="false">
+													<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																styleClass="#{settings.componentTypeSelect.selected(row)? 'grid_row_selected': ''}" />
+													<e5ui:column>
+														<f:facet name="header">
+															<p>Тип компонента крови</p>
+														</f:facet>
+														<h:outputText value="#{row}" converter="BloodComponentTypeConverter" />
+														<h:commandLink id="selectLink" style="display: none;"
+																	rendered="#{not settings.componentTypeSelect.selected(row)}"
+																	action="#{settings.componentTypeSelect.select(row)}" />
+														<h:commandLink id="unselectLink" style="display: none;"
+																	rendered="#{settings.componentTypeSelect.selected(row)}"
+																	action="#{settings.componentTypeSelect.unselect(row)}" />
+													</e5ui:column>
+												</e5ui:dataTable>
+											</div>
+										</div>
+									</div>
+									<div class="e5ui-modal-bottombuttons">
+										<h:button onclick="componentTypeSelect.clickSave(); return false;" value="Выбрать" />
+										<h:button onclick="componentTypeSelect.clickClose(); return false;" value="Отмена" />
+									</div>
+								</e5ui-comp:modalWindow>
+							</div>
+							
+							<div>
+								<h:outputLink title="Типы показателей качества" onclick="analysisTypeSelect.clickOpen('analysisTypeSelect'); return false;">
+									Типы показателей качества:
+								</h:outputLink>
+								<h:panelGroup id="analysis_types">
+									<div>
+										<ui:repeat value="#{settings.filterQualityControl? settings.document.analysisTypes: null}" var="element">
+											<h:outputText value="#{element}" converter="AnalysisTypeConverter" /><br />
+										</ui:repeat>
+									</div>
+								</h:panelGroup>
+								<e5ui-comp:modalWindow id="analysisTypeSelect" modalWindowHolder="#{settings.analysisTypeSelect}"
+											render=":main_content_form:analysis_types" execute="select_table" showButtons="false"
+											style="width:500px;" widgetVar="analysisTypeSelect">
+									<div id="title">Выбор типов показателей контроля качества</div>
+									<div id="modal_container" style="margin-top: 0;">
+										<div class="searchbar">
+											<h:inputText id="filter_string" value="#{settings.analysisTypeSelect.filter}" 
+														style="display:block; float:left; margin-right:10px;" title="Поиск" />
+											<h:commandButton value=" " action="#{settings.analysisTypeSelect.search()}"
+														styleClass="searchbutton">
+												<f:ajax execute=":main_content_form:analysisTypeSelect:filter_string"
+															render=":main_content_form:analysisTypeSelect:ajaxModal" />
+											</h:commandButton>
+										</div>
+										<div class="wrap" style="height:300px;">
+											<div class="inner" style="height:300px;">
+												<e5ui:dataTable id="select_table" border="0" cellpadding="0" cellspacing="0" width="100%"
+															value="#{settings.analysisTypeSelect.availableAnalysisTypeList}" var="row" grouping="false">
+													<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																styleClass="#{settings.analysisTypeSelect.selected(row)? 'grid_row_selected': ''}" />
+													<e5ui:column>
+														<f:facet name="header">
+															<p>Показатель контроля качества</p>
+														</f:facet>
+														<h:outputText value="#{row}" converter="AnalysisTypeConverter" />
+														<h:commandLink id="selectLink" style="display: none;"
+																	rendered="#{not settings.analysisTypeSelect.selected(row)}"
+																	action="#{settings.analysisTypeSelect.select(row)}" />
+														<h:commandLink id="unselectLink" style="display: none;"
+																	rendered="#{settings.analysisTypeSelect.selected(row)}"
+																	action="#{settings.analysisTypeSelect.unselect(row)}" />
+													</e5ui:column>
+												</e5ui:dataTable>
+											</div>
+										</div>
+									</div>
+									<div class="e5ui-modal-bottombuttons">
+										<h:button onclick="analysisTypeSelect.clickSave(); return false;" value="Выбрать" />
+										<h:button onclick="analysisTypeSelect.clickClose(); return false;" value="Отмена" />
+									</div>
+								</e5ui-comp:modalWindow>
+							</div>
+						</h:panelGroup>
+						
+					</div>
+				
+				<div id="table_paging">
+					<h:panelGroup id="main_data_paging">
+					<e5ui-comp:tablePager documentListHolder="#{settings}" style="display:inline;" />
+					<e5ui-comp:tablePageSizeSelector documentListHolder="#{settings}" style="display:inline;float:right;" pageSizes="10,25,50,100" />
+					</h:panelGroup>
+				</div>
+			</div>
+		</e5ui:formPart>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	       	<f:facet name="timeoutPanel">
+	       		<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	       			Пожалуйста, подождите...
+	       		</div>
+	       	</f:facet>
+	    </e5ui-comp:splashScreen>
+	    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	    <h:outputStylesheet library="css" name="datatable.css" />
+	    <h:outputStylesheet library="css" name="menu.css" />
+		<h:outputStylesheet library="css" name="tablePager.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+	</ui:define>
+	
+</ui:composition>
+
+</html>

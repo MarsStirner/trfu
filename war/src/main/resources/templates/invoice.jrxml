@@ -1,0 +1,1058 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="invoice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true">
+	<property name="ireport.zoom" value="1.3310000000000037"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 1">
+		<parameter name="order_req_number" class="java.util.Collection"/>
+		<queryString>
+			<![CDATA[select comp_types.value, req.count, req.doseCount, req.doseCountResult, req.volume, req.division
+ from trfu_blood_component_order_requests req inner join  trfu_blood_component_types comp_types on req.componentType_id=comp_types.id
+where $X{IN,req.id,order_req_number}]]>
+		</queryString>
+		<field name="value" class="java.lang.String"/>
+		<field name="count" class="java.lang.Integer"/>
+		<field name="doseCount" class="java.lang.Double"/>
+		<field name="doseCountResult" class="java.lang.Double"/>
+		<field name="volume" class="java.lang.Integer"/>
+		<field name="division" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="OrderNumber" class="java.util.Collection">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Superintendent" class="java.lang.String"/>
+	<parameter name="Institution" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<queryString>
+		<![CDATA[select comp_types.value, req.count, req.doseCount, req.doseCountResult, req.volume, req.division
+ from  trfu_blood_component_order_requests req inner join
+trfu_blood_component_types comp_types on req.componentType_id=comp_types.id
+where $X{IN,req.id,OrderNumber}]]>
+	</queryString>
+	<field name="value" class="java.lang.String"/>
+	<field name="count" class="java.lang.Integer"/>
+	<field name="doseCount" class="java.lang.Double"/>
+	<field name="doseCountResult" class="java.lang.Double"/>
+	<field name="volume" class="java.lang.Integer"/>
+	<field name="division" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="71" splitType="Stretch">
+			<staticText>
+				<reportElement x="12" y="36" width="391" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ТРЕБОВАНИЕ - НАКЛАДНАЯ №]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="283" y="0" width="272" height="12"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Типовая межотраслевая форма № М-11]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="283" y="12" width="272" height="12"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Утверждена постановлением Госкомстата России]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="283" y="24" width="120" height="12"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[от 30.10.97 № 71 а]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Transparent" x="490" y="23" width="47" height="13"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Коды]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="403" y="36" width="87" height="13"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Форма по ОКУД]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Transparent" x="490" y="36" width="47" height="13"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[0315006]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="403" y="49" width="87" height="13"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[по ОКПО]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table 1" mode="Transparent" x="490" y="49" width="47" height="13"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="56" width="53" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Организация]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="53" y="56" width="350" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="114" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TD" x="0" y="1" width="53" height="51"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Дата составления]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="table_TD" x="0" y="52" width="53" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" x="53" y="1" width="44" height="51"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Код вида операции]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="97" y="1" width="134" height="23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Отправитель]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="97" y="24" width="77" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[структурное подразделение]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="174" y="24" width="57" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[вид деятельности]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="231" y="24" width="66" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[структурное подразделение]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="231" y="1" width="123" height="23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Получатель]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="297" y="24" width="57" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[вид деятельности]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="354" y="24" width="38" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[счет, субсчет]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="354" y="1" width="123" height="23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Корреспондирующий счет]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="392" y="24" width="85" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[код аналитического учета]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="477" y="1" width="78" height="51"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Учетная единица выпуска продукции(работ, услуг)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="53" y="52" width="44" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="97" y="52" width="77" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Трансфузиологии]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="174" y="52" width="57" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TD" x="231" y="52" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{division}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" x="297" y="52" width="57" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="354" y="52" width="38" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="392" y="52" width="85" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="477" y="52" width="78" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="72" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Через кого]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="92" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Затребовал]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="231" y="92" width="100" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Разрешил]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="331" y="92" width="224" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Superintendent}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="496" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="331" y="150" width="224" height="10"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Оборотная сторона формы №М-11]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement key="table 3" style="table 3" positionType="FixRelativeToBottom" stretchType="RelativeToTallestObject" x="0" y="168" width="555" height="145"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Table Dataset 1">
+						<datasetParameter name="order_req_number">
+							<datasetParameterExpression><![CDATA[$P{OrderNumber}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:columnGroup width="109">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="109" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Корреспондирующий счет]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="43">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="43" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[счет, субсчет]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="43" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[1]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+						<jr:column width="66">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" mode="Opaque" x="0" y="0" width="66" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[код аналитического учета]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="66" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[2]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="139">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="139" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Материальные ценности]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="90">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="90" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[наименование]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="90" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[3]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+						<jr:column width="49">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="49" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[номенклатурный номер]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="49" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[4]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="105">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="105" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Единица измерения]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="41">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="41" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[Код]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="41" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[5]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+						<jr:column width="64">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="64" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[наименование]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="64" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[6]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="65">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="65" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Количество]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="33">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="33" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[затребовано]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="33" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[7]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+						<jr:column width="32">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="32" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[отпущено]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="32" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[8]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:column width="45">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:tableFooter style="table_TD" height="0" rowSpan="1"/>
+						<jr:columnHeader height="90" rowSpan="2">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="45" height="70"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Цена, руб. коп.]]></text>
+							</staticText>
+							<staticText>
+								<reportElement style="table_TD" x="0" y="70" width="45" height="20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[9]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+					</jr:column>
+					<jr:column width="55">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:tableFooter style="table_TD" height="0" rowSpan="1"/>
+						<jr:columnHeader height="90" rowSpan="2">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="55" height="70"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Сумма без учета НДС, руб. коп.]]></text>
+							</staticText>
+							<staticText>
+								<reportElement style="table_TD" x="0" y="70" width="55" height="20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[10]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+					</jr:column>
+					<jr:column width="48">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:tableFooter style="table_TD" height="0" rowSpan="1"/>
+						<jr:columnHeader height="90" rowSpan="2">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="48" height="70"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Порядковый номер по складской картотеке]]></text>
+							</staticText>
+							<staticText>
+								<reportElement style="table_TD" x="0" y="70" width="48" height="20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[11]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<componentElement>
+				<reportElement key="table 3" style="table 3" x="0" y="0" width="555" height="145"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Table Dataset 1">
+						<datasetParameter name="order_req_number">
+							<datasetParameterExpression><![CDATA[$P{OrderNumber}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:columnGroup width="109">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="109" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Корреспондирующий счет]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="43">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="43" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[счет, субсчет]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="43" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[1]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+						<jr:column width="66">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" mode="Opaque" x="0" y="0" width="66" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[код аналитического учета]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="66" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[2]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="139">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="139" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Материальные ценности]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="90">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="90" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[наименование]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="90" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[3]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1">
+								<textField>
+									<reportElement x="3" y="0" width="87" height="30"/>
+									<textElement>
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="49">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="49" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[номенклатурный номер]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="49" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[4]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="105">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="105" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Единица измерения]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="41">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="41" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[Код]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="41" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[5]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+						</jr:column>
+						<jr:column width="64">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="64" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[наименование]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="64" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[6]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell height="30" rowSpan="1">
+								<textField>
+									<reportElement style="table_TD" x="0" y="0" width="64" height="30"/>
+									<textElement textAlignment="Center">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{doseCountResult}==0?"мл":"дозы"]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="65">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="65" height="30"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Количество]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="33">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="33" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[затребовано]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="33" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[7]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell height="30" rowSpan="1">
+								<textField>
+									<reportElement style="table_TD" x="0" y="0" width="33" height="30"/>
+									<textElement textAlignment="Center">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="32">
+							<jr:columnHeader height="60" rowSpan="1">
+								<staticText>
+									<reportElement style="table_TD" x="0" y="0" width="32" height="40"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[отпущено]]></text>
+								</staticText>
+								<staticText>
+									<reportElement style="table_TD" x="0" y="40" width="32" height="20"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<text><![CDATA[8]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+							<jr:detailCell height="30" rowSpan="1">
+								<textField pattern="###0">
+									<reportElement style="table_TD" x="0" y="0" width="32" height="30"/>
+									<textElement textAlignment="Center">
+										<font fontName="Tahoma" size="8"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{doseCountResult}==0?$F{volume}:$F{doseCountResult}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:column width="45">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:tableFooter style="table_TD" height="0" rowSpan="1"/>
+						<jr:columnHeader height="90" rowSpan="2">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="45" height="70"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Цена, руб. коп.]]></text>
+							</staticText>
+							<staticText>
+								<reportElement style="table_TD" x="0" y="70" width="45" height="20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[9]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+					</jr:column>
+					<jr:column width="55">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:tableFooter style="table_TD" height="0" rowSpan="1"/>
+						<jr:columnHeader height="90" rowSpan="2">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="55" height="70"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Сумма без учета НДС, руб. коп.]]></text>
+							</staticText>
+							<staticText>
+								<reportElement style="table_TD" x="0" y="70" width="55" height="20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[10]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+					</jr:column>
+					<jr:column width="48">
+						<jr:tableHeader height="0" rowSpan="1"/>
+						<jr:tableFooter style="table_TD" height="0" rowSpan="1"/>
+						<jr:columnHeader height="90" rowSpan="2">
+							<staticText>
+								<reportElement style="table_TD" x="0" y="0" width="48" height="70"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[Порядковый номер по складской картотеке]]></text>
+							</staticText>
+							<staticText>
+								<reportElement style="table_TD" x="0" y="70" width="48" height="20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="8"/>
+								</textElement>
+								<text><![CDATA[11]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:columnFooter style="table_TD" height="30" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="30" rowSpan="1"/>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToTallestObject" x="0" y="460" width="278" height="16"/>
+				<textElement>
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Отпустил ________   _________   ___________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToTallestObject" x="283" y="460" width="272" height="16"/>
+				<textElement>
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Получил ________   _________   ___________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToTallestObject" x="46" y="478" width="232" height="12"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[(должность)     (подпись)               (расшифровка подписи)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToTallestObject" x="323" y="476" width="232" height="12" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[(должность)     (подпись)               (расшифровка подписи)]]></text>
+			</staticText>
+		</band>
+	</summary>
+	<noData>
+		<band/>
+	</noData>
+</jasperReport>

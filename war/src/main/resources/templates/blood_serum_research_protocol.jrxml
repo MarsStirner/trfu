@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Протокол исследований сыворотки доноров крови" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="783" leftMargin="39" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.7715610000000117"/>
+	<property name="ireport.x" value="477"/>
+	<property name="ireport.y" value="158"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="CreateDate" class="java.util.Date"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["templates\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Institution" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="BacteriologicalSuperintendent" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select req.donor_id as donor_id, req.number as req_number, donors.birth as dr, cl.value as donorType , req.factDate as factDate,  donors.lastName as lastName, donors.firstName as firstName, donors.middleName as middleName,cl.value as donorType,donors.gender as donors_gender
+ from ((trfu_blood_donation_requests req inner join trfu_donors donors on donors.id = req.donor_id)
+inner join trfu_classifiers cl on cl.id = req.donorType_id and cl.category='Тип донора')
+where req.deleted="0" and    DATE(req.factDate) =DATE($P{CreateDate})
+and req.analysisCount>0
+order by req_number]]>
+	</queryString>
+	<field name="donor_id" class="java.lang.Integer"/>
+	<field name="req_number" class="java.lang.String"/>
+	<field name="dr" class="java.sql.Timestamp"/>
+	<field name="donorType" class="java.lang.String"/>
+	<field name="factDate" class="java.sql.Timestamp"/>
+	<field name="lastName" class="java.lang.String"/>
+	<field name="firstName" class="java.lang.String"/>
+	<field name="middleName" class="java.lang.String"/>
+	<field name="donors_gender" class="java.lang.Integer"/>
+	<variable name="lastName_1" class="java.lang.Integer" resetType="Page" calculation="Count">
+		<variableExpression><![CDATA[$F{lastName}]]></variableExpression>
+	</variable>
+	<variable name="middleName_1" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{middleName}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="20" width="607" height="21"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="14"/>
+				</textElement>
+				<text><![CDATA[ПРОТОКОЛ ИССЛЕДОВАНИЙ СЫВОРОТКИ ДОНОРОВ КРОВИ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="199" y="63" width="160" height="20"/>
+				<textElement>
+					<font fontName="Tahoma" size="12"/>
+				</textElement>
+				<text><![CDATA[Дата забора материала]]></text>
+			</staticText>
+			<textField pattern="dd.MM.yyyy">
+				<reportElement positionType="Float" x="370" y="63" width="100" height="20"/>
+				<textElement>
+					<font fontName="Tahoma" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CreateDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="41" width="607" height="21"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="14"/>
+				</textElement>
+				<text><![CDATA[на ВИЧ, гепатиты B и C, сифилис в бактериологическую лабораторию]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="623" y="0" width="160" height="20"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right">
+					<font fontName="Tahoma" size="12"/>
+				</textElement>
+				<text><![CDATA[Форма 411/у-П4]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="0" width="607" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Tahoma" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TD" x="0" y="0" width="56" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[№ п/п]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="56" y="0" width="131" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Фамилия, имя, отчество]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="273" y="0" width="100" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Номер донации]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="226" y="0" width="47" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Код донора]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="439" y="0" width="66" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Гепатит B HBs-Ag]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="505" y="0" width="85" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Гепатит С Ag/At]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="590" y="0" width="172" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Сифилис]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="187" y="0" width="39" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Пол]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="373" y="0" width="66" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ВИЧ(1+2) Ag/At]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="590" y="17" width="82" height="19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[РПГА]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="672" y="17" width="90" height="19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[ИФА]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement style="table_TD" x="56" y="0" width="131" height="22"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lastName}+" "+$F{firstName}+" "+$F{middleName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="0" y="0" width="56" height="22"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="273" y="0" width="100" height="22"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{req_number}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="226" y="0" width="47" height="22"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donorType}.substring( 0, 3 )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="187" y="0" width="39" height="22"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donors_gender}==0?"ж":"м"]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement style="table_TD" x="373" y="0" width="66" height="22"/>
+			</frame>
+			<frame>
+				<reportElement style="table_TD" x="439" y="0" width="66" height="22"/>
+			</frame>
+			<frame>
+				<reportElement style="table_TD" x="505" y="0" width="85" height="22"/>
+			</frame>
+			<frame>
+				<reportElement style="table_TD" x="590" y="0" width="82" height="22"/>
+			</frame>
+			<frame>
+				<reportElement style="table_TD" x="672" y="0" width="90" height="22"/>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="64" splitType="Stretch">
+			<staticText>
+				<reportElement x="3" y="3" width="303" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[Врач, ответственный за направление]]></text>
+			</staticText>
+			<line>
+				<reportElement x="306" y="22" width="200" height="1"/>
+			</line>
+			<line>
+				<reportElement x="306" y="43" width="200" height="1"/>
+			</line>
+			<line>
+				<reportElement x="307" y="63" width="200" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="3" y="44" width="304" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[Врач - бактериолог]]></text>
+			</staticText>
+			<line>
+				<reportElement x="671" y="62" width="73" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="570" y="42" width="101" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[Дата исследования]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="3" y="24" width="303" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Зав. бактериологической лабораторией "+$P{BacteriologicalSuperintendent}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

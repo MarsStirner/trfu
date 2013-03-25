@@ -1,0 +1,826 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<!-- #{bloodComponentOrder.document.id}  -->
+		<e5ui-comp:userSessionUpdate interval="300" />
+		<h:outputScript library="js" name="datepicker_init_ru.js" target="head" />
+		<h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+		<h:outputScript library="js" name="forms.js" target="head" />
+		<e5ui-comp:outputUtilScript />
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+	
+	<ui:define name="header">
+		<div id="form_header">
+			<div class="actionbar">
+				<div class="menu">
+					<div class="defbutton">
+						<h:commandLink action="#{bloodComponentOrder.edit}" rendered="#{bloodComponentOrder.viewState}">
+							<h:graphicImage value="#{resource['images:edit_buttn.png']}" />
+							Редактировать
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{bloodComponentOrder.cancel}" rendered="#{bloodComponentOrder.editState or bloodComponentOrder.createState}">
+							<h:graphicImage value="#{resource['images:button-cancel.png']}" />
+							Отменить
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{bloodComponentOrder.save}" rendered="#{bloodComponentOrder.editState or bloodComponentOrder.createState}">
+							<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+							Сохранить
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<e5ui:formPart id="actions_fp">
+							<h:commandLink onclick="actionsModal.clickOpen('actionsModal'); return false;">
+								<h:graphicImage value="#{resource['images:button-do.png']}" />
+								Действия
+							</h:commandLink>
+							<e5ui-comp:modalWindow id="actionsModal"
+										modalWindowHolder="#{bloodComponentOrder.processorModal}"
+										render=":main_content_form" execute="selectedAction"
+										showButtons="false"
+										widgetVar="actionsModal">
+								<h:panelGroup rendered="#{not(bloodComponentOrder.processorModal.processingState)}">
+									<div id="title">Действия</div>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{bloodComponentOrder.processorModal.actionsAvailable}">
+									<div class="wrap" style="height:90px;background-color:#fff;clear:both;">
+										<div class="inner" style="height: 90px;">
+											<e5ui:dataTable id="action_select_table" border="0"
+														cellpadding="0" cellspacing="0"
+														value="#{bloodComponentOrder.processorModal.availableActions}" var="row"
+														grouping="false" width="100%">
+												<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+															styleClass="#{bloodComponentOrder.processorModal.selected(row)? 'grid_row_selected': ''}" />
+												<e5ui:column>
+													<f:facet name="header">
+														<p>Доступные действия</p>
+													</f:facet>
+													<h:outputText value="#{row.name}" />
+													<h:commandLink id="selectLink" style="display: none;"
+																rendered="#{not bloodComponentOrder.processorModal.selected(row)}"
+																action="#{bloodComponentOrder.processorModal.select(row)}" />
+												</e5ui:column>
+											</e5ui:dataTable>
+										</div>
+									</div>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{bloodComponentOrder.processorModal.noActionsAvailable or bloodComponentOrder.processorModal.failureState or bloodComponentOrder.processorModal.processedState}">
+									<h:outputText style="padding-left:10px;" value="#{bloodComponentOrder.processorModal.actionResult}" />
+								</h:panelGroup>
+								<h:panelGroup rendered="#{bloodComponentOrder.processorModal.processingState}">
+									<e5ui:include data="#{bloodComponentOrder.processorModal.processedActivity.document.form}"/>
+								</h:panelGroup>
+								<div class="e5ui-modal-bottombuttons">
+									<h:commandButton action="#{bloodComponentOrder.processorModal.process()}"
+												rendered="#{bloodComponentOrder.processorModal.actionsAvailable or bloodComponentOrder.processorModal.processingState}"
+												value="Выполнить" />
+									<h:button rendered="#{bloodComponentOrder.processorModal.actionsAvailable or bloodComponentOrder.processorModal.processingState}"
+												onclick="actionsModal.clickClose(); return false;"
+												value="Отмена" />
+									<h:button rendered="#{bloodComponentOrder.processorModal.noActionsAvailable or bloodComponentOrder.processorModal.failureState or bloodComponentOrder.processorModal.processedState}"
+												onclick="actionsModal.clickClose(); return false;"
+												value="Закрыть" />
+								</div>
+							</e5ui-comp:modalWindow>
+						</e5ui:formPart>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="content">
+		<div id="header_content">
+			<h:panelGroup rendered="#{bloodComponentOrder.createState}">
+				<div class="name">Новая заявка на выдачу КК</div>
+				<div class="title">
+					<h:outputText value="#{bloodComponentOrder.document.statusName}" />
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{bloodComponentOrder.editState or bloodComponentOrder.viewState}">
+				<div class="name">
+					<div>
+						<span>Заявка на выдачу КК</span>
+						<h:outputText style="margin:0 5px;" value="#{bloodComponentOrder.document.id}" />
+						<span>от</span><h:outputText style="margin:0 5px;" value="#{bloodComponentOrder.document.created}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>
+					</div>
+				</div>
+				<div class="title">
+					<h:outputText value="#{bloodComponentOrder.document.statusName}" />
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{bloodComponentOrder.notFoundState}">
+				<div class="name">404 - Заявка не найдена</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{bloodComponentOrder.forbiddenState}">
+				<div class="name">403 - Действие запрещено</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{not(bloodComponentOrder.createState or bloodComponentOrder.editState or bloodComponentOrder.viewState or bloodComponentOrder.notFoundState or bloodComponentOrder.forbiddenState)}">
+				<div class="name">В доступе отказано</div>
+			</h:panelGroup>
+		</div>
+		
+		<div class="main_content">
+			<div class="#{bloodComponentOrder.document.statusId eq 1? '': 'tileleft'}">
+				<div>
+					<fieldset>
+						<div style="margin-top: 10px;">
+							<h:selectBooleanCheckbox value="#{bloodComponentOrder.document.autologous}" disabled="#{bloodComponentOrder.viewState}" />
+							<h:outputText value="Аутологичная кровь" />
+						</div>
+						<div>
+							<h:selectBooleanCheckbox value="#{bloodComponentOrder.document.individualSelection}" disabled="#{bloodComponentOrder.viewState}" />
+							<h:outputText value="Подбор крови индивидуальный" />
+						</div>
+						<legend>
+							<label><span class="title">Общая информация</span></label>
+						</legend>
+						<h:panelGroup rendered="#{bloodComponentOrder.viewState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">№ требования МИС</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.externalNumber}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Отделение</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.division}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Фамилия</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.recipient}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Имя</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.recipientFirstName}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Отчество</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.recipientMiddleName}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Дата рождения</td>
+										<td>
+											<h:outputText value="#{bloodComponentOrder.document.recipientBirth}">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+											</h:outputText>
+											<span style="margin:0 5px;">Возраст:</span>
+											<h:outputText value="#{bloodComponentOrder.document.ageFull}" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">№ ИБ</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.ibNumber}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Диагноз</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.diagnosis}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+									<td class="first">Группа крови</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.bloodGroup}" converter="BloodGroupConverter" />
+											<span style="margin:0 5px;">Rh</span>
+											<h:outputText value="#{bloodComponentOrder.document.rhesusFactor}" converter="ClassifierConverter" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Компонент</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.componentType}" converter="BloodComponentTypeConverter" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Количество</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.count}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Количество донорских доз</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.doseCount}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Показания к назначению</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.indication}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Вид трансфузии</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.transfusionType eq 0? 'Плановая': 'Экстренная'}" class="wide" /></td>
+									</tr>
+									<h:panelGroup rendered="#{bloodComponentOrder.document.transfusionType eq 0}">
+										<tr class="row">
+											<td class="first">Дата</td>
+											<td>
+												<h:outputText value="#{bloodComponentOrder.document.planDate}" class="wide">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+												</h:outputText>
+											</td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Дата/время регистрации</td>
+										<td>
+											<h:outputText value="#{bloodComponentOrder.document.created}" class="wide">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Медицинская сестра</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.staffNurse.description}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Врач, назначивший трансфузию</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.attendingDoctorDescription}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Комментарии</td>
+										<td><h:outputText value="#{bloodComponentOrder.document.commentary}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first" colspan="2">
+											<fieldset>
+												<legend>
+													<label><span class="title">Результат выдачи</span> </label>
+												</legend>
+												<div class="row">
+													<table class="form_grid">
+														<tr class="row">
+															<td class="first">Количество, мл</td>
+															<td><h:outputText value="#{bloodComponentOrder.document.volume}" /></td>
+														</tr>
+														<tr class="row">
+															<td class="first">Количество донорских доз</td>
+															<td><h:outputText value="#{bloodComponentOrder.document.doseCountResult}" /></td>
+														</tr>
+														<tr class="row">
+															<td class="first">Дата/время выдачи компонента</td>
+															<td>
+																<h:outputText value="#{bloodComponentOrder.document.factDate}">
+																	<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+																</h:outputText>
+															</td>
+														</tr>
+													</table>
+												</div>
+											</fieldset>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{bloodComponentOrder.createState or bloodComponentOrder.editState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">№ требования МИС</td>
+										<td><h:inputText value="#{bloodComponentOrder.document.externalNumber}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Отделение</td>
+										<td><h:inputText value="#{bloodComponentOrder.document.division}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Фамилия</td>
+										<td><h:inputText value="#{bloodComponentOrder.document.recipient}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Имя</td>
+										<td><h:inputText value="#{bloodComponentOrder.document.recipientFirstName}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Отчество</td>
+										<td><h:inputText value="#{bloodComponentOrder.document.recipientMiddleName}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Дата рождения</td>
+										<td>
+											<e5ui-comp:inputDate id="recipientBirth" value="#{bloodComponentOrder.document.recipientBirth}" lang="ru" />
+											<span style="margin:0 5px;">Возраст</span>
+											<h:outputText value="#{bloodComponentOrder.document.ageFull}" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">№ ИБ</td>
+										<td><h:inputText value="#{bloodComponentOrder.document.ibNumber}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Диагноз</td>
+										<td><h:inputText value="#{bloodComponentOrder.document.diagnosis}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Группа крови</td>
+										<td>
+											<h:selectOneMenu id="bloodGroup" value="#{bloodComponentOrder.document.bloodGroup}" converter="BloodGroupConverter">
+												<f:selectItems value="#{dictionaryManagement.bloodGroups}" />
+											</h:selectOneMenu>
+											<span style="margin:0 5px;" >Rh</span>
+											<h:selectOneMenu id="rhesusFactor" value="#{bloodComponentOrder.document.rhesusFactor}" converter="ClassifierConverter">
+												<f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
+											</h:selectOneMenu>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Компонент</td>
+										<td>
+											<h:selectOneMenu id="componentType" value="#{bloodComponentOrder.document.componentType}" converter="BloodComponentTypeConverter" class="wide">
+												<f:selectItems value="#{dictionaryManagement.usedBloodComponentTypes}" />
+											</h:selectOneMenu>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Количество</td>
+										<td><h:inputText value="#{bloodComponentOrder.document.count}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Количество донорских доз</td>
+										<td><h:inputText value="#{bloodComponentOrder.document.doseCount}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Показания к назначению</td>
+										<td><h:inputText value="#{bloodComponentOrder.document.indication}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Вид трансфузии</td>
+										<td>
+											<h:selectOneRadio layout="lineDirection" value="#{bloodComponentOrder.document.transfusionType}" immediate="true">
+												<f:selectItem itemLabel="Плановая" itemValue="0" />
+												<f:selectItem itemLabel="Экстренная" itemValue="1" />
+											</h:selectOneRadio>
+										</td>
+									</tr>
+									<h:panelGroup id="plan_date" rendered="#{bloodComponentOrder.document.transfusionType eq 0}">
+										<tr class="row">
+											<td class="first">Дата</td>
+											<td>
+												<e5ui-comp:inputDate id="planDate" value="#{bloodComponentOrder.document.planDate}" lang="ru" />
+											</td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Дата/время регистрации</td>
+										<td>
+											<h:outputText value="#{bloodComponentOrder.document.created}" class="wide">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Медицинская сестра</td>
+										<td><h:outputText id="staffNurse" value="#{bloodComponentOrder.document.staffNurse.description}" class="wide" /></td>
+									</tr>
+									<h:panelGroup rendered="#{bloodComponentOrder.document.fromMIS}">
+										<tr class="row">
+											<td class="first">Фамилия врача, назначившего трансфузию</td>
+											<td>
+												<h:inputText value="#{bloodComponentOrder.document.attendingDoctorLastName}" class="wide" />
+											</td>
+										</tr>
+										<tr class="row">
+											<td class="first">Имя врача, назначившего трансфузию</td>
+											<td>
+												<h:inputText value="#{bloodComponentOrder.document.attendingDoctorFirstName}" class="wide" />
+											</td>
+										</tr>
+										<tr class="row">
+											<td class="first">Отчество врача, назначившего трансфузию</td>
+											<td>
+												<h:inputText value="#{bloodComponentOrder.document.attendingDoctorMiddleName}" class="wide" />
+											</td>
+										</tr>
+									</h:panelGroup>
+									<h:panelGroup rendered="#{not (bloodComponentOrder.document.fromMIS)}">
+										<tr class="row">
+											<td class="first">
+												Врач, назначивший трансфузию
+											</td>
+											<td>
+												<h:inputText id="attendingDoctor" value="#{bloodComponentOrder.document.attendingDoctor}" class="wide" />
+											</td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Комментарии</td>
+										<td><h:inputTextarea value="#{bloodComponentOrder.document.commentary}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first" colspan="2">
+											<fieldset>
+												<legend>
+													<label><span class="title">Результат выдачи</span> </label>
+												</legend>
+												<div class="row">
+													<table class="form_grid">
+														<tr class="row">
+															<td class="first">Количество, мл</td>
+															<td><h:inputText value="#{bloodComponentOrder.document.volume}" /></td>
+														</tr>
+														<tr class="row">
+															<td class="first">Количество донорских доз</td>
+															<td><h:inputText value="#{bloodComponentOrder.document.doseCountResult}" /></td>
+														</tr>
+														<tr class="row">
+															<td class="first">Дата/время выдачи компонента</td>
+															<td>
+																<h:outputText value="#{bloodComponentOrder.document.factDate}">
+																	<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+																</h:outputText>
+															</td>
+														</tr>
+													</table>
+												</div>
+											</fieldset>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+					</fieldset>
+				</div>
+				<div>
+					<fieldset>
+						<legend>
+							<label><span class="title">История</span> </label>
+						</legend>
+						<div class="wrap" style="width: 100%; margin: 0px">
+							<div class="inner">
+								<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+											id="history_list"
+											value="#{bloodComponentOrder.document.historyList}"
+											var="row" grouping="false">
+									<e5ui:column style="min-width:7em">
+					            		<f:facet name="header">
+					                        <p>Дата</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.startDate}">
+					                		<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+					                	</h:outputText>
+					                </e5ui:column>
+					                <e5ui:column style="min-width:8em">
+					            		<f:facet name="header">
+					                        <p>Статус</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.fromStatusName}" />
+					                </e5ui:column>
+					                <e5ui:column style="min-width:8em">
+					            		<f:facet name="header">
+					                        <p>Действие</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.actionName}" />
+					                </e5ui:column>
+					                <e5ui:column style="min-width:12em">
+					            		<f:facet name="header">
+					                        <p>Автор</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.owner.descriptionShort}" />
+					                </e5ui:column>
+					                <e5ui:column style="min-width:10em">
+					            		<f:facet name="header">
+					                        <p>Комментарий</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.commentary}" />
+					                </e5ui:column>
+								</e5ui:dataTable>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+			<h:panelGroup rendered="#{bloodComponentOrder.document.statusId ne 1}">
+			<div class="tileright">
+				<fieldset>
+					<legend>
+						<label><span class="title">Компоненты крови</span> </label>
+					</legend>
+					<script type="text/javascript">
+						document.ondblclick = function DoubleClick(evt) {
+							if (window.getSelection)
+								window.getSelection().removeAllRanges();
+							else if (document.selection)
+								document.selection.empty();
+						}
+					</script>
+					<h:outputScript>
+			        	function goToDocument(id) {
+			        		if (id != 0) {
+			        			window.open('#{facesContext.externalContext.requestContextPath}/component/blood_component.xhtml?docId=' + id,'_blank');
+							}
+						}
+			        </h:outputScript>
+			        <div class="actionbar">
+				        <div class="menu">
+				        	<h:panelGroup rendered="#{bloodComponentOrder.document.statusId eq 2}">
+		                    	<div class="defbutton">
+									<h:outputLink onclick="componentSelectVar.clickOpen('componentSelectModal'); return false;">
+                                    <h:graphicImage value="#{resource['images:add_component.png']}" />
+										Добавить компоненты
+									</h:outputLink>
+								</div>
+											<e5ui-comp:modalWindow id="componentSelectModal" modalWindowHolder="#{bloodComponentOrder.componentSelectModal}"
+														render=":main_content_form:components_list" execute="modal_select_table" showButtons="false"
+														style="width:80%; max-width:1250px;max-height:70%;overflow-y:auto;" widgetVar="componentSelectVar">
+												<div id="title">Выбор компонентов крови</div>
+												<div id="modal_entries_list" style="margin-top:0;">
+													<div class="searchbar">
+														<h:inputText id="filter_string" value="#{bloodComponentOrder.componentSelectModal.bloodComponentList.filter}" 
+																	style="display:block; float:left; margin-right:10px;" title="Поиск" />
+														<h:commandButton value=" " action="#{bloodComponentOrder.componentSelectModal.bloodComponentList.changePageOffset(0)}"
+																	styleClass="searchbutton">
+															<f:ajax execute=":main_content_form:componentSelectModal:filter_string"
+																		render=":main_content_form:componentSelectModal:ajaxModal" />
+														</h:commandButton>
+													</div>
+													<div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+														<div class="inner" style="height:300px;">
+															<e5ui:dataTable id="modal_select_table" border="0" cellpadding="0" cellspacing="0"
+																		value="#{bloodComponentOrder.componentSelectModal.bloodComponentList.documents}"
+																		var="row" grouping="false" width="100%">
+																<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																			styleClass="#{bloodComponentOrder.componentSelectModal.selected(row)? 'grid_row_selected': ''}" />
+																<e5ui:column style="min-width:5em;">
+																	<f:facet name="header">
+												                        <p>Номер</p>
+												                    </f:facet>
+																	<h:outputText value="#{row.fullNumber}" />
+																	<h:commandLink id="selectLink" style="display: none;"
+					                                                			rendered="#{not bloodComponentOrder.componentSelectModal.selected(row)}"
+					                                                     		action="#{bloodComponentOrder.componentSelectModal.select(row)}"/>
+					                                                <h:commandLink id="unselectLink" style="display: none;"
+																				rendered="#{bloodComponentOrder.componentSelectModal.selected(row)}"
+																				action="#{bloodComponentOrder.componentSelectModal.unselect(row)}" />
+																</e5ui:column>
+																<e5ui:column style="min-width:12em;">
+																	<f:facet name="header">
+												                        <p>Компонент</p>
+												                    </f:facet>
+																	<h:outputText value="#{row.componentType}" converter="BloodComponentTypeConverter" />
+																</e5ui:column>
+																<e5ui:column style="min-width:5em;">
+																	<f:facet name="header">
+												                        <p>Объем, мл</p>
+												                    </f:facet>
+																	<h:outputText value="#{row.volume}" />
+																</e5ui:column>
+																<e5ui:column style="min-width:8em;">
+																	<f:facet name="header">
+												                        <p>Количество д.д.</p>
+												                    </f:facet>
+																	<h:outputText value="#{row.doseCount}" />
+																</e5ui:column>
+																<e5ui:column style="min-width:7em;">
+																	<f:facet name="header">
+												                        <p>Антикоагулянт</p>
+												                    </f:facet>
+																	<h:outputText value="#{row.anticoagulant}" converter="AnticoagulantConverter" />
+																</e5ui:column>
+																<e5ui:column style="min-width:12em;">
+																	<f:facet name="header">
+												                        <p>Группа крови</p>
+												                    </f:facet>
+																	<h:outputText value="#{row.bloodGroup}" converter="BloodGroupConverter" />
+																	<h:outputText style="margin-left:5px;" value="#{row.rhesusFactor}" converter="ClassifierConverter" />
+																</e5ui:column>
+																<e5ui:column style="min-width:7em;">
+																	<f:facet name="header">
+												                        <p>Срок хранения</p>
+												                    </f:facet>
+																	<h:outputText value="#{row.expirationDate}">
+																		<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+																	</h:outputText>
+																</e5ui:column>
+															</e5ui:dataTable>
+														</div>
+													</div>
+													<div style="clear:both;">
+														<h:panelGroup id="modal_paging">
+															<e5ui-comp:tablePager id="pager" documentListHolder="#{bloodComponentOrder.componentSelectModal.bloodComponentList}" />
+			                                            </h:panelGroup>
+			                                        </div>
+			                                    </div>
+			                                    <div class="e5ui-modal-bottombuttons">
+													<h:button onclick="componentSelectVar.clickSave(); return false;" value="Выбрать" />
+													<h:commandButton onclick="componentSelectVar.clickClose(); return false;" value="Отмена">
+														<f:ajax execute=":main_content_form:componentSelectModal" />
+													</h:commandButton>
+												</div>
+											</e5ui-comp:modalWindow>
+		                    	<div class="defbutton">
+									<h:outputLink onclick="componentMatchModal.clickOpen('componentMatchModal'); return false;">
+                                    <h:graphicImage value="#{resource['images:add_component.png']}" />
+										Подбор компонентов
+									</h:outputLink>
+								</div>
+								<e5ui-comp:modalWindow id="componentMatchModal"
+											modalWindowHolder="#{bloodComponentOrder.componentMatchModal}"
+											render=":main_content_form:components_list" execute="modal_select_table"
+											showButtons="false" style="width:80%; max-width:1250px;max-height:70%;overflow-y:auto;" widgetVar="componentMatchModal">
+									<div id="title">Подбор компонентов крови</div>
+									<div id="modal_entries_list" style="margin-top:0;">
+										<div class="menu">
+		                    				<div class="defbutton">
+												<h:commandLink action="#{bloodComponentOrder.componentMatchModal.search}">
+                                   					<h:graphicImage value="#{resource['images:button-search.png']}" />
+													Поиск
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="wrap" style="height:308px; width:25%">
+											<div class="inner" style="height:308px;">
+												<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" style="width:auto;"
+															value="#{bloodComponentOrder.componentMatchModal.criteriaList}" var="row" grouping="false">
+													<e5ui:column style="width:10px;">
+														<h:selectBooleanCheckbox value="#{row.necessary}" />
+													</e5ui:column>
+													<e5ui:column style="width:150px;">
+														<f:facet name="header">
+													   		<p>Фенотип</p>
+													   	</f:facet>
+														<h:outputText value="#{row.phenotype.type.value}" />
+													</e5ui:column>
+													<e5ui:column style="width:150px;">
+														<f:facet name="header">
+													   		<p>Результат</p>
+													   	</f:facet>
+														<h:selectOneRadio layout="lineDirection" value="#{row.phenotype.value}">
+															<f:selectItems value="#{dictionaryManagement.getValuesByCategory(row.phenotype.type.value)}" />
+														</h:selectOneRadio>
+													</e5ui:column>
+												</e5ui:dataTable>
+											</div>
+										</div>
+										<div class="row">
+											<table class="form_grid" style="width:auto;">
+												<tr class="row">
+													<td><h:selectBooleanCheckbox value="#{bloodComponentOrder.componentMatchModal.searchBloodGroup}" /></td>
+													<td>Группа крови:</td>
+													<td>
+														<h:selectOneMenu value="#{bloodComponentOrder.componentMatchModal.bloodGroup}" converter="BloodGroupConverter">
+															<f:selectItems value="#{dictionaryManagement.bloodGroups}" />
+														</h:selectOneMenu>
+													</td>
+												</tr>
+												<tr class="row">
+													<td><h:selectBooleanCheckbox value="#{bloodComponentOrder.componentMatchModal.searchRhesus}" /></td>
+													<td>Резус-принадлежность:</td>
+													<td>
+														<h:selectOneMenu value="#{bloodComponentOrder.componentMatchModal.rhesusFactor}" converter="ClassifierConverter">
+															<f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
+														</h:selectOneMenu>
+													</td>
+												</tr>
+											</table>
+										</div>
+										<div class="wrap" style="height:200px; width: 65%; background-color:#fff; margin-top:10px;">
+											<div class="inner" style="height:200px;">
+												<e5ui:dataTable id="modal_select_table" border="0" cellpadding="0" cellspacing="0"
+															value="#{bloodComponentOrder.componentMatchModal.availableComponents}"
+															var="row" grouping="false" width="100%">
+													<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																styleClass="#{bloodComponentOrder.componentMatchModal.selected(row)? 'grid_row_selected': ''}" />
+													<e5ui:column style="min-width:5em;">
+														<f:facet name="header">
+															<p>Номер</p>
+												        </f:facet>
+														<h:outputText value="#{row.fullNumber}" />
+														<h:commandLink id="selectLink" style="display: none;"
+					                                                rendered="#{not bloodComponentOrder.componentMatchModal.selected(row)}"
+					                                                action="#{bloodComponentOrder.componentMatchModal.select(row)}"/>
+														<h:commandLink id="unselectLink" style="display: none;"
+																	rendered="#{bloodComponentOrder.componentMatchModal.selected(row)}"
+																	action="#{bloodComponentOrder.componentMatchModal.unselect(row)}" />
+													</e5ui:column>
+													<e5ui:column style="min-width:12em;">
+														<f:facet name="header">
+															<p>Компонент</p>
+														</f:facet>
+														<h:outputText value="#{row.componentType}" converter="BloodComponentTypeConverter" />
+													</e5ui:column>
+													<e5ui:column style="min-width:5em;">
+														<f:facet name="header">
+															<p>Объем</p>
+														</f:facet>
+														<h:outputText value="#{row.volume}" />
+													</e5ui:column>
+													<e5ui:column style="min-width:7em;">
+														<f:facet name="header">
+															<p>Антикоагулянт</p>
+														</f:facet>
+														<h:outputText value="#{row.anticoagulant}" converter="AnticoagulantConverter" />
+													</e5ui:column>
+													<e5ui:column style="min-width:12em;">
+														<f:facet name="header">
+															<p>Группа крови</p>
+														</f:facet>
+														<h:outputText value="#{row.bloodGroup}" converter="BloodGroupConverter" />
+														<h:outputText style="margin-left:5px;" value="#{row.rhesusFactor}" converter="ClassifierConverter" />
+													</e5ui:column>
+													<e5ui:column style="min-width:7em;">
+														<f:facet name="header">
+															<p>Срок хранения</p>
+														</f:facet>
+														<h:outputText value="#{row.expirationDate}">
+															<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+														</h:outputText>
+													</e5ui:column>
+												</e5ui:dataTable>
+											</div>
+										</div>
+									</div>
+									<div class="e5ui-modal-bottombuttons">
+										<h:button onclick="componentMatchModal.clickSave(); return false;" value="Выбрать" />
+										<h:button onclick="componentMatchModal.clickClose(); return false;" value="Отмена" />
+									</div>
+								</e5ui-comp:modalWindow>
+							</h:panelGroup>
+							<div class="defbutton">
+								<h:commandLink action="false;">
+									<f:ajax render=":main_content_form:components_list" />
+									<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+				            		Обновить
+				           		</h:commandLink>
+							</div>
+						</div>
+					</div>
+			        <div class="wrap" style="width: 100%; margin: 0px">
+						<div class="inner">
+							<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+										id="components_list"
+										value="#{bloodComponentList.getDocumentsByOrder(bloodComponentOrder.document.id)}"
+										var="row" grouping="false">
+								<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+								<e5ui:column style="min-width:5em">
+									<f:facet name="header">
+				                        <p>Номер</p>
+				                    </f:facet>
+									<h:outputText value="#{row.fullNumber}" />
+								</e5ui:column>
+								<e5ui:column style="min-width:12em">
+									<f:facet name="header">
+				                        <p>Компонент</p>
+				                    </f:facet>
+									<h:outputText value="#{row.componentType}" converter="BloodComponentTypeConverter" />
+								</e5ui:column>
+								<e5ui:column style="min-width:7em">
+									<f:facet name="header">
+				                        <p>Антикоагулянт</p>
+				                    </f:facet>
+									<h:outputText value="#{row.anticoagulant}" converter="AnticoagulantConverter" />
+								</e5ui:column>
+								<e5ui:column style="min-width:5em">
+									<f:facet name="header">
+				                        <p>Группа крови</p>
+				                    </f:facet>
+									<h:outputText value="#{row.bloodGroup}" converter="BloodGroupConverter" />
+									<h:outputText style="margin-left:5px;" value="#{row.rhesusFactor}" converter="ClassifierConverter" />
+								</e5ui:column>
+								<e5ui:column style="min-width:7em">
+									<f:facet name="header">
+				                        <p>Срок хранения до</p>
+				                    </f:facet>
+									<h:outputText value="#{row.expirationDate}">
+										<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+									</h:outputText>
+								</e5ui:column>
+								<e5ui:column style="min-width:10em">
+									<f:facet name="header">
+				                        <p>Статус</p>
+				                    </f:facet>
+									<h:outputText value="#{row.statusName}" />
+								</e5ui:column>
+							</e5ui:dataTable>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			</h:panelGroup>
+		</div>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	        <f:facet name="timeoutPanel">
+	        	<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	        		Пожалуйста, подождите...
+	        	</div>
+	        </f:facet>
+	    </e5ui-comp:splashScreen>
+	    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	    <h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+	    <h:outputStylesheet library="css" name="multiMarker.css" />
+	</ui:define>
+	
+</ui:composition>
+</html>

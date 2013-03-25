@@ -1,0 +1,245 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Направление</title>
+</h:head>
+
+<h:body>
+	<!-- #{donor.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+	    <table border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+	                <td width="339" valign="top" colspan="3">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+
+	                <td width="100" valign="top">
+                         <p style="font-family:Code128bWin; font-size:24px;">š<h:outputText style="font-size:24px; font-family:Code128bWin;" value="#{donor.document.number}" />Jœ</p>
+                         <h:outputText value="#{donor.document.number}" />
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+                    <td width="45" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+                    <td width="48" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+
+	                <td valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p align="center">
+                            <b>НАПРАВЛЕНИЕ</b>
+	                        <b>На исследование группы крови у донора</b>
+
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        Донор <h:outputText style="font-size:10px; font-weight:bold;" value="#{donor.document.description}" />
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        № <h:outputText style="font-weight:bold;" value="#{donor.document.id}" />
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2" valign="top">
+                        <p>Пол: <h:outputText value="#{donor.document.gender eq 0? 'женский': 'мужской'}" /></p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>Дата рождения:
+	                         <h:outputText value="#{donor.document.birth}">
+	                        	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+	                        </h:outputText>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="2" valign="top">
+                        <p>Биоматериал: венозная кровь</p>
+                    </td>
+                    <td colspan="2" valign="top">
+                        <p>Прибор: ____________________________</p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="2" valign="top">
+                        <p>Дата забора материала</p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>_________________________20____г. </p>
+	                </td>
+	            </tr>
+	            <tr>
+                    <td colspan="4"><br />
+                        <table class="printtable">
+                            <tbody>
+                                <tr>
+                                    <td valign="top" colspan="2"><b>Определение группы крови по системе</b></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>АВО</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Резус-фактор</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Келл-антиген</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Фенотип по системе резус</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Антиэритраонные антитела (АЭТ)</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="font-size:12px; font-weight:bold;">ПРОБИРКА ФИОЛЕТОВАЯ</p>
+                        <br />
+                        <table class="printtable">
+                            <tbody>
+                                <tr>
+                                    <td valign="top" ><p>Общий белок</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Белковые фракции</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>АЛТ</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Биллирубин</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Дополнительно</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                             </tbody>
+                        </table>
+                        <p style="font-size:12px; font-weight:bold;">ПРОБИРКА ОРАНЖЕВАЯ</p>
+                        <br />
+
+                        <table class="printtable">
+                            <tbody>
+                                <tr>
+                                    <td valign="top" ><p>Hb</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Hb</p></td>
+                                    <td valign="top" width="100px"><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Эритроциты</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Тромбоциты</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Ретикулоциты</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Лейкоциты</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Лейко формула</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>СОЭ</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="font-size:12px; font-weight:bold;">ПРОБИРКА ОРАНЖЕВАЯ</p>
+                        <br />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+	                <td valign="top" colspan="2">
+	                    <p>
+	                        Врач направивший на обследование
+                        </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p align="center">
+	                        _________________________________________                                                                       <i>(подпись)</i>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	        </tbody>
+	    </table>
+
+	</div>
+</h:body>
+
+</html>

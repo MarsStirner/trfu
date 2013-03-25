@@ -1,0 +1,325 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+    <!--<link type="text/css" rel="stylesheet" href="print.css" />-->
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Форма 405у</title>
+    <style type="text/css">p{font-size:9px;}</style>
+</h:head>
+
+<h:body style="font-size:9px;">
+	<!-- #{examination.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+
+	    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+                    <td width="30%">
+                        <p style="text-align:center;">
+                            Министерство здравоохранения<br />
+                            и социального развития<br />
+                            Российской Федерации
+                        </p>
+                        <p style="text-align:center;"><b>Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии</b></p>
+                    </td>
+	                <td width="30%" style="text-align:center;">
+                        &nbsp;
+	                </td>
+                    <td>
+                        <p style="text-align:center;">
+                        Код формы по ОКУД 031002<br />
+                        Код учреждения по ОКПО 13157861<br />
+                        Медицинская документация<br />
+                        Форма № 405-05/у<br />
+                        Утверждена Приказом<br />
+                        Минздравсоцразвития России<br />
+                        От 31.03.2005г. №246
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                    <p style="font-size:16px; font-weight:bold; text-align: center;">
+                        Учетная карточка донора (активного, резерва, родственника)
+                    </p>
+                    </td>
+                    <td>
+                        <p>Группа крови <h:outputText style="font-weight:bold;" value="#{examination.document.donor.bloodGroup}" converter="BloodGroupConverter" /></p>
+                        <p>Резус фактор <h:outputText style="font-weight:bold;" value="#{examination.document.donor.rhesusFactor}" converter="ClassifierConverter" /></p>
+	                </td>
+                </tr>
+            </tbody>
+        </table>
+
+	    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-bottom: 2px solid;">
+	        <tbody>
+                <tr>
+	                <td colspan="2">
+	                    <p style="font-size:14px;">
+	                        1.&nbsp;&nbsp;&nbsp;Фамилия: <h:outputText style="font-weight:bold;" value="#{examination.document.donor.lastName}" /><br />
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td width="40%">
+	                    <p style="font-size:14px;">
+                            &nbsp;&nbsp;&nbsp;&nbsp;Имя: <h:outputText style="font-weight:bold;" value="#{examination.document.donor.firstName}" />
+	                    </p>
+	                </td>
+	                <td width="60%">
+	                    <p style="font-size:14px;">
+                            Отчество: <h:outputText style="font-weight:bold;" value="#{examination.document.donor.middleName}" />
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td width="40%">
+	                    <p style="font-size:14px;">
+	                        2.&nbsp;&nbsp;&nbsp;Число, месяц и год рождения
+	                    </p>
+	                </td>
+	                <td width="60%">
+	                    <p style="font-size:14px;">
+	                         <h:outputText value="#{examination.document.donor.birth}">
+	                        	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+	                        </h:outputText>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        3.&nbsp;&nbsp;&nbsp;Паспорт: серия <h:outputText value="#{examination.document.donor.passportSeries}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        № <h:outputText value="#{examination.document.donor.passportNumber}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        4.&nbsp;&nbsp;&nbsp;Страховой полис ОМС: серия <h:outputText value="#{examination.document.donor.insuranceSeries}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        № <h:outputText value="#{examination.document.donor.insuranceNumber}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="4">
+	                    <p style="font-size:14px;">
+	                        5.&nbsp;&nbsp;&nbsp;Место работы, телефон: <h:outputText value="#{examination.document.donor.employment}" />, <h:outputText value="#{examination.document.donor.workPhone}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+
+	            </tr>
+	            <tr>
+	                <td colspan="4" >
+	                    <p style="font-size:14px;">
+	                        6.&nbsp;&nbsp;&nbsp;Домашний адрес, телефон: <h:outputText value="#{examination.document.donor.registrationAddress}" />, <h:outputText value="#{examination.document.donor.phone}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        7.&nbsp;&nbsp;&nbsp;Дата зачисления
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        _____________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        8.&nbsp;&nbsp;&nbsp;Дата и причина снятия с учета
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        __________________________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        9.&nbsp;&nbsp;&nbsp;На момент снятия с учета количество кроводач и плазмодач
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        __________________________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        10.&nbsp;&nbsp;&nbsp;Подпись лица, заполнившего карточку
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p style="font-size:14px;">
+	                             _____________      ________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        <i>
+	                                       (подпись)                   (ф.и.о.)
+	                            <p>
+	                            </p>
+	                        </i>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p style="font-size:14px;">
+	                        Ответственное лицо
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p style="font-size:14px;">
+	                             _____________      ________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        <i>           (подпись)                   (ф.и.о.)</i>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        Печать
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+            </tbody>
+        </table>
+
+           <p  align="center"><b>Отметки о взятии крови (плазмы крови)</b></p>
+                <table style="printtable">
+                    <thead>
+                        <th>Дата
+                        </th>
+                        <th>Вид донации
+                        </th>
+                        <th>Количество
+                        </th>
+                        <th>Подпись
+                        </th>
+                    </thead>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                </table>
+
+<p>
+Заполняется  на  каждого  донора  с регистрацией первой и последующих донаций.
+
+В графе "Дата" проставляется число, месяц, год  крово(плазмо)дачи  по порядку;<br />
+в графе "Вид  донации" указывается вид донорства: "кровь" или "плазма крови" в зависимости от вида донации;<br />
+в графе "Количество" указывается количество взятой  от  донора  крови  или плазмы крови в мл;<br />
+в  графе "Подпись" ставится подпись лица, производившего забор крови.<br />
+</p>
+
+
+</h:body>
+
+</html>

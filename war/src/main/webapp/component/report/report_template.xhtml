@@ -1,0 +1,259 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<!-- #{reportTemplate.document.id}  -->
+		<h:outputScript library="js" name="datepicker_init_ru.js" target="head" />
+		<e5ui-comp:outputUtilScript />
+	</ui:define>
+	
+	<ui:define name="header">
+		<div id="form_header">
+			<div class="actionbar">
+				<div class="menu">
+					<h:panelGroup rendered="#{sessionManagement.admin}">
+						<div class="defbutton">
+							<h:commandLink action="#{reportTemplate.saveReport}" rendered="#{reportTemplate.editState}">
+								<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+								Сохранить
+							</h:commandLink>
+						</div>
+					</h:panelGroup>
+					<div class="defbutton">
+						<h:commandLink action="#{reportTemplate.previewReport}" rendered="#{reportTemplate.editState}">
+							<h:graphicImage value="#{resource['images:blank.png']}" />
+							Сформировать
+						</h:commandLink>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+	
+	<ui:define name="content">
+		<div id="header_content">
+			<h:panelGroup rendered="#{reportTemplate.createState}">
+				<div class="name">Новый шаблон</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{reportTemplate.editState or reportTemplate.viewState}">
+				<div class="name">
+					<h:outputText value="#{reportTemplate.document.displayName}" />
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{reportTemplate.notFoundState}">
+				<div class="name">404 - Шаблон не найден</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{reportTemplate.forbiddenState}">
+				<div class="name">403 - Действие запрещено</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{not(reportTemplate.createState or reportTemplate.editState or reportTemplate.viewState or reportTemplate.notFoundState or reportTemplate.forbiddenState)}">
+				<div class="name">В доступе отказано</div>
+			</h:panelGroup>
+		</div>
+		
+		<div class="main_content">
+			<h:panelGroup rendered="#{reportTemplate.editState}">
+				<div class="row">
+					<table class="form_grid">
+						<h:panelGroup rendered="#{not (reportTemplate.document.type eq 2 or reportTemplate.document.type eq 3)}">
+							<tr class="row">
+								<td class="first"><h:outputText value="#{reportTemplate.document.startDescription}" />:</td>
+								<td><e5ui-comp:inputDate id="startDate" value="#{reportTemplate.document.startDate}" lang="ru" immediate="true" /></td>
+							</tr>
+							<h:panelGroup rendered="#{reportTemplate.document.type eq 1}">
+								<tr class="row">
+									<td class="first"><h:outputText value="#{reportTemplate.document.endDescription}" />:</td>
+									<td><e5ui-comp:inputDate id="endDate" value="#{reportTemplate.document.endDate}" lang="ru" immediate="true" /></td>
+								</tr>
+							</h:panelGroup>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{reportTemplate.document.type eq 2}">
+							<tr class="row">
+								<td class="first">
+									<h:outputLink onclick="componentRequestSelectModal.clickOpen('componentRequestSelectModal'); return false;">
+										<h:outputText value="#{reportTemplate.document.startDescription}" />:
+									</h:outputLink>
+								</td>
+								<td>
+									<h:panelGroup id="component_request">
+										<ui:repeat value="#{reportTemplate.document.componentRequestList}" var="element">
+                                       		<div><h:outputText value="#{element.number}" /></div>
+                                   		</ui:repeat>
+									</h:panelGroup>
+									<e5ui-comp:modalWindow id="componentRequestSelectModal"
+												modalWindowHolder="#{reportTemplate.componentRequestSelectModal}"
+												render=":main_content_form:component_request"
+												execute="modal_select_table"
+												showButtons="false"
+												style="width:80%; max-width:1250px;"
+												widgetVar="componentRequestSelectModal">
+										<div id="title">Выбор компонентов крови</div>
+										<div id="modal_entries_list" style="margin-top:0;">
+											<div class="searchbar">
+												<h:inputText id="filter_string" value="#{reportTemplate.componentRequestSelectModal.bloodComponentOrderList.filter}" 
+															style="display:block; float:left; margin-right:10px;" title="Поиск" />
+												<h:commandButton value=" " action="#{reportTemplate.componentRequestSelectModal.bloodComponentOrderList.changePageOffset(0)}"
+															styleClass="searchbutton">
+													<f:ajax execute=":main_content_form:componentRequestSelectModal:filter_string"
+																render=":main_content_form:componentRequestSelectModal:modal_select_table :main_content_form:componentRequestSelectModal:modal_paging" />
+												</h:commandButton>
+											</div>
+											<div class="wrap" style="height:600px;background-color:#fff; clear:both;">
+												<div class="inner" style="height:600px;">
+													<e5ui:dataTable id="modal_select_table" border="0" cellpadding="0" cellspacing="0"
+																value="#{reportTemplate.componentRequestSelectModal.bloodComponentOrderList.documents}"
+																var="row" grouping="false" width="100%">
+														<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																	styleClass="#{reportTemplate.componentRequestSelectModal.selected(row)? 'grid_row_selected': ''}" />
+														<e5ui:column>
+															<f:facet name="header">
+											                    <p>Номер</p>
+											                </f:facet>
+											                <h:commandLink id="selectLink" style="display: none;"
+																		rendered="#{not reportTemplate.componentRequestSelectModal.selected(row)}"
+					                                                    action="#{reportTemplate.componentRequestSelectModal.select(row)}"/>
+					                                        <h:commandLink id="unselectLink" style="display: none;"
+																		rendered="#{reportTemplate.componentRequestSelectModal.selected(row)}"
+																		action="#{reportTemplate.componentRequestSelectModal.unselect(row)}" />
+											                <h:outputText value="#{row.number}" />
+														</e5ui:column>
+														<e5ui:column>
+															<f:facet name="header">
+											                    <p>Дата регистрации</p>
+											                </f:facet>
+															<h:outputText value="#{row.created}">
+																<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+															</h:outputText>
+														</e5ui:column>
+														<e5ui:column>
+															<f:facet name="header">
+										                        <p>ФИО реципиента</p>
+										                    </f:facet>
+															<h:outputText value="#{row.recipient}" />
+														</e5ui:column>
+														<e5ui:column>
+															<f:facet name="header">
+										                        <p>Компонент</p>
+										                    </f:facet>
+															<h:outputText value="#{row.componentType}" converter="BloodComponentTypeConverter" />
+														</e5ui:column>
+														<e5ui:column>
+															<f:facet name="header">
+																<p>Вид трансфузии</p>
+										                    </f:facet>
+															<h:outputText value="#{row.transfusionType eq 0? 'Плановая': 'Экстренная'}" />
+															<h:panelGroup rendered="#{row.transfusionType eq 0}">
+																<span style="margin:0 3px;">на дату</span>
+																<h:outputText value="#{row.planDate}">
+																	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+																</h:outputText>
+															</h:panelGroup>
+														</e5ui:column>
+														<e5ui:column>
+															<f:facet name="header">
+										                        <p>Статус</p>
+										                    </f:facet>
+															<h:outputText value="#{row.statusName}" />
+														</e5ui:column>
+													</e5ui:dataTable>
+												</div>
+											</div>
+											<div style="clear:both;">
+												<h:panelGroup id="modal_paging">
+												<e5ui-comp:tablePager id="pager" documentListHolder="#{reportTemplate.componentRequestSelectModal.bloodComponentOrderList}" />
+			                                  </h:panelGroup>
+			                               </div>
+			                           </div>
+			                           <div class="e5ui-modal-bottombuttons">
+											<h:button onclick="componentRequestSelectModal.clickSave(); return false;" value="Выбрать" />
+											<h:button onclick="componentRequestSelectModal.clickClose(); return false;" value="Отмена" />
+										</div>
+									</e5ui-comp:modalWindow>
+								</td>
+							</tr>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{reportTemplate.document.type eq 3}">
+							<tr class="row">
+								<td colspan="2">
+									<div class="wrap">
+										<div class="inner">
+											<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+														value="#{reportTemplate.document.reportParameters}" var="row" grouping="false">
+												<e5ui:column style="width:220px;">
+													<f:facet name="header">
+											    		<p>Фенотип</p>
+											    	</f:facet>
+													<h:outputText value="#{row.description}" />
+												</e5ui:column>
+												<e5ui:column style="width:220px;">
+													<f:facet name="header">
+											    		<p>Результат</p>
+											    	</f:facet>
+											    	<h:selectOneRadio layout="lineDirection" value="#{row.value}">
+														<f:selectItems value="#{dictionaryManagement.getValuesByCategory(row.classfierName)}" />
+													</h:selectOneRadio>
+												</e5ui:column>
+											</e5ui:dataTable>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</h:panelGroup>
+					</table>
+				</div>
+				
+				<h:panelGroup rendered="#{sessionManagement.admin}">
+					<fieldset>
+						<legend>
+							<label><span class="title">Роли</span></label>
+						</legend>
+						<h:selectManyCheckbox collectionType="java.util.HashSet" layout="pageDirection" value="#{reportTemplate.document.roles}" converter="RoleConverter">
+							<f:selectItems value="#{roleList.availableRoles}" />
+						</h:selectManyCheckbox>
+					</fieldset>
+				</h:panelGroup>
+				
+			</h:panelGroup>
+		</div>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	        <f:facet name="timeoutPanel">
+	        	<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	        		Пожалуйста, подождите...
+	        	</div>
+	        </f:facet>
+	    </e5ui-comp:splashScreen>
+	    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	    
+	    <e5ui:multiMarker id="main_form_marker" rendered="true"
+        			hintWindowStyleClass="e5ui-marker-hintWindow"
+        			hintWindowInfoStyleClass="e5ui-marker-hintWindow-info"
+        			hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
+        			hintWindowErrorStyleClass="e5ui-marker-hintWindow-error"
+        			hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal"
+        			displayMode="window">
+        	<h:button onclick="e5ui_multiMarker.remove('main_form_marker'); return false;" value="ОК" />
+        </e5ui:multiMarker>
+        
+	    <h:outputStylesheet library="css" name="datatable.css" />
+	    <h:outputStylesheet library="css" name="modalWindow.css" />
+	    <h:outputStylesheet library="css" name="multiMarker.css" />
+	</ui:define>
+	
+	
+</ui:composition>
+
+</html>

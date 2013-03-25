@@ -1,0 +1,5 @@
+DROP DATABASE IF EXISTS trfu;
+
+CREATE DATABASE trfu
+  CHARACTER SET utf8
+  COLLATE utf8_general_ci;

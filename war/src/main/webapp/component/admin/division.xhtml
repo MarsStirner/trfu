@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<!-- #{division.document.id}  -->
+		<e5ui-comp:userSessionUpdate interval="300" />
+		<h:outputScript library="js" name="datepicker_init_ru.js" target="head" />
+		<e5ui-comp:outputUtilScript />
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+	
+	<ui:define name="header">
+		<div id="form_header">
+			<div class="actionbar">
+				<div class="menu">
+					<div class="defbutton">
+						<h:commandLink action="#{division.edit}" rendered="#{division.viewState}">
+							<h:graphicImage value="#{resource['images:edit_buttn.png']}" />
+							Редактировать
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{division.cancel}" rendered="#{division.editState or division.createState}">
+							<h:graphicImage value="#{resource['images:button-cancel.png']}" />
+							Отменить
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{division.save}" rendered="#{division.editState or division.createState}">
+							<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+							Сохранить
+						</h:commandLink>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="content">
+		<div id="header_content">
+			<h:panelGroup rendered="#{division.createState}">
+				<div class="name">Новое отделение</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{division.editState or division.viewState}">
+				<div class="name">
+					<div>
+						<span style="margin-right:5px;">Отделение</span>
+						<h:outputText value="#{division.document.name}" />
+					</div>
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{division.notFoundState}">
+				<div class="name">404 - Отделение не найдено</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{division.forbiddenState}">
+				<div class="name">403 - Действие запрещено</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{not(division.createState or division.editState or division.viewState or division.notFoundState or division.forbiddenState)}">
+				<div class="name">В доступе отказано</div>
+			</h:panelGroup>
+		</div>
+		
+		<div class="main_content">
+			<div>
+				<div>
+					<fieldset>
+						<legend>
+							<label><span class="title">Общая информация</span> </label>
+						</legend>
+						<h:panelGroup rendered="#{division.viewState}">
+							<div class="row">
+								<table class="form_grid">
+									
+									<tr class="row">
+										<td class="first">Название:</td>
+										<td><h:outputText value="#{division.document.name}" class="wide" /></td>
+									</tr>
+								</table>
+							</div>
+							</h:panelGroup>
+						
+							<h:panelGroup rendered="#{division.createState or division.editState}">
+							<div class="row">
+								<table class="form_grid">			
+									<tr class="row">
+										<td class="first">Название:</td>
+										<td><h:inputText value="#{division.document.name}" class="wide" /></td>
+									</tr>
+									
+								</table>
+							</div>
+						</h:panelGroup>
+					</fieldset>
+				</div>
+			</div>
+			
+		</div>
+	</ui:define>
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	        <f:facet name="timeoutPanel">
+	        	<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	        		Пожалуйста, подождите...
+	        	</div>
+	        </f:facet>
+	    </e5ui-comp:splashScreen>
+	    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	    
+	    <e5ui:multiMarker id="main_form_marker" rendered="true" hintWindowStyleClass="e5ui-marker-hintWindow"
+        			hintWindowInfoStyleClass="e5ui-marker-hintWindow-info" hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
+        			hintWindowErrorStyleClass="e5ui-marker-hintWindow-error" hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal" displayMode="window">
+        	<h:button onclick="e5ui_multiMarker.remove('main_form_marker'); return false;" value="ОК" />
+        </e5ui:multiMarker>
+	    
+	    <h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+	    <h:outputStylesheet library="css" name="multiMarker.css" />
+	</ui:define>
+	
+</ui:composition>
+</html>

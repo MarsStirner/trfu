@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
+		<h:outputScript library="js" name="views.js" target="head" />
+	</ui:define>
+	
+	<ui:define name="header">
+		<div id="view_header">
+			<div id="header">
+				<div class="menu">
+					<e5ui:formPart id="header_title">
+						<div id="viewtitle">Персональные обращения <h:outputText value="#{requests_personal.filterName}"/></div>
+					</e5ui:formPart>
+					<div class="role">
+						<div class="top">
+							<h:commandLink styleClass="top_link" onclick="return false;">
+		                   		<span>
+									<h:outputText value="#{sessionManagement.currentRole}" converter="RoleConverter" />
+								</span>
+							</h:commandLink>
+							<div class="sub">
+								<ui:repeat value="#{sessionManagement.availableRoles}" var="element">
+									<div class="item">
+										<h:commandLink action="#{sessionManagement.setCurrentRole(element)}">
+											<h:outputText value="#{element}" converter="RoleConverter" />
+										</h:commandLink>
+									</div>
+								</ui:repeat>
+							</div>
+						</div>
+					</div>
+					<div class="username">
+						<div class="top">
+		                   	<h:commandLink styleClass="top_link" onclick="return false;">
+		                   		<span>
+									<h:outputText value="#{sessionManagement.loggedUser.description}" />
+								</span>
+							</h:commandLink>
+							<div class="sub">
+					        	<div class="item">
+					        		<h:commandLink action="#{sessionManagement.logOut}">
+								        Выход
+							        </h:commandLink>
+					        	</div>
+					        </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="actionbar">
+				<div class="menu">
+					<div class="top">
+						<h:commandLink styleClass="top_link" onclick="return false;">
+							<span>
+								<h:graphicImage value="#{resource['images:button-request.png']}" />
+								Новое обращение
+							</span>
+						</h:commandLink>
+						<div class="sub">
+							<div class="item">
+								<h:outputLink value="#{contextPath}/component/examination.xhtml" target="_blank">
+									<f:param name="docAction" value="create" />
+									<f:param name="parentId" value="#{donor.document.id}" />
+									<h:graphicImage value="#{resource['images:button-request.png']}" />
+				                    На обследование
+								</h:outputLink>
+							</div>
+							<div class="item">
+								<h:outputLink value="#{contextPath}/component/blood_donation.xhtml" target="_blank">
+									<f:param name="docAction" value="create" />
+									<f:param name="parentId" value="#{donor.document.id}" />
+									<h:graphicImage value="#{resource['images:button-request.png']}" />
+				                    На донацию
+								</h:outputLink>
+							</div>
+						</div>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{requests_personal.refresh()}">
+							<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+			            	Обновить
+			            	<e5ui:formPartTarget formPart="main_table_part"/>
+			           	</h:commandLink>
+					</div>
+				</div>
+				<e5ui:formPart id="tab_selector">
+					<div class="view_header_tab">
+						<h:commandLink action="#{requests_personal.doFilterExaminationRequests()}" styleClass="#{requests_personal.filterExaminationRequests?'selected_tab' :''}">
+					        <e5ui:formPartTarget formPart="main_table_part header_title tab_selector" />
+					        <span><span>Обращения на обследование</span></span>
+					    </h:commandLink>
+						<h:commandLink action="#{requests_personal.doFilterBloodDonationRequests()}" styleClass="#{requests_personal.filterBloodDonationRequests?'selected_tab' :''}">
+							<e5ui:formPartTarget formPart="main_table_part header_title tab_selector" />
+					        <span><span>Обращения на донацию</span></span>
+					    </h:commandLink>
+					</div>
+				</e5ui:formPart>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="content">
+		<script type="text/javascript">
+			document.ondblclick = function DoubleClick(evt) {
+				if (window.getSelection)
+					window.getSelection().removeAllRanges();
+				else if (document.selection)
+					document.selection.empty();
+			}
+		</script>
+		<h:outputScript>
+        	function goToDocument(url) {
+        		if (url != 0) {
+        			window.open(url,'_blank');
+				}
+			}
+        </h:outputScript>
+        <e5ui:formPart id="main_table_part">
+			<div id="main_table">
+				<div class="wrap_main" id="table_wrap">
+					<div class="inner" id="table_inner">
+						<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+									value="#{requests_personal.documents}"
+									id="requests_tbl"
+									var="row"
+									grouping="false">
+							<e5ui:row ondblclick="goToDocument('#{row.url}');" />
+							<e5ui:column style="min-width:5em">
+								<f:facet name="header">
+			                        <p>Номер</p>
+			                    </f:facet>
+								<h:outputText value="#{row.number}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:7em">
+								<f:facet name="header">
+				                    <p>Дата создания</p>
+				                </f:facet>
+								<h:outputText value="#{row.created}">
+									<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+								</h:outputText>
+							</e5ui:column>
+							<e5ui:column style="min-width:10em">
+								<f:facet name="header">
+			                        <p>Донор</p>
+			                    </f:facet>
+								<h:outputText value="#{row.donor.descriptionShort}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:10em">
+								<f:facet name="header">
+			                        <p>Статус</p>
+			                    </f:facet>
+								<h:outputText value="#{row.statusName}" />
+							</e5ui:column>
+							<e5ui:column  style="min-width:12em">
+								<f:facet name="header">
+			                        <p>Комментарии</p>
+			                    </f:facet>
+								<h:outputText value="#{row.commentary}" />
+							</e5ui:column>
+						</e5ui:dataTable>
+					</div>
+				</div>
+				<div id="table_paging">
+					<e5ui-comp:tablePager documentListHolder="#{requests_personal}" style="display:inline;" />
+					<e5ui-comp:tablePageSizeSelector documentListHolder="#{requests_personal}" style="display:inline;float:right;" pageSizes="10,25,50,100" />
+				</div>
+			</div>
+		</e5ui:formPart>
+	</ui:define>
+	
+</ui:composition>
+
+</html>

@@ -1,0 +1,3 @@
+INSERT INTO trfu.roles (id, name, roleType, uuid) VALUES (1, 'Администратор', 'ENTERPRISE_ADMINISTRATION', null);
+INSERT INTO trfu.person (id, created, deleted, email, firstName, lastName, login, middleName, password, selectedRole_id, appointment_id, uuid, mobilePhone, phone) VALUES (1, '2011-11-24 11:03:30.0', 1, '*****', '', 'Admin', 'Admin', '', 'Admin', 1, null, null, null, null);
+INSERT INTO trfu.person_roles (person_id, role_id) VALUES (1, 1);

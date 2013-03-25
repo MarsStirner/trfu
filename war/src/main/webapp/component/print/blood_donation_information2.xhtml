@@ -1,0 +1,314 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Справка</title>
+</h:head>
+
+<h:body>
+	<!-- #{bloodDonation.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+	    <table border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+	                <td width="246" colspan="2" valign="top">
+	                    <p align="center">
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                        <b>
+	                            <p>
+	                            </p>
+	                        </b>
+	                    </p>
+	                </td>
+	                <td width="93">
+                         <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{bloodDonation.document.number}"  converter="Code128Converter" /><br />
+                         Донация: <h:outputText value="#{bloodDonation.document.number}"/>
+	                </td>
+	                <td width="285" valign="top">
+	                    <p align="center">
+	                        Медицинская документация
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        Форма N 402/у
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        Утверждена Приказом
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        Минздрава СССР
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        от 7 августа 1985 г. N 1055
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" colspan="2" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="93" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="285" valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" colspan="2" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="93" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="285" valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p align="center">
+	                        <b>Справка №</b>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                       Донор: &nbsp;&nbsp; <h:outputText value="#{bloodDonation.document.donor.description}" style="font-weight:bold;" />
+	                        <p>
+	                        </p>
+	                    </p>
+
+	                    <p align="center">
+	                        <b>
+	                            <p>
+	                                 
+	                            </p>
+	                        </b>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        в том, что он(она) дал(а) кровь ____________________________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        <i>(число, месяц, год)</i>
+	                        <b>
+	                            <i>
+	                                <p>
+	                                </p>
+	                            </i>
+	                        </b>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        Дана для предъявления по месту работы.
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        В день дачи крови за донором сохраняется средняя заработная плата по месту работы и предоставляется дополнительный день отдыха, который
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        по его желанию может быть присоединен к очередному отпуску.
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        Основание: распоряжение Совета Министров СССР от 30.11.55 г.N 8065-Р и разъяснение  Государственного  Комитета  Совета  Министров СССР
+	                        по вопросам труда и заработной платы от 12.09.56 г. N 188-АВ.
+	                        <b>
+	                            <p>
+	                            </p>
+	                        </b>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="243" valign="top">
+	                    <p>
+	                        Печать
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="380" colspan="3" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="243" valign="top">
+	                    <p>
+	                        Лицо, выдавшее справку
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="380" colspan="3" valign="top">
+	                    <p align="center">
+	                        _________________________________________                                                                       (подпись)
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	        </tbody>
+	    </table>
+	    <table border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+	                <td width="246" colspan="2" valign="top">
+	                    <br/>
+	                </td>
+	                <td width="93">
+	                    <br/>
+	                </td>
+	                <td width="285" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" colspan="2" valign="top">
+	                    <br/>
+	                </td>
+	                <td width="93" valign="top">
+	                    <br/>
+	                </td>
+	                <td width="285" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" colspan="2" valign="top">
+	                    <br/>
+	                </td>
+	                <td width="93" valign="top">
+	                    <br/>
+	                </td>
+	                <td width="285" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="243" valign="top">
+	                    <br/>
+	                </td>
+	                <td width="380" colspan="3" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="243" valign="top">
+	                    <br/>
+	                </td>
+	                <td width="380" colspan="3" valign="top">
+	                    <br/>
+	                </td>
+	            </tr>
+	        </tbody>
+	    </table>
+	</div>
+</h:body>
+
+</html>

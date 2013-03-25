@@ -1,0 +1,1199 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:e5ui="http://efive.ru/uitemplates"
+      xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+
+<ui:define name="running_head">
+    <!-- #{examination.document.id}  -->
+    <e5ui-comp:userSessionUpdate interval="300"/>
+    <h:outputScript library="js" name="datepicker_init_ru.js" target="head"/>
+    <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+    <h:outputScript library="js" name="forms.js" target="head"/>
+    <e5ui-comp:outputUtilScript/>
+</ui:define>
+
+<ui:define name="left_menu"></ui:define>
+
+<ui:define name="header">
+    <div id="form_header">
+        <div class="actionbar">
+            <div class="menu">
+                <div class="defbutton">
+                    <h:commandLink action="#{examination.edit}" rendered="#{examination.viewState}">
+                        <h:graphicImage value="#{resource['images:edit_buttn.png']}"/>
+                        Редактировать
+                    </h:commandLink>
+                </div>
+                <div class="defbutton">
+                    <h:commandLink action="#{examination.cancel}"
+                                   rendered="#{examination.editState or examination.createState}">
+                        <h:graphicImage value="#{resource['images:button-cancel.png']}"/>
+                        Отменить
+                    </h:commandLink>
+                </div>
+                <div class="defbutton">
+                    <h:commandLink action="#{examination.save}"
+                                   rendered="#{examination.editState or examination.createState}">
+                        <h:graphicImage value="#{resource['images:save_buttn.png']}"/>
+                        Сохранить
+                    </h:commandLink>
+                </div>
+                <div class="defbutton">
+                    <e5ui:formPart id="actions_fp">
+                        <h:commandLink onclick="actionsModal.clickOpen('actionsModal'); return false;">
+                            <h:graphicImage value="#{resource['images:button-do.png']}"/>
+                            Действия
+                        </h:commandLink>
+                        <e5ui-comp:modalWindow id="actionsModal"
+                                               modalWindowHolder="#{examination.processorModal}"
+                                               render=":main_content_form"
+                                               execute="@this:modal_date @this:modal_time selectedAction"
+                                               showButtons="false"
+                                               widgetVar="actionsModal">
+                            <h:panelGroup rendered="#{not(examination.processorModal.processingState)}">
+                                <div id="title">Действия</div>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{examination.processorModal.actionsAvailable}">
+                                <div class="wrap" style="height:90px;background-color:#fff;clear:both;">
+                                    <div class="inner" style="height: 90px;">
+                                        <e5ui:dataTable id="action_select_table" border="0"
+                                                        cellpadding="0" cellspacing="0"
+                                                        value="#{examination.processorModal.availableActions}" var="row"
+                                                        grouping="false" width="100%">
+                                            <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+                                                      styleClass="#{examination.processorModal.selected(row)? 'grid_row_selected': ''}"/>
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>Доступные действия</p>
+                                                </f:facet>
+                                                <h:outputText value="#{row.name}"/>
+                                                <h:commandLink id="selectLink" style="display: none;"
+                                                               rendered="#{not examination.processorModal.selected(row)}"
+                                                               action="#{examination.processorModal.select(row)}"/>
+                                            </e5ui:column>
+                                        </e5ui:dataTable>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                            <h:panelGroup
+                                    rendered="#{examination.processorModal.noActionsAvailable or examination.processorModal.failureState or examination.processorModal.processedState}">
+                                <div style="padding-left: 10px;">
+                                    <ui:repeat value="#{examination.processorModal.actionResult.split(':')}"
+                                               var="element">
+                                        <h:outputText value="#{element}"/>
+                                        <br/>
+                                    </ui:repeat>
+                                </div>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{examination.processorModal.processingState}">
+                                <e5ui:include data="#{examination.processorModal.processedActivity.document.form}"/>
+                            </h:panelGroup>
+                            <div class="e5ui-modal-bottombuttons">
+                                <h:commandButton action="#{examination.processorModal.process()}"
+                                                 rendered="#{examination.processorModal.actionsAvailable or examination.processorModal.processingState}"
+                                                 value="Выполнить"/>
+                                <h:button
+                                        rendered="#{examination.processorModal.actionsAvailable or examination.processorModal.processingState}"
+                                        onclick="actionsModal.clickClose(); return false;"
+                                        value="Отмена"/>
+                                <h:button
+                                        rendered="#{examination.processorModal.noActionsAvailable or examination.processorModal.failureState or (examination.processorModal.processedState and (examination.processorModal.selectedAction.id ne 4))}"
+                                        onclick="actionsModal.clickClose(); return false;"
+                                        value="Закрыть"/>
+                                <h:commandButton action="#{examination.composeDonation()}"
+                                                 rendered="#{examination.processorModal.processedState and (examination.processorModal.selectedAction.id eq 4)}"
+                                                 value="Закрыть"/>
+                            </div>
+                        </e5ui-comp:modalWindow>
+                    </e5ui:formPart>
+                </div>
+                <div class="top">
+                    <h:commandLink styleClass="top_link" onclick="return false;">
+                    		<span>
+								<h:graphicImage value="#{resource['images:button-print.png']}"/>
+								Печать
+							</span>
+                    </h:commandLink>
+                    <div class="sub">
+                        <div class="item">
+                            <h:outputLink value="#{contextPath}/component/print/appointment_card_all.xhtml"
+                                          target="_blank">
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="docId" value="#{examination.document.id}"/>
+                                Направления на исследование
+                            </h:outputLink>
+                        </div>
+                        <div class="item">
+                            <h:outputLink value="#{contextPath}/component/print/appointment_card_protocol.xhtml"
+                                          target="_blank">
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="docId" value="#{examination.document.id}"/>
+                                Протоколы исследований
+                            </h:outputLink>
+                        </div>
+                        <div class="item">
+                            <h:outputLink value="#{contextPath}/component/print/donation_appointment.xhtml"
+                                          target="_blank">
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="docId" value="#{examination.document.id}"/>
+                                Кроводача, осмотр врача
+                            </h:outputLink>
+                        </div>
+                        <div class="item">
+                            <h:outputLink value="#{contextPath}/component/print/blood_donation_information.xhtml"
+                                          target="_blank">
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="docId" value="#{examination.document.id}"/>
+                                Справка о кроводаче
+                            </h:outputLink>
+                        </div>
+                        <div class="item">
+                            <h:outputLink value="#{contextPath}/component/print/external_appointment_card.xhtml"
+                                          target="_blank">
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="docId" value="#{examination.document.id}"/>
+                                Направление в поликлинику
+                            </h:outputLink>
+                        </div>
+                        <div class="item">
+                            <h:outputLink value="#{contextPath}/component/print/donor405.xhtml" target="_blank">
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="docId" value="#{examination.document.id}"/>
+                                Форма 405У
+                            </h:outputLink>
+                        </div>
+                        <div class="item">
+                            <h:outputLink value="#{contextPath}/component/print/donor405plain.xhtml" target="_blank">
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="docId" value="#{examination.document.id}"/>
+                                Форма 405У - История
+                            </h:outputLink>
+                        </div>
+                        <div class="item">
+                            <h:outputLink value="#{contextPath}/component/print/information.xhtml" target="_blank">
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="docId" value="#{examination.document.id}"/>
+                                Справка об обследовании
+                            </h:outputLink>
+                        </div>
+
+                        <div class="item">
+                            <h:commandLink action='#{reports.hibernatePrintReportByRequestParams()}'>
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="requestNumber" value="#{examination.document.number}"/>
+                                <f:param name="printerName" value="#{propertiesHolder.getProperty('application','reports.smallLabel.printerName')}"/>
+                                <f:param name="reportName" value="Barcode4JReport.jrxml"/>
+                                Маленькая этикетка
+                            </h:commandLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ui:define>
+
+<ui:define name="content">
+<div id="header_content">
+    <h:panelGroup rendered="#{examination.createState}">
+        <div class="name">Новое обследование</div>
+        <div class="title">
+            <h:outputText value="#{examination.document.statusName}"/>
+        </div>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{examination.editState or examination.viewState}">
+        <div class="name">
+            <div>
+                <h:outputText value="#{examination.document.examinationType eq 0? 'Первичное': 'Повторное'}"/>
+                <span style="margin:0 5px;">обследование</span>
+                <h:outputText value="#{examination.document.number}"/>
+                <span style="margin:0 5px;">от</span>
+                <h:outputText value="#{examination.document.created}">
+                    <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+                </h:outputText>
+            </div>
+        </div>
+        <div class="title">
+            <div>
+                <h:outputText value="#{examination.document.statusName}"/>
+            </div>
+            <h:panelGroup rendered="#{examination.document.statusId lt 0}">
+                <div>
+                    <h:outputText value="#{examination.document.rejection.rejectionType.value}"/>
+                </div>
+            </h:panelGroup>
+        </div>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{examination.notFoundState}">
+        <div class="name">404 - Обследование не найдено</div>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{examination.forbiddenState}">
+        <div class="name">403 - Действие запрещено</div>
+    </h:panelGroup>
+    <h:panelGroup
+            rendered="#{not(examination.createState or examination.editState or examination.viewState or examination.notFoundState or examination.forbiddenState)}">
+        <div class="name">В доступе отказано</div>
+    </h:panelGroup>
+</div>
+
+<div class="main_content">
+<div class="#{(examination.document.statusId eq 1) or (examination.document.statusId eq 9)? '': 'tileleft'}">
+<div>
+<fieldset>
+<legend>
+    <label><span class="title">Общая информация</span> </label>
+</legend>
+<h:panelGroup rendered="#{examination.viewState}">
+    <div class="row">
+        <table class="form_grid">
+            <tr class="row">
+                <td class="first">Тип обследования:</td>
+                <td>
+                    <h:outputText value="#{examination.document.examinationType eq 0? 'Первичное': 'Повторное'}"
+                                  class="wide"/>
+                </td>
+            </tr>
+            <tr class="row">
+                <td class="first">Донор:</td>
+                <td>
+                    <h:outputText value="#{examination.document.donor.description}" style="font-weight:bold;"
+                                  class="wide"/>
+                    <h:outputLink rendered="#{examination.document.donor ne null}" style="margin-left:5px;"
+                                  value="#{contextPath}/component/donor.xhtml" target="_blank">
+                        <h:graphicImage value="#{resource['images:link.png']}"/>
+                        <f:param name="docId" value="#{examination.document.donor.id}"/>
+                    </h:outputLink>
+                </td>
+            </tr>
+            <tr class="row">
+                <td class="first">Дата/время регистрации:</td>
+                <td>
+                    <h:outputText value="#{examination.document.created}" class="wide">
+                        <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+                    </h:outputText>
+                </td>
+            </tr>
+            <tr class="row">
+                <td class="first">Медицинский регистратор:</td>
+                <td>
+                    <h:outputText value="#{examination.document.registrator.description}"/>
+                </td>
+            </tr>
+            <tr class="row">
+                <td class="first">Врач-трансфузиолог:</td>
+                <td>
+                    <h:outputText value="#{examination.document.therapist.description}" class="wide"/>
+                </td>
+            </tr>
+            <tr class="row">
+                <td class="first">Медицинская сестра:</td>
+                <td>
+                    <h:outputText value="#{examination.document.staffNurse.description}" class="wide"/>
+                </td>
+            </tr>
+            <tr class="row">
+                <td class="first">Комментарии:</td>
+                <td>
+                    <h:outputText value="#{examination.document.commentary}" class="wide"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</h:panelGroup>
+<h:panelGroup rendered="#{examination.createState or examination.editState}">
+<div class="row">
+<table class="form_grid">
+<tr class="row">
+    <td class="first">Тип обследования:</td>
+    <td>
+        <h:panelGroup rendered="#{examination.document.statusId eq 1}">
+            <h:selectOneRadio layout="lineDirection" value="#{examination.document.examinationType}">
+                <f:selectItem itemLabel="Первичное" itemValue="0"/>
+                <f:selectItem itemLabel="Повторное" itemValue="1"/>
+            </h:selectOneRadio>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{not (examination.document.statusId eq 1)}">
+            <h:outputText value="#{examination.document.examinationType eq 0? 'Первичное': 'Повторное'}" class="wide"/>
+        </h:panelGroup>
+    </td>
+</tr>
+<tr class="row">
+    <td class="first">
+        <h:panelGroup rendered="#{sessionManagement.admin or (examination.document.donor eq null)}">
+            <h:outputLink onclick="donorSelectVar.clickOpen('donorSelectModal'); return false;">
+                Донор:
+            </h:outputLink>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{not(sessionManagement.admin or (examination.document.donor eq null))}">
+            Донор:
+        </h:panelGroup>
+    </td>
+    <td>
+        <h:panelGroup id="donor_info">
+            <h:outputText id="donor" value="#{examination.document.donor.description}" style="font-weight:bold;"
+                          class="wide"/>
+            <h:outputLink rendered="#{examination.document.donor ne null}" style="margin-left:5px;"
+                          value="#{contextPath}/component/donor.xhtml" target="_blank">
+                <h:graphicImage value="#{resource['images:link.png']}"/>
+                <f:param name="docId" value="#{examination.document.donor.id}"/>
+            </h:outputLink>
+        </h:panelGroup>
+
+        <e5ui-comp:modalWindow id="donorSelectModal"
+                               modalWindowHolder="#{examination.donorSelectModal}"
+                               render=":main_content_form:donor_info"
+                               execute="donor_select_table"
+                               showButtons="false"
+                               style="width: 500px;"
+                               widgetVar="donorSelectVar">
+            <div id="title">Выбор донора</div>
+            <div id="donor_list" style="margin-top:0;">
+                <div class="searchbar">
+                    <h:inputText id="filter_string" value="#{examination.donorSelectModal.donorList.filter}"
+                                 style="display:block; float:left; margin-right:10px;" title="Поиск"/>
+                    <h:commandButton value=" " action="#{examination.donorSelectModal.donorList.changePageOffset(0)}"
+                                     styleClass="searchbutton">
+                        <f:ajax execute=":main_content_form:donorSelectModal:filter_string"
+                                render=":main_content_form:donorSelectModal:donor_select_table :main_content_form:donorSelectModal:donor_paging"/>
+                    </h:commandButton>
+                </div>
+                <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+                    <div class="inner" style="height:300px;">
+                        <e5ui:dataTable id="donor_select_table" border="0" cellpadding="0" cellspacing="0"
+                                        value="#{examination.donorSelectModal.donorList.documents}"
+                                        var="row" grouping="false" width="100%">
+                            <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+                                      styleClass="#{examination.donorSelectModal.selected(row)? 'grid_row_selected': ''}"/>
+                            <e5ui:column>
+                                <f:facet name="header">
+                                    <p>Донор</p>
+                                </f:facet>
+                                <h:outputText value="#{row.description}"/>
+                                <h:commandLink id="selectLink" style="display: none;"
+                                               rendered="#{not examination.donorSelectModal.selected(row)}"
+                                               action="#{examination.donorSelectModal.select(row)}"/>
+                            </e5ui:column>
+                        </e5ui:dataTable>
+                    </div>
+                </div>
+                <div style="clear:both;">
+                    <h:panelGroup id="donor_paging">
+                        <e5ui-comp:tablePager documentListHolder="#{examination.donorSelectModal.donorList}"/>
+                    </h:panelGroup>
+                </div>
+            </div>
+            <div class="e5ui-modal-bottombuttons">
+                <h:button onclick="donorSelectVar.clickSave(); return false;" value="Выбрать"/>
+                <h:button onclick="donorSelectVar.clickClose(); return false;" value="Отмена"/>
+            </div>
+        </e5ui-comp:modalWindow>
+
+    </td>
+</tr>
+<tr class="row">
+    <td class="first">Дата/время регистрации:</td>
+    <td>
+        <h:outputText value="#{examination.document.created}" class="wide">
+            <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+        </h:outputText>
+    </td>
+</tr>
+<tr class="row">
+    <td class="first">Медицинский регистратор:</td>
+    <td>
+        <h:outputText id="registrator" value="#{examination.document.registrator.description}"/>
+    </td>
+</tr>
+<tr class="row">
+    <td class="first">
+        <h:outputLink onclick="therapistSelectVar.clickOpen('therapistSelectModal'); return false;">
+            Врач-трансфузиолог:
+        </h:outputLink>
+    </td>
+    <td>
+        <h:outputText id="therapist" value="#{examination.document.therapist.description}" class="wide"/>
+        <e5ui-comp:modalWindow id="therapistSelectModal"
+                               modalWindowHolder="#{examination.therapistSelectModal}"
+                               render=":main_content_form:therapist"
+                               execute="user_select_table"
+                               showButtons="false"
+                               style="width: 500px;"
+                               widgetVar="therapistSelectVar">
+            <div id="title">Выбор врача-трансфузиолога</div>
+            <div id="user_list" style="margin-top:0;">
+                <div class="searchbar">
+                    <h:inputText id="filter_string" value="#{examination.therapistSelectModal.userList.filter}"
+                                 style="display:block; float:left; margin-right:10px;" title="Поиск"/>
+                    <h:commandButton value=" " action="#{examination.therapistSelectModal.userList.changePageOffset(0)}"
+                                     styleClass="searchbutton">
+                        <f:ajax execute=":main_content_form:therapistSelectModal:filter_string"
+                                render=":main_content_form:therapistSelectModal:user_select_table :main_content_form:therapistSelectModal:user_paging"/>
+                    </h:commandButton>
+                </div>
+                <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+                    <div class="inner" style="height:300px;">
+                        <e5ui:dataTable id="user_select_table" border="0" cellpadding="0" cellspacing="0"
+                                        value="#{examination.therapistSelectModal.userList.documents}"
+                                        var="row" grouping="false" width="100%">
+                            <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+                                      styleClass="#{examination.therapistSelectModal.selected(row)? 'grid_row_selected': ''}"/>
+                            <e5ui:column>
+                                <f:facet name="header">
+                                    <p>Врач-трансфузиолог</p>
+                                </f:facet>
+                                <h:outputText value="#{row.description}"/>
+                                <h:commandLink id="selectLink" style="display: none;"
+                                               rendered="#{not examination.therapistSelectModal.selected(row)}"
+                                               action="#{examination.therapistSelectModal.select(row)}"/>
+                            </e5ui:column>
+                        </e5ui:dataTable>
+                    </div>
+                </div>
+                <div style="clear:both;">
+                    <h:panelGroup id="user_paging">
+                        <e5ui-comp:tablePager documentListHolder="#{examination.therapistSelectModal.userList}"/>
+                    </h:panelGroup>
+                </div>
+            </div>
+            <div class="e5ui-modal-bottombuttons">
+                <h:button onclick="therapistSelectVar.clickSave(); return false;" value="Выбрать"/>
+                <h:button onclick="therapistSelectVar.clickClose(); return false;" value="Отмена"/>
+            </div>
+        </e5ui-comp:modalWindow>
+    </td>
+</tr>
+<tr class="row">
+    <td class="first">
+        <h:outputLink onclick="staffNurseSelectVar.clickOpen('staffNurseSelectModal'); return false;">
+            Медицинская сестра:
+        </h:outputLink>
+    </td>
+    <td>
+        <h:outputText id="staffNurse" value="#{examination.document.staffNurse.description}" class="wide"/>
+        <e5ui-comp:modalWindow id="staffNurseSelectModal"
+                               modalWindowHolder="#{examination.staffNurseSelectModal}"
+                               render=":main_content_form:staffNurse"
+                               execute="user_select_table"
+                               showButtons="false"
+                               style="width: 500px;"
+                               widgetVar="staffNurseSelectVar">
+            <div id="title">Выбор медицинской сестры</div>
+            <div id="user_list" style="margin-top:0;">
+                <div class="searchbar">
+                    <h:inputText id="filter_string" value="#{examination.staffNurseSelectModal.userList.filter}"
+                                 style="display:block; float:left; margin-right:10px;" title="Поиск"/>
+                    <h:commandButton value=" "
+                                     action="#{examination.staffNurseSelectModal.userList.changePageOffset(0)}"
+                                     styleClass="searchbutton">
+                        <f:ajax execute=":main_content_form:staffNurseSelectModal:filter_string"
+                                render=":main_content_form:staffNurseSelectModal:user_select_table :main_content_form:staffNurseSelectModal:user_paging"/>
+                    </h:commandButton>
+                </div>
+                <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+                    <div class="inner" style="height:300px;">
+                        <e5ui:dataTable id="user_select_table" border="0" cellpadding="0" cellspacing="0"
+                                        value="#{examination.staffNurseSelectModal.userList.documents}"
+                                        var="row" grouping="false" width="100%">
+                            <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+                                      styleClass="#{examination.staffNurseSelectModal.selected(row)? 'grid_row_selected': ''}"/>
+                            <e5ui:column>
+                                <f:facet name="header">
+                                    <p>Медицинская сестра</p>
+                                </f:facet>
+                                <h:outputText value="#{row.description}"/>
+                                <h:commandLink id="selectLink" style="display: none;"
+                                               rendered="#{not examination.staffNurseSelectModal.selected(row)}"
+                                               action="#{examination.staffNurseSelectModal.select(row)}"/>
+                            </e5ui:column>
+                        </e5ui:dataTable>
+                    </div>
+                </div>
+                <div style="clear:both;">
+                    <h:panelGroup id="user_paging">
+                        <e5ui-comp:tablePager documentListHolder="#{examination.staffNurseSelectModal.userList}"/>
+                    </h:panelGroup>
+                </div>
+            </div>
+            <div class="e5ui-modal-bottombuttons">
+                <h:button onclick="staffNurseSelectVar.clickSave(); return false;" value="Выбрать"/>
+                <h:button onclick="staffNurseSelectVar.clickClose(); return false;" value="Отмена"/>
+            </div>
+        </e5ui-comp:modalWindow>
+    </td>
+</tr>
+<tr class="row">
+    <td class="first">Комментарии:</td>
+    <td>
+        <h:inputTextarea value="#{examination.document.commentary}"/>
+    </td>
+</tr>
+</table>
+</div>
+</h:panelGroup>
+
+<h:panelGroup
+        rendered="#{not (examination.document.anamnesis eq null) and (examination.document.examinationType eq 0)}">
+    <h:panelGroup rendered="#{not (examination.anamnesisEditable and examination.editState)}">
+        <div class="row">
+            <table class="form_grid">
+                <tr class="row">
+                    <td class="first">Наследственность:</td>
+                    <td>
+                        <h:outputText value="#{examination.document.anamnesis.heredity}" class="wide"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Перенесенные заболевания (в том числе операции)<br/>и их давность:</td>
+                    <td>
+                        <h:outputText value="#{examination.document.anamnesis.sicknesses}" class="wide"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Трансфузии крови:</td>
+                    <td>
+                        <h:outputText value="#{examination.document.anamnesis.transfusions}" class="wide"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Прививки, вакцинации и их давность:</td>
+                    <td>
+                        <h:outputText value="#{examination.document.anamnesis.vaccinations}" class="wide"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first" colspan="2">
+
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Заключение о годности к донорству:</td>
+                    <td>
+                        <h:outputText value="#{examination.document.anamnesis.conclusion}" class="wide"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{examination.anamnesisEditable and examination.editState}">
+        <div class="row">
+            <table class="form_grid">
+                <tr class="row">
+                    <td class="first">
+                        <h:outputLink onclick="hereditySelectVar.clickOpen('hereditySelectModal'); return false;">
+                            Наследственность:
+                        </h:outputLink>
+                    </td>
+                    <td>
+                        <h:inputTextarea id="heredity" value="#{examination.document.anamnesis.heredity}" class="wide"/>
+                        <e5ui-comp:modalWindow id="hereditySelectModal"
+                                               modalWindowHolder="#{examination.hereditySelectModal}"
+                                               render=":main_content_form:heredity"
+                                               execute="classifier_select_table"
+                                               showButtons="false"
+                                               style="width:400px;"
+                                               widgetVar="hereditySelectVar">
+                            <div id="title">Информация о наследственности</div>
+                            <div id="user_list" style="margin-top:0;">
+                                <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+                                    <div class="inner" style="height:300px;">
+                                        <e5ui:dataTable id="classifier_select_table" border="0" cellpadding="0"
+                                                        cellspacing="0"
+                                                        value="#{examination.hereditySelectModal.classifierList}"
+                                                        var="row" grouping="false" width="100%">
+                                            <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+                                                      styleClass="#{examination.hereditySelectModal.selected(row)? 'grid_row_selected': ''}"/>
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>Наследственность</p>
+                                                </f:facet>
+                                                <h:outputText value="#{row.value}"/>
+                                                <h:commandLink id="selectLink" style="display: none;"
+                                                               rendered="#{not examination.hereditySelectModal.selected(row)}"
+                                                               action="#{examination.hereditySelectModal.select(row)}"/>
+                                            </e5ui:column>
+                                        </e5ui:dataTable>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="e5ui-modal-bottombuttons">
+                                <h:button onclick="hereditySelectVar.clickSave(); return false;" value="Выбрать"/>
+                                <h:button onclick="hereditySelectVar.clickClose(); return false;" value="Отмена"/>
+                            </div>
+                        </e5ui-comp:modalWindow>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">
+                        <h:outputLink onclick="sicknessesSelectVar.clickOpen('sicknessesSelectModal'); return false;">
+                            Перенесенные заболевания (в том числе операции)<br/>и их давность:
+                        </h:outputLink>
+                    </td>
+                    <td>
+                        <h:inputTextarea id="sicknesses" value="#{examination.document.anamnesis.sicknesses}"
+                                         class="wide"/>
+                        <e5ui-comp:modalWindow id="sicknessesSelectModal"
+                                               modalWindowHolder="#{examination.sicknessesSelectModal}"
+                                               render=":main_content_form:sicknesses"
+                                               execute="classifier_select_table"
+                                               showButtons="false"
+                                               style="width:400px;"
+                                               widgetVar="sicknessesSelectVar">
+                            <div id="title">Информация о перенесенных заболеваниях</div>
+                            <div id="user_list" style="margin-top:0;">
+                                <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+                                    <div class="inner" style="height:300px;">
+                                        <e5ui:dataTable id="classifier_select_table" border="0" cellpadding="0"
+                                                        cellspacing="0"
+                                                        value="#{examination.sicknessesSelectModal.classifierList}"
+                                                        var="row" grouping="false" width="100%">
+                                            <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+                                                      styleClass="#{examination.sicknessesSelectModal.selected(row)? 'grid_row_selected': ''}"/>
+                                            <e5ui:column>
+                                                <f:facet name="header">
+                                                    <p>Перенесенные заболевания</p>
+                                                </f:facet>
+                                                <h:outputText value="#{row.value}"/>
+                                                <h:commandLink id="selectLink" style="display: none;"
+                                                               rendered="#{not examination.sicknessesSelectModal.selected(row)}"
+                                                               action="#{examination.sicknessesSelectModal.select(row)}"/>
+                                            </e5ui:column>
+                                        </e5ui:dataTable>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="e5ui-modal-bottombuttons">
+                                <h:button onclick="sicknessesSelectVar.clickSave(); return false;" value="Выбрать"/>
+                                <h:button onclick="sicknessesSelectVar.clickClose(); return false;" value="Отмена"/>
+                            </div>
+                        </e5ui-comp:modalWindow>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Трансфузии крови:</td>
+                    <td>
+                        <h:inputTextarea value="#{examination.document.anamnesis.transfusions}"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Прививки, вакцинации и их давность:</td>
+                    <td>
+                        <h:inputTextarea value="#{examination.document.anamnesis.vaccinations}"/>
+                    </td>
+                </tr>
+                <tr class="row">
+                    <td class="first">Заключение о годности к донорству:</td>
+                    <td>
+                        <h:inputTextarea value="#{examination.document.anamnesis.conclusion}"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </h:panelGroup>
+</h:panelGroup>
+</fieldset>
+</div>
+<h:panelGroup rendered="#{not ((examination.document.statusId eq 1) or (examination.document.statusId eq 9))}">
+<div>
+<fieldset>
+<legend>
+    <label><span class="title">
+									Результаты анализов
+									<h:panelGroup
+                                            rendered="#{sessionManagement.admin and (examination.document.appointment ne null)}">
+                                        <h:commandLink style="margin-left:3px;"
+                                                       action="#{applicationSetup.initializeExternalAnalysisHistoryModal(examination.document.appointment)}">
+                                            ...
+                                        </h:commandLink>
+                                    </h:panelGroup>
+								</span></label>
+</legend>
+<e5ui-comp:modalWindow id="externalAnalysisHistoryModal"
+                       modalWindowHolder="#{applicationSetup.externalAnalysisHistoryModal}"
+                       style="min-width:600px;" showButtons="false" widgetVar="externalAnalysisHistoryModal">
+    <div id="title">Поступившие результаты анализов</div>
+    <div id="modal_container" style="margin-top: 0;">
+        <div class="wrap" style="height:300px;">
+            <div class="inner" style="height:300px;">
+                <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+                                value="#{applicationSetup.externalAnalysisHistoryModal.entries}"
+                                style="width:100%;" var="row" grouping="false">
+                    <e5ui:column style="min-width:3em;">
+                        <f:facet name="header">
+                            <p>Код</p>
+                        </f:facet>
+                        <h:outputText value="#{row.indicatorCode}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:6em;">
+                        <f:facet name="header">
+                            <p>Название</p>
+                        </f:facet>
+                        <h:outputText value="#{row.indicatorName}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Прибор</p>
+                        </f:facet>
+                        <h:outputText value="#{row.deviceName}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Значение</p>
+                        </f:facet>
+                        <h:outputText value="#{row.resultValueText}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Ед. изм.</p>
+                        </f:facet>
+                        <h:outputText value="#{row.resultUnit}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Норма</p>
+                        </f:facet>
+                        <h:outputText value="#{row.resultNormString}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Выполнено</p>
+                        </f:facet>
+                        <h:outputText value="#{row.resultSignDate}">
+                            <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+                        </h:outputText>
+                    </e5ui:column>
+                </e5ui:dataTable>
+            </div>
+        </div>
+    </div>
+    <div class="e5ui-modal-bottombuttons">
+        <h:button onclick="externalAnalysisHistoryModal.clickClose(); return false;" value="Закрыть"/>
+    </div>
+</e5ui-comp:modalWindow>
+<div class="wrap" style="height:246px;">
+    <div class="inner" style="height:246px;">
+        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+                        value="#{examination.document.testList}"
+                        style="width:100%;" var="row" grouping="false">
+            <e5ui:column style="min-width: 3em; max-width: 120px; word-wrap: break-word;">
+                <f:facet name="header">
+                    <p>Анализ</p>
+                </f:facet>
+                <h:outputText value="#{row.type.value}"/>
+            </e5ui:column>
+            <e5ui:column style="min-width:10em;">
+                <f:facet name="header">
+                    <p>Результат</p>
+                </f:facet>
+                <h:panelGroup rendered="#{row.valueType eq 2}">
+                    <h:commandLink action="#{applicationSetup.initializeAnalysisValueListModal(row)}">
+                        <h:outputText value="#{row.valueShort}"/>
+                    </h:commandLink>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{row.valueType ne 2}">
+                    <h:panelGroup rendered="#{examination.anamnesisEditable and examination.editState}">
+                        <h:panelGroup rendered="#{row.type.fieldType eq 0}">
+                            <h:inputText class="wide" value="#{row.value}"/>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{row.type.fieldType eq 1}">
+                            <h:inputTextarea class="wide" value="#{row.value}"/>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{row.type.fieldType eq 3}">
+                            <h:selectOneMenu value="#{row.value}">
+                                <f:selectItems
+                                        value="#{dictionaryManagement.getValuesByCategoryWithEmpty(row.type.value)}"/>
+                            </h:selectOneMenu>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{row.type.fieldType eq 4}">
+                            <h:selectOneRadio layout="lineDirection" value="#{row.value}">
+                                <f:selectItems
+                                        value="#{dictionaryManagement.getValuesByCategoryWithEmpty(row.type.value)}"/>
+                            </h:selectOneRadio>
+                        </h:panelGroup>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{not (examination.anamnesisEditable and examination.editState)}">
+                        <h:outputText value="#{row.value}" class="wide"/>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </e5ui:column>
+            <e5ui:column style="min-width:5em;">
+                <f:facet name="header">
+                    <p>Ед.измерения</p>
+                </f:facet>
+                <h:panelGroup rendered="#{row.type.fieldType lt 2}">
+                    <h:panelGroup rendered="#{examination.anamnesisEditable and examination.editState}">
+                        <h:inputText value="#{row.unit}" size="3"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{not (examination.anamnesisEditable and examination.editState)}">
+                        <h:outputText value="#{row.unit}"/>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </e5ui:column>
+            <e5ui:column style="min-width:4em;">
+                <f:facet name="header">
+                    <p>Норма</p>
+                </f:facet>
+                <h:panelGroup rendered="#{row.type.fieldType lt 2}">
+                    <h:panelGroup rendered="#{examination.anamnesisEditable and examination.editState}">
+                        <h:inputText value="#{row.normValue}" size="3"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{not (examination.anamnesisEditable and examination.editState)}">
+                        <h:outputText value="#{row.normValue}"/>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </e5ui:column>
+        </e5ui:dataTable>
+    </div>
+</div>
+
+<div>
+<h:commandLink onclick="additionalResultsModal.clickOpen('additionalResultsModal'); return false;">
+    Дополнительные исследования
+</h:commandLink>
+</div>
+
+<e5ui-comp:modalWindow id="additionalResultsModal"
+                       modalWindowHolder="#{applicationSetup.additionalResultsModal}"
+                       style="min-width:600px;" showButtons="false" widgetVar="additionalResultsModal">
+    <div id="title">Дополнительные результаты анализов</div>
+    <div id="modal_container" style="margin-top: 0;">
+        <div class="wrap" style="height:300px;">
+            <div class="inner" style="height:300px;">
+                <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+                                value="#{examination.document.additionalResults}"
+                                style="width:100%;" var="row" grouping="false">
+                    <e5ui:column style="min-width:3em;">
+                        <f:facet name="header">
+                            <p>Код</p>
+                        </f:facet>
+                        <h:outputText value="#{row.indicatorCode}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:6em;">
+                        <f:facet name="header">
+                            <p>Название</p>
+                        </f:facet>
+                        <h:outputText value="#{row.indicatorName}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Прибор</p>
+                        </f:facet>
+                        <h:outputText value="#{row.deviceName}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Значение</p>
+                        </f:facet>
+                        <h:outputText value="#{row.resultValueText}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Ед. изм.</p>
+                        </f:facet>
+                        <h:outputText value="#{row.resultUnit}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Норма</p>
+                        </f:facet>
+                        <h:outputText value="#{row.resultNormString}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Выполнено</p>
+                        </f:facet>
+                        <h:outputText value="#{row.resultSignDate}">
+                            <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+                        </h:outputText>
+                    </e5ui:column>
+                </e5ui:dataTable>
+            </div>
+        </div>
+    </div>
+    <div class="e5ui-modal-bottombuttons">
+        <h:button onclick="additionalResultsModal.clickClose(); return false;" value="Закрыть"/>
+    </div>
+</e5ui-comp:modalWindow>
+
+<e5ui-comp:modalWindow id="analysisValueListModal" modalWindowHolder="#{applicationSetup.analysisValueListModal}"
+                       render=":main_content_form"
+                       execute="analysis_edit_table" style="width:600px;" showButtons="false"
+                       widgetVar="analysisValueListModal">
+    <div id="title">Результаты анализов</div>
+    <div id="modal_container" style="margin-top: 0;">
+        <div class="wrap" style="height:300px;">
+            <div class="inner" style="height:300px;">
+                <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+                                value="#{applicationSetup.analysisValueListModal.analysis.externalValues}"
+                                id="analysis_edit_table" style="width:100%;" var="row" grouping="false">
+                    <e5ui:column style="min-width:3em;">
+                        <f:facet name="header">
+                            <p>Код</p>
+                        </f:facet>
+                        <h:outputText value="#{row.indicator.code}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:6em;">
+                        <f:facet name="header">
+                            <p>Название</p>
+                        </f:facet>
+                        <h:outputText value="#{row.indicator.name}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:12em;">
+                        <f:facet name="header">
+                            <p>Результат</p>
+                        </f:facet>
+                        <h:panelGroup rendered="#{examination.anamnesisEditable and examination.editState}">
+                            <h:inputText class="wide" value="#{row.value}">
+                                <f:ajax/>
+                            </h:inputText>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not (examination.anamnesisEditable and examination.editState)}">
+                            <h:outputText value="#{row.value}" class="wide"/>
+                        </h:panelGroup>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:5em;">
+                        <f:facet name="header">
+                            <p>Ед. измерения</p>
+                        </f:facet>
+                        <h:panelGroup rendered="#{examination.anamnesisEditable and examination.editState}">
+                            <h:inputText value="#{row.unit}" size="3">
+                                <f:ajax/>
+                            </h:inputText>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not (examination.anamnesisEditable and examination.editState)}">
+                            <h:outputText value="#{row.unit}"/>
+                        </h:panelGroup>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:4em;">
+                        <f:facet name="header">
+                            <p>Норма</p>
+                        </f:facet>
+                        <h:panelGroup rendered="#{examination.anamnesisEditable and examination.editState}">
+                            <h:inputText value="#{row.normValue}" size="3">
+                                <f:ajax/>
+                            </h:inputText>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not (examination.anamnesisEditable and examination.editState)}">
+                            <h:outputText value="#{row.normValue}"/>
+                        </h:panelGroup>
+                    </e5ui:column>
+                </e5ui:dataTable>
+            </div>
+        </div>
+    </div>
+    <div class="e5ui-modal-bottombuttons">
+        <h:button onclick="analysisValueListModal.clickSave(); return false;" value="ОК"/>
+        <h:button onclick="analysisValueListModal.clickClose(); return false;" value="Отмена"/>
+    </div>
+</e5ui-comp:modalWindow>
+</fieldset>
+</div>
+</h:panelGroup>
+<div>
+    <fieldset>
+        <legend>
+            <label><span class="title">История</span></label>
+        </legend>
+        <div class="wrap" style="width: 100%; margin: 0px">
+            <div class="inner">
+                <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+                                id="history_list"
+                                value="#{examination.document.historyList}"
+                                var="row" grouping="false">
+                    <e5ui:column style="min-width:3em">
+                        <f:facet name="header">
+                            <p>Дата</p>
+                        </f:facet>
+                        <h:outputText value="#{row.startDate}">
+                            <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+                        </h:outputText>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:5em">
+                        <f:facet name="header">
+                            <p>Статус</p>
+                        </f:facet>
+                        <h:outputText value="#{row.fromStatusName}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:5em">
+                        <f:facet name="header">
+                            <p>Действие</p>
+                        </f:facet>
+                        <h:outputText value="#{row.actionName}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:6em">
+                        <f:facet name="header">
+                            <p>Автор</p>
+                        </f:facet>
+                        <h:outputText value="#{row.owner.descriptionShort}"/>
+                    </e5ui:column>
+                    <e5ui:column style="min-width:8em">
+                        <f:facet name="header">
+                            <p>Комментарий</p>
+                        </f:facet>
+                        <h:outputText value="#{row.commentary}"/>
+                    </e5ui:column>
+                </e5ui:dataTable>
+            </div>
+        </div>
+    </fieldset>
+</div>
+</div>
+<h:panelGroup rendered="#{not ((examination.document.statusId eq 1) or (examination.document.statusId eq 9))}">
+    <div class="tileright">
+        <div>
+            <fieldset>
+                <legend>
+                    <label><span class="title">Объективные данные</span></label>
+                </legend>
+                <div class="wrap">
+                    <div class="inner">
+                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+                                        value="#{examination.document.examinationEntryList}"
+                                        style="width:100%;" var="row" grouping="true" levelCount="2">
+                            <e5ui:row level="#{row.grouping}"
+                                      group="#{row.grouping eq 0 and row.parent}"
+                                      fullRow="#{(row.grouping eq 0) and (not (row.type.writable))}"
+                                      collapsed="false">
+                                <f:facet name="fullRowLevel0">
+                                    <b>#{row.type.value}</b>
+                                </f:facet>
+                            </e5ui:row>
+                            <e5ui:column style="width:220px;">
+                                <f:facet name="header">
+                                    <p>Категория</p>
+                                </f:facet>
+                                <h:outputText style="#{row.grouping ne 0? '' : 'font-weight:bold;'}"
+                                              rendered="#{row.type.writable}"
+                                              value="#{row.type.value}"/>
+                            </e5ui:column>
+                            <e5ui:column>
+                                <f:facet name="header">
+                                    <p>Результат</p>
+                                </f:facet>
+                                <h:panelGroup
+                                        rendered="#{examination.anamnesisEditable and examination.editState and row.type.writable}">
+                                    <h:panelGroup rendered="#{row.type.fieldType eq 0}">
+                                        <h:inputText class="wide" value="#{row.value}"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{row.type.fieldType eq 1}">
+                                        <h:inputTextarea class="wide" value="#{row.value}"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{row.type.fieldType eq 3}">
+                                        <h:selectOneMenu value="#{row.value}">
+                                            <f:selectItems
+                                                    value="#{dictionaryManagement.getValuesByCategory(row.type.value)}"/>
+                                        </h:selectOneMenu>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{row.type.fieldType eq 4}">
+                                        <h:selectOneRadio layout="lineDirection" value="#{row.value}">
+                                            <f:selectItems
+                                                    value="#{dictionaryManagement.getValuesByCategory(row.type.value)}"/>
+                                        </h:selectOneRadio>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{row.type.fieldType eq 5}">
+                                        <h:selectManyCheckbox collectionType="java.util.HashSet" layout="pageDirection"
+                                                              value="#{row.values}" converter="ClassifierConverter">
+                                            <f:selectItems
+                                                    value="#{dictionaryManagement.getByCategory(row.type.value)}"/>
+                                        </h:selectManyCheckbox>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <h:panelGroup
+                                        rendered="#{not (examination.anamnesisEditable and examination.editState and row.type.writable)}">
+                                    <h:panelGroup rendered="#{row.type.fieldType lt 5}">
+                                        <h:outputText value="#{row.value}"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{row.type.fieldType eq 5}">
+                                        <ui:repeat value="#{row.valuesList}" var="element">
+                                            <div>
+                                                <h:outputText value="#{element}" converter="ClassifierConverter"/>
+                                            </div>
+                                        </ui:repeat>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                            </e5ui:column>
+                        </e5ui:dataTable>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div>
+            <fieldset>
+                <legend>
+                    <label><span class="title">Рекомендации</span></label>
+                </legend>
+                <div class="wrap">
+                    <div class="inner">
+                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+                                        value="#{examination.document.recommendations}" style="width:100%;"
+                                        var="row" grouping="false">
+                            <e5ui:column style="min-width:8em;max-width:220px;">
+                                <f:facet name="header">
+                                    <p>Наименование</p>
+                                </f:facet>
+                                <h:outputText value="#{row.type}" converter="ClassifierConverter"/>
+                            </e5ui:column>
+                            <e5ui:column style="min-width:5em;">
+                                <f:facet name="header">
+                                    <p>Назначена</p>
+                                </f:facet>
+                                <h:selectBooleanCheckbox value="#{row.prescripted}"
+                                                         disabled="#{not (examination.editState)}"/>
+                            </e5ui:column>
+                            <e5ui:column style="min-width:10em;">
+                                <f:facet name="header">
+                                    <p>Заключение получено</p>
+                                </f:facet>
+                                <h:selectBooleanCheckbox value="#{row.decisionReceived}"
+                                                         disabled="#{not (examination.editState)}"/>
+                            </e5ui:column>
+                            <e5ui:column style="min-width:10em;">
+                                <f:facet name="header">
+                                    <p>Комментарий</p>
+                                </f:facet>
+                                <h:panelGroup rendered="#{examination.editState}">
+                                    <h:inputText class="wide" value="#{row.value}"/>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{not (examination.editState)}">
+                                    <h:outputText value="#{row.value}" class="wide"/>
+                                </h:panelGroup>
+                            </e5ui:column>
+                        </e5ui:dataTable>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</h:panelGroup>
+</div>
+</ui:define>
+
+<ui:define name="footer">
+    <e5ui-comp:splashScreen id="splash_screen" timeout="0">
+        <f:facet name="timeoutPanel">
+            <div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+                Пожалуйста, подождите...
+            </div>
+        </f:facet>
+    </e5ui-comp:splashScreen>
+    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+    <e5ui:multiMarker id="main_form_marker" rendered="true" hintWindowStyleClass="e5ui-marker-hintWindow"
+                      hintWindowInfoStyleClass="e5ui-marker-hintWindow-info"
+                      hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
+                      hintWindowErrorStyleClass="e5ui-marker-hintWindow-error"
+                      hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal" displayMode="window">
+        <h:button onclick="e5ui_multiMarker.remove('main_form_marker'); return false;" value="ОК"/>
+    </e5ui:multiMarker>
+    <h:outputStylesheet library="css" name="datatable.css"/>
+    <h:outputStylesheet library="css" name="modalWindow.css"/>
+    <h:outputStylesheet library="css" name="multiMarker.css"/>
+</ui:define>
+
+</ui:composition>
+</html>

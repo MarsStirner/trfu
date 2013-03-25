@@ -1,0 +1,319 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Протокол цитафереза</title>
+</h:head>
+
+<h:body>
+	<!-- #{bloodDonation.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+	    <table border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+	                <td width="339" valign="top" colspan="3">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+
+	                <td width="100" valign="top" style="text-align:center;">
+                         <p style="font-family:Code128bWin; font-size:24px;">&#353;<h:outputText style="font-size:24px; font-family:Code128bWin;" value="#{bloodDonation.document.number}" />&#74;&#339;</p>
+                         Донация: <h:outputText value="#{bloodDonation.document.number}" />
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+                    <td width="45" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+                    <td width="48" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+
+	                <td valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p align="center">
+	                        <b>Протокол цитафереза</b>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2" valign="top">
+	                    <p>
+	                        Донор <h:outputText value="#{bloodDonation.document.donor.description}" />
+	                    </p>
+	                </td>
+                    <td colspan="2">
+	                    <p>
+	                        № <h:outputText style="font-weight:bold;" value="#{bloodDonation.document.donor.number}" />
+	                    </p>
+                    </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2" valign="top">
+                        <p>Пол: <h:outputText value="#{bloodDonation.document.donor.gender eq 0? 'женский': 'мужской'}" /></p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>Дата рождения:
+	                         <h:outputText value="#{bloodDonation.document.donor.birth}">
+	                        	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+	                        </h:outputText>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="4" valign="top">
+                        <p>На аппарате Trima Accel проведена процедура цитафереза. </p>
+                    </td>
+	            </tr>
+	            <tr>
+                    <td colspan="4">
+                        <table class="printtable" width="100%">
+                            <tr>
+                                <td>
+                                    <p>Общий объем использованного АК (мл)</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.totalAcVolume}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Время завершения сеанса</p>
+                                </td>
+                                <td>
+                                    <p>
+                                    	<h:outputText value="#{bloodDonation.document.report.endTime}">
+                                    		<f:convertDateTime type="date" pattern="HH:mm"/>
+                                    	</h:outputText>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Длительность сеанса, мин</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.time}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Кол-во PLT донора после процедуры</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.donorPltAfter}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Ht донора до процедуры, %</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.donorHtBefore}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Ht донора после процедуры, %</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.donorHtAfter}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Объем АК, поступивший донору (мл)</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.recievedAcVolume}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Общий объем обработанной крови</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.totalVolume}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Общий объем PLT-конц. (мл)</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.totalPltVolume}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Кол-во собр. PLT(х10<span style="vertical-align:super;">11</span>)</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.collectedPlt}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Объем АК в PLT-конц. (мл)</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.acPltVolume}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Лабораторноизмеренный выход PLT</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.labPltVolume}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Соотношение лабораторно-отчет по PLT</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.correlationPlt}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <p>Осложнения: </p><br />
+                                    <h:outputText value="#{bloodDonation.document.report.complications}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <p>Примечание: </p><br />
+                                    <h:outputText value="#{bloodDonation.document.report.commentary}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4"><br /><br /><b>Плазма</b>
+                    </td>
+                </tr>
+	            <tr>
+                    <td colspan="4">
+                        <table class="printtable" width="100%">
+                            <tr>
+                                <td>
+                                    <p>Объем собранной плазмы (мл)</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.plasmaVolume}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Объем АК в плазме (мл)</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.acPlasmaVolume}" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4"><br /><br /><b>Эр.масса</b>
+                    </td>
+                </tr>
+	            <tr>
+                    <td colspan="4">
+                        <table class="printtable" width="100%">
+                            <tr>
+                                <td>
+                                    <p>Объем собранной эр.массы (мл)</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.erVolume}" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Объем АК в эр.массе (мл)</p>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{bloodDonation.document.report.acErVolume}" />
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" colspan="4"><p>Общее состояние донора во время процедуры и после неё удовлетворительное.</p></td>
+                </tr>
+                <tr>
+                    <td valign="top" colspan="4"><p>АД - ______/_____ мм.рт.ст. Ps- _______ уд./мин</p></td>
+                </tr>
+
+                <tr>
+	                <td valign="top" colspan="2">
+	                    <p>
+	                        Врач, медрегистратор
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        (нужное подчеркнуть)
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p align="center">
+	                        _________________________________________                                                                       <i>(подпись)</i>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	        </tbody>
+	    </table>
+	</div>
+</h:body>
+
+</html>

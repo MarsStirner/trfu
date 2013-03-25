@@ -1,0 +1,4 @@
+.menu :hover div.sub {left:2px; top:27px; right:2px; background: #fff; padding:3px 0; border:1px solid #999999; white-space:nowrap; width:370px; height:auto;}
+
+.menu :hover div.sub .item {display:block; height:20px; position:relative; float:left; width:365px;}
+.menu :hover div.sub .item a {font-weight:normal;display:block; height:20px; width:360px; line-height:20px; text-indent:5px; color:#000; text-decoration:none; border:3px solid #fff; border-width:0 0 0 3px;}

@@ -1,0 +1,280 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+	
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<h:outputStylesheet library="css" name="style.css" />
+		<title>График дежурств</title>
+	</h:head>
+	
+	<h:body>
+		<h:outputScript>
+			$(document).ready(function() {
+				update_content();
+			});
+			var resizeTimer = null;
+			$(window).bind('resize', function() {
+				if (resizeTimer) clearTimeout(resizeTimer);
+				resizeTimer = setTimeout(update_content, 100);
+			});
+			function update_content() {
+			    var height = document.body.clientHeight - $("#form_header").height() -25 - 17;
+			    $(".main_content").height(height);
+			};
+		</h:outputScript>
+		<h:outputScript>
+			PrimeFaces.locales ['ru'] = {
+				closeText: 'Закрыть',
+				prevText: 'Назад',
+				nextText: 'Вперёд',
+				monthNames: ['Январь', 'Февраль' , 'Март' , 'Апрель' , 'Май' , 'Июнь' , 'Июль' , 'Август' , 'Сентябрь','Октябрь','Ноябрь','Декабрь' ],
+				monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек' ],
+				dayNames: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Субота'],
+				dayNamesShort: ['Воск','Пон' , 'Вт' , 'Ср' , 'Четв' , 'Пят' , 'Суб'],
+				dayNamesMin: ['В', 'П', 'Вт', 'С ', 'Ч', 'П ', 'Сб'],
+				weekHeader: 'Неделя',
+				firstDay: 1,
+				isRTL: false,
+				showMonthAfterYear: false,
+				yearSuffix:'',
+				timeOnlyTitle: 'Только время',
+				timeText: 'Время',
+				hourText: 'Час',
+				minuteText: 'Минута',
+				secondText: 'Секунда',
+				currentText: 'Сегодня',
+				ampm: false,
+				month: 'Месяц',
+				week: 'неделя',
+				day: 'День',
+				allDayText: 'Весь день'
+			};
+		</h:outputScript>
+		
+		<div id="main_global">
+			<h:form id="main_content_form">
+				
+				<h:panelGroup id="header_part">
+				<div id="form_header">
+					<div id="header">
+						<div class="menu">
+							<div id="viewtitle">
+								График дежурств
+								<h:panelGroup rendered="#{not (timeTable.selectedUser eq null)}">
+									<span style="margin:0 2px;">-</span>
+									<h:outputText value="#{timeTable.selectedUser.description}" />
+								</h:panelGroup>
+							</div>
+							<div class="role">
+								<div class="top">
+									<h:commandLink styleClass="top_link" onclick="return false;">
+				                   		<span>
+											<h:outputText value="#{sessionManagement.currentRole}" converter="RoleConverter" />
+										</span>
+									</h:commandLink>
+									<div class="sub">
+										<ui:repeat value="#{sessionManagement.availableRoles}" var="element">
+											<div class="item">
+												<h:commandLink action="#{sessionManagement.setCurrentRole(element)}">
+													<h:outputText value="#{element}" converter="RoleConverter" />
+												</h:commandLink>
+											</div>
+										</ui:repeat>
+									</div>
+								</div>
+							</div>
+							<div class="username">
+								<div class="top">
+				                   	<h:commandLink styleClass="top_link" onclick="return false;">
+				                   		<span>
+											<h:outputText value="#{sessionManagement.loggedUser.description}" />
+										</span>
+									</h:commandLink>
+									<div class="sub">
+							        	<div class="item">
+							        		<h:commandLink action="#{sessionManagement.logOut}">
+										        Выход
+									        </h:commandLink>
+							        	</div>
+							        </div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="actionbar">
+						<div class="menu">
+							<h:panelGroup id="header_btn" rendered="#{not (timeTable.selectedUser eq null)}">
+								<div class="defbutton">
+									<p:commandLink onclick="timesheetVar.show();">
+										<h:graphicImage value="#{resource['images:blank.png']}" />
+										Заполнить
+									</p:commandLink>
+									
+									<p:dialog id="timesheet_dialog" header="Шаблон планировщика" widgetVar="timesheetVar" modal="true"
+												width="600" resizable="false" closeOnEscape="true">
+
+										<p:selectOneRadio style="margin-top:10px;padding:2px;" value="#{timeTable.templateType}">
+											<f:selectItem itemLabel="Один план" itemValue="0" />
+											<f:selectItem itemLabel="X через Y дней" itemValue="1" />
+											<f:selectItem itemLabel="Один день" itemValue="2" />
+											<p:ajax update="additional_param_panel period_panel" />
+										</p:selectOneRadio>
+										
+										<p:panelGrid id="period_panel" style="margin-top:10px">
+											<p:row>
+												<p:column>
+													<h:outputText value="#{timeTable.templateType eq 2? 'Дата': 'В период с '}" />
+												</p:column>
+												<p:column>
+													<p:calendar value="#{timeTable.timesheetTemplate.periodStartDate}" locale="ru" immediate="true" />
+												</p:column>
+												<p:column rendered="#{not(timeTable.templateType eq 2)}">
+													<h:outputText value="по" />
+												</p:column>
+												<p:column rendered="#{not(timeTable.templateType eq 2)}">
+													<p:calendar locale="ru" value="#{timeTable.timesheetTemplate.periodEndDate}" />
+												</p:column>
+											</p:row>
+										</p:panelGrid>
+										
+										<p:panelGrid style="margin-top:10px">
+											<p:row>
+												<p:column>
+													<h:outputText value="С" />
+												</p:column>
+												<p:column>
+													<p:calendar value="#{timeTable.timesheetTemplate.startTime}" locale="ru" pattern="HH:mm" timeOnly="true" />
+												</p:column>
+												<p:column>
+													<h:outputText value="по" />
+												</p:column>
+												<p:column>
+													<p:calendar value="#{timeTable.timesheetTemplate.endTime}" locale="ru" pattern="HH:mm" timeOnly="true" />
+												</p:column>
+											</p:row>
+										</p:panelGrid>
+										
+										<p:panelGrid id="additional_param_panel" style="margin-top:10px">
+											<p:row rendered="#{timeTable.templateType eq 0}">
+												<p:column>
+													<h:outputText value="Заполнять выходные дни:" />
+												</p:column>
+												<p:column>
+													<p:selectBooleanCheckbox value="#{timeTable.holidayFill}" />
+												</p:column>
+											</p:row>
+											<p:row rendered="#{timeTable.templateType eq 1}">
+												<p:column>
+													<h:outputText value="Рабочих дней:" />
+												</p:column>
+												<p:column>
+													<p:inputText value="#{timeTable.workdayCount}" />
+												</p:column>
+												<p:column>
+													<h:outputText value="Выходных дней:" />
+												</p:column>
+												<p:column>
+													<p:inputText value="#{timeTable.restdayCount}" />
+												</p:column>
+											</p:row>
+										</p:panelGrid>
+										
+										<f:facet name="footer">
+											<p:commandButton value="Выполнить" update=":main_content_form:main_data_tbl :main_content_form:messages"
+														actionListener="#{timeTable.composeTimesheet}" oncomplete="timesheetVar.hide();" />
+											<p:button onclick="timesheetVar.hide();" value="Закрыть" />
+										</f:facet>
+									</p:dialog>
+								</div>
+								<h:panelGroup rendered="#{timeTable.entriesSelected}">
+									<div class="defbutton">
+										<p:commandLink actionListener="#{timeTable.deleteSelectedEntry}" update=":main_content_form:main_data_tbl :main_content_form:messages :main_content_form:header_part">
+											<h:graphicImage value="#{resource['images:dell_buttn.png']}" />
+											Удалить
+										</p:commandLink>
+									</div>
+								</h:panelGroup>
+							</h:panelGroup>
+						</div>
+					</div>
+				</div>
+				</h:panelGroup>
+
+				<div class="main_content" style="float: left; width: 95%;">
+					<p:messages id="messages" showDetail="true" autoUpdate="true"/>
+					<div style="margin-top:10px;height:300px;">
+						<div style="float:left;width:20%">
+							<p:calendar id="calendar" value="#{timeTable.selectedDate}" locale="ru" mode="inline" pattern="dd.MM.yyyy">
+								<p:ajax event="dateSelect" listener="#{timeTable.handleDateSelect}" update=":main_content_form:main_data_tbl :main_content_form:header_part" />
+							</p:calendar>
+						</div>
+						<div style="float:right;width:80%;">
+							<div>
+								<p:dataTable id="user_select_table" border="0" cellpadding="0" cellspacing="0" scrollable="true" scrollHeight="250"
+											value="#{userList.documents}" var="row" selection="#{timeTable.selectedUser}" emptyMessage=""
+											selectionMode="single" rowKey="#{row.id}">
+									<p:ajax event="rowSelect" listener="#{timeTable.handleRowSelect}" update=":main_content_form:main_data_tbl :main_content_form:header_part" />
+									<p:column style="width:800px;">
+										<f:facet name="header">
+											Сотрудник
+										</f:facet>
+										<h:outputText value="#{row.description}" />
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</div>
+					<div style="margin-top:10px;">
+						<div>
+							<p:dataTable border="0" cellpadding="0" cellspacing="0" width="100%" selection="#{timeTable.selectedTimeTableEntries}"
+										rowKey="#{row.id}" id="main_data_tbl" value="#{timeTable.documents}" var="row" emptyMessage="">
+								<p:ajax event="rowSelect" listener="#{timeTable.handleTimeTableRowSelect}" update=":main_content_form:header_part" />
+								<p:column selectionMode="multiple" style="width:2%" />
+								<p:column style="width:28%;">
+									<f:facet name="header">
+										Дата
+									</f:facet>
+									<h:outputText value="#{row.startDate}">
+										<f:convertDateTime type="date" pattern="dd.MM"/>
+									</h:outputText>
+								</p:column>
+								<p:column style="width:70%;">
+									<f:facet name="header">
+										Рабочее время
+									</f:facet>
+									<h:outputText value="#{row.startDate}">
+										<f:convertDateTime type="date" pattern="HH:mm"/>
+									</h:outputText>
+									<span style="margin:0 2px;">-</span>
+									<h:outputText value="#{row.endDate}">
+										<f:convertDateTime type="date" pattern="HH:mm"/>
+									</h:outputText>
+								</p:column>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+				
+				<p:ajaxStatus onstart="statusDialog.show();" onsuccess="statusDialog.hide();"/>
+				<p:dialog modal="true" widgetVar="statusDialog" header="" draggable="false" closable="false">
+					<div style="background-color:white; border-top:solid 1px black;border-bottom:solid 1px black;text-align:center;width:300px;">
+						Пожалуйста, подождите...
+					</div>
+				</p:dialog>
+				
+			</h:form>
+			
+		</div>
+		
+		<h:outputStylesheet library="css" name="portal.css" />
+	</h:body>
+	
+</f:view>
+
+</html>

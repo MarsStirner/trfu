@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="style.css" />
+	<e5ui-comp:outputUtilScript />
+	<title>Трансфузиология - Выбор АРМ</title>
+</h:head>
+
+<h:body id="main_body">
+	<div id="main_global">
+		<h:form id="main_content_form">
+			
+			<h:panelGroup rendered="#{sessionManagement.roleSelected}">
+	        	<h:outputScript>
+	        		location.href = "#{sessionManagement.startTemplateName}";
+	        	</h:outputScript>
+	        </h:panelGroup>
+			
+			<div id="form_header">
+				<div id="header">
+					<div class="menu">
+						<div id="viewtitle">Список доступных АРМ</div>
+						<div class="username">
+							<div class="top">
+								<h:commandLink styleClass="top_link" onclick="return false;">
+									<span><h:outputText value="#{sessionManagement.loggedUser.description}" /></span>
+								</h:commandLink>
+								<div class="sub">
+									<div class="item">
+										<h:commandLink action="#{sessionManagement.logOut}">
+									        Выход
+								        </h:commandLink>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="main_table">
+				<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl" style="width:100%"
+							value="#{sessionManagement.loggedUser.roleList}" var="row" grouping="false">
+					<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');" />
+					<e5ui:column>
+						<h:outputText value="#{row.name}" />
+						<h:commandLink id="selectLink" style="display:none;" action="#{sessionManagement.setCurrentRole(row)}" />
+					</e5ui:column>
+					
+				</e5ui:dataTable>
+			</div>
+			
+		</h:form>
+		
+		<h:outputStylesheet library="css" name="datatable.css" />
+	</div>
+</h:body>
+
+</html>

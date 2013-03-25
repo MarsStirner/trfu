@@ -1,0 +1,766 @@
+﻿<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<!-- #{biomaterial.document.id}  -->
+		<e5ui-comp:userSessionUpdate interval="300" />
+		<h:outputScript library="js" name="datepicker_init_ru.js" target="head" />
+		<h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+		<h:outputScript library="js" name="forms.js" target="head" />
+		<e5ui-comp:outputUtilScript />
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+	
+	<ui:define name="header">
+		<div id="form_header">
+			<div class="actionbar">
+				<div class="menu">
+					<div class="defbutton">
+						<h:commandLink action="#{biomaterial.edit}" rendered="#{biomaterial.viewState}">
+							<h:graphicImage value="#{resource['images:edit_buttn.png']}" />
+							Редактировать
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{biomaterial.cancel}" rendered="#{biomaterial.editState or biomaterial.createState}">
+							<h:graphicImage value="#{resource['images:button-cancel.png']}" />
+							Отменить
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{biomaterial.save}" rendered="#{biomaterial.editState or biomaterial.createState}">
+							<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+							Сохранить
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<e5ui:formPart id="actions_fp">
+							<h:commandLink onclick="actionsModal.clickOpen('actionsModal'); return false;">
+								<h:graphicImage value="#{resource['images:button-do.png']}" />
+								Действия
+							</h:commandLink>
+							<e5ui-comp:modalWindow id="actionsModal"
+										modalWindowHolder="#{biomaterial.processorModal}"
+										render=":main_content_form" execute="selectedAction"
+										showButtons="false"
+										widgetVar="actionsModal">
+								<h:panelGroup rendered="#{not(biomaterial.processorModal.processingState)}">
+									<div id="title">Действия</div>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{biomaterial.processorModal.actionsAvailable}">
+									<div class="wrap" style="height:90px;background-color:#fff;clear:both;">
+										<div class="inner" style="height: 90px;">
+											<e5ui:dataTable id="action_select_table" border="0"
+														cellpadding="0" cellspacing="0"
+														value="#{biomaterial.processorModal.availableActions}" var="row"
+														grouping="false" width="100%">
+												<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+															styleClass="#{biomaterial.processorModal.selected(row)? 'grid_row_selected': ''}" />
+												<e5ui:column>
+													<f:facet name="header">
+														<p>Доступные действия</p>
+													</f:facet>
+													<h:outputText value="#{row.name}" />
+													<h:commandLink id="selectLink" style="display: none;"
+																rendered="#{not biomaterial.processorModal.selected(row)}"
+																action="#{biomaterial.processorModal.select(row)}" />
+												</e5ui:column>
+											</e5ui:dataTable>
+										</div>
+									</div>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{biomaterial.processorModal.noActionsAvailable or biomaterial.processorModal.failureState or biomaterial.processorModal.processedState}">
+									<h:outputText style="padding-left:10px;" value="#{biomaterial.processorModal.actionResult}" />
+								</h:panelGroup>
+								<h:panelGroup rendered="#{biomaterial.processorModal.processingState}">
+									<e5ui:include data="#{biomaterial.processorModal.processedActivity.document.form}"/>
+								</h:panelGroup>
+								<div class="e5ui-modal-bottombuttons">
+									<h:commandButton action="#{biomaterial.processorModal.process()}"
+												rendered="#{biomaterial.processorModal.actionsAvailable or biomaterial.processorModal.processingState}"
+												value="Выполнить" />
+									<h:button rendered="#{biomaterial.processorModal.actionsAvailable or biomaterial.processorModal.processingState}"
+												onclick="actionsModal.clickClose(); return false;"
+												value="Отмена" />
+									<h:button rendered="#{biomaterial.processorModal.noActionsAvailable or biomaterial.processorModal.failureState or biomaterial.processorModal.processedState}"
+												onclick="actionsModal.clickClose(); return false;"
+												value="Закрыть" />
+								</div>
+							</e5ui-comp:modalWindow>
+						</e5ui:formPart>
+					</div>
+					<h:panelGroup rendered="#{(biomaterial.document.statusId eq 2) or (biomaterial.document.statusId eq 3) or (biomaterial.document.statusId eq 5) or (biomaterial.document.statusId eq 6)}">
+						<div class="defbutton">
+							<h:panelGroup>
+								<h:commandLink onclick="splitModal.clickOpen('splitModal'); return false;">
+									<h:graphicImage value="#{resource['images:divide.png']}" />
+									Разделить
+								</h:commandLink>
+								<e5ui-comp:modalWindow id="splitModal"
+											modalWindowHolder="#{biomaterial.splitModal}"
+											render=":main_content_form" execute="volume_list"
+											style="width:300px;" showButtons="false"
+											widgetVar="splitModal">
+									<div id="title">Разделение биоматериала</div>
+									<div id="modal_container" style="margin-top: 0;">
+										<div class="row" style="margin:10px 5px;">
+											<table class="form_grid">
+												<tr class="row">
+													<td class="first"><strong>Исходный объем биоматериала:</strong></td>
+													<td>
+														<h:outputText value="#{biomaterial.document.volume}" style="font-weight:bold;margin-right:3px;" />
+														<h:outputText value="мл" style="font-weight:bold;" />
+													</td>
+												</tr>
+											</table>
+										</div>
+										<h:panelGroup rendered="#{biomaterial.splitModal.invalid}">
+											<div class="row" style="margin:10px 5px;">
+												<h:outputText value="#{biomaterial.splitModal.message}" style="font-weight:bold;color:red;" />
+											</div>
+										</h:panelGroup>
+										<div class="actionbar">
+											<div class="menu">
+												<div class="defbutton">
+													<h:commandLink action="#{biomaterial.splitModal.addVolumeEntry()}">
+														<h:graphicImage value="#{resource['images:plus.png']}" />
+														<f:ajax render="volume_list" execute="volume_list" />
+														Добавить
+													</h:commandLink>
+												</div>
+											</div>
+										</div>
+										<div class="wrap" style="width:100%; margin:0px">
+											<div class="inner">
+												<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+															id="volume_list" style="width:100%;"
+															value="#{biomaterial.splitModal.volumeList}" var="row">
+													<e5ui:column>
+														<f:facet name="header">
+															<p>Разделить на</p>
+														</f:facet>
+														<h:inputText value="#{row.volume}" immediate="true">
+															<f:ajax />
+														</h:inputText>
+													</e5ui:column>
+												</e5ui:dataTable>
+											</div>
+										</div>
+									</div>
+									<div class="e5ui-modal-bottombuttons">
+										<h:commandButton action="#{biomaterial.splitModal.validateAndCompose()}" value="Выполнить" />
+										<h:button onclick="splitModal.clickClose(); return false;" value="Отмена" />
+									</div>
+								</e5ui-comp:modalWindow>
+							</h:panelGroup>
+						</div>
+					</h:panelGroup>
+					
+					<h:panelGroup rendered="#{biomaterial.document.statusId ne 1}">
+						<div class="top">
+	                    	<h:commandLink styleClass="top_link" onclick="return false;">
+	                    		<span>
+									<h:graphicImage value="#{resource['images:button-print.png']}" />
+									Печать
+								</span>
+							</h:commandLink>
+							<div class="sub">
+						        <div class="item">
+							       <h:commandLink action='#{biomaterial.previewBigLabel()}'>
+								        <h:graphicImage value="#{resource['images:blank.png']}" />
+								        Этикетка
+							        </h:commandLink>
+						        </div>
+	                        </div>
+	                    </div>
+                    </h:panelGroup>
+					
+				</div>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="content">
+		<div id="header_content">
+			<h:panelGroup rendered="#{biomaterial.createState}">
+				<div class="name">Новый биоматериал</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{biomaterial.editState or biomaterial.viewState}">
+				<div class="name">
+					<div>
+						<h:outputText value="#{biomaterial.document.biomaterialType}" converter="ClassifierConverter" />
+						<h:outputText style="margin:0 5px;" value="#{biomaterial.document.fullNumber}" />
+						<h:outputText value="#{biomaterial.document.created}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>
+						<h:panelGroup rendered="#{biomaterial.document.split}">
+							<br />
+							<span>Получен путем разделения из биоматериала номер</span>
+							<h:outputText style="margin:0 5px;" value="#{biomaterial.document.parentBiomaterial.fullNumber}" />
+							<h:outputText value="#{biomaterial.document.splitDate}">
+								<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+							</h:outputText>
+						</h:panelGroup>
+					</div>
+				</div>
+				<div class="title">
+					<h:outputText value="#{biomaterial.document.statusName}" />
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{biomaterial.notFoundState}">
+				<div class="name">404 - Биоматериал не найден</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{biomaterial.forbiddenState}">
+				<div class="name">403 - Действие запрещено</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{not(biomaterial.createState or biomaterial.editState or biomaterial.viewState or biomaterial.notFoundState or biomaterial.forbiddenState)}">
+				<div class="name">В доступе отказано</div>
+			</h:panelGroup>
+		</div>
+		
+		<div class="main_content">
+			<div>
+				<div>
+					<fieldset>
+						<legend>
+							<label><span class="title">Общая информация</span></label>
+						</legend>
+						<h:panelGroup rendered="#{biomaterial.viewState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Тип биоматериала:</td>
+										<td><h:outputText value="#{biomaterial.document.biomaterialType}" converter="ClassifierConverter" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Лечебная процедура:</td>
+										<td>
+											<h:outputText value="#{biomaterial.document.operation.operationForm}" converter="ClassifierConverter" />
+											<h:outputText value="#{biomaterial.document.operation.number}" style="margin:0 5px;" />
+											<h:outputLink rendered="#{biomaterial.document.operation ne null}" value="#{contextPath}/component/medical/medical_operation.xhtml" target="_blank">
+												<h:graphicImage value="#{resource['images:link.png']}" />
+										        <f:param name="docId" value="#{biomaterial.document.operation.id}" />
+										    </h:outputLink>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Дата/время регистрации:</td>
+										<td>
+											<h:outputText value="#{biomaterial.document.created}">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Дата/время получения:</td>
+										<td>
+											<h:outputText value="#{biomaterial.document.received}">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Срок годности:</td>
+										<td>
+											<h:outputText value="#{biomaterial.document.expirationDate}">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Медицинский регистратор:</td>
+										<td><h:outputText value="#{biomaterial.document.author.description}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Исходный объем, мл:</td>
+										<td><h:outputText value="#{biomaterial.document.initialVolume}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Антикоагулянт:</td>
+										<td>
+											<h:outputText value="#{biomaterial.document.anticoagulant.value}" />
+											<span style="margin:0 5px;">Объем, мл:</span>
+											<h:outputText value="#{biomaterial.document.anticoagulantVolume}" />
+										</td>
+									</tr>
+									<tr class="row">
+							            <td class="first" colspan="2">
+							                <fieldset>
+							                    <legend>
+							                        <label><span class="title">Добавленный объём</span> </label>
+							                    </legend>
+							                    <div class="row">
+							                        <div class="wrap" style="width:100%; margin:0px">
+							                            <div class="inner">
+							                                <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" style="width:100%;"
+							                                                value="#{biomaterial.document.additionalSubstances}" var="row">
+							                                    <e5ui:column>
+							                                        <f:facet name="header">
+							                                            <p>Тип вещества</p>
+							                                        </f:facet>
+							                                        <h:outputText value="#{row.substanceType}" class="wide" converter="ClassifierConverter" />
+							                                    </e5ui:column>
+							                                    <e5ui:column>
+							                                        <f:facet name="header">
+							                                            <p>Объем</p>
+							                                        </f:facet>
+							                                        <h:outputText value="#{row.volume}" style="margin-right:3px;" />
+							                                        <span>мл</span>
+							                                    </e5ui:column>
+							                                </e5ui:dataTable>
+							                            </div>
+							                        </div>
+							                    </div>
+							                </fieldset>
+							            </td>
+							        </tr>
+									<tr class="row">
+										<td class="first">Финальный объем, мл:</td>
+										<td><h:outputText value="#{biomaterial.document.volume}" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Тип биоматериала:</td>
+										<td>
+											<h:selectOneMenu value="#{biomaterial.document.biomaterialType}" converter="ClassifierConverter">
+												<f:selectItems value="#{dictionaryManagement.getByCategory('Тип биоматериала')}" />
+											</h:selectOneMenu>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Лечебная процедура:</td>
+										<td>
+											<h:outputText value="#{biomaterial.document.operation.operationForm}" converter="ClassifierConverter" />
+											<h:outputText value="#{biomaterial.document.operation.number}" style="margin:0 5px;" />
+											<h:outputLink rendered="#{biomaterial.document.operation ne null}" value="#{contextPath}/component/medical/medical_operation.xhtml" target="_blank">
+												<h:graphicImage value="#{resource['images:link.png']}" />
+										        <f:param name="docId" value="#{biomaterial.document.operation.id}" />
+										    </h:outputLink>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Дата/время регистрации:</td>
+										<td>
+											<h:outputText value="#{biomaterial.document.created}" class="wide">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Дата/время получения:</td>
+										<td>
+											<e5ui-comp:inputDate value="#{biomaterial.receivedDate}" lang="ru" />
+											<e5ui-comp:inputTime value="#{biomaterial.receivedTime}" lang="ru" style="margin-left:5px;" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Срок годности:</td>
+										<td><e5ui-comp:inputDate value="#{biomaterial.document.expirationDate}" lang="ru" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Медицинский регистратор:</td>
+										<td><h:outputText value="#{biomaterial.document.author.description}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Исходный объем, мл:</td>
+										<td>
+											<h:inputText value="#{biomaterial.document.initialVolume}">
+												<f:ajax event="valueChange" listener="#{biomaterial.recalcVolume}" execute="@form" render=":main_content_form:final_volume" />
+											</h:inputText>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Антикоагулянт:</td>
+										<td>
+											<h:selectOneMenu id="anticoagulant" value="#{biomaterial.document.anticoagulant}" converter="AnticoagulantConverter">
+												<f:selectItems value="#{dictionaryManagement.anticoagulants}" />
+											</h:selectOneMenu>
+											<span style="margin:0 5px;">Объем, мл:</span>
+											<h:inputText value="#{biomaterial.document.anticoagulantVolume}">
+												<f:ajax event="valueChange" listener="#{biomaterial.recalcVolume}" execute="@form" render=":main_content_form:final_volume" />
+											</h:inputText>
+										</td>
+									</tr>
+									<tr class="row">
+							            <td class="first" colspan="2">
+							                <fieldset>
+							                    <legend>
+							                        <label><span class="title">Добавленный объём</span> </label>
+							                    </legend>
+							                    <div class="row">
+							                        <div class="actionbar">
+							                            <div class="menu">
+							                                <div class="defbutton">
+							                                    <h:commandLink action="#{biomaterial.document.addSubstance()}">
+							                                        <h:graphicImage value="#{resource['images:plus.png']}"/>
+							                                        <f:ajax render=":main_content_form:substance_list" execute=":main_content_form:substance_list"/>
+							                                        Добавить
+							                                    </h:commandLink>
+							                                </div>
+							                            </div>
+							                        </div>
+							                        <div class="wrap" style="width:100%; margin:0px">
+							                            <div class="inner">
+							                                <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="substance_list" style="width:100%;"
+							                                                value="#{biomaterial.document.additionalSubstances}" var="row">
+							                                    <e5ui:column style="min-width:12em;">
+							                                        <f:facet name="header">
+							                                            <p>Тип вещества</p>
+							                                        </f:facet>
+							                                        <h:selectOneMenu value="#{row.substanceType}" converter="ClassifierConverter">
+							                                            <f:selectItems value="#{dictionaryManagement.getByCategory('Тип добавляемого вещества')}" />
+							                                        </h:selectOneMenu>
+							                                    </e5ui:column>
+							                                    <e5ui:column style="min-width:5em;">
+							                                        <f:facet name="header">
+							                                            <p>Объем</p>
+							                                        </f:facet>
+							                                        <h:inputText value="#{row.volume}" size="4" style="margin-right:3px;">
+							                                        	<f:ajax event="valueChange" listener="#{biomaterial.recalcVolume}" execute="@form" render=":main_content_form:final_volume" />
+							                                        </h:inputText>
+							                                        <span>мл</span>
+							                                    </e5ui:column>
+							                                </e5ui:dataTable>
+							                            </div>
+							                        </div>
+							                    </div>
+							                </fieldset>
+							            </td>
+							        </tr>
+									<tr class="row">
+										<td class="first">Финальный объем, мл:</td>
+										<td><h:inputText id="final_volume" value="#{biomaterial.document.volume}" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+					</fieldset>
+					
+						<fieldset style="margin-top:10px;">
+							<legend>
+								<label><span class="title">Количество клеток</span></label>
+							</legend>
+							<table class="form_grid">
+								<tr class="row">
+									<td class="first">WBC (х10<span style="vertical-align:super;font-size:11px;">6</span>/мл):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.cellCount}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.cellCount}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">TNC (х10<span style="vertical-align:super;font-size:11px;">9</span>):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.tnc}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.tnc}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">NC/кг (х10<span style="vertical-align:super;font-size:11px;">8</span>):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.ncPerKg}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.ncPerKg}" size="4" />
+										</h:panelGroup>
+									</td>
+								</tr>
+								<tr class="row">
+									<td class="first">CD34,%:</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.cd34}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.cd34}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">CD34 (х10<span style="vertical-align:super;font-size:11px;">6</span>):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.cd34X6}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.cd34X6}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">CD34 (х10<span style="vertical-align:super;font-size:11px;">6</span>/кг):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.cd34X6PerKg}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.cd34X6PerKg}" size="4" />
+										</h:panelGroup>
+									</td>
+								</tr>
+								<tr class="row">
+									<td class="first">СD3,%:</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.cd3}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.cd3}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">CD3 (х10<span style="vertical-align:super;font-size:11px;">8</span>):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.cd3X8}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.cd3X8}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">CD3 (х10<span style="vertical-align:super;font-size:11px;">8</span>/кг):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.cd3x8PerKg}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.cd3x8PerKg}" size="4" />
+										</h:panelGroup>
+									</td>
+								</tr>
+								<tr class="row">
+									<td class="first">MNC, %:</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.mncPercentage}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.mncPercentage}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">MNC (х10<span style="vertical-align:super;font-size:11px;">9</span>):</td>
+									<td colspan="3" style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{biomaterial.viewState}">
+											<h:outputText value="#{biomaterial.document.mncx9}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+											<h:inputText value="#{biomaterial.document.mncx9}" size="4" />
+										</h:panelGroup>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+				</div>
+				<h:panelGroup rendered="#{biomaterial.document.statusId gt 2}">
+				<div>
+					<fieldset>
+						<legend>
+							<label><span class="title">Обработка биоматериала</span></label>
+						</legend>
+				        <h:panelGroup rendered="#{biomaterial.editState}">
+				        	<div class="actionbar">
+				        		<div class="menu">
+					        		<div class="defbutton">
+										<h:commandLink action="#{biomaterial.addProcessing()}">
+											<h:graphicImage value="#{resource['images:plus.png']}" />
+											<f:ajax render=":main_content_form" execute=":main_content_form" />
+											Добавить
+										</h:commandLink>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+							<div class="wrap">
+								<div class="inner">
+									<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="processing_list" style="width:100%;"
+												value="#{biomaterial.document.processings}" var="row" grouping="false">
+										<e5ui:column style="min-width:8em;">
+											<f:facet name="header">
+						                        <p>Вид обработки</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{biomaterial.viewState}">
+						                    	<h:outputText value="#{row.processingType}" converter="ClassifierConverter" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+						                    	<h:selectOneMenu value="#{row.processingType}" converter="ClassifierConverter">
+													<f:selectItems value="#{dictionaryManagement.getByCategory('Вид обработки')}" />
+												</h:selectOneMenu>
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:7em;">
+											<f:facet name="header">
+						                        <p>Дата</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{biomaterial.viewState}">
+												<h:outputText value="#{row.processingDate}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+												</h:outputText>
+											</h:panelGroup>
+						                    <h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+						                    	<e5ui-comp:inputDate id="processingDate" value="#{row.processingDate}" lang="ru" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:12em;">
+											<f:facet name="header">
+						                        <p>Врач-трансфузиолог</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{biomaterial.viewState}">
+												<h:outputText value="#{row.transfusiologist.descriptionShort}" />
+											</h:panelGroup>
+						                    <h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+						                    	<h:commandLink action="#{biomaterial.composeProcessingExecutorSelectModal(row)}">
+													<h:outputText value="#{row.transfusiologist eq null? '...': row.transfusiologist.descriptionShort}" />
+												</h:commandLink>
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:12em;">
+											<f:facet name="header">
+						                        <p>Примечание</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{biomaterial.viewState}">
+												<h:outputText value="#{row.commentary}" />
+											</h:panelGroup>
+						                    <h:panelGroup rendered="#{biomaterial.createState or biomaterial.editState}">
+						                    	<h:inputTextarea value="#{row.commentary}" class="wide" />
+						                    </h:panelGroup>
+										</e5ui:column>
+									</e5ui:dataTable>
+									<e5ui-comp:modalWindow id="processingExecutorSelect"
+												modalWindowHolder="#{biomaterial.processingExecutorSelect}"
+												render=":main_content_form:processing_list" execute="user_select_table"
+												showButtons="false" style="width: 500px;" widgetVar="processingExecutorSelect">
+										<div id="title">Выбор врача-трансфузиолога</div>
+										<div id="user_list" style="margin-top:0;">
+											<div class="searchbar">
+												<h:inputText id="filter_string" value="#{biomaterial.processingExecutorSelect.userList.filter}" 
+															style="display:block; float:left; margin-right:10px;" title="Поиск" />
+												<h:commandButton value=" " action="#{biomaterial.processingExecutorSelect.userList.changePageOffset(0)}"
+															styleClass="searchbutton">
+													<f:ajax execute=":main_content_form:processingExecutorSelect:filter_string"
+																render=":main_content_form:processingExecutorSelect:user_select_table :main_content_form:processingExecutorSelect:user_paging" />
+												</h:commandButton>
+											</div>
+											<div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+												<div class="inner" style="height:300px;">
+													<e5ui:dataTable id="user_select_table" border="0" cellpadding="0" cellspacing="0"
+																value="#{biomaterial.processingExecutorSelect.userList.documents}"
+																var="row" grouping="false" width="100%">
+														<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																	styleClass="#{biomaterial.processingExecutorSelect.selected(row)? 'grid_row_selected': ''}" />
+														<e5ui:column>
+															<f:facet name="header">
+										                    	<p>Врач-трансфузиолог</p>
+										                    </f:facet>
+										                    <h:outputText value="#{row.description}" />
+										                    <h:commandLink id="selectLink" style="display: none;"
+										                    			rendered="#{not biomaterial.processingExecutorSelect.selected(row)}"
+										                    			action="#{biomaterial.processingExecutorSelect.select(row)}"/>
+														</e5ui:column>
+													</e5ui:dataTable>
+												</div>
+											</div>
+											<div style="clear:both;">
+												<h:panelGroup id="user_paging">
+													<e5ui-comp:tablePager id="pager" documentListHolder="#{biomaterial.processingExecutorSelect.userList}" />
+												</h:panelGroup>
+								            </div>
+										</div>
+										<div class="e5ui-modal-bottombuttons">
+											<h:button onclick="processingExecutorSelect.clickSave(); return false;" value="Выбрать" />
+											<h:button onclick="processingExecutorSelect.clickClose(); return false;" value="Отмена" />
+										</div>
+									</e5ui-comp:modalWindow>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+				</h:panelGroup>
+				<div>
+					<fieldset>
+						<legend>
+							<label><span class="title">История</span></label>
+						</legend>
+						<div class="wrap" style="width: 100%; margin: 0px">
+							<div class="inner">
+								<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+											id="history_list"
+											value="#{biomaterial.document.historyList}"
+											var="row" grouping="false">
+									<e5ui:column style="min-width:7em">
+					            		<f:facet name="header">
+					                        <p>Дата</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.startDate}">
+					                		<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+					                	</h:outputText>
+					                </e5ui:column>
+					                <e5ui:column style="min-width:8em">
+					            		<f:facet name="header">
+					                        <p>Статус</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.fromStatusName}" />
+					                </e5ui:column>
+					                <e5ui:column style="min-width:8em">
+					            		<f:facet name="header">
+					                        <p>Действие</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.actionName}" />
+					                </e5ui:column>
+					                <e5ui:column style="min-width:12em">
+					            		<f:facet name="header">
+					                        <p>Автор</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.owner.descriptionShort}" />
+					                </e5ui:column>
+					                <e5ui:column style="min-width:10em">
+					            		<f:facet name="header">
+					                        <p>Комментарий</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.commentary}" />
+					                </e5ui:column>
+								</e5ui:dataTable>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	        <f:facet name="timeoutPanel">
+	        	<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	        		Пожалуйста, подождите...
+	        	</div>
+	        </f:facet>
+	    </e5ui-comp:splashScreen>
+	    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	    
+	    <e5ui:multiMarker id="main_form_marker" rendered="true" hintWindowStyleClass="e5ui-marker-hintWindow"
+        			hintWindowInfoStyleClass="e5ui-marker-hintWindow-info" hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
+        			hintWindowErrorStyleClass="e5ui-marker-hintWindow-error" hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal" displayMode="window">
+        	<h:button onclick="e5ui_multiMarker.remove('main_form_marker'); return false;" value="ОК" />
+        </e5ui:multiMarker>
+	    
+	    <h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+	    <h:outputStylesheet library="css" name="multiMarker.css" />
+	</ui:define>
+	
+</ui:composition>
+</html>

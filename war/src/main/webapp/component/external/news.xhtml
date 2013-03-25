@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Новости</title>
+    <h:outputStylesheet library="css" name="portal.css" />
+</h:head>
+	
+<h:body>
+	<h:form>
+		<div id="main_table">
+			<div class="wrap_main" id="table_wrap">
+				<div class="inner" id="table_inner">
+					<ui:repeat value="#{publishedInformationList.documents}" var="row">
+						<div class="asset-abstract news-main-abstract">
+							<div class="news-info">
+								<div class="news-block">
+									<span class="news-publish-date">
+										<h:outputText value="#{row.publishDate}">
+											<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+										</h:outputText>
+									</span>
+									<h:outputLink styleClass="news-header" value="#{request.contextPath}/component/external/topic.xhtml">
+						            	<h:outputText value="#{row.title}" />
+						            	<f:param name="docId" value="#{row.id}" />
+									</h:outputLink>
+									<div style="background:url('/image/journal/article?img_id=522110&amp;t=1347360780965') no-repeat scroll center center transparent;" class="news-pic"></div>
+									<p><h:outputText value="#{row.shortDescription}" /></p>
+								</div>
+								<div class="asset-metadata">
+									<h:outputLink styleClass="read-more-link" value="#{request.contextPath}/component/external/topic.xhtml">
+						            	читать дальше
+						            	<f:param name="docId" value="#{row.id}" />
+									</h:outputLink>
+								</div>
+							</div>
+						</div>
+						
+						<h:outputText value="#{element.descriptionShort}" class="width" />
+					</ui:repeat>
+				</div>
+			</div>
+		</div>
+	</h:form>
+</h:body>
+
+</html>

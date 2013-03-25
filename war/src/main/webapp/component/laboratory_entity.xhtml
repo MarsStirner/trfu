@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<!-- #{laboratoryEntity.document.id}  -->
+		<e5ui-comp:userSessionUpdate interval="300" />
+		<h:outputScript library="js" name="forms.js" target="head" />
+		<h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+		<e5ui-comp:outputUtilScript />
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+
+	<ui:define name="header">
+		<div id="form_header">
+			<div class="actionbar">
+				<div class="menu">
+					<div class="defbutton">
+						<h:commandLink action="#{laboratoryEntity.edit}" rendered="#{laboratoryEntity.viewState}">
+							<h:graphicImage value="#{resource['images:edit_buttn.png']}" />
+							Редактировать
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{laboratoryEntity.cancel}" rendered="#{laboratoryEntity.editState or laboratoryEntity.createState}">
+							<h:graphicImage value="#{resource['images:button-cancel.png']}" />
+							Отменить
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{laboratoryEntity.save}" rendered="#{laboratoryEntity.editState or laboratoryEntity.createState}">
+							<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+							Сохранить
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<e5ui:formPart id="actions_fp">
+							<h:commandLink onclick="actionsModal.clickOpen('actionsModal'); return false;">
+								<h:graphicImage value="#{resource['images:button-do.png']}" />
+								Действия
+							</h:commandLink>
+							<e5ui-comp:modalWindow id="actionsModal"
+										modalWindowHolder="#{laboratoryEntity.processorModal}"
+										render=":main_content_form" execute="@this:modal_date selectedAction"
+										showButtons="false"
+										widgetVar="actionsModal">
+								<h:panelGroup rendered="#{not(laboratoryEntity.processorModal.processingState)}">
+									<div id="title">Действия</div>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{laboratoryEntity.processorModal.actionsAvailable}">
+									<div class="wrap" style="height:90px;background-color:#fff;clear:both;">
+										<div class="inner" style="height: 90px;">
+											<e5ui:dataTable id="action_select_table" border="0"
+														cellpadding="0" cellspacing="0"
+														value="#{laboratoryEntity.processorModal.availableActions}" var="row"
+														grouping="false" width="100%">
+												<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+															styleClass="#{laboratoryEntity.processorModal.selected(row)? 'grid_row_selected': ''}" />
+												<e5ui:column>
+													<f:facet name="header">
+														<p>Доступные действия</p>
+													</f:facet>
+													<h:outputText value="#{row.name}" />
+													<h:commandLink id="selectLink" style="display: none;"
+																rendered="#{not laboratoryEntity.processorModal.selected(row)}"
+																action="#{laboratoryEntity.processorModal.select(row)}" />
+												</e5ui:column>
+											</e5ui:dataTable>
+										</div>
+									</div>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{laboratoryEntity.processorModal.noActionsAvailable or laboratoryEntity.processorModal.failureState or laboratoryEntity.processorModal.processedState}">
+									<h:outputText style="padding-left:10px;" value="#{laboratoryEntity.processorModal.actionResult}" />
+								</h:panelGroup>
+								<h:panelGroup rendered="#{laboratoryEntity.processorModal.processingState}">
+									<e5ui:include data="#{laboratoryEntity.processorModal.processedActivity.document.form}"/>
+								</h:panelGroup>
+								<div class="e5ui-modal-bottombuttons">
+									<h:commandButton action="#{laboratoryEntity.processorModal.process()}"
+												rendered="#{laboratoryEntity.processorModal.actionsAvailable or laboratoryEntity.processorModal.processingState}"
+												value="Выполнить" />
+									<h:button rendered="#{laboratoryEntity.processorModal.actionsAvailable or laboratoryEntity.processorModal.processingState}"
+												onclick="actionsModal.clickClose(); return false;"
+												value="Отмена" />
+									<h:button rendered="#{laboratoryEntity.processorModal.noActionsAvailable or laboratoryEntity.processorModal.failureState or laboratoryEntity.processorModal.processedState}"
+												onclick="actionsModal.clickClose(); return false;"
+												value="Закрыть" />
+								</div>
+							</e5ui-comp:modalWindow>
+						</e5ui:formPart>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="content">
+		<div id="header_content">
+			<h:panelGroup rendered="#{laboratoryEntity.editState or laboratoryEntity.viewState}">
+				<div class="name">
+					<span style="margin-right:5px;">Результаты анализов</span>
+					<h:outputText value="#{laboratoryEntity.document.number}" />
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{laboratoryEntity.notFoundState}">
+				<div class="name">404 - Результаты анализов не найдены</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{laboratoryEntity.forbiddenState}">
+				<div class="name">403 - Действие запрещено</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{not(laboratoryEntity.createState or laboratoryEntity.editState or laboratoryEntity.viewState or laboratoryEntity.notFoundState or laboratoryEntity.forbiddenState)}">
+				<div class="name">В доступе отказано</div>
+			</h:panelGroup>
+		</div>
+		
+		<div class="main_content">
+			<div class="row">
+				<table class="form_grid">
+					<tr class="row">
+						<td class="first">Дата/время регистрации:</td>
+						<td>
+							<h:outputText value="#{laboratoryEntity.document.created}" class="wide">
+								<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+							</h:outputText>
+						</td>
+					</tr>
+					<tr class="row">
+						<td class="first">Комментарии:</td>
+						<td><h:outputText value="#{laboratoryEntity.document.commentary}" /></td>
+					</tr>
+				</table>
+			</div>
+			<div>
+				<fieldset>
+					<legend>
+						<label><span class="title">Результаты анализов</span> </label>
+					</legend>
+					<div class="wrap" style="height:300px;">
+						<div class="inner" style="height:300px;">
+							<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
+										value="#{laboratoryEntity.document.testList}"
+										style="width:100%;" var="row" grouping="false">
+								<e5ui:column style="width:220px;">
+									<f:facet name="header">
+								    	<p>Анализ</p>
+								    </f:facet>
+									<h:outputText value="#{row.type.value}" />
+								</e5ui:column>
+								<e5ui:column>
+									<f:facet name="header">
+								    	<p>Результат</p>
+								    </f:facet>
+								    <h:panelGroup rendered="#{laboratoryEntity.anamnesisEditable and laboratoryEntity.editState}">
+								    	<h:panelGroup rendered="#{row.type.fieldType eq 0}">
+								    		<h:inputText class="wide" value="#{row.value}" />
+								    	</h:panelGroup>
+								    	<h:panelGroup rendered="#{row.type.fieldType eq 1}">
+								    		<h:selectOneMenu value="#{row.value}">
+												<f:selectItems value="#{dictionaryManagement.getValuesByCategory(row.type.value)}" />
+											</h:selectOneMenu>
+								    	</h:panelGroup>
+								    </h:panelGroup>
+								    <h:panelGroup rendered="#{not (laboratoryEntity.anamnesisEditable and laboratoryEntity.editState)}">
+								    	<h:outputText value="#{row.value}" class="wide" />
+									</h:panelGroup>
+								</e5ui:column>
+							</e5ui:dataTable>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	        <f:facet name="timeoutPanel">
+	        	<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	        		Пожалуйста, подождите...
+	        	</div>
+	        </f:facet>
+	    </e5ui-comp:splashScreen>
+	    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	    <h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+	    <h:outputStylesheet library="css" name="multiMarker.css" />
+	</ui:define>
+	
+</ui:composition>
+</html>

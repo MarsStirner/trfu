@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="print.css" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<!--<h:outputStylesheet library="css" name="print.css" /> -->
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Направление</title>
+</h:head>
+
+<h:body>
+	<!-- #{examination.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+    <tbody>
+		<tr>
+			<td nowrap="" align="left" valign="top"></td>
+
+			<td nowrap="" align="left" valign="top">МИНЗДРАВ СССР</td>
+
+			<td nowrap="" align="left" valign="top"></td>
+
+			<td nowrap="" align="left" valign="top" rowspan="2" colspan="2">  Медицинская документация<br />
+                Форма N 404/у<br />
+                Утверждена Минздравом СССР<br />
+                07.08.85 г. N 1055<br />
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+                ФНКЦ ДГОИ<br />
+                им. Дмитрия Рогачева
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top" colspan="4">                                                            <br />
+                <p align="center" style="font-weight:bold;"><b>НАПРАВЛЕНИЕ НА КРОВОДАЧУ, ПЛАЗМАФЕРЕЗ И ДР.</b>        <br />
+                <br />
+                <b>Первичный, первый раз в текущем году, повторный, родственник</b><br />
+                </p>
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top" style="text-align:center;">
+                         <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{examination.document.number}"  converter="Code128Converter" /><br />
+                         Донация: <h:outputText value="#{examination.document.number}"/>
+
+            </td>
+			<td nowrap="" align="left" valign="top" colspan="3">
+                <br />
+                <br />
+                Группа крови <h:outputText value="#{examination.document.donorBloodGroup}" /><br />
+                Rh-фактор <h:outputText value="#{examination.document.donorRhesusFactor}" /><br />
+                <br />
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            <br />
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top" colspan="4">Донор: &nbsp;&nbsp; <h:outputText value="#{examination.document.donor.description}" style="font-weight:bold;" /> направляется на:                                                <br />
+                <p>кроводачу ______________________________________ Доза _____ мл.</p> <br />
+                <p>плазма (цита) ферез ____________________________ Доза _____ мл.</p> <br />
+                <p>гранулоцитаферез ________________________________ Доза _____ мл.</p> <br />
+                <p>обследование ___________________________________ (указать вид).</p> <br />
+                <p>Дата: ____________                  Врач:  <h:outputText value="#{examination.document.therapist.description}" /> ____________ (подпись).</p> <br />
+
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top" colspan="4" style="border-top:2px #000000 solid;">
+                                   линия отрыва
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top" colspan="4">
+                <p align="center" style="font-weight:bold;">ОТМЕТКА<br />
+                о         количестве сданной крови (плазмы),         </p><br />
+
+                                                                <br />
+                Донор: &nbsp;&nbsp; <h:outputText value="#{examination.document.donor.description}" style="font-weight:bold;" /><br />
+                <p>1)  дал кровь, плазму, гранулоциты _____________________ (нужное подчеркнуть, вписать)</p><br />
+                <p>в количестве _____________________________________________  мл. </p><br />
+                <p>2) прошел обследование _______________________    (указать вид).</p><br />
+                <p>с _____ до ______ час.                                          </p><br />
+                <p>"____"__________ 20____ г. Ответственное лицо ________________  </p><br />
+
+            </td>
+        </tr>
+		<tr>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+			<td nowrap="" align="left" valign="top">
+            </td>
+        </tr>
+    </tbody>
+</table>
+	</div>
+    <div id="donor_form2" style="margin-left:30px; page-break-before:always;">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+	        <tbody>
+	            <tr>
+	                <td width="50%">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+
+	                <td style="text-align:center;">
+                         <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{examination.document.number}"  converter="Code128Converter" /><br />
+                         Донация: <h:outputText value="#{examination.document.number}"/>
+	                </td>
+	            </tr>
+	            <tr>
+                    <td width="50%">
+                        <p style="font-size:20px;">Осмотр врача</p>
+                        Донор: &nbsp;&nbsp; <h:outputText style="font-size:12px; font-weight:bold;" value="#{examination.document.donor.description}" /><br />
+						Дата <h:outputText value="#{examination.document.created}"><f:convertDateTime type="date" pattern="dd.MM.yyyy"/></h:outputText>
+                        <p>
+                            За границей не был.<br />
+                            Малярией не болел.<br />
+                            Жалоб нет.<br />
+                            Склеры, слизистые полости рта нормально окрашены.<br />
+                            Кожа чистая, л/узлы не увеличены.<br />
+                            При аскультации сердца и легких патологии не выявлено.<br />
+                            Органы брюшной полости без отклонений.<br />
+                        </p>
+                        <p>
+                            А/Д: <h:outputText value="#{examination.document.donorAD}" />&nbsp;&nbsp;  Пульс: <h:outputText value="#{examination.document.donorPulse}" /><br />
+                            t&#0176;C <h:outputText value="#{examination.document.donorTemperature}" /><br />
+                            Рост: <h:outputText value="#{examination.document.donorHeight}" />&nbsp;&nbsp;  Вес: <h:outputText value="#{examination.document.donorWeight}" />
+                            Врач: <h:outputText value="#{examination.document.therapist.description}" />
+                        </p>
+
+                    </td>
+                    <td width="50%">
+                        <p>Отметка о взятии крови _________________</p>
+										<h:dataTable border="0" cellpadding="0" cellspacing="0"
+                                                    styleClass="printtable"
+													value="#{examination.document.testList}"
+													style="width:100%;" var="row">
+											<h:column style="width:220px;">
+												<h:outputText value="#{row.type.value}" />
+											</h:column>
+											<h:column>
+											    	<h:outputText value="#{row.value}" class="wide" />
+											</h:column>
+										</h:dataTable>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h:panelGroup rendered="#{(examination.document.statusId eq -1) and (examination.document.donor.rejection ne null)}">
+
+        <p style="font-size: 12px; font-weight:bold;">Отведен от донорства</p>
+        <table class="printtable" width="100%">
+	        <tbody>
+	            <tr>
+                    <td>
+                        <p style="font-size:16px">Причина</p>
+                    </td>
+                    <td>
+                        <p style="font-size:16px">Срок</p>
+                    </td>
+                    <td>
+                        <p style="font-size:16px">Примечание</p>
+                    </td>
+                </tr>
+	            <tr>
+                    <td>
+                        <h:outputText value="#{examination.document.rejection.rejectionType.value}" />
+                    </td>
+                    <td>
+                        <h:outputText value="#{examination.document.rejection.expiration}"><f:convertDateTime type="date" pattern="dd.MM.yyyy"/></h:outputText>
+                    </td>
+                    <td>
+                        <h:outputText value="#{examination.document.commentary}" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        </h:panelGroup>
+
+
+        <br />
+        <h:dataTable border="0" cellpadding="0" cellspacing="0" styleClass="printtable" value="#{examination.document.recommendations}" style="width:100%;" var="row">
+			<h:column style="width:220px;">
+				<h:outputText value="#{row.type}" converter="ClassifierConverter" />
+			</h:column>
+			<h:column style="min-width:7em;">
+				<f:facet name="header">
+					<p>Назначена</p>
+				</f:facet>
+				<h:selectBooleanCheckbox value="#{row.prescripted}" disabled="true" />
+			</h:column>
+			<h:column style="min-width:7em;">
+				<f:facet name="header">
+					<p>Заключение<br/>получено</p>
+				</f:facet>
+				<h:selectBooleanCheckbox value="#{row.decisionReceived}" disabled="true" />
+			</h:column>
+			<h:column style="min-width:12em;">
+				<f:facet name="header">
+					<p>Комментарий</p>
+				</f:facet>
+				<h:outputText value="#{row.value}" class="wide" />
+			</h:column>
+		</h:dataTable>
+	</div>
+
+</h:body>
+
+</html>

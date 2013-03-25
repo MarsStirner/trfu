@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Ведомость забора крови у доноров в операционной" pageWidth="842" pageHeight="584" orientation="Landscape" columnWidth="783" leftMargin="39" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.2100000000000077"/>
+	<property name="ireport.x" value="195"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset">
+		<parameter name="req_id" class="java.lang.Integer">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<queryString>
+			<![CDATA[select *
+from
+(SELECT
+     trfu_blood_donation_requests_trfu_tests.`trfu_blood_donation_requests_id` AS req_id,
+     trfu_tests.`value` AS vich1,
+     trfu_tests.`type_id` AS trfu_tests_type_id
+FROM
+     `trfu_tests` trfu_tests INNER JOIN `trfu_blood_donation_requests_trfu_tests` trfu_blood_donation_requests_trfu_tests ON trfu_tests.`id` = trfu_blood_donation_requests_trfu_tests.`tests_id`
+where trfu_tests.`type_id` = 20 and trfu_blood_donation_requests_trfu_tests.`trfu_blood_donation_requests_id`= $P{req_id}) as table1
+join
+(SELECT
+     trfu_blood_donation_requests_trfu_tests.`trfu_blood_donation_requests_id` AS req_id,
+     trfu_tests.`value` AS vich2,
+     trfu_tests.`type_id` AS trfu_tests_type_id
+FROM
+     `trfu_tests` trfu_tests INNER JOIN `trfu_blood_donation_requests_trfu_tests` trfu_blood_donation_requests_trfu_tests ON trfu_tests.`id` = trfu_blood_donation_requests_trfu_tests.`tests_id`
+where trfu_tests.`type_id` = 21 and trfu_blood_donation_requests_trfu_tests.`trfu_blood_donation_requests_id`= $P{req_id}) as table2
+join
+(SELECT
+     trfu_blood_donation_requests_trfu_tests.`trfu_blood_donation_requests_id` AS req_id,
+     trfu_tests.`value` AS geptitB,
+     trfu_tests.`type_id` AS trfu_tests_type_id
+FROM
+     `trfu_tests` trfu_tests INNER JOIN `trfu_blood_donation_requests_trfu_tests` trfu_blood_donation_requests_trfu_tests ON trfu_tests.`id` = trfu_blood_donation_requests_trfu_tests.`tests_id`
+where trfu_tests.`type_id` = 18 and trfu_blood_donation_requests_trfu_tests.`trfu_blood_donation_requests_id`= $P{req_id}) as table3
+join
+(SELECT
+     trfu_blood_donation_requests_trfu_tests.`trfu_blood_donation_requests_id` AS req_id,
+     trfu_tests.`value` AS geptitC,
+     trfu_tests.`type_id` AS trfu_tests_type_id
+FROM
+     `trfu_tests` trfu_tests INNER JOIN `trfu_blood_donation_requests_trfu_tests` trfu_blood_donation_requests_trfu_tests ON trfu_tests.`id` = trfu_blood_donation_requests_trfu_tests.`tests_id`
+where trfu_tests.`type_id` = 19 and trfu_blood_donation_requests_trfu_tests.`trfu_blood_donation_requests_id`= $P{req_id}) as table4
+join
+(SELECT
+     trfu_blood_donation_requests_trfu_tests.`trfu_blood_donation_requests_id` AS req_id,
+     trfu_tests.`value` AS RW,
+     trfu_tests.`type_id` AS trfu_tests_type_id
+FROM
+     `trfu_tests` trfu_tests INNER JOIN `trfu_blood_donation_requests_trfu_tests` trfu_blood_donation_requests_trfu_tests ON trfu_tests.`id` = trfu_blood_donation_requests_trfu_tests.`tests_id`
+where trfu_tests.`type_id` = 22 and trfu_blood_donation_requests_trfu_tests.`trfu_blood_donation_requests_id`= $P{req_id}) as table5
+on table1.`req_id` = table2.`req_id` and table2.`req_id` = table3.`req_id` and table3.`req_id` = table4.`req_id`  and table4.`req_id` = table5.`req_id`
+
+UNION
+
+select *
+from
+(SELECT
+     trfu_blood_donation_requests.`id` AS req_id,
+     tests.`value` AS vich1,
+     tests.`type_id` AS trfu_tests_type_id
+FROM
+    `trfu_blood_donation_requests` trfu_blood_donation_requests
+INNER JOIN trfu_external_appointment_tests appoint_test ON trfu_blood_donation_requests.appointment_id=appoint_test.appointment_id
+INNER JOIN trfu_tests tests ON tests.id=appoint_test.test_id
+INNER JOIN trfu_analysis_types anal_appoint ON (anal_appoint.id=tests.type_id)
+where tests.`type_id` = 20 and trfu_blood_donation_requests.`id`= $P{req_id}) as table1
+join
+(SELECT
+    trfu_blood_donation_requests.`id` AS req_id,
+     tests.`value` AS vich2,
+     tests.`type_id` AS trfu_tests_type_id
+FROM
+      `trfu_blood_donation_requests` trfu_blood_donation_requests
+INNER JOIN trfu_external_appointment_tests appoint_test ON trfu_blood_donation_requests.appointment_id=appoint_test.appointment_id
+INNER JOIN trfu_tests tests ON tests.id=appoint_test.test_id
+INNER JOIN trfu_analysis_types anal_appoint ON (anal_appoint.id=tests.type_id)
+where tests.`type_id` = 21 and trfu_blood_donation_requests.`id`= $P{req_id}) as table2
+join
+(SELECT
+   trfu_blood_donation_requests.`id` AS req_id,
+     tests.`value` AS geptitB,
+     tests.`type_id` AS trfu_tests_type_id
+FROM
+   `trfu_blood_donation_requests` trfu_blood_donation_requests
+INNER JOIN trfu_external_appointment_tests appoint_test ON trfu_blood_donation_requests.appointment_id=appoint_test.appointment_id
+INNER JOIN trfu_tests tests ON tests.id=appoint_test.test_id
+INNER JOIN trfu_analysis_types anal_appoint ON (anal_appoint.id=tests.type_id)
+where tests.`type_id` = 18 and trfu_blood_donation_requests.`id`= $P{req_id}) as table3
+join
+(SELECT
+     trfu_blood_donation_requests.`id` AS req_id,
+     tests.`value` AS geptitC,
+     tests.`type_id` AS trfu_tests_type_id
+FROM
+     `trfu_blood_donation_requests` trfu_blood_donation_requests
+INNER JOIN trfu_external_appointment_tests appoint_test ON trfu_blood_donation_requests.appointment_id=appoint_test.appointment_id
+INNER JOIN trfu_tests tests ON tests.id=appoint_test.test_id
+INNER JOIN trfu_analysis_types anal_appoint ON (anal_appoint.id=tests.type_id)
+where tests.`type_id` = 19 and trfu_blood_donation_requests.`id`= $P{req_id}) as table4
+join
+(SELECT
+trfu_blood_donation_requests.`id` AS req_id,
+     tests.`value` AS RW,
+     tests.`type_id` AS trfu_tests_type_id
+FROM
+       `trfu_blood_donation_requests` trfu_blood_donation_requests
+INNER JOIN trfu_external_appointment_tests appoint_test ON trfu_blood_donation_requests.appointment_id=appoint_test.appointment_id
+INNER JOIN trfu_tests tests ON tests.id=appoint_test.test_id
+INNER JOIN trfu_analysis_types anal_appoint ON (anal_appoint.id=tests.type_id)
+where tests.`type_id` = 22 and trfu_blood_donation_requests.`id`= $P{req_id}) as table5
+on table1.`req_id` = table2.`req_id` and table2.`req_id` = table3.`req_id` and table3.`req_id` = table4.`req_id`  and table4.`req_id` = table5.`req_id`]]>
+		</queryString>
+		<field name="req_id" class="java.lang.Integer"/>
+		<field name="vich1" class="java.lang.String"/>
+		<field name="trfu_tests_type_id" class="java.lang.Integer"/>
+		<field name="vich2" class="java.lang.String"/>
+		<field name="geptitB" class="java.lang.String"/>
+		<field name="geptitC" class="java.lang.String"/>
+		<field name="RW" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="CreateDate" class="java.util.Date"/>
+	<parameter name="Institution" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<queryString>
+		<![CDATA[select req.id as req_id,req.donor_id as donor_id, req.number as req_number, donors.birth as dr, cl.value as donorType , req.factDate as factDate,  donors.lastName as lastName, donors.firstName as firstName, donors.middleName as middleName,cl.value as donorType,donors.gender as donors_gender
+ from ((trfu_blood_donation_requests req inner join trfu_donors donors on donors.id = req.donor_id)
+inner join trfu_classifiers cl on cl.id = req.donorType_id and cl.category='Тип донора')
+where req.deleted="0" and    DATE(req.factDate) =DATE($P{CreateDate})
+and req.analysisCount>0
+order by req_number]]>
+	</queryString>
+	<field name="req_id" class="java.lang.Integer"/>
+	<field name="donor_id" class="java.lang.Integer"/>
+	<field name="req_number" class="java.lang.String"/>
+	<field name="dr" class="java.sql.Timestamp"/>
+	<field name="donorType" class="java.lang.String"/>
+	<field name="factDate" class="java.sql.Timestamp"/>
+	<field name="lastName" class="java.lang.String"/>
+	<field name="firstName" class="java.lang.String"/>
+	<field name="middleName" class="java.lang.String"/>
+	<field name="donors_gender" class="java.lang.Integer"/>
+	<variable name="lastName_1" class="java.lang.Integer" resetType="Page" calculation="Count">
+		<variableExpression><![CDATA[$F{lastName}]]></variableExpression>
+	</variable>
+	<variable name="middleName_1" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{middleName}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="20" width="650" height="21"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="14" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ПРОТОКОЛ ИССЛЕДОВАНИЙ ПЛАЗМЫ ДОНОРОВ КРОВИ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="235" y="63" width="160" height="20"/>
+				<textElement>
+					<font fontName="Tahoma" size="12"/>
+				</textElement>
+				<text><![CDATA[Дата забора материала]]></text>
+			</staticText>
+			<textField pattern="dd.MM.yyyy">
+				<reportElement positionType="Float" x="406" y="63" width="100" height="20"/>
+				<textElement>
+					<font fontName="Tahoma" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CreateDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="0" y="41" width="650" height="21"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="14"/>
+				</textElement>
+				<text><![CDATA[на ВИЧ, гепатиты B и C в лабораторию молекулярной диагностики]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="650" y="0" width="133" height="20"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right">
+					<font fontName="Tahoma" size="12"/>
+				</textElement>
+				<text><![CDATA[Форма 411/у-П5]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="0" width="650" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Tahoma" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TD" x="0" y="0" width="65" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[№ п/п]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="65" y="0" width="170" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Фамилия, имя, отчество]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="320" y="0" width="66" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Номер донации]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="272" y="0" width="48" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Код донора]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="522" y="0" width="144" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Гепатит B]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="666" y="0" width="117" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Гепатит С]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="233" y="0" width="39" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Пол]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="386" y="0" width="136" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ВИЧ 1/2]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="666" y="0" width="117" height="20"/>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="522" y="0" width="144" height="20"/>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="386" y="0" width="136" height="20"/>
+				<textElement/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="65" y="0" width="170" height="20"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lastName}+" "+$F{firstName}+" "+$F{middleName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="0" y="0" width="65" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="320" y="0" width="66" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{req_number}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="272" y="0" width="48" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donorType}.substring( 0, 3 )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="233" y="0" width="39" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donors_gender}==0?"ж":"м"]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement key="table 1" x="386" y="0" width="397" height="20"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Table Dataset">
+						<datasetParameter name="req_id">
+							<datasetParameterExpression><![CDATA[$F{req_id}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="136">
+						<jr:detailCell height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="136" height="20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{vich1}==null?"":$F{vich1}.replace( "Отрицательный", "Отриц." ).replace( "Положительный", "Полож." )+"/"+$F{vich2}.replace( "Отрицательный", "Отриц." ).replace( "Положительный", "Полож." )]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="144">
+						<jr:detailCell height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="144" height="20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{geptitB}==null?"":$F{geptitB}.replace( "Отрицательный", "Отриц." ).replace( "Положительный", "Полож." )]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="117">
+						<jr:detailCell height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="117" height="20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{geptitC}==null?"":$F{geptitC}.replace( "Отрицательный", "Отриц." ).replace( "Положительный", "Полож." )]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="0">
+						<jr:detailCell height="20" rowSpan="1"/>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="64" splitType="Stretch">
+			<staticText>
+				<reportElement x="8" y="3" width="295" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[Врач, ответственный за направление]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="24" width="295" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[Зав. лаборатории молекулярной диагностики]]></text>
+			</staticText>
+			<line>
+				<reportElement x="319" y="22" width="200" height="1"/>
+			</line>
+			<line>
+				<reportElement x="319" y="43" width="200" height="1"/>
+			</line>
+			<line>
+				<reportElement x="320" y="63" width="200" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="9" y="44" width="295" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[Врач ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="707" y="62" width="56" height="1"/>
+			</line>
+			<staticText>
+				<reportElement x="551" y="42" width="131" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<text><![CDATA[Дата исследования]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Справка</title>
+</h:head>
+
+<h:body>
+	<!-- #{donor.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+	    <table border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+	                <td width="339" valign="top" colspan="3">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                        Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+	                </td>
+
+	                <td width="100" valign="top">
+
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+                    <td width="45" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+                    <td width="48" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+
+	                <td valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p align="center">
+	                        <b>Направление на исследование</b>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        Донор <h:outputText value="#{donor.document.description}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        <i>
+	                            (фамилия, имя, отчество)
+	                            <p>
+	                            </p>
+	                        </i>
+	                    </p>
+	                    <p align="center">
+	                        <b>
+	                            <p>
+	                                 
+	                            </p>
+	                        </b>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="2" valign="top">
+                        <p>Пол: <h:outputText value="#{examination.document.donor.gender eq 0? 'женский': 'мужской'}" /></p>
+
+	                </td>
+                    <td colspan="2" valign="top">
+                        <p>Возраст: <h:outputText value="#{examination.document.donor.ageFull}" /></p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td colspan="2" valign="top">
+                        <p>Биоматериал: ______________________</p>
+                    </td>
+                    <td colspan="2" valign="top">
+                        <p>Прибор: ____________________________</p>
+	                </td>
+	            </tr>
+	            <tr>
+                    <td colspan="4"><br />
+                        <table class="printtable">
+                            <tbody>
+                                <tr>
+                                    <td rowspan="2" valign="top" ><p><b>Показатель</b></p></td>
+                                    <td rowspan="2" valign="top" ><p><b>N</b></p></td>
+                                    <td rowspan="2" valign="top" ><p><b>Значение</b></p></td>
+                                    <td rowspan="2" valign="top" ><p><b>Ед. измерения</b></p></td>
+                                    <td colspan="2" valign="top" ><p><b>Норма</b></p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p><b>муж</b></p></td>
+                                    <td valign="top" ><p><b>жен</b></p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p>Гемоглобин (Hb)</p></td>
+                                    <td valign="top" ><p>N</p></td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" ><p>г/л</p></td>
+                                    <td valign="top" ><p>130-170</p></td>
+                                    <td valign="top" ><p>120-150</p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p>Тромбоциты (Plt)</p></td>
+                                    <td valign="top" ><p>&lt;!</p></td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" ><p>т/мкл</p></td>
+                                    <td valign="top" ><p>150-400</p></td>
+                                    <td valign="top" ><p>150-400</p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p>Аланиноминотрансфераза (Alt)</p></td>
+                                    <td valign="top" ><p>&gt;!</p></td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" ><p>Ед/л</p></td>
+                                    <td valign="top" ><p>10-41</p></td>
+                                    <td valign="top" ><p>10-31</p></td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" ><p>Группа крови (экспресс диагностика)</p></td>
+                                    <td valign="top" > </td>
+                                    <td valign="top" ><p></p></td>
+                                    <td valign="top" > </td>
+                                    <td valign="top" > </td>
+                                    <td valign="top" > </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+	                <td valign="top" colspan="2">
+	                    <p>
+	                        Врач, медрегистратор
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        (нужное подчеркнуть)
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td colspan="2" valign="top">
+	                    <p align="center">
+	                        _________________________________________                                                                       <i>(подпись)</i>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	        </tbody>
+	    </table>
+	</div>
+</h:body>
+
+</html>

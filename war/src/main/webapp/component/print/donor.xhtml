@@ -1,0 +1,797 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Учетная карточка донора</title>
+    <style type="text/css">
+        p{font-size:12px;}
+        #donor_form4 p {font-size:9px;}
+    </style>
+</h:head>
+
+<h:body style="font-size:11px;">
+	<!-- #{donor.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px; font-size:11px;">
+        <p style="vertical-align:middle;">
+            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+        </p>
+        <p style="text-align:center;">Федеральный научно-клинический центр детской гематологии, онкологии и иммунологии</p>
+	    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+                    <td width="100px">
+                        <table class="printtable">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Группа крови<br /><br />
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        20&nbsp;&nbsp;&nbsp;г.<br />
+                                        (подпись)<br />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        20&nbsp;&nbsp;&nbsp;г.<br />
+                                        (подпись)<br />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Место для фотокарточки<br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>
+                    <p style="font-size:20px; font-weight:bold; text-align: center; padding:40px;">
+                        Учетная карточка донора (активного, резерва, родственника)<br />
+                        <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{donor.document.number}"  converter="Code128Converter" /><br />
+                        №  <h:outputText style="font-size:24px; font-weight:bold;" value="#{donor.document.number}" />
+                        <br />
+                        № в ЕДЦ  <h:outputText style="font-size:20px; font-weight:bold;" value="#{donor.document.externalNumber}" />
+                    </p>
+                    <p style="padding:40px;">
+                        <h:outputText style="font-size:24px; font-weight:bold;" value="#{donor.document.lastName}" />
+                        <br />
+	                        <h:outputText style="font-size:24px; font-weight:bold;" value="#{donor.document.firstName}" />
+                        &nbsp;&nbsp;
+                            <h:outputText style="font-size:24px; font-weight:bold;" value="#{donor.document.middleName}" />
+	                </p>
+	                </td>
+                </tr>
+            </tbody>
+        </table>
+
+	    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+                <tr>
+	                <td width="40%">
+	                    <p>
+	                        1.&nbsp;&nbsp;&nbsp;Пол
+	                    </p>
+	                </td>
+	                <td width="60%">
+	                    <p>
+	                         <div style="border:3px solid; width: 40px; text-align:center;"><h:outputText style="font-size:20px; font-weight:bold; width:40px; text-align:center;" value="#{donor.document.gender eq 0? 'Ж': 'М'}" /></div>
+	                    </p>
+	                </td>
+	            </tr>
+                <tr>
+	                <td width="40%">
+	                    <p>
+	                        2.&nbsp;&nbsp;&nbsp;Число, месяц и год рождения
+	                    </p>
+	                </td>
+	                <td width="60%">
+	                    <p>
+	                         <h:outputText value="#{donor.document.birth}">
+	                        	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+	                        </h:outputText>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        3.&nbsp;&nbsp;&nbsp;Паспорт: серия <h:outputText value="#{donor.document.passportSeries}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                        № <h:outputText value="#{donor.document.passportNumber}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        4.&nbsp;&nbsp;&nbsp;Страховой полис ОМС: серия <h:outputText value="#{donor.document.insuranceSeries}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                        № <h:outputText value="#{donor.document.insuranceNumber}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td colspan="4">
+	                    <p>
+	                        5.&nbsp;&nbsp;&nbsp;Место работы, телефон: <h:outputText value="#{donor.document.employment}" />, <h:outputText value="#{donor.document.workPhone}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+
+	            </tr>
+	            <tr>
+	                <td colspan="4" >
+	                    <p>
+	                        6.&nbsp;&nbsp;&nbsp;Домашний адрес, телефон: <h:outputText value="#{donor.document.registrationAddress}" />, <h:outputText value="#{donor.document.phone}" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        7.&nbsp;&nbsp;&nbsp;Дата зачисления
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                        _____________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        8.&nbsp;&nbsp;&nbsp;Дата и причина снятия с учета
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                        __________________________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        9.&nbsp;&nbsp;&nbsp;На момент снятия с учета количество кроводач и плазмодач
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                        __________________________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        10.&nbsp;&nbsp;&nbsp;Подпись лица, заполнившего карточку
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                             _____________      ________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        <i>
+	                                       (подпись)                   (ф.и.о.)
+	                            <p>
+	                            </p>
+	                        </i>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        Ответственное лицо
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                             _____________      ________________
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        <i>           (подпись)                   (ф.и.о.)</i>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <p>
+	                        Печать
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td>
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+            </tbody>
+        </table>
+        <table>
+            <tbody>
+                <tr>
+                    <td width="20%">&nbsp;</td>
+                    <td>
+                        <p style="font-size:20px; font-weight:bold; text-align: center; padding:10px;">
+                            Подписка донора
+                        </p>
+                    </td>
+                    <td width="20%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <p>
+                            «Даю подписку о том, что я не болел(а) и не болею сифилисом,<br />
+                            туберкулезом, гепатитом, не являюсь носителем вируса СПИД.<br />
+                            В случае заболевания указанными инфекциями обязуюсь немедленно<br />
+                            сообщить об этом учреждениям крови. Мне известно, что за сокрытие<br />
+                            данных заболеваний я подлежу уголовной ответственности»
+                            <br />
+                            <br />
+                            Подпись
+                        </p>
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+    <div id="donor_form2" style="margin-left:30px; page-break-before:always;">
+
+	    <table border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+                <tr>
+	                <td colspan="3" valign="top">
+	                    <p>
+	                        <h:outputText style="font-size:24px; font-weight:bold;" value="#{donor.document.lastName}" />
+
+	                    </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <p>
+	                        <h:outputText style="font-size:24px; font-weight:bold;" value="#{donor.document.firstName}" />
+	                    </p>
+	                </td>
+	                <td colspan="2">
+                        <p>
+                            <h:outputText style="font-size:24px; font-weight:bold;" value="#{donor.document.middleName}" />
+                        </p>
+	                </td>
+	            </tr>
+            </tbody>
+        </table>
+
+           <p  align="center"><b>Отметки о взятии крови (плазмы крови)</b></p>
+<table class="printtable" width="100%">
+<tbody>
+<tr>
+<td valign="top" width="10%" ><p>Дата</p></td>
+<td valign="top" width="50%" ><p>Вид донации</p></td>
+<td valign="top" width="20%" ><p>Количество</p></td>
+<td valign="top" width="20%" ><p>Подпись</p></td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+<tr>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+<td> &nbsp; </td>
+</tr>
+
+</tbody>
+</table>
+
+
+	</div></div>
+
+	<div id="donor_form4" style="margin-left:30px; page-break-before:always;">
+	<table border="0" cellspacing="0" cellpadding="0" >
+	<tbody>
+	<tr>
+	<td colspan="4" valign="top" ><p><b>АНКЕТА ДОНОРА</b></p></td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>Ф.И.О. донора</p></td>
+	<td colspan="3" valign="top" ><p><h:outputText style="font-size:10px; font-weight:bold;" value="#{donor.document.lastName}" />&nbsp;<h:outputText style="font-size:10px; font-weight:bold;" value="#{donor.document.firstName}" /> <h:outputText style="font-size:10px; font-weight:bold;" value="#{donor.document.middleName}" /></p></td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>Возраст (полное число лет)</p></td>
+	<td valign="top" ><p><h:outputText value="#{donor.document.ageFull}" /></p></td>
+	<td valign="top" ><p>Пол</p></td>
+	<td valign="top" ><p><h:outputText value="#{donor.document.gender eq 0? 'женский': 'мужской'}" /></p></td>
+	</tr>
+
+	</tbody>
+	</table>
+
+	<div style="clear:both;">
+	<table class="printtable" width="100%">
+	<tbody>
+	<tr>
+	<td valign="top" ><b><p>А. ОБЩЕЕ СОСТОЯНИЕ ЗДОРОВЬЯ </p></b></td>
+	<td valign="top" ><p>ДА </p></td>
+	<td valign="top" ><p>НЕТ</p></td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>1. Общее самочувствие в настоящее время хорошее? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>2. Есть ли сейчас температура, головная боль, боль в
+	горле, насморк, кашель? (нужное подчеркнуть) </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>3. Употребляли ли за последние 4 часа пищу? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>4. Употребляли ли за последние 48 часов алкоголь? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>5. Производилось ли за последние 10 дней удаление зуба? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>6. Принимали ли за последний месяц лекарства? <br />
+	Какие? _________________________________________________<br />
+	</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>7. Производились ли прививки? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>8. Наблюдаетесь ли сейчас у врача? <br />
+	Если "ДА", по какому поводу ____________________________<br />
+	</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><b><p>Б. ЗА ПРОШЕДШИЕ 6 МЕСЯЦЕВ: </p></b></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>1. Производили ли Вам инъекции лекарств? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>2. Подвергались ли Вы хирургической операции? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>3. Производили ли Вам переливание крови или ее
+	препаратов? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>4. Прокалывали ли Вам уши, делали ли акупунктуру или
+	татуировку? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>5. Были ли Вы в контакте с больными гепатитом, желтухой,
+	сифилисом, ВИЧ-инфекцией? (нужное подчеркнуть) </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><b><p>В. БЫЛИ ЛИ У ВАС КОГДА-НИБУДЬ: </p></b></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>1. Потеря веса? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>2. Ночные поты? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>3. Обмороки? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>4. Гепатит, венерические заболевания? (нужное
+	подчеркнуть) </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>5. Крово(плазма)дачи? (нужное подчеркнуть)
+	Если "ДА", указать дату последней ______________________</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>6. Были ли отводы от кроводач? <br />
+	Если "ДА", указать дату и причину отвода _______________</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>7. Выезд за рубеж за последние 3 года? <br />
+	Если "ДА", указать дату и название страны ______________</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><b><p>Г. ДОПОЛНИТЕЛЬНО ДЛЯ ЖЕНЩИН: </p></b></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>1. Беременны ли Вы сейчас и была ли беременность за
+	последние 6 недель? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>2. Срок последней менструации __________________________
+	</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+
+	<tr>
+	<td valign="top" ><p>3. Состоите ли Вы на диспансерном учете? <br />
+	Если "ДА", указать лечебно-профилактическое учреждение
+	(диспансер, женская консультация, поликлиника) и причину
+	________________________________________________________</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+
+	</tbody>
+	</table>
+	</div>
+
+	<div style="clear:both; font-size:10px">
+	<p>Я прочитал(а), понял(а) и правильно ответил(а) на все вопросы анкеты, а также получил(а) ответы на все заданные мной вопросы. Я полностью осознал(а) значимость полученной информации для моего здоровья и здоровья пациента, которому будет произведена трансфузия компонентов и препаратов, полученных из моей крови (плазмы). Если я отношусь к группе риска по распространению вирусов гепатита B, C, ВИЧ и других болезней, я согласен (согласна) не сдавать кровь (плазму) для других людей. Я понимаю, что моя кровь (плазма) будет проверена на ВИЧ и другие вирусы.</p>
+
+	<p>Я информирован(а), что во время процедуры взятия крови (плазмы) возможны незначительные реакции организма (кратковременное снижение артериального давления, гематома в области инъекции), не являющиеся следствием ошибки персонала.</p>
+
+	<p>Я согласен (согласна) с тем, что моя кровь (плазма) будет использована так, как это необходимо больным людям.</p>
+
+	<p>Я осведомлен(а) о том, что за сокрытие сведений о наличии у меня ВИЧ-инфекции или венерического заболевания я подлежу уголовной ответственности в соответствии со статьями 121 и 122 Уголовного кодекса Российской Федерации (Собрание законодательства Российской Федерации, 1996, N 25, ст. 2954).</p>
+	</div>
+
+	<table border="0" cellspacing="0" cellpadding="0" >
+		<tbody>
+			<tr>
+				<td valign="top" ><p>Дата</p></td>
+				<td valign="top" ><p>_______________</p></td>
+				<td valign="top" ><p>Донор</p></td>
+				<td valign="top" ><p>____________ _______________________&nbsp;&nbsp;&nbsp;&nbsp;</p>
+					<p><i> (подпись) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ф.и.о.)</i></p>
+				</td>
+
+            </tr>
+            <tr>
+                <td valign="top" colspan="4"><p>Я согласен (согласна) на проведение процедуры цитафереза</p></td>
+            </tr>
+			<tr>
+				<td valign="top" ><p>Дата</p></td>
+				<td valign="top" ><p>_______________</p></td>
+				<td valign="top" ><p>Донор</p></td>
+				<td valign="top" ><p>____________ _______________________&nbsp;&nbsp;&nbsp;&nbsp;</p>
+					<p><i> (подпись) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ф.и.о.)</i></p>
+				</td>
+
+            </tr>
+            <tr>
+            	<td valign="top" ><p>Медицинский работник</p></td>
+                <td valign="top" ><p>____________ _______________________&nbsp;&nbsp;&nbsp;&nbsp;</p>
+					<p><i> (подпись) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ф.и.о.)</i></p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+    <div style="margin-left:30px; page-break-before:always;">
+                        <p>
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+                        </p>
+	                    <p>
+	                    Федеральный научно-клинический центр<br /> детской гематологии, онкологии и иммунологии
+	                    </p>
+                        <p style="padding:30px; text-align:center; font-size: 12px; font-weight:bold;">
+                        Согласие субъекта на обработку персональных данных
+                        </p>
+                        <p>
+                        Я, нижеподписавшийся <h:outputText style="font-weight:bold;" value="#{donor.document.lastName}" />&nbsp;<h:outputText style="font-weight:bold;" value="#{donor.document.firstName}" />&nbsp;<h:outputText style="font-weight:bold;" value="#{donor.document.middleName}" />, проживающий
+по адресу <h:outputText value="#{donor.document.factAddress}" />
+паспорт серия <h:outputText value="#{donor.document.passportSeries}" /> № <h:outputText value="#{donor.document.passportNumber}" />
+в соответствии с требованиями статьи 9 Федерального закона от 27.07.06г. “О персональных данных” №152-ФЗ, подтверждаю свое согласие на обработку Федеральным государственным бюджетным учереждением "Федеральный научно-клинический" центр детской гематологии, онкологии и иммунологии имени Дмитрия Рогачёва" Министерства здравоохранения и социального развития Российской Федерации (далее — Оператор) моих персональных данных, включающих: фамилию, имя, отчество, пол, дату рождения, место рождения, адрес места жительства, контактный(е) телефон(ы), реквизиты полиса ОМС (ДМС), страховой номер индивидуального лицевого счета в Пенсионном фонде России (СНИЛС), данные о состоянии здоровья, заболеваниях, случаях обращения за медицинской помощью — в медико-профилактических целях, в целях установления медицинского диагноза при условии, что их обработка осуществляется лицом, профессионально занимающимся медицинской деятельностью и обязанным сохранять врачебную тайну и иные персональные данные, ставшие ему известными во время осуществления профессиональной деятельности.
+                        </p>
+                        <p>
+                        Предоставляю Оператору право осуществлять все действия (операции) с моими персональными данными, включая сбор, систематизацию, накопление, хранение, обновление, изменение, использование, обезличивание, блокирование, уничтожение. Оператор вправе обрабатывать мои персональные данные посредством внесения их в электронную базу данных, включения в списки (реестры) и отчетные формы, предусмотренные документами, регламентирующими предоставление отчетных данных (документов) по ОМС (договором ДМС).
+                        </p>
+                        <p>
+                        Срок хранения моих персональных данных соответствует сроку хранения первичных медицинских документов (медицинской карты) и составляет 75 лет.
+                        </p>
+                        <p>
+                        Передача моих персональных данных иным лицам или иное их разглашение может осуществляться только с моего письменного согласия.
+                        </p>
+                        <p>
+                        Настоящее согласие дано мной ___________________ и действует бессрочно.
+                        </p>
+                        <p>
+Я оставляю за собой право отозвать свое согласие посредством составления соответствующего письменного документа, который может быть направлен мной в адрес Оператора по почте заказным письмом с уведомлением о вручении либо вручен лично под расписку представителю Оператора.
+                        </p>
+                        <p>
+В случае получения моего письменного заявления об отзыве настоящего согласия на обработку персональных данных Оператор обязан прекратить их обработку в течение периода времени, необходимого для завершения взаиморасчетов по оплате оказанной мне до этого медицинской помощи.
+                        </p>
+                        <p>
+Контактный(е) телефон(ы) ___________________________________________
+                        </p>
+                        <p>
+Почтовый адрес ___________________________________________________
+                        </p>
+                        <p>
+Подпись __________
+                        </p>
+	</div>
+</h:body>
+
+</html>

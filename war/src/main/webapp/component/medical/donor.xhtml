@@ -1,0 +1,646 @@
+﻿<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<!-- #{biomaterialDonor.document.id}  -->
+		<e5ui-comp:userSessionUpdate interval="300" />
+		<h:outputScript library="js" name="datepicker_init_ru.js" target="head" />
+		<h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+		<h:outputScript library="js" name="forms.js" target="head" />
+		<e5ui-comp:outputUtilScript />
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+	
+	<ui:define name="header">
+		<div id="form_header">
+			<div class="actionbar">
+				<div class="menu">
+					<div class="defbutton">
+						<h:commandLink action="#{biomaterialDonor.edit}" rendered="#{biomaterialDonor.viewState}">
+							<h:graphicImage value="#{resource['images:edit_buttn.png']}" />
+							Редактировать
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{biomaterialDonor.cancel}" rendered="#{biomaterialDonor.editState or biomaterialDonor.createState}">
+							<h:graphicImage value="#{resource['images:button-cancel.png']}" />
+							Отменить
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{biomaterialDonor.save}" rendered="#{biomaterialDonor.editState or biomaterialDonor.createState}">
+							<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+							Сохранить
+						</h:commandLink>
+					</div>
+					<h:panelGroup rendered="false">
+						<div class="defbutton">
+							<e5ui:formPart id="actions_fp">
+								<h:commandLink onclick="actionsModal.clickOpen('actionsModal'); return false;">
+									<h:graphicImage value="#{resource['images:button-do.png']}" />
+									Действия
+								</h:commandLink>
+								<e5ui-comp:modalWindow id="actionsModal"
+											modalWindowHolder="#{biomaterialDonor.processorModal}"
+											render=":main_content_form" execute="selectedAction"
+											showButtons="false"
+											widgetVar="actionsModal">
+									<h:panelGroup rendered="#{not(biomaterialDonor.processorModal.processingState)}">
+										<div id="title">Действия</div>
+									</h:panelGroup>
+									<h:panelGroup rendered="#{biomaterialDonor.processorModal.actionsAvailable}">
+										<div class="wrap" style="height:90px;background-color:#fff;clear:both;">
+											<div class="inner" style="height: 90px;">
+												<e5ui:dataTable id="action_select_table" border="0"
+															cellpadding="0" cellspacing="0"
+															value="#{biomaterialDonor.processorModal.availableActions}" var="row"
+															grouping="false" width="100%">
+													<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																styleClass="#{biomaterialDonor.processorModal.selected(row)? 'grid_row_selected': ''}" />
+													<e5ui:column>
+														<f:facet name="header">
+															<p>Доступные действия</p>
+														</f:facet>
+														<h:outputText value="#{row.name}" />
+														<h:commandLink id="selectLink" style="display: none;"
+																	rendered="#{not biomaterialDonor.processorModal.selected(row)}"
+																	action="#{biomaterialDonor.processorModal.select(row)}" />
+													</e5ui:column>
+												</e5ui:dataTable>
+											</div>
+										</div>
+									</h:panelGroup>
+									<h:panelGroup rendered="#{biomaterialDonor.processorModal.noActionsAvailable or biomaterialDonor.processorModal.failureState or biomaterialDonor.processorModal.processedState}">
+										<h:outputText style="padding-left:10px;" value="#{biomaterialDonor.processorModal.actionResult}" />
+									</h:panelGroup>
+									<h:panelGroup rendered="#{biomaterialDonor.processorModal.processingState}">
+										<e5ui:include data="#{biomaterialDonor.processorModal.processedActivity.document.form}"/>
+									</h:panelGroup>
+									<div class="e5ui-modal-bottombuttons">
+										<h:commandButton action="#{biomaterialDonor.processorModal.process()}"
+													rendered="#{biomaterialDonor.processorModal.actionsAvailable or biomaterialDonor.processorModal.processingState}"
+													value="Выполнить" />
+										<h:button rendered="#{biomaterialDonor.processorModal.actionsAvailable or biomaterialDonor.processorModal.processingState}"
+													onclick="actionsModal.clickClose(); return false;"
+													value="Отмена" />
+										<h:button rendered="#{biomaterialDonor.processorModal.noActionsAvailable or biomaterialDonor.processorModal.failureState or biomaterialDonor.processorModal.processedState}"
+													onclick="actionsModal.clickClose(); return false;"
+													value="Закрыть" />
+									</div>
+								</e5ui-comp:modalWindow>
+							</e5ui:formPart>
+						</div>
+					</h:panelGroup>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="content">
+		<div id="header_content">
+			<h:panelGroup rendered="#{biomaterialDonor.createState}">
+				<div class="name">Новый донор</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{biomaterialDonor.editState or biomaterialDonor.viewState}">
+				<div class="name">
+					<div>
+						<span>Карта донора</span>
+						<h:outputText style="margin:0 5px;" value="#{biomaterialDonor.document.number}" />
+						<h:outputText value="#{biomaterialDonor.document.created}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>
+					</div>
+				</div>
+				<div class="title">
+					<h:outputText value="#{biomaterialDonor.document.statusName}" />
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{biomaterialDonor.notFoundState}">
+				<div class="name">404 - Донор не найден</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{biomaterialDonor.forbiddenState}">
+				<div class="name">403 - Действие запрещено</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{not(biomaterialDonor.createState or biomaterialDonor.editState or biomaterialDonor.viewState or biomaterialDonor.notFoundState or biomaterialDonor.forbiddenState)}">
+				<div class="name">В доступе отказано</div>
+			</h:panelGroup>
+		</div>
+		
+		<div class="main_content">
+			<div class="#{biomaterialDonor.createState? '': 'tileleft'}">
+				<div>
+					<fieldset>
+						<legend>
+							<label><span class="title">Общая информация</span></label>
+						</legend>
+						<h:panelGroup rendered="#{biomaterialDonor.viewState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Группа крови:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.bloodGroup}" converter="BloodGroupConverter" />
+											<span style="margin:0 5px;">Rh</span>
+											<h:outputText value="#{biomaterialDonor.document.rhesusFactor}" converter="ClassifierConverter" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Фамилия:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.lastName}" style="font-weight:bold;" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Имя:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.firstName}" style="font-weight:bold;" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Отчество:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.middleName}" style="font-weight:bold;" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Пол:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.gender eq 0? 'ж': 'м'}" /></td>
+									</tr>
+									<h:panelGroup rendered="#{biomaterialDonor.document.gender eq 0}">
+										<tr class="row">
+											<td class="first">Статус беременности:</td>
+											<td><h:outputText value="#{biomaterialDonor.document.pregnancy}" class="wide" /></td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Дата рождения:</td>
+										<td>
+											<h:outputText value="#{biomaterialDonor.document.birth}" class="wide">
+												<f:convertDateTime type="date" pattern="dd.MM.yy"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Паспорт:</td>
+										<td>
+											<span>серия</span> <h:outputText style="margin:0 5px;" value="#{biomaterialDonor.document.passportSeries}" />
+											<span>номер</span> <h:outputText style="margin:0 5px;" value="#{biomaterialDonor.document.passportNumber}" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Страховой полис ОМС:</td>
+										<td>
+											<span>серия</span> <h:outputText style="margin:0 5px;" value="#{biomaterialDonor.document.insuranceSeries}" />
+											<span>номер</span> <h:outputText style="margin:0 5px;" value="#{biomaterialDonor.document.insuranceNumber}" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Место работы:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.employment}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Рабочий телефон:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.workPhone}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Инфекционный статус:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.infectiousStatus}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Адрес регистрации:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.registrationAddress}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Фактический адрес:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.factAddress}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Контактный телефон:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.phone}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Комментарии:</td>
+										<td><h:outputText value="#{biomaterialDonor.document.commentary}" class="wide" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{biomaterialDonor.createState or biomaterialDonor.editState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Группа крови:</td>
+										<td>
+											<h:selectOneMenu id="bloodGroup" value="#{biomaterialDonor.document.bloodGroup}" converter="BloodGroupConverter">
+												<f:selectItems value="#{dictionaryManagement.bloodGroups}" />
+											</h:selectOneMenu>
+											<span style="margin:0 2px;" >Rh</span>
+											<h:selectOneMenu id="rhesusFactor" value="#{biomaterialDonor.document.rhesusFactor}" converter="ClassifierConverter">
+												<f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
+											</h:selectOneMenu>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Фамилия:</td>
+										<td>
+											<h:inputText id="lastName" value="#{biomaterialDonor.document.lastName}" style="font-weight:bold;" class="wide" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Имя:</td>
+										<td>
+											<h:inputText id="firstName" value="#{biomaterialDonor.document.firstName}" style="font-weight:bold;" class="wide" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Отчество:</td>
+										<td><h:inputText value="#{biomaterialDonor.document.middleName}" style="font-weight:bold;" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Пол:</td>
+										<td>
+											<h:selectOneRadio layout="lineDirection" value="#{biomaterialDonor.document.gender}">
+												<f:selectItem itemLabel="ж" itemValue="0" />
+												<f:selectItem itemLabel="м" itemValue="1" />
+												<f:ajax event="click" render="main_content_form" execute="main_content_form" />
+											</h:selectOneRadio>
+										</td>
+									</tr>
+									<h:panelGroup rendered="#{biomaterialDonor.document.gender eq 0}">
+										<tr class="row">
+											<td class="first">Статус беременности:</td>
+											<td><h:inputText value="#{biomaterialDonor.document.pregnancy}" class="wide" /></td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Дата рождения:</td>
+										<td>
+											<e5ui-comp:inputDate id="deliveryDate" value="#{biomaterialDonor.document.birth}" lang="ru" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Паспорт:</td>
+										<td>
+											<span>серия</span> <h:inputText style="margin:0 2px;" value="#{biomaterialDonor.document.passportSeries}" />
+											<span>номер</span> <h:inputText style="margin:0 2px;" value="#{biomaterialDonor.document.passportNumber}" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Страховой полис ОМС:</td>
+										<td>
+											<span>серия</span> <h:inputText style="margin:0 2px;" value="#{biomaterialDonor.document.insuranceSeries}" />
+											<span>номер</span> <h:inputText style="margin:0 2px;" value="#{biomaterialDonor.document.insuranceNumber}" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Место работы:</td>
+										<td><h:inputText value="#{biomaterialDonor.document.employment}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Телефон:</td>
+										<td><h:inputText value="#{biomaterialDonor.document.workPhone}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Инфекционный статус:</td>
+										<td><h:inputText value="#{biomaterialDonor.document.infectiousStatus}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">
+											<h:outputLink onclick="registrationAddressSelectVar.clickOpen('registrationAddressSelectVar'); return false;">
+												Адрес регистрации:
+											</h:outputLink>
+										</td>
+										<td>
+											<h:outputText id="registration_address" value="#{biomaterialDonor.document.registrationAddress}" class="wide" />
+											<e5ui-comp:modalWindow id="registrationAddressSelect"
+														modalWindowHolder="#{biomaterialDonor.registrationAddressSelect}"
+														render=":main_content_form:registration_address"
+														execute="address_dialog"
+														showButtons="false"
+														style="width:500px;"
+														widgetVar="registrationAddressSelectVar">
+												<div id="title">Ввод адреса регистрации</div>
+												<div id="user_list" style="margin-top:0;">
+													<h:panelGroup id="address_dialog">
+														<div class="row">
+															<table class="form_grid">
+																<tr class="row">
+																	<td>Страна:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.registrationAddressSelect.country}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td>Субъект РФ:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.registrationAddressSelect.state}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td>Район:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.registrationAddressSelect.district}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td>Город:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.registrationAddressSelect.city}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td>Улица:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.registrationAddressSelect.street}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td>Дом:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.registrationAddressSelect.house}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td>Строение:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.registrationAddressSelect.building}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td>Корпус:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.registrationAddressSelect.construction}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td>Квартира:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.registrationAddressSelect.flat}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+															</table>
+														</div>
+													</h:panelGroup>
+				                                </div>
+				                                <div class="e5ui-modal-bottombuttons">
+													<h:commandButton onclick="registrationAddressSelectVar.clickSave(); return false;" value="Выбрать">
+														<f:ajax execute=":main_content_form:registrationAddressSelect:address_dialog" render=":main_content_form:registration_address" />
+													</h:commandButton>
+													<h:button onclick="registrationAddressSelectVar.clickClose(); return false;" value="Отмена" />
+												</div>
+											</e5ui-comp:modalWindow>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">
+											<h:outputLink onclick="factAddressSelectVar.clickOpen('factAddressSelect'); return false;">
+												Фактический адрес:
+											</h:outputLink>
+										</td>
+										<td>
+											<h:outputText id="fact_address" value="#{biomaterialDonor.document.factAddress}" class="wide" />
+											<h:commandLink style="margin-left:5px;" action="#{biomaterialDonor.copyAddress()}">
+												<h:graphicImage value="#{resource['images:copy.gif']}" title="Совпадает с адресом регистрации" />
+								            	<f:ajax render=":main_content_form:fact_address" />
+								           	</h:commandLink>
+											<e5ui-comp:modalWindow id="factAddressSelect"
+														modalWindowHolder="#{biomaterialDonor.factAddressSelect}"
+														render=":main_content_form:fact_address"
+														execute="address_dialog"
+														showButtons="false"
+														style="width:500px;"
+														widgetVar="factAddressSelectVar">
+												<div id="title">Ввод фактического адреса</div>
+												<div id="user_list" style="margin-top:0;">
+													<h:panelGroup id="address_dialog">
+														<div class="row">
+															<table class="form_grid">
+																<tr class="row">
+																	<td>Страна:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.factAddressSelect.country}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td>Субъект РФ:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.factAddressSelect.state}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td>Район:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.factAddressSelect.district}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td class="first">Город:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.factAddressSelect.city}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td class="first">Улица:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.factAddressSelect.street}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td class="first">Дом:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.factAddressSelect.house}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td class="first">Строение:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.factAddressSelect.building}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td class="first">Корпус:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.factAddressSelect.construction}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+																<tr class="row">
+																	<td class="first">Квартира:</td>
+																	<td>
+																		<h:inputText value="#{biomaterialDonor.factAddressSelect.flat}" class="wide">
+																			<f:ajax />
+																		</h:inputText>
+																	</td>
+																</tr>
+															</table>
+														</div>
+													</h:panelGroup>
+				                                </div>
+				                                <div class="e5ui-modal-bottombuttons">
+													<h:button onclick="factAddressSelectVar.clickSave(); return false;" value="Выбрать" />
+													<h:button onclick="factAddressSelectVar.clickClose(); return false;" value="Отмена" />
+												</div>
+											</e5ui-comp:modalWindow>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Контактный телефон:</td>
+										<td><h:inputText value="#{biomaterialDonor.document.phone}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Комментарии:</td>
+										<td><h:inputTextarea value="#{biomaterialDonor.document.commentary}" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+					</fieldset>
+				</div>
+			</div>
+			<h:panelGroup rendered="#{biomaterialDonor.viewState or biomaterialDonor.editState}">
+				<div class="tileright">
+					<div>
+						<fieldset>
+							<legend>
+								<label><span class="title">Лечебные процедуры</span></label>
+							</legend>
+							<script type="text/javascript">
+								document.ondblclick = function DoubleClick(evt) {
+									if (window.getSelection)
+										window.getSelection().removeAllRanges();
+									else if (document.selection)
+										document.selection.empty();
+								}
+							</script>
+							<h:outputScript>
+					        	function goToDocument(id) {
+					        		if (id != "") {
+					        			window.open('#{facesContext.externalContext.requestContextPath}/component/medical/medical_operation.xhtml?docId=' + id,'_blank');
+									}
+								}
+					        </h:outputScript>
+					        <h:panelGroup rendered="#{biomaterialDonor.editState or biomaterialDonor.viewState}">
+					        	<div class="actionbar">
+					        		<div class="menu">
+					        			<div class="defbutton">
+											<h:outputLink value="#{contextPath}/component/medical/medical_operation.xhtml" target="_blank">
+												<f:param name="docAction" value="create" />
+												<f:param name="parentId" value="#{biomaterialDonor.document.id}" />
+												<h:graphicImage value="#{resource['images:newf_buttn_icon.png']}" />
+												Новая процедура
+											</h:outputLink>
+										</div>
+										<div class="defbutton">
+											<h:commandLink action="false;">
+												<f:ajax render=":main_content_form:operation_list" />										
+												<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+					            				Обновить
+					           				</h:commandLink>
+										</div>
+									</div>
+								</div>
+							</h:panelGroup>
+							<div class="wrap" style="height:500px;width:100%;margin:0px">
+								<div class="inner" style="height:500px;">
+									<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="operation_list" style="width:100%;"
+												value="#{medicalOperationList.getOperationsByDonor(biomaterialDonor.document)}" var="row" grouping="false">
+										<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+										<e5ui:column style="min-width:2em;">
+											<f:facet name="header">
+						                        <p>Номер</p>
+						                    </f:facet>
+						                    <h:outputText value="#{row.number}" />
+										</e5ui:column>
+										<e5ui:column style="min-width:3em;">
+											<f:facet name="header">
+						                        <p>Дата создания</p>
+						                    </f:facet>
+											<h:outputText value="#{row.created}">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+										</e5ui:column>
+										<e5ui:column style="min-width:8em;">
+											<f:facet name="header">
+						                        <p>Вид процедуры</p>
+						                    </f:facet>
+											<h:outputText value="#{row.operationForm}" converter="ClassifierConverter" />
+										</e5ui:column>
+										<e5ui:column style="min-width:8em;">
+											<f:facet name="header">
+						                        <p>Тип процедуры</p>
+						                    </f:facet>
+											<h:outputText value="#{row.operationType eq 0? 'Ауто': 'Алло'}" />
+										</e5ui:column>
+										<e5ui:column style="min-width:5em;">
+											<f:facet name="header">
+						                        <p>Родственная</p>
+						                    </f:facet>
+											<h:outputText rendered="#{row.operationType eq 1}" value="#{row.related? 'Да': 'Нет'}" />
+										</e5ui:column>
+										<e5ui:column style="min-width:7em;">
+											<f:facet name="header">
+						                        <p>Статус</p>
+						                    </f:facet>
+											<h:outputText value="#{row.statusName}" />
+										</e5ui:column>
+									</e5ui:dataTable>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+			</h:panelGroup>
+		</div>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	        <f:facet name="timeoutPanel">
+	        	<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	        		Пожалуйста, подождите...
+	        	</div>
+	        </f:facet>
+	    </e5ui-comp:splashScreen>
+	    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	    <h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+	    <h:outputStylesheet library="css" name="multiMarker.css" />
+	</ui:define>
+	
+</ui:composition>
+</html>

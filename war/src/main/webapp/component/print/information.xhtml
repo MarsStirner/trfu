@@ -1,0 +1,238 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Справка</title>
+</h:head>
+
+<h:body>
+	<!-- #{donor.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+	    <table border="0" cellspacing="0" cellpadding="0">
+	        <tbody>
+	            <tr>
+	                <td width="246" colspan="2" valign="top">
+	                    <p align="center">
+	                        Федеральный научно-клинический центр детской гематологии, онкологии и иммунологии
+	                        <b>
+	                            <p>
+	                            </p>
+	                        </b>
+	                    </p>
+	                </td>
+	                <td width="93">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="285" valign="top">
+	                    <p align="center">
+	                        Медицинская документация
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        Форма N 401/у
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        Утверждена Приказом
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        Минздрава СССР
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        от 7 августа 1985 г. N 1055
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" colspan="2" valign="top">
+                         <h:outputText style="font-size:48px; font-family:'Code 128';" value="#{examination.document.number}"  converter="Code128Converter" /><br />
+                         &nbsp;&nbsp;&nbsp;&nbsp;Донация: <h:outputText value="#{examination.document.number}"/>
+	                </td>
+	                <td width="93" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="285" valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="246" colspan="2" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="93" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="285" valign="top">
+	                    <p align="center">
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p align="center">
+	                        <b>Справка №</b>
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        Донор: &nbsp;&nbsp;<h:outputText value="#{donor.document.description}" style="font-weight:bold;" />
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        <b>
+	                            <p>
+	                                 
+	                            </p>
+	                        </b>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        был(а) на обследовании "_____ " _______________________ 20_______ г.
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p align="center">
+	                        <b>
+	                            <p>
+	                                 
+	                            </p>
+	                        </b>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                             с _____ до ___________ часов и освобождается от работы с сохранением
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        среднего заработка за это время.
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="624" colspan="4" valign="top">
+	                    <p>
+	                        Основание: Распоряжение Совета Министров СССР
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        N 8065-Р от 30 ноября 1955 г.
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        <b>
+	                            <p>
+	                                 
+	                            </p>
+	                        </b>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="243" valign="top">
+	                    <p>
+	                        Печать
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="380" colspan="3" valign="top">
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td width="243" valign="top">
+	                    <p>
+	                        Лицо, выдавшее справку
+	                        <p>
+	                        </p>
+	                    </p>
+	                </td>
+	                <td width="380" colspan="3" valign="top">
+	                    <p align="center">
+	                        _________________________________________                                                                       (подпись)
+	                        <p>
+	                        </p>
+	                    </p>
+	                    <p>
+	                        <p>
+	                             
+	                        </p>
+	                    </p>
+	                </td>
+	            </tr>
+	        </tbody>
+	    </table>
+	    <br/>
+	</div>
+</h:body>
+
+</html>

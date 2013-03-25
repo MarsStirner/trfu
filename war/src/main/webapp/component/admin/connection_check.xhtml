@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+	
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<h:outputStylesheet library="css" name="style.css" />
+		<title>Проверка связи с базой данных</title>
+	</h:head>
+	
+	<h:body>
+		<div id="main_global">
+			<div id="first">
+				<h:form>
+					<div class="main_content">
+						<div class="row"><h:commandButton styleClass="but" type="submit" action="#{sessionManagement.checkDatabaseConnection}" value="Выполнить" /></div>
+						<div><h:messages errorClass="e5ui-error" layout="table" globalOnly="true" showSummary="true" showDetail="false" /></div>
+					</div>
+				</h:form>
+	        </div>
+		</div>
+	</h:body>
+	
+</f:view>
+
+</html>

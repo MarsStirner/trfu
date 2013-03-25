@@ -1,0 +1,560 @@
+﻿<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<title>Процедурный лист</title>
+</h:head>
+
+<h:body>
+	<!-- #{medicalOperation.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+
+	<div style="margin-left:30px;">
+
+
+		<div class="main_content">
+				<div>
+                    <div style="font-size:16px; width:100%; text-align:center; font-weight:bold;">WBC Процедурный лист №</div><h:outputText style="font-size:16px;font-weight:bold;" value="#{medicalOperation.document.number}" />
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Дата/время:</td>
+										<td>
+											<h:outputText value="#{medicalOperation.document.created}" class="wide">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Реципиент:</td>
+										<td><h:outputText value="#{medicalOperation.document.recipient}" class="wide" /></td>
+									</tr>
+
+									<!-- <tr class="row">
+										<td class="first">Донор:</td>
+										<td>
+											<h:outputText value="#{medicalOperation.document.donor.description}" style="font-weight:bold;" class="wide" />
+										</td>
+									</tr>
+
+									<tr class="row">
+										<td class="first">Медицинский регистратор:</td>
+										<td><h:outputText value="#{medicalOperation.document.author.description}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Врач-трансфузиолог:</td>
+										<td><h:outputText value="#{medicalOperation.document.transfusiologist.description}" class="wide" /></td>
+									</tr>   -->
+									<tr class="row">
+										<td class="first">Отделение</td>
+										<td><h:outputText value="#{medicalOperation.document.division}" converter="DivisionConverter" class="wide" /></td>
+									</tr>
+
+									<tr class="row">
+										<td class="first">№ ИБ:</td>
+										<td><h:outputText value="#{medicalOperation.document.ibNumber}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Рост:</td>
+										<td><h:outputText value="#{medicalOperation.document.height}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Вес:</td>
+										<td><h:outputText value="#{medicalOperation.document.weight}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">TBV:</td>
+										<td><h:outputText value="#{medicalOperation.document.tbv}" class="wide" /></td>
+									</tr>
+
+									<tr class="row">
+										<td class="first">Вид процедуры:</td>
+										<td>
+											<h:outputText value="#{medicalOperation.document.operationForm}" converter="ClassifierConverter" />
+											<h:selectBooleanCheckbox style="margin-left:10px;" value="#{medicalOperation.document.usingEr}" disabled="#{medicalOperation.viewState}" />
+											<h:outputText value="С эр. массой" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Тип процедуры:</td>
+										<td><h:outputText value="#{medicalOperation.document.operationType eq 0? 'Ауто': 'Алло'}" class="wide" /></td>
+									</tr>
+									<h:panelGroup rendered="#{medicalOperation.document.operationType eq 1}">
+										<tr class="row">
+											<td colspan="2">
+												<h:selectBooleanCheckbox value="#{medicalOperation.document.related}" disabled="true" />
+												<h:outputText value="Родственная" />
+											</td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Комментарии:</td>
+										<td><h:outputText value="#{medicalOperation.document.commentary}" class="wide" /></td>
+									</tr>
+								</table>
+							</div>
+
+                        <br />
+						<fieldset>
+							<legend>
+								<label><span class="title"><b>Количество клеток</b></span></label>
+							</legend>
+							<table class="form_grid">
+								<tr class="row">
+									<td class="first">Количество клеток (х10<span style="vertical-align:super;font-size:11px;">9</span>):</td>
+									<td>
+										<h:outputText value="#{medicalOperation.document.cellCount}" />
+									</td>
+									<td class="first">TNC (х10<span style="vertical-align:super;font-size:11px;">9</span>):</td>
+									<td>
+										<h:outputText value="#{medicalOperation.document.tnc}" />
+									</td>
+									<td class="first">NC/кг (х10<span style="vertical-align:super;font-size:11px;">8</span>):</td>
+									<td>
+										<h:outputText value="#{medicalOperation.document.ncPerKg}" />
+									</td>
+								</tr>
+								<tr class="row">
+									<td class="first">CD34:</td>
+									<td>
+										<h:outputText value="#{medicalOperation.document.cd34}" />
+									</td>
+									<td class="first">CD34 (х10<span style="vertical-align:super;font-size:11px;">6</span>):</td>
+									<td>
+										<h:outputText value="#{medicalOperation.document.cd34X6}" />
+									</td>
+									<td class="first">CD34 (х10<span style="vertical-align:super;font-size:11px;">6</span>/кг):</td>
+									<td>
+										<h:outputText value="#{medicalOperation.document.cd34X6PerKg}" />
+									</td>
+								</tr>
+								<tr class="row">
+									<td class="first">CD3:</td>
+									<td>
+										<h:outputText value="#{medicalOperation.document.cd34}" />
+									</td>
+									<td class="first">CD3 (х10<span style="vertical-align:super;font-size:11px;">8</span>):</td>
+									<td>
+										<h:outputText value="#{medicalOperation.document.cd34X6}" />
+									</td>
+									<td class="first">CD3 (х10<span style="vertical-align:super;font-size:11px;">8</span>/кг):</td>
+									<td>
+										<h:outputText value="#{medicalOperation.document.cd34X6PerKg}" />
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+
+				</div>
+
+				<div>
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Противопоказания:</td>
+										<td colspan="2"><h:outputText value="#{medicalOperation.document.operationReport.contraindication}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td colspan="3"><span style="font-weight:bold;">Гемодинамика и Т°</span></td>
+									</tr>
+									<tr class="row">
+										<td></td>
+										<td><span style="text-align:center">До афереза</span></td>
+										<td><span style="text-align:center">После афереза</span></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Пульс</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsBefore.pulse}" /></td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsAfter.pulse}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">АД</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsBefore.arterialPressure}" /></td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsAfter.arterialPressure}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Т° С</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsBefore.temperature}" /></td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsAfter.temperature}" /></td>
+									</tr>
+								</table>
+							</div>
+
+						<div class="row">
+							<table class="form_grid">
+								<tr class="row">
+									<td class="first">Оборудование:</td>
+									<td>
+										<h:outputText value="#{medicalOperation.document.operationReport.equipment}" converter="ClassifierConverter" />
+									</td>
+									<td>
+										<h:selectBooleanCheckbox value="#{medicalOperation.document.operationReport.bloodWarmer}" disabled="#{medicalOperation.viewState}" />
+										<h:outputText value="Подогреватель крови" />
+									</td>
+								</tr>
+							</table>
+						</div>
+
+                        <br />
+						<fieldset>
+							<legend>
+								<label><span class="title"><b>Расходные материалы</b></span></label>
+							</legend>
+									<h:dataTable styleClass="printtable" id="supply_list" style="width:100%;"
+												value="#{medicalOperation.document.operationReport.supplyList}" var="row">
+										<h:column style="min-width:9em">
+						                    	<h:outputText value="#{row.type}" converter="ClassifierConverter" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>Производитель</p>
+						                    </f:facet>
+ 					                    	<h:outputText value="#{row.maker}" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>LOT №</p>
+						                    </f:facet>
+						                    	<h:outputText value="#{row.lot}" />
+										</h:column>
+										<h:column style="min-width:7em">
+											<f:facet name="header">
+						                        <p>Срок годности</p>
+						                    </f:facet>
+						                    	<h:outputText value="#{row.expirationDate}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+												</h:outputText>
+										</h:column>
+									</h:dataTable>
+
+						</fieldset>
+
+                        <br />
+						<h:panelGroup rendered="#{medicalOperation.document.usingEr}">
+							<fieldset>
+								<legend>
+									<label><span class="title"><b>Эр. масса</b></span></label>
+								</legend>
+									<div class="row">
+										<table class="form_grid">
+											<tr class="row">
+												<td class="first">Производитель:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erMaker}" class="wide" /></td>
+												<td class="first">№:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erNumber}" /></td>
+											</tr>
+											<tr class="row">
+												<td class="first">Группа крови:</td>
+												<td>
+													<h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.bloodGroup}" converter="BloodGroupConverter" />
+													<span style="margin:0 5px;">Rh</span>
+													<h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.rhesusFactor}" converter="ClassifierConverter" />
+												</td>
+												<td class="first">Объем:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erVolume}" /></td>
+											</tr>
+											<tr class="row">
+												<td class="first">Дата изготовления:</td>
+												<td>
+													<h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.productionDate}">
+														<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+													</h:outputText>
+												</td>
+												<td class="first">Срок годности:</td>
+												<td>
+													<h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.expirationDate}">
+														<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+													</h:outputText>
+												</td>
+											</tr>
+											<tr class="row">
+												<td class="first">Гематокрит эр. массы:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erHt}" /></td>
+												<td class="first">Объем добавленного физраствора:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.salineVolume}" /></td>
+											</tr>
+											<tr class="row">
+												<td class="first">Финальный гематокрит:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.finalHt}" /></td>
+												<td class="first">Предварительное заполнение контура<br />аппарата эр. массой, объём:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.preFillErVolume}" /></td>
+											</tr>
+										</table>
+									</div>
+
+							</fieldset>
+                        </h:panelGroup>
+
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td><span style="font-weight:bold;">Линия забора</span></td>
+										<td><span style="font-weight:bold;">Линия возврата</span></td>
+									</tr>
+									<tr class="row">
+										<td><h:outputText value="#{medicalOperation.document.operationReport.collectCentralAccess? 'Центральный доступ': 'Периферический доступ'}" /></td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.returnCentralAccess? 'Центральный доступ': 'Периферический доступ'}" /></td>
+									</tr>
+									<tr class="row">
+										<td>
+											<h:panelGroup rendered="#{not (medicalOperation.document.operationReport.collectCentralAccess)}">
+												<h:outputText value="#{medicalOperation.document.operationReport.collectLeft? 'Л.': 'П.'}" />
+											</h:panelGroup>
+											<h:panelGroup rendered="#{medicalOperation.document.operationReport.collectCentralAccess}">
+												<h:outputText value="#{medicalOperation.document.operationReport.collectCentralCommentary}" />
+											</h:panelGroup>
+										</td>
+										<td>
+											<h:panelGroup rendered="#{not (medicalOperation.document.operationReport.returnCentralAccess)}">
+												<h:outputText value="#{medicalOperation.document.operationReport.returnLeft? 'Л.': 'П.'}" />
+											</h:panelGroup>
+											<h:panelGroup rendered="#{medicalOperation.document.operationReport.returnCentralAccess}">
+												<h:outputText value="#{medicalOperation.document.operationReport.returnCentralCommentary}" />
+											</h:panelGroup>
+										</td>
+									</tr>
+								</table>
+							</div>
+
+						<fieldset>
+							<legend>
+								<label><span class="title"><b>Лабораторные измерения</b></span></label>
+							</legend>
+
+									<h:dataTable styleClass="printtable" id="measure_list" style="width:100%;"
+												value="#{medicalOperation.document.operationReport.measureList}" var="row">
+										<h:column style="min-width:9em">
+						                    <h:outputText value="#{row.type}" converter="ClassifierConverter" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>До процедуры</p>
+						                    </f:facet>
+						                    	<h:outputText value="#{row.beforeOperation}" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>Во время процедуры</p>
+						                    </f:facet>
+						                    	<h:outputText value="#{row.duringOperation}" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>В продукте афереза</p>
+						                    </f:facet>
+						                    	<h:outputText value="#{row.inProduct}" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>После процедуры</p>
+						                    </f:facet>
+						                    	<h:outputText value="#{row.afterOperation}" />
+										</h:column>
+									</h:dataTable>
+
+						</fieldset>
+						
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td colspan="4"><span style="font-weight:bold;">Баланс жидкостей</span></td>
+									</tr>
+									<tr class="row">
+										<td colspan="2"><span style="text-align:center">Введено</span></td>
+										<td colspan="2"><span style="text-align:center">Удалено</span></td>
+									</tr>
+									<tr class="row">
+										<td class="first">ACD:</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.acdLoad}" /></td>
+										<td class="first">в пакете</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.packRemove}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">NaCl ,9%:</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.naClLoad}" /></td>
+										<td class="first">Другое</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.otherRemove}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Ca<span style="vertical-align:super;">++</span>:</td>
+										<td colspan="3"><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.caLoad}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Другое:</td>
+										<td colspan="3"><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.otherLoad}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Всего(введено):</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.totalLoad}" /></td>
+										<td class="first">Всего(удалено):</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.totalRemove}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Баланс:</td>
+										<td colspan="3"><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.balance}" /></td>
+									</tr>
+								</table>
+							</div>
+
+                        <br />
+						<fieldset>
+							<legend>
+								<label><span class="title"><b>Фактические результаты афереза</b></span></label>
+							</legend>
+									<h:dataTable styleClass="printtable" id="final_volume_list" style="width:100%"
+												value="#{medicalOperation.document.operationReport.finalVolumeList}" var="row">
+										<h:column style="min-width:7em">
+											<f:facet name="header">
+						                        <p>Время</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.time}" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>АС</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.anticoagulantVolume}" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>inlet</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.inletVolume}" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>plasma</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.plasmaVolume}" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>collect</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.collectVolume}" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>AC в collect</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.anticoagulantInCollect}" />
+										</h:column>
+										<h:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>AC в plasma</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.anticoagulantInPlasma}" />
+										</h:column>
+									</h:dataTable>
+
+						</fieldset>
+
+                        <br />
+						<fieldset>
+							<legend>
+								<label><span class="title"><b>Параметры процедуры</b></span></label>
+							</legend>
+									<h:dataTable styleClass="printtable" id="extended_parameter_list" style="width:100%"
+												value="#{medicalOperation.document.operationReport.extendedParameterList}" var="row">
+										<h:column style="min-width:7em">
+											<f:facet name="header">
+						                        <p>Время афереза</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.time}" />
+										</h:column>
+										<h:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>AC Flow rate/vol</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.anticoagulantFlowRate}" size="4" /> /
+					                    	<h:outputText value="#{row.anticoagulantVolume}" size="4" />
+										</h:column>
+										<h:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Inlet flow rate/vol</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.inletFlowRate}" size="4" /> /
+					                    	<h:outputText value="#{row.inletVolume}" size="4" />
+										</h:column>
+										<h:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Plasma flow rate/vol</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.plasmaFlowRate}" size="4" /> /
+					                    	<h:outputText value="#{row.plasmaVolume}" size="4" />
+										</h:column>
+										<h:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Collect flow rate/vol</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.collectFlowRate}" size="4" /> /
+					                    	<h:outputText value="#{row.collectVolume}" size="4" />
+										</h:column>
+										<h:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Inlet:AC ratio</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.inletAcRatio}" />
+										</h:column>
+										<h:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>AC inf</p>
+						                    </f:facet>
+					                    	<h:outputText value="#{row.acInf}" />
+										</h:column>
+										<h:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Комментарии</p>
+						                    </f:facet>
+						                    	<h:outputText value="#{row.commentary}" />
+										</h:column>
+									</h:dataTable>
+
+						</fieldset>
+
+                        <br />
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first"><b>Осложнения:</b></td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.complications}" /></td>
+									</tr>
+								</table>
+							</div>
+
+                        <br />
+						<fieldset>
+							<legend>
+								<label><span class="title"><b>Процедура фотофереза лимфоцитов</b></span></label>
+							</legend>
+								<div class="row">
+									<table class="form_grid">
+										<tr class="row">
+                                            <td>
+                                            Продукт лимфоцитафереза перенесён в пакет для фотофереза,
+                                            добавлен физиологический р-р <h:outputText value="#{medicalOperation.document.operationReport.salineVolumePhoto}" /> мл,
+                                            р-р метоксипсоралена (20мкг/мл <h:outputText value="#{medicalOperation.document.operationReport.metoxipsoralenVolume}" /> мл,
+                                            проведено программное облучение клеток аппаратом Macogenic.<br />
+                                            Проведена трансфузия аутологичных облучённых лимфоцитов, перенёс<br />
+                                            _______________________________________________________Время________
+                                            </td>
+										</tr>
+
+									</table>
+								</div>
+						</fieldset>
+				</div>
+		</div>
+    </div>
+</h:body>
+</html>

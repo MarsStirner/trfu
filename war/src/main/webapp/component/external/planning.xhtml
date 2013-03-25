@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <h:outputScript>
+            PrimeFaces.locales ['ru'] = {
+            closeText: 'Закрыть',
+            prevText: 'Назад',
+            nextText: 'Вперёд',
+            monthNames: ['Январь', 'Февраль' , 'Март' , 'Апрель' , 'Май' , 'Июнь' , 'Июль' , 'Август' ,
+            'Сентябрь','Октябрь','Ноябрь','Декабрь' ],
+            monthNamesShort: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек' ],
+            dayNames: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Субота'],
+            dayNamesShort: ['Воск','Пон' , 'Вт' , 'Ср' , 'Четв' , 'Пят' , 'Суб'],
+            dayNamesMin: ['В', 'П', 'Вт', 'С ', 'Ч', 'П ', 'Сб'],
+            weekHeader: 'Неделя',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix:'',
+            timeOnlyTitle: 'Только время',
+            timeText: 'Время',
+            hourText: 'Час',
+            minuteText: 'Минута',
+            secondText: 'Секунда',
+            currentText: 'Сброс',
+            ampm: false,
+            month: 'Месяц',
+            week: 'неделя',
+            day: 'День',
+            allDayText: 'Весь день'
+            };
+        </h:outputScript>
+    </h:head>
+    <h:body>
+        <p:tabView id="tabView" style="border:none;">
+            <p:tab id="tab1" title="Запись на посещение">
+                <h:form id="form">
+                    <h:panelGroup id="result">
+                        <h:panelGroup rendered="#{examinationShedule.examinationRequest.planDate ne null}">
+                            <h:outputText value="Вы записались на прием, который состоится "/>
+                            <br/>
+                            <b>
+                                <h:outputText value="#{examinationShedule.examinationRequest.planDate}">
+                                    <f:convertDateTime pattern="dd.MM.yyy в HH:mm"/>
+                                </h:outputText>
+                            </b>
+                            <br/>
+                            <h:outputText value="Изменить дату и время приема:"/>
+                            <br/>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{examinationShedule.examinationRequest.planDate eq null}">
+                            <h:outputText value="Записаться на прием"/>
+                            <br/>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
+                    <h3>Дата</h3>
+                    <p:calendar value="#{examinationShedule.date}" mindate="#{examinationShedule.minDate}" mode="inline"
+                                id="inlineCal" locale="ru"/>
+
+
+                    <h3>Не раньше</h3>
+                    <p:calendar value="#{examinationShedule.possibleStartTime}" pattern="HH:mm" timeOnly="true"
+                                showOn="button"
+                                stepMinute="#{examinationShedule.minuteTimeStep}"
+                                minHour="#{examinationShedule.startTime}" maxHour="#{examinationShedule.finishTime}"/>
+
+                    <h3>Не позже</h3>
+                    <p:calendar value="#{examinationShedule.possibleFinishTime}" pattern="HH:mm" timeOnly="true"
+                                showOn="button"
+                                stepMinute="#{examinationShedule.minuteTimeStep}"
+                                minHour="#{examinationShedule.startTime}" maxHour="#{examinationShedule.finishTime}"/>
+                    <br/>
+
+                    <p:commandButton value="Обработать" actionListener="#{examinationShedule.process}"
+                                     update="timeDialog" oncomplete="timeDialog.show()"/>
+
+
+                    <p:dialog header="Выбор времени прихода" widgetVar="timeDialog"
+                              showEffect="fade" hideEffect="fade" modal="true" id="timeDialog">
+
+                        <h:panelGrid id="err" rendered="#{not examinationShedule.errorState}">
+                            <h:outputText value="#{examinationShedule.error}"/>
+                            <p:commandButton value="Закрыть" update="timeDialog" oncomplete="timeDialog.hide()"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid id="display" columns="2" cellpadding="5"
+                                     rendered="#{examinationShedule.errorState}">
+                            <h:outputText value="Доступное время: "/>
+                            <p:scrollPanel style="width:200px;height:300px" scrollMode="native">
+                                <p:dataTable id="time_select_table" border="0" cellpadding="0" cellspacing="0"
+                                             value="#{examinationShedule.possibleTimes}" var="row"
+                                             selection="#{examinationShedule.selectedTime}"
+                                             emptyMessage=""
+                                             selectionMode="single" rowKey="#{row}">
+
+                                    <p:column style="width:200px;">
+                                        <f:facet name="header">
+                                            Время
+                                        </f:facet>
+                                        <h:outputText value="#{row}">
+                                            <f:convertDateTime type="date" pattern="HH:mm"/>
+                                        </h:outputText>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:scrollPanel>
+                            <br/>
+                            <p:commandButton value="Записаться" actionListener="#{examinationShedule.commit}"
+                                             update="form" oncomplete="timeDialog.hide()"/>
+                            <p:commandButton value="Закрыть" update="timeDialog" oncomplete="timeDialog.hide()"/>
+                        </h:panelGrid>
+
+                    </p:dialog>
+
+                </h:form>
+            </p:tab>
+            <p:tab id="tab2" title="Прошлые посещения">
+                <h:dataTable id="table1" value="#{examinationShedule.previousRequests}" var="item"
+                             border="0" cellpadding="0" cellspacing="0">
+                    <f:facet name="header">
+                        <h:outputText value="Ваши прошлые посещения "/>
+                    </f:facet>
+                    <h:column>
+
+                        <h:outputText value="#{item.planDate eq null? item.created: item.planDate}">
+                            <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+                        </h:outputText>
+                    </h:column>
+                </h:dataTable>
+            </p:tab>
+        </p:tabView>
+
+        <h:outputStylesheet library="css" name="portal.css"/>
+    </h:body>
+</f:view>
+
+</html>

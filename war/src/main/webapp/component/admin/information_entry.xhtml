@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<!-- #{information.document.id}  -->
+		<e5ui-comp:userSessionUpdate interval="300" />
+		<e5ui-comp:outputUtilScript />
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+	
+	<ui:define name="header">
+		<div id="form_header">
+			<div class="actionbar">
+				<div class="menu">
+					<div class="defbutton">
+						<h:commandLink action="#{information.edit}" rendered="#{information.viewState}">
+							<h:graphicImage value="#{resource['images:edit_buttn.png']}" />
+							Редактировать
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{information.cancel}" rendered="#{information.editState or information.createState}">
+							<h:graphicImage value="#{resource['images:button-cancel.png']}" />
+							Отменить
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{information.save}" rendered="#{information.editState or information.createState}">
+							<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+							Сохранить
+						</h:commandLink>
+					</div>
+					<h:panelGroup rendered="#{not (information.document.published)}">
+						<div class="defbutton">
+							<h:commandLink action="#{information.publish}" rendered="#{information.editState or information.createState or information.viewState}">
+								<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+								Опубликовать
+							</h:commandLink>
+						</div>
+					</h:panelGroup>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="content">
+		<div id="header_content">
+			<h:panelGroup rendered="#{information.createState}">
+				<div class="name">Новая новость</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{information.editState or information.viewState}">
+				<div class="name">
+					<div>
+						<h:outputText value="#{information.document.published? 'Опубликованная': 'Неопубликованная'}" />
+						<span style="margin-left:5px;margin-right:5px;">новость от</span>
+						<h:outputText value="#{information.document.created}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+						</h:outputText>
+					</div>
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{information.notFoundState}">
+				<div class="name">404 - Новость не найдена</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{information.forbiddenState}">
+				<div class="name">403 - Действие запрещено</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{not(information.createState or information.editState or information.viewState or information.notFoundState or information.forbiddenState)}">
+				<div class="name">В доступе отказано</div>
+			</h:panelGroup>
+		</div>
+		
+		<div class="main_content">
+			<div>
+				<div>
+					<fieldset>
+						<legend>
+							<label><span class="title">Общая информация</span> </label>
+						</legend>
+						<h:panelGroup rendered="#{information.viewState}">
+							<div class="row">
+								<table class="form_grid">
+									<h:panelGroup rendered="#{information.document.published}">
+										<tr class="row">
+											<td class="first">Дата публикации:</td>
+											<td>
+												<h:outputText value="#{information.document.publishDate}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+												</h:outputText>
+											</td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Заголовок новости:</td>
+										<td><h:outputText value="#{information.document.title}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Краткое содержание:</td>
+										<td><h:outputText value="#{information.document.shortDescription}" escape="false" class="wide" /></td>
+									</tr>
+								</table>
+							</div>
+							<div class="row">
+								<span class="title block">Текст новости:</span>
+								<h:outputText value="#{information.document.description}" escape="false" class="wide" />
+							</div>
+							</h:panelGroup>
+						
+							<h:panelGroup rendered="#{information.createState or information.editState}">
+							<div class="row">
+								<table class="form_grid">
+									<h:panelGroup rendered="#{information.document.published}">
+										<tr class="row">
+											<td class="first">Дата публикации:</td>
+											<td>
+												<h:outputText value="#{information.document.publishDate}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+												</h:outputText>
+											</td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Заголовок новости:</td>
+										<td><h:inputText value="#{information.document.title}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Краткое содержание:</td>
+										<td><h:inputTextarea value="#{information.document.shortDescription}" class="wide" /></td>
+									</tr>
+								</table>
+							</div>
+							<div class="row">
+								<span class="title block">Текст новости:</span>
+								<h:inputTextarea rows="6" value="#{information.document.description}" class="wide" />
+							</div>
+						</h:panelGroup>
+					</fieldset>
+				</div>
+			</div>
+			
+		</div>
+	</ui:define>
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	        <f:facet name="timeoutPanel">
+	        	<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	        		Пожалуйста, подождите...
+	        	</div>
+	        </f:facet>
+	    </e5ui-comp:splashScreen>
+	    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	    
+	    <e5ui:multiMarker id="main_form_marker" rendered="true" hintWindowStyleClass="e5ui-marker-hintWindow"
+        			hintWindowInfoStyleClass="e5ui-marker-hintWindow-info" hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
+        			hintWindowErrorStyleClass="e5ui-marker-hintWindow-error" hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal" displayMode="window">
+        	<h:button onclick="e5ui_multiMarker.remove('main_form_marker'); return false;" value="ОК" />
+        </e5ui:multiMarker>
+	    
+	    <h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+	    <h:outputStylesheet library="css" name="multiMarker.css" />
+	</ui:define>
+	
+</ui:composition>
+</html>

@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BiomaterialLabel" pageWidth="310" pageHeight="288" whenNoDataType="AllSectionsNoDetail" columnWidth="306" leftMargin="2" rightMargin="2" topMargin="2" bottomMargin="2">
+	<property name="ireport.zoom" value="1.948717100000003"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="docId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Institution" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="Address" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT         GROUP_CONCAT(trfu_classifiers_A.`value`,'  ',convert(trfu_medical_biomaterial_additional_substances.`volume`,char(25)),' мл' SEPARATOR ', ') AS additional_substances,
+     trfu_medical_biomaterials.`cellCount` AS trfu_medical_biomaterials_cellCount,
+     trfu_medical_biomaterials.`number` AS trfu_medical_biomaterials_number,
+     trfu_medical_biomaterials.`volume` AS trfu_medical_biomaterials_volume,
+     trfu_classifiers.`value` AS trfu_classifiers_value,
+     trfu_medical_operations.`recipient` AS trfu_medical_operations_recipient,
+     trfu_medical_operations.`ibNumber` AS trfu_medical_operations_ibNumber,
+     trfu_medical_donors.`number` AS trfu_medical_donors_number,
+     trfu_medical_biomaterials.`id` AS trfu_medical_biomaterials_id,
+     trfu_medical_donors.`bloodGroup_id` AS trfu_medical_donors_bloodGroup_id,
+     trfu_medical_donors.`rhesusFactor_id` AS trfu_medical_donors_rhesusFactor_id,
+     trfu_medical_biomaterials.`received` AS received,
+     trfu_medical_biomaterials.`expirationDate` AS expirationDate,
+     trfu_medical_biomaterials.`tnc` AS tnc,
+     trfu_medical_biomaterials.`initialVolume` AS trfu_medical_biomaterials_initialVolume,
+     trfu_medical_biomaterials.`cd3x8PerKg` AS trfu_medical_biomaterials_cd3x8PerKg,
+     trfu_medical_biomaterials.`cd3X8` AS trfu_medical_biomaterials_cd3X8,
+     trfu_medical_biomaterials.`cd34X6PerKg` AS trfu_medical_biomaterials_cd34X6PerKg,
+     trfu_medical_biomaterials.`cd34X6` AS trfu_medical_biomaterials_cd34X6,
+     trfu_medical_biomaterials.`cd34` AS trfu_medical_biomaterials_cd34,
+     trfu_medical_operations.`unp` AS trfu_medical_operations_unp,
+     trfu_medical_biomaterial_additional_substances.`volume` AS trfu_medical_biomaterial_additional_substances_volume,
+     trfu_classifiers_A.`value` AS substanceType,
+     trfu_medical_biomaterials.`anticoagulantVolume` AS trfu_medical_biomaterials_anticoagulantVolume,
+     trfu_anticoagulants.`value` AS trfu_anticoagulants_value,
+     trfu_medical_biomaterials.`cd3` AS trfu_medical_biomaterials_cd3,
+     trfu_medical_biomaterials.`ncPerKg` AS trfu_medical_biomaterials_ncPerKg
+FROM
+     `trfu_medical_donors` trfu_medical_donors INNER JOIN `trfu_medical_operations` trfu_medical_operations ON trfu_medical_donors.`id` = trfu_medical_operations.`donor_id`
+      LEFT OUTER JOIN `trfu_medical_biomaterials` trfu_medical_biomaterials ON trfu_medical_operations.`id` = trfu_medical_biomaterials.`operation_id`
+     LEFT OUTER JOIN `trfu_classifiers` trfu_classifiers ON trfu_medical_biomaterials.`biomaterialType_id` = trfu_classifiers.`id`
+     LEFT OUTER JOIN `trfu_medical_biomaterial_substances` trfu_medical_biomaterial_substances ON trfu_medical_biomaterials.`id` = trfu_medical_biomaterial_substances.`biomaterial_id`
+     LEFT OUTER JOIN `trfu_anticoagulants` trfu_anticoagulants ON trfu_medical_biomaterials.`anticoagulant_id` = trfu_anticoagulants.`id`
+     LEFT OUTER JOIN `trfu_medical_biomaterial_additional_substances` trfu_medical_biomaterial_additional_substances ON trfu_medical_biomaterial_substances.`substance_id` = trfu_medical_biomaterial_additional_substances.`id`
+     LEFT OUTER JOIN `trfu_classifiers` trfu_classifiers_A ON trfu_medical_biomaterial_additional_substances.`substanceType_id` = trfu_classifiers_A.`id`
+WHERE
+     trfu_medical_biomaterials.`id` = $P{docId}]]>
+	</queryString>
+	<field name="additional_substances" class="java.lang.String"/>
+	<field name="trfu_medical_biomaterials_cellCount" class="java.lang.Double"/>
+	<field name="trfu_medical_biomaterials_number" class="java.lang.String"/>
+	<field name="trfu_medical_biomaterials_volume" class="java.lang.Integer"/>
+	<field name="trfu_classifiers_value" class="java.lang.String"/>
+	<field name="trfu_medical_operations_recipient" class="java.lang.String"/>
+	<field name="trfu_medical_operations_ibNumber" class="java.lang.String"/>
+	<field name="trfu_medical_donors_number" class="java.lang.String"/>
+	<field name="trfu_medical_biomaterials_id" class="java.lang.Integer"/>
+	<field name="trfu_medical_donors_bloodGroup_id" class="java.lang.Integer"/>
+	<field name="trfu_medical_donors_rhesusFactor_id" class="java.lang.Integer"/>
+	<field name="received" class="java.sql.Timestamp"/>
+	<field name="expirationDate" class="java.sql.Timestamp"/>
+	<field name="tnc" class="java.lang.Double"/>
+	<field name="trfu_medical_biomaterials_initialVolume" class="java.lang.Integer"/>
+	<field name="trfu_medical_biomaterials_cd3x8PerKg" class="java.lang.Double"/>
+	<field name="trfu_medical_biomaterials_cd3X8" class="java.lang.Double"/>
+	<field name="trfu_medical_biomaterials_cd34X6PerKg" class="java.lang.Double"/>
+	<field name="trfu_medical_biomaterials_cd34X6" class="java.lang.Double"/>
+	<field name="trfu_medical_biomaterials_cd34" class="java.lang.Double"/>
+	<field name="trfu_medical_operations_unp" class="java.lang.String"/>
+	<field name="trfu_medical_biomaterial_additional_substances_volume" class="java.lang.Integer"/>
+	<field name="substanceType" class="java.lang.String"/>
+	<field name="trfu_medical_biomaterials_anticoagulantVolume" class="java.lang.Double"/>
+	<field name="trfu_anticoagulants_value" class="java.lang.String"/>
+	<field name="trfu_medical_biomaterials_cd3" class="java.lang.Double"/>
+	<field name="trfu_medical_biomaterials_ncPerKg" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="270" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement style="table_TD" positionType="Float" x="142" y="139" width="154" height="32"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Tahoma" size="7" isBold="false"/>
+					<paragraph lineSpacing="Proportional" leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{additional_substances} == null?"":"Добавлено: "+$F{additional_substances}+"\n")+
+($F{trfu_medical_biomaterials_anticoagulantVolume}==0.0?"":"Антикоагулянт: "+$F{trfu_anticoagulants_value}+" "+$F{trfu_medical_biomaterials_anticoagulantVolume}+" мл")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" positionType="Float" x="203" y="60" width="93" height="24"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_medical_biomaterials_number}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" positionType="Float" x="142" y="60" width="61" height="24"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Продукт №]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TD" positionType="Float" x="61" y="60" width="81" height="24"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_medical_donors_number}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" positionType="Float" x="0" y="60" width="61" height="24"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Донор №]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" positionType="Float" x="0" y="84" width="61" height="31"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Дата/время получения]]></text>
+			</staticText>
+			<textField pattern="dd.MM.yyyy HH:ss">
+				<reportElement style="table_TD" positionType="Float" x="61" y="84" width="81" height="31"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{received}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" positionType="Float" x="0" y="115" width="61" height="24"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Исходный объем, мл:]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TD" positionType="Float" stretchType="RelativeToTallestObject" x="61" y="139" width="81" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_medical_biomaterials_volume}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" positionType="Float" x="142" y="84" width="61" height="31"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Группа крови]]></text>
+			</staticText>
+			<textField pattern="dd.MM.yyyy" isBlankWhenNull="true">
+				<reportElement style="table_TD" positionType="Float" x="203" y="115" width="93" height="24"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{expirationDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" positionType="Float" x="142" y="115" width="61" height="24"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Срок годности]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" positionType="Float" x="0" y="211" width="296" height="19"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Только для реципиента:]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TD" positionType="FixRelativeToBottom" x="96" y="230" width="46" height="40" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font fontName="Tahoma" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_medical_operations_unp}==null?"":$F{trfu_medical_operations_unp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" positionType="FixRelativeToBottom" x="0" y="230" width="96" height="40" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="4"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Реципиент №]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" positionType="FixRelativeToBottom" x="142" y="230" width="80" height="40" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="4"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Фамилия, имя, отчество]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TD" positionType="FixRelativeToBottom" x="222" y="230" width="74" height="40" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font fontName="Tahoma" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_medical_operations_recipient}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="45" width="296" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_classifiers_value}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement style="table_TD" positionType="Float" x="203" y="84" width="93" height="31"/>
+			</frame>
+			<textField>
+				<reportElement positionType="Float" x="203" y="84" width="93" height="13"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_medical_donors_bloodGroup_id}.toString().replace("1","0 (I)").replace("2","А (II)").replace("3","В (III)").replace("4","АВ (IV)")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="203" y="97" width="93" height="18"/>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" Rh "+$F{trfu_medical_donors_rhesusFactor_id}.toString().replace("3","Положительный").replace("4","Отрицательный")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table_TD" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="139" width="61" height="32"/>
+				<box leftPadding="4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<text><![CDATA[Финальный объем, мл:]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table_TD" positionType="Float" x="61" y="115" width="81" height="24"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_medical_biomaterials_initialVolume}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="2" y="171" width="115" height="36"/>
+				<textElement verticalAlignment="Top" markup="styled">
+					<font fontName="Tahoma" size="7" isBold="false" isUnderline="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{trfu_medical_biomaterials_cellCount}.equals( 0.0 )?"":"Количество клеток (х109):   "+$F{trfu_medical_biomaterials_cellCount}+"\n")+
+($F{trfu_medical_biomaterials_cd34}.equals( 0.0 )?"":"CD34:                                  "+$F{trfu_medical_biomaterials_cd34}+"\n")+
+($F{trfu_medical_biomaterials_cd3}.equals( 0.0 )?"":"CD3:                                    "+$F{trfu_medical_biomaterials_cd3}+"\n")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="123" y="171" width="82" height="36"/>
+				<textElement verticalAlignment="Top" markup="none">
+					<font fontName="Tahoma" size="7" isBold="false" isUnderline="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{tnc}.equals( 0.0 )?"":"TNC (х109):       "+$F{tnc}+"\n")+
+($F{trfu_medical_biomaterials_cd34X6}.equals( 0.0 )?"":"CD34 (х106):     "+$F{trfu_medical_biomaterials_cd34X6}+"\n")+
+($F{trfu_medical_biomaterials_cd3X8}.equals( 0.0 )?"":"CD3 (х108):       "+$F{trfu_medical_biomaterials_cd3X8}+"\n")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="211" y="171" width="85" height="36"/>
+				<textElement verticalAlignment="Top" markup="none">
+					<font fontName="Tahoma" size="7" isBold="false" isUnderline="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{trfu_medical_biomaterials_ncPerKg}.equals( 0.0 )?"":"NC/кг (х108):         "+$F{trfu_medical_biomaterials_ncPerKg}+"\n")+
+($F{trfu_medical_biomaterials_cd34X6PerKg}.equals( 0.0 )?"":"CD34 (х106/кг):     "+$F{trfu_medical_biomaterials_cd34X6PerKg}+"\n")+
+($F{trfu_medical_biomaterials_cd3x8PerKg}.equals( 0.0 )?"":"CD3 (х108/кг):       "+$F{trfu_medical_biomaterials_cd3x8PerKg}+"\n")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="5" width="296" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Tahoma" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="0" y="18" width="296" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Address}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

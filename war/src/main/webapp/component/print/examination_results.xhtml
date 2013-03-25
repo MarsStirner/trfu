@@ -1,0 +1,244 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!--<link type="text/css" rel="stylesheet" href="print.css" />-->
+    <h:outputStylesheet library="css" name="print.css" /> 
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Осмотр врача</title>
+</h:head>
+
+<h:body>
+	<!-- #{examination.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div style="margin-left:30px;">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+	        <tbody>
+	            <tr>
+                    <td width="50%">
+                        <p style="font-size:20px;">Осмотр врача</p>
+                        <p>
+                            За границей не был.<br />
+                            Малярией не болел.<br />
+                            Жалоб нет.<br />
+                            Склеры, слизистые полости рта нормально окрашены.<br />
+                            Кожа чистая, л/узлы не увеличены.<br />
+                            При аскультации сердца и легких патологии не выявлено.<br />
+                            Органы брюшной полости без отклонений.<br />
+                        </p>
+                        <p>
+                            А/Д _____<h:outputText value="#{examination.document.donorAD}" /> t <h:outputText value="#{examination.document.donorTemperature}" /> Пульс <h:outputText value="#{examination.document.donorPulse}" /><br />
+                            Рост <h:outputText value="#{examination.document.donorHeight}" />  Вес <h:outputText value="#{examination.document.donorWeight}" />
+                        </p>
+
+                    </td>
+                    <td width="50%">
+                        <p>Отметка о взятии крови _________________</p>
+                        <table class="printtable">
+                            <tbody>
+                                <tr>
+                                    <td colspan="4">
+                                        <b>Результат клинического анализа крови</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Гемоглобин(HB)</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Гематокрит(Ht)</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>Тромбоциты(Tr)</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>СОЭ</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <b>Результаты биохимического обследования</b>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" ><p>ALT</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                    <td valign="top" ><p>&nbsp;</p></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="font-size: 12px; font-weight:bold;">Отведен от донорства</p>
+        <table class="printtable" width="100%">
+	        <tbody>
+	            <tr>
+                    <td>
+                        <p style="font-size:16px">Причина</p>
+                    </td>
+                    <td>
+                        <p style="font-size:16px">Срок</p>
+                    </td>
+                    <td>
+                        <p style="font-size:16px">Примечание</p>
+                    </td>
+                </tr>
+	            <tr>
+                    <td>
+                        &nbsp;
+                        <br /><br /> <br /> <br /> <br /> <br /> <br /> <br />
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <table class="printtable">
+	        <tbody>
+	            <tr>
+                    <td>
+                        <p style="font-size:16px"></p>
+                    </td>
+                    <td>
+                        <p style="font-size:16px">Дата</p>
+                    </td>
+                    <td>
+                        <p style="font-size:16px">Заключение</p>
+                    </td>
+                    <td>
+                        <p style="font-size:16px">Фамилия врача, печать и штамп учреждения</p>
+                    </td>
+                </tr>
+	            <tr>
+                    <td>
+                        ТЕРАПЕВТ
+                        (выписка за все наблюдения)
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        по годам на отдельном листе
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+	            <tr>
+                    <td>
+                        Врач-инфекционист
+                        (информация по инфекционным заболеваниям за последние 6 месяцев)
+
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+	            <tr>
+                    <td>
+                        ЭКГ с расшифровкой
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+	            <tr>
+                    <td>
+                        Анализ мочи
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+	            <tr>
+                    <td>
+                        Флюорография(с описанием)
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+	            <tr>
+                    <td>
+                        Врач-гинеколог
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+	            <tr>
+                    <td>
+                        Врач-специалист
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+	</div>
+</h:body>
+
+</html>

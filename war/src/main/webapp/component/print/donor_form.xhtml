@@ -1,0 +1,259 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Анкета донора</title>
+</h:head>
+
+<h:body>
+	<!-- #{donor.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+	<div id="donor_form" style="margin-left:30px;">
+	<table border="0" cellspacing="0" cellpadding="0" >
+	<tbody>
+	<tr>
+	<td colspan="4" valign="top" ><p><b>АНКЕТА ДОНОРА</b></p></td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>Ф.И.О. донора</p></td>
+	<td colspan="3" valign="top" ><p>_____________________________________________________________________</p></td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>Возраст (полное число лет)</p></td>
+	<td valign="top" ><p>_____________</p></td>
+	<td valign="top" ><p>Пол</p></td>
+	<td valign="top" ><p>_____________</p></td>
+	</tr>
+	
+	</tbody>
+	</table>
+	
+	<div style="clear:both;">
+	<table class="printtable" width="100%"> 
+	<tbody>
+	<tr>
+	<td valign="top" ><b><p>А. ОБЩЕЕ СОСТОЯНИЕ ЗДОРОВЬЯ </p></b></td>
+	<td valign="top" ><p>ДА </p></td>
+	<td valign="top" ><p>НЕТ</p></td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>1. Общее самочувствие в настоящее время хорошее? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>2. Есть ли сейчас температура, головная боль, боль в
+	горле, насморк, кашель? (нужное подчеркнуть) </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>3. Употребляли ли за последние 4 часа пищу? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>4. Употребляли ли за последние 48 часов алкоголь? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>5. Производилось ли за последние 10 дней удаление зуба? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>6. Принимали ли за последний месяц лекарства? <br />
+	Какие? _________________________________________________<br />
+	</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>7. Производились ли прививки? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>8. Наблюдаетесь ли сейчас у врача? <br />
+	Если "ДА", по какому поводу ____________________________<br />
+	</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><b><p>Б. ЗА ПРОШЕДШИЕ 6 МЕСЯЦЕВ: </p></b></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>1. Производили ли Вам инъекции лекарств? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>2. Подвергались ли Вы хирургической операции? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>3. Производили ли Вам переливание крови или ее
+	препаратов? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>4. Прокалывали ли Вам уши, делали ли акупунктуру или
+	татуировку? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>5. Были ли Вы в контакте с больными гепатитом, желтухой,
+	сифилисом, ВИЧ-инфекцией? (нужное подчеркнуть) </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><b><p>В. БЫЛИ ЛИ У ВАС КОГДА-НИБУДЬ: </p></b></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>1. Потеря веса? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>2. Ночные поты? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>3. Обмороки? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>4. Гепатит, венерические заболевания? (нужное
+	подчеркнуть) </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>5. Крово(плазма)дачи? (нужное подчеркнуть)
+	Если "ДА", указать дату последней ______________________</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>6. Были ли отводы от кроводач? <br />
+	Если "ДА", указать дату и причину отвода _______________</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>7. Выезд за рубеж за последние 3 года? <br />
+	Если "ДА", указать дату и название страны ______________</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><b><p>Г. ДОПОЛНИТЕЛЬНО ДЛЯ ЖЕНЩИН: </p></b></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>1. Беременны ли Вы сейчас и была ли беременность за
+	последние 6 недель? </p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>2. Срок последней менструации __________________________
+	</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	<tr>
+	<td valign="top" ><p>3. Состоите ли Вы на диспансерном учете? <br />
+	Если "ДА", указать лечебно-профилактическое учреждение
+	(диспансер, женская консультация, поликлиника) и причину
+	________________________________________________________</p></td>
+	<td valign="top" > </td>
+	<td valign="top" > </td>
+	</tr>
+	
+	</tbody>
+	</table>
+	</div>
+	
+	<div style="clear:both; font-size:10px">
+	<p>Я прочитал(а), понял(а) и правильно ответил(а) на все вопросы анкеты, а также получил(а) ответы на все заданные мной вопросы. Я полностью осознал(а) значимость полученной информации для моего здоровья и здоровья пациента, которому будет произведена трансфузия компонентов и препаратов, полученных из моей крови (плазмы). Если я отношусь к группе риска по распространению вирусов гепатита B, C, ВИЧ и других болезней, я согласен (согласна) не сдавать кровь (плазму) для других людей. Я понимаю, что моя кровь (плазма) будет проверена на ВИЧ и другие вирусы.</p>
+	
+	<p>Я информирован(а), что во время процедуры взятия крови (плазмы) возможны незначительные реакции организма (кратковременное снижение артериального давления, гематома в области инъекции), не являющиеся следствием ошибки персонала.</p>
+	
+	<p>Я согласен (согласна) с тем, что моя кровь (плазма) будет использована так, как это необходимо больным людям.</p>
+	
+	<p>Я осведомлен(а) о том, что за сокрытие сведений о наличии у меня ВИЧ-инфекции или венерического заболевания я подлежу уголовной ответственности в соответствии со статьями 121 и 122 Уголовного кодекса Российской Федерации (Собрание законодательства Российской Федерации, 1996, N 25, ст. 2954).</p>
+	</div>
+	
+	<table border="0" cellspacing="0" cellpadding="0" >
+		<tbody>
+			<tr>
+				<td valign="top" ><p>Дата</p></td>
+				<td valign="top" ><p>_______________</p></td>
+			</tr>
+			<tr>
+				<td valign="top" ><p>Донор</p></td>
+				<td valign="top" ><p>____________ _______________________&nbsp;&nbsp;&nbsp;&nbsp;</p>
+					<p><i> (подпись) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ф.и.о.)</i></p>
+				</td>
+				<td valign="top" ><p>Медицинский работник</p></td>
+				<td valign="top" ><p>____________ _______________________&nbsp;&nbsp;&nbsp;&nbsp;</p>
+					<p><i> (подпись) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ф.и.о.)</i></p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+	
+</h:body>
+
+</html>

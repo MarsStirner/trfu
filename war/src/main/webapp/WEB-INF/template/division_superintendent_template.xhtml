@@ -1,0 +1,403 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="style.css" />
+	<title>Трансфузиология</title>
+</h:head>
+
+<h:body id="main_body">
+
+	<ui:insert name="running_head"></ui:insert>
+	
+	<div id="main_global">
+	
+		<h:form id="main_content_form">
+			<c:set var="currentView" value="#{facesContext.viewRoot.viewId}"/>
+    		<c:set var="contextPath" value="#{request.contextPath}"/>
+		<ui:insert name="left_menu">
+			<div id="left_menu">
+				<div class="header">Трансфузиология</div>
+				<e5ui:menu>
+					<e5ui:menuItem collapsable="true">
+							<f:facet name="content">
+								<span>Доноры</span>
+							</f:facet>
+							<e5ui:menuItem selected="#{currentView eq '/component/donors.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/donors.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				По фамилии
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/donors_by_number.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/donors_by_number.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				По номеру
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/donors_by_date.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/donors_by_date.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				По дате
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/donors_quarantine_finish_invite.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/donors_quarantine_finish_invite.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Для приглашения на повторную донацию
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/donors_available.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/donors_available.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Для приглашения на донацию
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/donors_by_blood_group.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/donors_by_blood_group.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				По группе крови
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/donors_rejected.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/donors_rejected.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Отведенные
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/donor_match.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/donor_match.xhtml" target="_blank">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				<f:param name="docAction" value="create" />
+	                    				Подбор доноров
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+					</e5ui:menuItem>
+					<e5ui:menuItem collapsable="true">
+							<f:facet name="content">
+								<span>Компоненты крови</span>
+							</f:facet>
+							<e5ui:menuItem selected="#{currentView eq '/component/blood_components.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/blood_components.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				По номеру
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_filter.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/blood_components_filter.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Поиск
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_in_quarantine.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/blood_components_in_quarantine.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				В карантине
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_quarantine_finish.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/blood_components_quarantine_finish.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Срок карантинизации завершен
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_ready.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/blood_components_ready.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Готовы к выдаче
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_distributed.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/blood_components_distributed.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Выданные
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_purchased.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/blood_components_purchased.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Закупленные
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_defect.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/blood_components_defect.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Забракованные
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_expired.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/blood_components_expired.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Истек срок хранения
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_component_match.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/blood_component_match.xhtml" target="_blank">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				<f:param name="docAction" value="create" />
+	                    				Подбор КК
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+					</e5ui:menuItem>
+					<e5ui:menuItem collapsable="true">
+							<f:facet name="content">
+								<span>Персональные</span>
+							</f:facet>
+							<e5ui:menuItem selected="#{currentView eq '/component/personal_requests.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/personal_requests.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Обращения
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+					</e5ui:menuItem>
+	                <e5ui:menuItem collapsable="true">
+	                   			<f:facet name="content">
+									<span>Обращения на обследование</span>
+								</f:facet>
+								<e5ui:menuItem selected="#{currentView eq '/component/examinations.xhtml'}">
+		                    		<f:facet name="content">
+		                    			<h:outputLink value="#{contextPath}/component/examinations.xhtml">
+		                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+		                    				По номеру
+		                    			</h:outputLink>
+		                        	</f:facet>
+		                   		</e5ui:menuItem>
+		                   		<e5ui:menuItem selected="#{currentView eq '/component/examinations_by_date.xhtml'}">
+		                    		<f:facet name="content">
+		                    			<h:outputLink value="#{contextPath}/component/examinations_by_date.xhtml">
+		                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+		                    				По дате
+		                    			</h:outputLink>
+		                        	</f:facet>
+		                   		</e5ui:menuItem>
+		                   		<e5ui:menuItem selected="#{currentView eq '/component/examinations_by_status.xhtml'}">
+		                    		<f:facet name="content">
+		                    			<h:outputLink value="#{contextPath}/component/examinations_by_status.xhtml">
+		                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+		                    				По статусу
+		                    			</h:outputLink>
+		                        	</f:facet>
+		                   		</e5ui:menuItem>
+		                   		<e5ui:menuItem selected="#{currentView eq '/component/examinations_await.xhtml'}">
+		                    		<f:facet name="content">
+		                    			<h:outputLink value="#{contextPath}/component/examinations_await.xhtml">
+		                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+		                    				Ожидающие приема
+		                    			</h:outputLink>
+		                        	</f:facet>
+		                   		</e5ui:menuItem>
+		                   		<e5ui:menuItem selected="#{currentView eq '/component/examinations_planned.xhtml'}">
+		                    		<f:facet name="content">
+		                    			<h:outputLink value="#{contextPath}/component/examinations_planned.xhtml">
+		                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+		                    				Запланированные
+		                    			</h:outputLink>
+		                        	</f:facet>
+		                   		</e5ui:menuItem>
+					</e5ui:menuItem>
+					
+						<e5ui:menuItem collapsable="true">
+							<f:facet name="content">
+								<span>Обращения на донацию</span>
+							</f:facet>
+							<e5ui:menuItem selected="#{currentView eq '/component/blood_donations.xhtml'}">
+								<f:facet name="content">
+									<h:outputLink value="#{contextPath}/component/blood_donations.xhtml">
+										<h:graphicImage value="#{resource['images:leaf.gif']}" />
+			                   		По номеру
+			                    </h:outputLink>
+								</f:facet>
+							</e5ui:menuItem>
+							<e5ui:menuItem selected="#{currentView eq '/component/blood_donations_by_date.xhtml'}">
+								<f:facet name="content">
+									<h:outputLink value="#{contextPath}/component/blood_donations_by_date.xhtml">
+										<h:graphicImage value="#{resource['images:leaf.gif']}" />
+			                    			По дате
+			                    		</h:outputLink>
+								</f:facet>
+							</e5ui:menuItem>
+							<e5ui:menuItem selected="#{currentView eq '/component/blood_donations_by_status.xhtml'}">
+								<f:facet name="content">
+									<h:outputLink value="#{contextPath}/component/blood_donations_by_status.xhtml">
+										<h:graphicImage value="#{resource['images:leaf.gif']}" />
+			                    			По статусу
+			                    		</h:outputLink>
+								</f:facet>
+							</e5ui:menuItem>
+						</e5ui:menuItem>
+						
+						<e5ui:menuItem collapsable="true">
+						<f:facet name="content">
+							<span>Заявки на выдачу КК</span>
+						</f:facet>
+						<e5ui:menuItem selected="#{currentView eq '/component/blood_component_orders.xhtml'}">
+	                    	<f:facet name="content">
+	                    		<h:outputLink value="#{contextPath}/component/blood_component_orders.xhtml">
+	                    			<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    			По дате регистрации
+	                    		</h:outputLink>
+	                       	</f:facet>
+	                   	</e5ui:menuItem>
+	                   	<e5ui:menuItem selected="#{currentView eq '/component/blood_component_orders_reserved.xhtml'}">
+	                    	<f:facet name="content">
+	                    		<h:outputLink value="#{contextPath}/component/blood_component_orders_reserved.xhtml">
+	                    			<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    			Забронированные
+	                    		</h:outputLink>
+	                       	</f:facet>
+	                   	</e5ui:menuItem>
+					</e5ui:menuItem>
+					
+					<e5ui:menuItem collapsable="true">
+						<f:facet name="content">
+							<span>Контрагенты</span>
+						</f:facet>
+						<e5ui:menuItem selected="#{currentView eq '/component/contragents.xhtml'}">
+	                    	<f:facet name="content">
+	                    		<h:outputLink value="#{contextPath}/component/contragents.xhtml">
+	                    			<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    			По наименованию
+	                    		</h:outputLink>
+	                       	</f:facet>
+	                   	</e5ui:menuItem>
+					</e5ui:menuItem>
+					
+					<e5ui:menuItem selected="#{currentView eq '/component/report/report_templates.xhtml'}">
+	                    <f:facet name="content">
+	                    	<h:outputLink value="#{contextPath}/component/report/report_templates.xhtml">
+	                    		<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    		Отчеты
+	                    	</h:outputLink>
+	                     </f:facet>
+	                </e5ui:menuItem>
+	                
+	                <e5ui:menuItem selected="#{currentView eq '/component/timetable.xhtml'}">
+	                    <f:facet name="content">
+	                    	<h:outputLink value="#{contextPath}/component/timetable.xhtml" target="_blank">
+	                    		<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    		График дежурств
+	                    	</h:outputLink>
+	                     </f:facet>
+	                </e5ui:menuItem>
+				</e5ui:menu>
+			</div>
+			<div id="split"></div>
+		</ui:insert>
+		
+		<ui:insert name="header">
+			<div id="view_header">
+				<div id="header">
+					<div class="menu">
+						<ui:insert name="header_top"></ui:insert>
+						<div class="role">
+							<div class="top">
+								<h:commandLink styleClass="top_link" onclick="return false;">
+		                    		<span>
+										<h:outputText value="#{sessionManagement.currentRole}" converter="RoleConverter" />
+									</span>
+								</h:commandLink>
+								<div class="sub">
+									<ui:repeat value="#{sessionManagement.availableRoles}" var="element">
+										<div class="item">
+											<h:commandLink action="#{sessionManagement.setCurrentRole(element)}">
+												<h:outputText value="#{element}" converter="RoleConverter" />
+											</h:commandLink>
+										</div>
+									</ui:repeat>
+								</div>
+							</div>
+						</div>
+						<div class="username">
+							<div class="top">
+		                    	<h:commandLink styleClass="top_link" onclick="return false;">
+		                    		<span>
+										<h:outputText value="#{sessionManagement.loggedUser.description}" />
+									</span>
+								</h:commandLink>
+								<div class="sub">
+						        	<div class="item">
+						        		<h:commandLink action="#{sessionManagement.logOut}">
+									        Выход
+								        </h:commandLink>
+						        	</div>
+						        </div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="actionbar">
+					<div class="menu">
+						<ui:insert name="header_buttons"></ui:insert>
+					</div>
+				</div>
+			</div>
+		</ui:insert>
+		
+		<ui:insert name="content">
+        	Content
+        </ui:insert>
+        
+        </h:form>
+        
+		<ui:insert name="footer">
+			<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	        	<f:facet name="timeoutPanel">
+	        		<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	        			Пожалуйста, подождите...
+	        		</div>
+	        	</f:facet>
+	        </e5ui-comp:splashScreen>
+	        <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	        <h:outputStylesheet library="css" name="datatable.css" />
+	        <h:outputStylesheet library="css" name="menu.css" />
+	        <h:outputStylesheet library="css" name="tablePager.css" />
+		</ui:insert>
+	</div>
+</h:body>
+
+</html>

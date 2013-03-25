@@ -1,0 +1,1634 @@
+﻿<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<!-- #{medicalOperation.document.id}  -->
+		<e5ui-comp:userSessionUpdate interval="300" />
+		<h:outputScript library="js" name="datepicker_init_ru.js" target="head" />
+		<h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+		<h:outputScript library="js" name="forms.js" target="head" />
+		<e5ui-comp:outputUtilScript />
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+	
+	<ui:define name="header">
+		<div id="form_header">
+			<div class="actionbar">
+				<div class="menu">
+					<div class="defbutton">
+						<h:commandLink action="#{medicalOperation.edit}" rendered="#{medicalOperation.viewState}">
+							<h:graphicImage value="#{resource['images:edit_buttn.png']}" />
+							Редактировать
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{medicalOperation.cancel}" rendered="#{medicalOperation.editState or medicalOperation.createState}">
+							<h:graphicImage value="#{resource['images:button-cancel.png']}" />
+							Отменить
+						</h:commandLink>
+					</div>
+					<div class="defbutton">
+						<h:commandLink action="#{medicalOperation.save}" rendered="#{medicalOperation.editState or medicalOperation.createState}">
+							<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+							Сохранить
+						</h:commandLink>
+					</div>
+					<h:panelGroup rendered="false">
+						<div class="defbutton">
+							<e5ui:formPart id="actions_fp">
+								<h:commandLink onclick="actionsModal.clickOpen('actionsModal'); return false;">
+									<h:graphicImage value="#{resource['images:button-do.png']}" />
+									Действия
+								</h:commandLink>
+								<e5ui-comp:modalWindow id="actionsModal"
+											modalWindowHolder="#{medicalOperation.processorModal}"
+											render=":main_content_form" execute="selectedAction"
+											showButtons="false"
+											widgetVar="actionsModal">
+									<h:panelGroup rendered="#{not(medicalOperation.processorModal.processingState)}">
+										<div id="title">Действия</div>
+									</h:panelGroup>
+									<h:panelGroup rendered="#{medicalOperation.processorModal.actionsAvailable}">
+										<div class="wrap" style="height:90px;background-color:#fff;clear:both;">
+											<div class="inner" style="height: 90px;">
+												<e5ui:dataTable id="action_select_table" border="0"
+															cellpadding="0" cellspacing="0"
+															value="#{medicalOperation.processorModal.availableActions}" var="row"
+															grouping="false" width="100%">
+													<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																styleClass="#{medicalOperation.processorModal.selected(row)? 'grid_row_selected': ''}" />
+													<e5ui:column>
+														<f:facet name="header">
+															<p>Доступные действия</p>
+														</f:facet>
+														<h:outputText value="#{row.name}" />
+														<h:commandLink id="selectLink" style="display: none;"
+																	rendered="#{not medicalOperation.processorModal.selected(row)}"
+																	action="#{medicalOperation.processorModal.select(row)}" />
+													</e5ui:column>
+												</e5ui:dataTable>
+											</div>
+										</div>
+									</h:panelGroup>
+									<h:panelGroup rendered="#{medicalOperation.processorModal.noActionsAvailable or medicalOperation.processorModal.failureState or medicalOperation.processorModal.processedState}">
+										<h:outputText style="padding-left:10px;" value="#{medicalOperation.processorModal.actionResult}" />
+									</h:panelGroup>
+									<h:panelGroup rendered="#{medicalOperation.processorModal.processingState}">
+										<e5ui:include data="#{medicalOperation.processorModal.processedActivity.document.form}"/>
+									</h:panelGroup>
+									<div class="e5ui-modal-bottombuttons">
+										<h:commandButton action="#{medicalOperation.processorModal.process()}"
+													rendered="#{medicalOperation.processorModal.actionsAvailable or medicalOperation.processorModal.processingState}"
+													value="Выполнить" />
+										<h:button rendered="#{medicalOperation.processorModal.actionsAvailable or medicalOperation.processorModal.processingState}"
+													onclick="actionsModal.clickClose(); return false;"
+													value="Отмена" />
+										<h:button rendered="#{medicalOperation.processorModal.noActionsAvailable or medicalOperation.processorModal.failureState or medicalOperation.processorModal.processedState}"
+													onclick="actionsModal.clickClose(); return false;"
+													value="Закрыть" />
+									</div>
+								</e5ui-comp:modalWindow>
+							</e5ui:formPart>
+						</div>
+					</h:panelGroup>
+                    <div class="top">
+                    	<h:commandLink styleClass="top_link" onclick="return false;">
+                    		<span>
+                    			<h:graphicImage value="#{resource['images:button-print.png']}" />
+								Печать
+                    		</span>
+						</h:commandLink>
+                        <div class="sub">
+                        	<div class="item">
+						        <h:outputLink value="#{contextPath}/component/print/medical_operation.xhtml" target="_blank">
+							        <h:graphicImage value="#{resource['images:blank.png']}" />
+							        <f:param name="docId" value="#{medicalOperation.document.id}" />
+							        Процедурный лист
+						        </h:outputLink>
+					        </div>
+                        </div>
+                        <div class="sub">
+                        	<div class="item">
+						        <h:outputLink value="#{contextPath}/component/print/medical_operation2.xhtml" target="_blank">
+							        <h:graphicImage value="#{resource['images:blank.png']}" />
+							        <f:param name="docId" value="#{medicalOperation.document.id}" />
+							        Процедурный лист для истории болезни
+						        </h:outputLink>
+					        </div>
+                        </div>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="content">
+		<div id="header_content">
+			<h:panelGroup rendered="#{medicalOperation.createState}">
+				<div class="name">Новая процедура</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{medicalOperation.editState or medicalOperation.viewState}">
+				<div class="name">
+					<div>
+						<h:outputText value="#{medicalOperation.document.operationForm}" converter="ClassifierConverter" />
+						<h:outputText style="margin:0 5px;" value="#{medicalOperation.document.number}" />
+						<h:outputText value="#{medicalOperation.document.created}">
+							<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+						</h:outputText>
+					</div>
+				</div>
+				<h:panelGroup rendered="false">
+					<div class="title">
+						<h:outputText value="#{medicalOperation.document.statusName}" />
+					</div>
+				</h:panelGroup>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{medicalOperation.notFoundState}">
+				<div class="name">404 - Процедура не найдена</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{medicalOperation.forbiddenState}">
+				<div class="name">403 - Действие запрещено</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{not(medicalOperation.createState or medicalOperation.editState or medicalOperation.viewState or medicalOperation.notFoundState or medicalOperation.forbiddenState)}">
+				<div class="name">В доступе отказано</div>
+			</h:panelGroup>
+		</div>
+		
+		<div class="main_content">
+		<e5ui:tabPanel id="content_tab_view" style="margin-top:10px;">
+			<e5ui:tabPage id="summary_info" headerText="#{medicalOperation.summaryTabHeader}" actionBehavior="client" selected="#{medicalOperation.summaryTabSelected}">
+				<div>
+						<h:panelGroup rendered="#{medicalOperation.viewState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Вид процедуры:</td>
+										<td>
+											<h:outputText value="#{medicalOperation.document.operationForm}" converter="ClassifierConverter" />
+											<h:selectBooleanCheckbox style="margin-left:10px;" value="#{medicalOperation.document.usingEr}" disabled="#{medicalOperation.viewState}" />
+											<h:outputText value="С эр. массой" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Тип процедуры:</td>
+										<td><h:outputText value="#{medicalOperation.document.operationType eq 0? 'Ауто': 'Алло'}" class="wide" /></td>
+									</tr>
+									<h:panelGroup rendered="#{medicalOperation.document.operationType eq 1}">
+										<tr class="row">
+											<td colspan="2">
+												<h:selectBooleanCheckbox value="#{medicalOperation.document.related}" disabled="true" />
+												<h:outputText value="Родственная" />
+											</td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Донор:</td>
+										<td>
+											<h:outputText value="#{medicalOperation.document.donor.description}" style="font-weight:bold;" class="wide" />
+											<h:outputLink rendered="#{medicalOperation.document.donor ne null}" style="margin-left:5px;" value="#{contextPath}/component/medical/donor.xhtml" target="_blank">
+												<h:graphicImage value="#{resource['images:link.png']}" />
+										        <f:param name="docId" value="#{medicalOperation.document.donor.id}" />
+										    </h:outputLink>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Дата/время регистрации:</td>
+										<td>
+											<h:outputText value="#{medicalOperation.document.created}" class="wide">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<h:panelGroup rendered="#{medicalOperation.document.fromMIS}">
+										<tr class="row">
+											<td class="first">Дата/время назначения процедуры:</td>
+											<td>
+												<h:outputText value="#{medicalOperation.document.appointmentDate}" class="wide">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm" />
+												</h:outputText>
+											</td>
+										</tr>
+										<tr class="row">
+											<td class="first">Планируемая дата:</td>
+											<td>
+												<h:outputText value="#{medicalOperation.document.planDate}" class="wide">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+												</h:outputText>
+											</td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Фактическая дата:</td>
+										<td>
+											<h:outputText value="#{medicalOperation.document.factDate}" class="wide">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Медицинский регистратор:</td>
+										<td><h:outputText value="#{medicalOperation.document.author.description}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Врач-трансфузиолог:</td>
+										<td><h:outputText value="#{medicalOperation.document.transfusiologist.description}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Реципиент:</td>
+										<td><h:outputText value="#{medicalOperation.document.recipient}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">УНП:</td>
+										<td><h:outputText value="#{medicalOperation.document.unp}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Отделение</td>
+										<td><h:outputText value="#{medicalOperation.document.division}" converter="DivisionConverter" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">№ ИБ:</td>
+										<td><h:outputText value="#{medicalOperation.document.ibNumber}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Объем биоматериала, мл:</td>
+										<td><h:outputText value="#{medicalOperation.document.volume}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Комментарии:</td>
+										<td><h:outputText value="#{medicalOperation.document.commentary}" class="wide" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Вид процедуры:</td>
+										<td>
+											<h:selectOneMenu value="#{medicalOperation.document.operationForm}" converter="ClassifierConverter">
+												<f:selectItems value="#{dictionaryManagement.getByCategory('Вид лечебной процедуры')}" />
+											</h:selectOneMenu>
+											<h:selectBooleanCheckbox style="margin-left:10px;" value="#{medicalOperation.document.usingEr}" disabled="#{medicalOperation.viewState}">
+												<f:ajax event="click" render="main_content_form" execute="main_content_form" />
+											</h:selectBooleanCheckbox>
+											<h:outputText value="С эр. массой" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Тип процедуры:</td>
+										<td>
+											<h:selectOneRadio layout="lineDirection" value="#{medicalOperation.document.operationType}">
+												<f:selectItem itemLabel="Ауто" itemValue="0" />
+												<f:selectItem itemLabel="Алло" itemValue="1" />
+												<f:ajax event="click" listener="#{medicalOperation.operationTypeListener}" render=":main_content_form" execute=":main_content_form" />
+											</h:selectOneRadio>
+										</td>
+									</tr>
+									<h:panelGroup rendered="#{medicalOperation.document.operationType eq 1}">
+										<tr class="row">
+											<td colspan="2">
+												<h:selectBooleanCheckbox value="#{medicalOperation.document.related}" />
+												<h:outputText value="Родственная" />
+											</td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">
+											<h:panelGroup rendered="#{sessionManagement.admin or (medicalOperation.document.donor eq null)}">
+												<h:outputLink onclick="bioDonorSelectVar.clickOpen('donorSelectModal'); return false;">
+													Донор:
+												</h:outputLink>
+											</h:panelGroup>
+											<h:panelGroup rendered="#{not(sessionManagement.admin or (medicalOperation.document.donor eq null))}">
+												Донор:
+											</h:panelGroup>
+										</td>
+										<td>
+											<h:panelGroup id="donor_info">
+												<h:outputText id="donor" value="#{medicalOperation.document.donor.description}" style="font-weight:bold;" class="wide" />
+												<h:outputLink rendered="#{medicalOperation.document.donor ne null}" style="margin-left:5px;" value="#{contextPath}/component/medical/donor.xhtml" target="_blank">
+													<h:graphicImage value="#{resource['images:link.png']}" />
+											        <f:param name="docId" value="#{medicalOperation.document.donor.id}" />
+											    </h:outputLink>
+										    </h:panelGroup>
+										    
+												<e5ui-comp:modalWindow id="donorSelectModal"
+															modalWindowHolder="#{medicalOperation.donorSelectModal}"
+															render=":main_content_form:donor_info"
+															execute="donor_select_table"
+															showButtons="false"
+															style="width: 500px;"
+															widgetVar="bioDonorSelectVar">
+													<div id="title">Выбор донора</div>
+													<div id="donor_list" style="margin-top:0;">
+														<div class="searchbar">
+															<h:inputText id="filter_string" value="#{medicalOperation.donorSelectModal.donorList.filter}" 
+																		style="display:block; float:left; margin-right:10px;" title="Поиск" />
+															<h:commandButton value=" " action="#{medicalOperation.donorSelectModal.donorList.changePageOffset(0)}"
+																		styleClass="searchbutton">
+																<f:ajax execute=":main_content_form:donorSelectModal:filter_string"
+																			render=":main_content_form:donorSelectModal:donor_select_table :main_content_form:donorSelectModal:donor_paging" />
+															</h:commandButton>
+														</div>
+														<div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+															<div class="inner" style="height:300px;">
+																<e5ui:dataTable id="donor_select_table" border="0" cellpadding="0" cellspacing="0"
+																			value="#{medicalOperation.donorSelectModal.donorList.documents}"
+																			var="row" grouping="false" width="100%">
+																	<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																				styleClass="#{medicalOperation.donorSelectModal.selected(row)? 'grid_row_selected': ''}" />
+																	<e5ui:column>
+																		<f:facet name="header">
+							                        						<p>Донор</p>
+							                    						</f:facet>
+							                                            <h:outputText value="#{row.description}" />
+							                                        	<h:commandLink id="selectLink" style="display: none;"
+							                                                		rendered="#{not medicalOperation.donorSelectModal.selected(row)}"
+							                                                     	action="#{medicalOperation.donorSelectModal.select(row)}"/>
+																	</e5ui:column>
+																</e5ui:dataTable>
+															</div>
+														</div>
+														<div style="clear:both;">
+															<h:panelGroup id="donor_paging">
+																<e5ui-comp:tablePager id="pager" documentListHolder="#{medicalOperation.donorSelectModal.donorList}" />
+					                                    	</h:panelGroup>
+					                                    </div>
+					                                </div>
+					                                <div class="e5ui-modal-bottombuttons">
+														<h:button onclick="bioDonorSelectVar.clickSave(); return false;" value="Выбрать" />
+														<h:button onclick="bioDonorSelectVar.clickClose(); return false;" value="Отмена" />
+													</div>
+												</e5ui-comp:modalWindow>
+											
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Дата/время регистрации:</td>
+										<td>
+											<h:outputText value="#{medicalOperation.document.created}" class="wide">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+										</td>
+									</tr>
+									<h:panelGroup rendered="#{medicalOperation.document.fromMIS}">
+										<tr class="row">
+											<td class="first">Дата/время назначения процедуры:</td>
+											<td>
+												<h:outputText value="#{medicalOperation.document.appointmentDate}" class="wide">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm" />
+												</h:outputText>
+											</td>
+										</tr>
+										<tr class="row">
+											<td class="first">Планируемая дата:</td>
+											<td>
+												<h:outputText value="#{medicalOperation.document.planDate}" class="wide">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+												</h:outputText>
+											</td>
+										</tr>
+									</h:panelGroup>
+									<tr class="row">
+										<td class="first">Фактическая дата:</td>
+										<td>
+											<e5ui-comp:inputDate id="factDate" value="#{bloodComponent.document.factDate}" lang="ru" />
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Медицинский регистратор:</td>
+										<td><h:outputText value="#{medicalOperation.document.author.description}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">
+											<h:outputLink onclick="transfusiologistSelectVar.clickOpen('transfusiologistSelectModal'); return false;">
+												Врач-трансфузиолог:
+											</h:outputLink>
+										</td>
+										<td>
+											<h:outputText id="transfusiologist" value="#{medicalOperation.document.transfusiologist.description}" class="wide" />
+											<e5ui-comp:modalWindow id="transfusiologistSelectModal"
+														modalWindowHolder="#{medicalOperation.transfusiologistSelectModal}"
+														render=":main_content_form:transfusiologist" execute="user_select_table"
+														showButtons="false" style="width: 500px;" widgetVar="transfusiologistSelectVar">
+												<div id="title">Выбор врача-трансфузиолога</div>
+												<div id="user_list" style="margin-top:0;">
+													<div class="searchbar">
+														<h:inputText id="filter_string" value="#{medicalOperation.transfusiologistSelectModal.userList.filter}" 
+																	style="display:block; float:left; margin-right:10px;" title="Поиск" />
+														<h:commandButton value=" " action="#{medicalOperation.transfusiologistSelectModal.userList.changePageOffset(0)}"
+																	styleClass="searchbutton">
+															<f:ajax execute=":main_content_form:transfusiologistSelectModal:filter_string"
+																		render=":main_content_form:transfusiologistSelectModal:user_select_table :main_content_form:transfusiologistSelectModal:user_paging" />
+														</h:commandButton>
+													</div>
+													<div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+														<div class="inner" style="height:300px;">
+															<e5ui:dataTable id="user_select_table" border="0" cellpadding="0" cellspacing="0"
+																		value="#{medicalOperation.transfusiologistSelectModal.userList.documents}"
+																		var="row" grouping="false" width="100%">
+																<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																			styleClass="#{medicalOperation.transfusiologistSelectModal.selected(row)? 'grid_row_selected': ''}" />
+																<e5ui:column>
+																	<f:facet name="header">
+						                        						<p>Врач-трансфузиолог</p>
+						                    						</f:facet>
+						                                            <h:outputText value="#{row.description}" />
+						                                        	<h:commandLink id="selectLink" style="display: none;"
+						                                                		rendered="#{not medicalOperation.transfusiologistSelectModal.selected(row)}"
+						                                                     	action="#{medicalOperation.transfusiologistSelectModal.select(row)}"/>
+																</e5ui:column>
+															</e5ui:dataTable>
+														</div>
+													</div>
+													<div style="clear:both;">
+														<h:panelGroup id="user_paging">
+															<e5ui-comp:tablePager id="pager" documentListHolder="#{medicalOperation.transfusiologistSelectModal.userList}" />
+				                                        </h:panelGroup>
+				                                    </div>
+				                                </div>
+				                                <div class="e5ui-modal-bottombuttons">
+													<h:button onclick="transfusiologistSelectVar.clickSave(); return false;" value="Выбрать" />
+													<h:button onclick="transfusiologistSelectVar.clickClose(); return false;" value="Отмена" />
+												</div>
+											</e5ui-comp:modalWindow>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Реципиент:</td>
+										<td><h:inputText value="#{medicalOperation.document.recipient}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">УНП:</td>
+										<td><h:inputText value="#{medicalOperation.document.unp}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Отделение</td>
+										<td>
+											<h:selectOneMenu value="#{medicalOperation.document.division}" converter="DivisionConverter">
+												<f:selectItems value="#{divisionList.documents}" />
+											</h:selectOneMenu>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">№ ИБ:</td>
+										<td><h:inputText value="#{medicalOperation.document.ibNumber}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Объем биоматериала, мл:</td>
+										<td><h:inputText value="#{medicalOperation.document.volume}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Комментарии:</td>
+										<td><h:inputTextarea value="#{medicalOperation.document.commentary}" class="wide" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+					
+						<fieldset>
+							<legend>
+								<label><span class="title">Количество клеток</span></label>
+							</legend>
+							<table class="form_grid">
+								<tr class="row">
+									<td class="first">WBC (х10<span style="vertical-align:super;font-size:11px;">6</span>/мл):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.cellCount}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.cellCount}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">TNC (х10<span style="vertical-align:super;font-size:11px;">9</span>):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.tnc}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.tnc}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">NC/кг (х10<span style="vertical-align:super;font-size:11px;">8</span>):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.ncPerKg}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.ncPerKg}" size="4" />
+										</h:panelGroup>
+									</td>
+								</tr>
+								<tr class="row">
+									<td class="first">CD34,%:</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.cd34}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.cd34}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">CD34 (х10<span style="vertical-align:super;font-size:11px;">6</span>):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.cd34X6}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.cd34X6}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">CD34 (х10<span style="vertical-align:super;font-size:11px;">6</span>/кг):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.cd34X6PerKg}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.cd34X6PerKg}" size="4" />
+										</h:panelGroup>
+									</td>
+								</tr>
+								<tr class="row">
+									<td class="first">СD3,%:</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.cd3}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.cd3}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">CD3 (х10<span style="vertical-align:super;font-size:11px;">8</span>):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.cd3X8}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.cd3X8}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">CD3 (х10<span style="vertical-align:super;font-size:11px;">8</span>/кг):</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.cd3x8PerKg}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.cd3x8PerKg}" size="4" />
+										</h:panelGroup>
+									</td>
+								</tr>
+								<tr class="row">
+									<td class="first">MNC, %:</td>
+									<td style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.mncPercentage}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.mncPercentage}" size="4" />
+										</h:panelGroup>
+									</td>
+									<td class="first">MNC (х10<span style="vertical-align:super;font-size:11px;">9</span>):</td>
+									<td colspan="3" style="padding-left:10px;padding-right:10px;">
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.mncx9}" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:inputText value="#{medicalOperation.document.mncx9}" size="4" />
+										</h:panelGroup>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+					
+				</div>
+				
+				<h:panelGroup rendered="#{medicalOperation.viewState or medicalOperation.editState}">
+					<div>
+						<fieldset>
+							<legend>
+								<label><span class="title">Биоматериалы</span></label>
+							</legend>
+							<script type="text/javascript">
+								document.ondblclick = function DoubleClick(evt) {
+									if (window.getSelection)
+										window.getSelection().removeAllRanges();
+									else if (document.selection)
+										document.selection.empty();
+								}
+							</script>
+							<h:outputScript>
+						       	function goToDocument(id) {
+						       		if (id != "") {
+						       			window.open('#{facesContext.externalContext.requestContextPath}/component/medical/biomaterial.xhtml?docId=' + id,'_blank');
+									}
+								}
+						    </h:outputScript>
+						    <h:panelGroup rendered="#{medicalOperation.editState or medicalOperation.viewState}">
+						    	<div class="actionbar">
+						        	<div class="menu">
+						        		<div class="defbutton">
+											<h:outputLink value="#{contextPath}/component/medical/biomaterial.xhtml" target="_blank">
+												<f:param name="docAction" value="create" />
+												<f:param name="parentId" value="#{medicalOperation.document.id}" />
+												<h:graphicImage value="#{resource['images:newf_buttn_icon.png']}" />
+												Новый биоматериал
+											</h:outputLink>
+										</div>
+										<div class="defbutton">
+											<h:commandLink action="false;">
+												<f:ajax render=":main_content_form:biomaterial_list" />										
+												<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+						            			Обновить
+						           			</h:commandLink>
+										</div>
+									</div>
+								</div>
+							</h:panelGroup>
+							<div class="wrap" style="height:500px;width:100%;margin:0px">
+								<div class="inner" style="height:500px;">
+									<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="biomaterial_list" style="width:100%;"
+												value="#{biomaterialList.getBiomaterialsByOperation(medicalOperation.document)}" var="row" grouping="false">
+										<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+										<e5ui:column style="min-width:2em;">
+											<f:facet name="header">
+						                        <p>Номер</p>
+						                    </f:facet>
+						                    <h:outputText value="#{row.number}" />
+										</e5ui:column>
+										<e5ui:column style="min-width:3em;">
+											<f:facet name="header">
+						                        <p>Дата создания</p>
+						                    </f:facet>
+											<h:outputText value="#{row.created}">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+										</e5ui:column>
+										<e5ui:column style="min-width:8em;">
+											<f:facet name="header">
+						                        <p>Тип биоматериала</p>
+						                    </f:facet>
+											<h:outputText value="#{row.biomaterialType}" converter="ClassifierConverter" />
+										</e5ui:column>
+										<e5ui:column style="min-width:9em;">
+											<f:facet name="header">
+						                        <p>Объем биоматериала, мл</p>
+						                    </f:facet>
+											<h:outputText value="#{row.volume}" />
+										</e5ui:column>
+										<e5ui:column style="min-width:7em;">
+											<f:facet name="header">
+						                        <p>Статус</p>
+						                    </f:facet>
+											<h:outputText value="#{row.statusName}" />
+										</e5ui:column>
+									</e5ui:dataTable>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+				</h:panelGroup>
+			
+			</e5ui:tabPage>
+			
+			<e5ui:tabPage id="report_info" headerText="#{medicalOperation.operationReportTabHeader}" actionBehavior="client" selected="#{medicalOperation.operationReportTabSelected}">
+				<div>
+						<h:panelGroup rendered="#{medicalOperation.viewState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Рост:</td>
+										<td colspan="2"><h:outputText value="#{medicalOperation.document.height}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Вес:</td>
+										<td colspan="2"><h:outputText value="#{medicalOperation.document.weight}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">TBV:</td>
+										<td colspan="2"><h:outputText value="#{medicalOperation.document.tbv}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Противопоказания:</td>
+										<td colspan="2"><h:outputText value="#{medicalOperation.document.operationReport.contraindication}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td colspan="3"><span style="text-decoration:underline;font-weight:bold;">Гемодинамика и Т°</span></td>
+									</tr>
+									<tr class="row">
+										<td></td>
+										<td><span style="text-align:center">До афереза</span></td>
+										<td><span style="text-align:center">После афереза</span></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Пульс</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsBefore.pulse}" /></td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsAfter.pulse}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">АД</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsBefore.arterialPressure}" /></td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsAfter.arterialPressure}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Т° С</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsBefore.temperature}" /></td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.hemodynamicsAfter.temperature}" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Рост:</td>
+										<td colspan="2"><h:inputText value="#{medicalOperation.document.height}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Вес:</td>
+										<td colspan="2"><h:inputText value="#{medicalOperation.document.weight}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">TBV:</td>
+										<td colspan="2"><h:inputText value="#{medicalOperation.document.tbv}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Противопоказания:</td>
+										<td colspan="2"><h:inputTextarea value="#{medicalOperation.document.operationReport.contraindication}" class="wide" /></td>
+									</tr>
+									<tr class="row">
+										<td colspan="3"><span style="text-decoration:underline;font-weight:bold;">Гемодинамика и Т°</span></td>
+									</tr>
+									<tr class="row">
+										<td></td>
+										<td><span style="text-align:center">До афереза</span></td>
+										<td><span style="text-align:center">После афереза</span></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Пульс</td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.hemodynamicsBefore.pulse}" /></td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.hemodynamicsAfter.pulse}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">АД</td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.hemodynamicsBefore.arterialPressure}" /></td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.hemodynamicsAfter.arterialPressure}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Т° С</td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.hemodynamicsBefore.temperature}" /></td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.hemodynamicsAfter.temperature}" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+						
+						<div class="row">
+							<table class="form_grid">
+								<tr class="row">
+									<td class="first">Оборудование:</td>
+									<td>
+										<h:panelGroup rendered="#{medicalOperation.viewState}">
+											<h:outputText value="#{medicalOperation.document.operationReport.equipment}" converter="ClassifierConverter" />
+										</h:panelGroup>
+										<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+											<h:selectOneMenu value="#{medicalOperation.document.operationReport.equipment}" converter="ClassifierConverter">
+												<f:selectItems value="#{dictionaryManagement.getByCategory('Процедурный лист: оборудование')}" />
+											</h:selectOneMenu>
+										</h:panelGroup>
+									</td>
+									<td>
+										<h:selectBooleanCheckbox value="#{medicalOperation.document.operationReport.bloodWarmer}" disabled="#{medicalOperation.viewState}" />
+										<h:outputText value="Подогреватель крови" />
+									</td>
+								</tr>
+							</table>
+						</div>
+						
+						<fieldset>
+							<legend>
+								<label><span class="title">Расходные материалы</span></label>
+							</legend>
+					        <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+					        	<div class="actionbar">
+					        		<div class="menu">
+						        		<div class="defbutton">
+											<h:commandLink action="#{medicalOperation.document.operationReport.addSupply()}">
+												<h:graphicImage value="#{resource['images:plus.png']}" />
+												<f:ajax render=":main_content_form:supply_list" execute=":main_content_form" />
+												Добавить
+											</h:commandLink>
+										</div>
+									</div>
+								</div>
+							</h:panelGroup>
+							<div class="wrap" style="height:166px;">
+								<div class="inner" style="height:166px;">
+									<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="supply_list" style="width:100%;"
+												value="#{medicalOperation.document.operationReport.supplyList}" var="row" grouping="false">
+										<e5ui:column style="min-width:9em">
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.type}" converter="ClassifierConverter" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:selectOneMenu value="#{row.type}" converter="ClassifierConverter">
+													<f:selectItems value="#{dictionaryManagement.getByCategory('Тип расходного материала')}" />
+												</h:selectOneMenu>
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>Производитель</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.maker}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.maker}" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>LOT №</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.lot}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.lot}" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:7em">
+											<f:facet name="header">
+						                        <p>Срок годности</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.expirationDate}">
+													<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+												</h:outputText>
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<e5ui-comp:inputDate value="#{row.expirationDate}" lang="ru" />
+						                    </h:panelGroup>
+										</e5ui:column>
+									</e5ui:dataTable>
+								</div>
+							</div>
+						</fieldset>
+						
+						<h:panelGroup rendered="#{medicalOperation.document.usingEr}">
+							<fieldset>
+								<legend>
+									<label><span class="title">Эр. масса</span></label>
+								</legend>
+								<h:panelGroup rendered="#{medicalOperation.viewState}">
+									<div class="row">
+										<table class="form_grid">
+											<tr class="row">
+												<td class="first">Производитель:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erMaker}" class="wide" /></td>
+												<td class="first">№:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erNumber}" /></td>
+											</tr>
+											<tr class="row">
+												<td class="first">Группа крови:</td>
+												<td>
+													<h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.bloodGroup}" converter="BloodGroupConverter" />
+													<span style="margin:0 5px;">Rh</span>
+													<h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.rhesusFactor}" converter="ClassifierConverter" />
+												</td>
+												<td class="first">Объем:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erVolume}" /></td>
+											</tr>
+											<tr class="row">
+												<td class="first">Дата изготовления:</td>
+												<td>
+													<h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.productionDate}">
+														<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+													</h:outputText>
+												</td>
+												<td class="first">Срок годности:</td>
+												<td>
+													<h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.expirationDate}">
+														<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+													</h:outputText>
+												</td>
+											</tr>
+											<tr class="row">
+												<td class="first">Гематокрит эр. массы:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erHt}" /></td>
+												<td class="first">Объем добавленного физраствора:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.salineVolume}" /></td>
+											</tr>
+											<tr class="row">
+												<td class="first">Финальный гематокрит:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.finalHt}" /></td>
+												<td class="first">Предварительное заполнение контура<br />аппарата эр. массой, объём:</td>
+												<td><h:outputText value="#{medicalOperation.document.operationReport.eritrocyteMass.preFillErVolume}" /></td>
+											</tr>
+										</table>
+									</div>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+									<div class="row">
+										<table class="form_grid">
+											<tr class="row">
+												<td class="first">Производитель:</td>
+												<td><h:inputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erMaker}" class="wide" /></td>
+												<td class="first">№:</td>
+												<td><h:inputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erNumber}" /></td>
+											</tr>
+											<tr class="row">
+												<td class="first">Группа крови:</td>
+												<td>
+													<h:selectOneMenu value="#{medicalOperation.document.operationReport.eritrocyteMass.bloodGroup}" converter="BloodGroupConverter">
+														<f:selectItems value="#{dictionaryManagement.bloodGroups}" />
+													</h:selectOneMenu>
+													<span style="margin:0 5px;" >Rh</span>
+													<h:selectOneMenu value="#{medicalOperation.document.operationReport.eritrocyteMass.rhesusFactor}" converter="ClassifierConverter">
+														<f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
+													</h:selectOneMenu>
+												</td>
+												<td class="first">Объем:</td>
+												<td><h:inputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erVolume}" /></td>
+											</tr>
+											<tr class="row">
+												<td class="first">Дата изготовления:</td>
+												<td><e5ui-comp:inputDate value="#{medicalOperation.document.operationReport.eritrocyteMass.productionDate}" lang="ru" /></td>
+												<td class="first">Срок годности:</td>
+												<td><e5ui-comp:inputDate value="#{medicalOperation.document.operationReport.eritrocyteMass.expirationDate}" lang="ru" /></td>
+											</tr>
+											<tr class="row">
+												<td class="first">Гематокрит эр. массы:</td>
+												<td><h:inputText value="#{medicalOperation.document.operationReport.eritrocyteMass.erHt}" /></td>
+												<td class="first">Объем добавленного физраствора:</td>
+												<td><h:inputText value="#{medicalOperation.document.operationReport.eritrocyteMass.salineVolume}" /></td>
+											</tr>
+											<tr class="row">
+												<td class="first">Финальный гематокрит:</td>
+												<td><h:inputText value="#{medicalOperation.document.operationReport.eritrocyteMass.finalHt}" /></td>
+												<td class="first">Предварительное заполнение контура<br />аппарата эр. массой, объём:</td>
+												<td><h:inputText value="#{medicalOperation.document.operationReport.eritrocyteMass.preFillErVolume}" /></td>
+											</tr>
+										</table>
+									</div>
+								</h:panelGroup>
+							</fieldset>
+						</h:panelGroup>
+						
+						<h:panelGroup id="collect_panel">
+							<h:panelGroup rendered="#{medicalOperation.viewState}">
+								<div class="row">
+									<table class="form_grid">
+										<tr class="row">
+											<td><span style="text-decoration:underline;font-weight:bold;">Линия забора</span></td>
+											<td><span style="text-decoration:underline;font-weight:bold;">Линия возврата</span></td>
+										</tr>
+										<tr class="row">
+											<td><h:outputText value="#{medicalOperation.document.operationReport.collectCentralAccess? 'Центральный доступ': 'Периферический доступ'}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.returnCentralAccess? 'Центральный доступ': 'Периферический доступ'}" /></td>
+										</tr>
+										<tr class="row">
+											<td>
+												<h:panelGroup rendered="#{not (medicalOperation.document.operationReport.collectCentralAccess)}">
+													<h:outputText value="#{medicalOperation.document.operationReport.collectLeft? 'Л.': 'П.'}" />
+												</h:panelGroup>
+												<h:panelGroup rendered="#{medicalOperation.document.operationReport.collectCentralAccess}">
+													<h:outputText value="#{medicalOperation.document.operationReport.collectCentralCommentary}" />
+												</h:panelGroup>
+											</td>
+											<td>
+												<h:panelGroup rendered="#{not (medicalOperation.document.operationReport.returnCentralAccess)}">
+													<h:outputText value="#{medicalOperation.document.operationReport.returnLeft? 'Л.': 'П.'}" />
+												</h:panelGroup>
+												<h:panelGroup rendered="#{medicalOperation.document.operationReport.returnCentralAccess}">
+													<h:outputText value="#{medicalOperation.document.operationReport.returnCentralCommentary}" />
+												</h:panelGroup>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+								<div class="row">
+									<table class="form_grid">
+										<tr class="row">
+											<td><span style="text-decoration:underline;font-weight:bold;">Линия забора</span></td>
+											<td><span style="text-decoration:underline;font-weight:bold;">Линия возврата</span></td>
+										</tr>
+										<tr class="row">
+											<td>
+												<h:selectOneRadio layout="lineDirection" value="#{medicalOperation.document.operationReport.collectCentralAccess}">
+													<f:selectItem itemLabel="Центральный доступ" itemValue="true" />
+													<f:selectItem itemLabel="Периферический доступ" itemValue="false" />
+													<f:ajax event="click" render="main_content_form:collect_panel" execute="main_content_form" />
+												</h:selectOneRadio>
+											</td>
+											<td>
+												<h:selectOneRadio layout="lineDirection" value="#{medicalOperation.document.operationReport.returnCentralAccess}">
+													<f:selectItem itemLabel="Центральный доступ" itemValue="true" />
+													<f:selectItem itemLabel="Периферический доступ" itemValue="false" />
+													<f:ajax event="click" render="main_content_form:collect_panel" execute="main_content_form" />
+												</h:selectOneRadio>
+											</td>
+										</tr>
+										<tr class="row">
+											<td>
+												<h:panelGroup rendered="#{not (medicalOperation.document.operationReport.collectCentralAccess)}">
+													<h:selectOneRadio layout="lineDirection" value="#{medicalOperation.document.operationReport.collectLeft}">
+														<f:selectItem itemLabel="Л." itemValue="true" />
+														<f:selectItem itemLabel="П." itemValue="false" />
+														<f:ajax event="click" render="main_content_form:collect_panel" execute="main_content_form" />
+													</h:selectOneRadio>
+												</h:panelGroup>
+												<h:panelGroup rendered="#{medicalOperation.document.operationReport.collectCentralAccess}">
+													<h:inputText value="#{medicalOperation.document.operationReport.collectCentralCommentary}" />
+												</h:panelGroup>
+											</td>
+											<td>
+												<h:panelGroup rendered="#{not (medicalOperation.document.operationReport.returnCentralAccess)}">
+													<h:selectOneRadio layout="lineDirection" value="#{medicalOperation.document.operationReport.returnLeft}">
+														<f:selectItem itemLabel="Л." itemValue="true" />
+														<f:selectItem itemLabel="П." itemValue="false" />
+														<f:ajax event="click" render="main_content_form:collect_panel" execute="main_content_form" />
+													</h:selectOneRadio>
+												</h:panelGroup>
+												<h:panelGroup rendered="#{medicalOperation.document.operationReport.returnCentralAccess}">
+													<h:inputText value="#{medicalOperation.document.operationReport.returnCentralCommentary}" />
+												</h:panelGroup>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</h:panelGroup>
+						</h:panelGroup>
+						
+						<fieldset>
+							<legend>
+								<label><span class="title">Параметры процедуры</span></label>
+							</legend>
+							<h:panelGroup rendered="#{medicalOperation.viewState}">
+								<div class="row">
+									<table class="form_grid" style="overflow-y:auto;">
+										<tr class="row">
+											<td></td>
+											<td>V афереза</td>
+											<td>Обр.TBV</td>
+											<td>Cкорость забора</td>
+											<td>Inlet:AC ratio</td>
+											<td>Время афереза</td>
+											<td>V продукта афереза</td>
+										</tr>
+										<tr class="row">
+											<td>Инициально:</td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.initialParameters.volume}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.initialParameters.tbv}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.initialParameters.speed}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.initialParameters.inletAcRatio}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.initialParameters.time}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.initialParameters.productVolume}" /></td>
+										</tr>
+										<tr class="row">
+											<td>Изменения:</td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.changedParameters.volume}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.changedParameters.tbv}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.changedParameters.speed}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.changedParameters.inletAcRatio}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.changedParameters.time}" /></td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.changedParameters.productVolume}" /></td>
+										</tr>
+									</table>
+								</div>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+								<div class="row">
+									<table class="form_grid" style="overflow-y:auto;">
+										<tr class="row">
+											<td></td>
+											<td>V афереза</td>
+											<td>Обр.TBV</td>
+											<td>Cкорость забора</td>
+											<td>Inlet:AC ratio</td>
+											<td>Время афереза</td>
+											<td>V продукта афереза</td>
+										</tr>
+										<tr class="row">
+											<td>Инициально:</td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.initialParameters.volume}" /></td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.initialParameters.tbv}" /></td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.initialParameters.speed}" /></td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.initialParameters.inletAcRatio}" /></td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.initialParameters.time}" /></td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.initialParameters.productVolume}" /></td>
+										</tr>
+										<tr class="row">
+											<td>Изменения:</td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.changedParameters.volume}" /></td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.changedParameters.tbv}" /></td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.changedParameters.speed}" /></td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.changedParameters.inletAcRatio}" /></td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.changedParameters.time}" /></td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.changedParameters.productVolume}" /></td>
+										</tr>
+									</table>
+								</div>
+							</h:panelGroup>
+						</fieldset>
+						
+						<fieldset>
+							<legend>
+								<label><span class="title">Лабораторные измерения</span></label>
+							</legend>
+							<div class="wrap" style="height:300px;">
+								<div class="inner" style="height:300px;">
+									<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="measure_list" style="width:100%;"
+												value="#{medicalOperation.document.operationReport.measureList}" var="row" grouping="false">
+										<e5ui:column style="min-width:9em">
+						                    <h:outputText value="#{row.type}" converter="ClassifierConverter" />
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>До процедуры</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.beforeOperation}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.beforeOperation}" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>Во время процедуры</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.duringOperation}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.duringOperation}" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>В продукте афереза</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.inProduct}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.inProduct}" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>После процедуры</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.afterOperation}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.afterOperation}" />
+						                    </h:panelGroup>
+										</e5ui:column>
+									</e5ui:dataTable>
+								</div>
+							</div>
+						</fieldset>
+						
+						<h:panelGroup rendered="#{medicalOperation.viewState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td colspan="4"><span style="text-decoration:underline;font-weight:bold;">Баланс жидкостей</span></td>
+									</tr>
+									<tr class="row">
+										<td colspan="2"><span style="text-align:center">Введено</span></td>
+										<td colspan="2"><span style="text-align:center">Удалено</span></td>
+									</tr>
+									<tr class="row">
+										<td class="first">ACD:</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.acdLoad}" /></td>
+										<td class="first">В пакете</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.packRemove}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">NaCl ,9%:</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.naClLoad}" /></td>
+										<td class="first">Другое</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.otherRemove}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Ca<span style="vertical-align:super;">++</span>:</td>
+										<td colspan="3"><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.caLoad}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Заполнение контура эр.массой:</td>
+										<td colspan="3"><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.erCurcuitFill}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Возврат крови:</td>
+										<td colspan="3"><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.bloodReturn}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Другое:</td>
+										<td colspan="3"><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.otherLoad}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Всего(введено):</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.totalLoad}" /></td>
+										<td class="first">Всего(удалено):</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.totalRemove}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Баланс:</td>
+										<td colspan="3"><h:outputText value="#{medicalOperation.document.operationReport.liquidBalance.balance}" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td colspan="4"><span style="text-decoration:underline;font-weight:bold;">Баланс жидкостей</span></td>
+									</tr>
+									<tr class="row">
+										<td></td>
+										<td><span style="text-align:center">Введено</span></td>
+										<td></td>
+										<td><span style="text-align:center">Удалено</span></td>
+									</tr>
+									<tr class="row">
+										<td class="first">ACD:</td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.acdLoad}" /></td>
+										<td class="first">В пакете</td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.packRemove}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">NaCl ,9%:</td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.naClLoad}" /></td>
+										<td class="first">Другое</td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.otherRemove}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Ca<span style="vertical-align:super;">++</span>:</td>
+										<td colspan="3"><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.caLoad}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Заполнение контура эр.массой:</td>
+										<td colspan="3"><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.erCurcuitFill}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Возврат крови:</td>
+										<td colspan="3"><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.bloodReturn}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Другое:</td>
+										<td colspan="3"><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.otherLoad}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Всего(введено):</td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.totalLoad}" /></td>
+										<td class="first">Всего(удалено):</td>
+										<td><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.totalRemove}" /></td>
+									</tr>
+									<tr class="row">
+										<td class="first">Баланс:</td>
+										<td colspan="3"><h:inputText value="#{medicalOperation.document.operationReport.liquidBalance.balance}" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+						
+						<fieldset>
+							<legend>
+								<label><span class="title">Фактические результаты афереза</span></label>
+							</legend>
+					        <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+					        	<div class="actionbar">
+					        		<div class="menu">
+						        		<div class="defbutton">
+											<h:commandLink action="#{medicalOperation.document.operationReport.addFinalVolume()}">
+												<h:graphicImage value="#{resource['images:plus.png']}" />
+												<f:ajax render=":main_content_form:final_volume_list" execute=":main_content_form" />
+												Добавить
+											</h:commandLink>
+										</div>
+									</div>
+								</div>
+							</h:panelGroup>
+							<div class="wrap" style="height:166px;">
+								<div class="inner" style="height:166px;">
+									<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="final_volume_list" style="width:100%;overflow-y:auto;"
+												value="#{medicalOperation.document.operationReport.finalVolumeList}" var="row" grouping="false">
+										<e5ui:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Длительность, мин</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.time}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.time}" size="10" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>АС</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.anticoagulantVolume}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.anticoagulantVolume}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>inlet</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.inletVolume}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.inletVolume}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>plasma</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.plasmaVolume}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.plasmaVolume}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>collect</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.collectVolume}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.collectVolume}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>AC в collect</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.anticoagulantInCollect}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.anticoagulantInCollect}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:9em">
+											<f:facet name="header">
+						                        <p>AC в plasma</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.anticoagulantInPlasma}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.anticoagulantInPlasma}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+									</e5ui:dataTable>
+								</div>
+							</div>
+						</fieldset>
+						
+						<fieldset>
+							<legend>
+								<label><span class="title">Параметры процедуры</span></label>
+							</legend>
+					        <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+					        	<div class="actionbar">
+					        		<div class="menu">
+						        		<div class="defbutton">
+											<h:commandLink action="#{medicalOperation.document.operationReport.addExtendedParameters()}">
+												<h:graphicImage value="#{resource['images:plus.png']}" />
+												<f:ajax render=":main_content_form:extended_parameter_list" execute=":main_content_form" />
+												Добавить
+											</h:commandLink>
+										</div>
+									</div>
+								</div>
+							</h:panelGroup>
+							<div class="wrap" style="height:166px;">
+								<div class="inner" style="height:166px;">
+									<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="extended_parameter_list" style="width:100%;overflow-y:auto;"
+												value="#{medicalOperation.document.operationReport.extendedParameterList}" var="row" grouping="false">
+										<e5ui:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Длительность, мин</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.time}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.time}" size="10" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>AC Flow rate/vol</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.anticoagulantFlowRate}" size="4" /> /
+						                    	<h:outputText value="#{row.anticoagulantVolume}" size="4" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.anticoagulantFlowRate}" size="4" /> /
+						                    	<h:inputText value="#{row.anticoagulantVolume}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Inlet flow rate/vol</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.inletFlowRate}" size="4" /> / 
+						                    	<h:outputText value="#{row.inletVolume}" size="4" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.inletFlowRate}" size="4" /> / 
+						                    	<h:inputText value="#{row.inletVolume}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Plasma flow rate/vol</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.plasmaFlowRate}" size="4" /> / 
+						                    	<h:outputText value="#{row.plasmaVolume}" size="4" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.plasmaFlowRate}" size="4" /> / 
+						                    	<h:inputText value="#{row.plasmaVolume}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Collect flow rate/vol</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.collectFlowRate}" size="4" /> / 
+						                    	<h:outputText value="#{row.collectVolume}" size="4" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.collectFlowRate}" size="4" /> / 
+						                    	<h:inputText value="#{row.collectVolume}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Inlet:AC ratio</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.inletAcRatio}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.inletAcRatio}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>AC inf</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.acInf}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputText value="#{row.acInf}" size="4" />
+						                    </h:panelGroup>
+										</e5ui:column>
+										<e5ui:column style="min-width:12em">
+											<f:facet name="header">
+						                        <p>Комментарии</p>
+						                    </f:facet>
+						                    <h:panelGroup rendered="#{medicalOperation.viewState}">
+						                    	<h:outputText value="#{row.commentary}" />
+						                    </h:panelGroup>
+						                    <h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+						                    	<h:inputTextarea value="#{row.commentary}" class="wide" />
+						                    </h:panelGroup>
+										</e5ui:column>
+									</e5ui:dataTable>
+								</div>
+							</div>
+						</fieldset>
+						
+						<h:panelGroup rendered="#{medicalOperation.viewState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Осложнения:</td>
+										<td><h:outputText value="#{medicalOperation.document.operationReport.complications}" class="wide" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+							<div class="row">
+								<table class="form_grid">
+									<tr class="row">
+										<td class="first">Осложнения:</td>
+										<td><h:inputTextarea value="#{medicalOperation.document.operationReport.complications}" class="wide" /></td>
+									</tr>
+								</table>
+							</div>
+						</h:panelGroup>
+						
+						<fieldset>
+							<legend>
+								<label><span class="title">Процедура фотофереза лимфоцитов</span></label>
+							</legend>
+							<h:panelGroup rendered="#{medicalOperation.viewState}">
+								<div class="row">
+									<table class="form_grid">
+										<tr class="row">
+											<td class="first">Объем физ. раствора, мл:</td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.salineVolumePhoto}" /></td>
+										</tr>
+										<tr class="row">
+											<td class="first">Раствор метоксипсоралена (20 мкг/мл):</td>
+											<td><h:outputText value="#{medicalOperation.document.operationReport.metoxipsoralenVolume}" /></td>
+										</tr>
+									</table>
+								</div>
+							</h:panelGroup>
+							<h:panelGroup rendered="#{medicalOperation.createState or medicalOperation.editState}">
+								<div class="row">
+									<table class="form_grid">
+										<tr class="row">
+											<td class="first">Объем физ. раствора, мл:</td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.salineVolumePhoto}" /></td>
+										</tr>
+										<tr class="row">
+											<td class="first">Раствор метоксипсоралена (20 мкг/мл):</td>
+											<td><h:inputText value="#{medicalOperation.document.operationReport.metoxipsoralenVolume}" /></td>
+										</tr>
+									</table>
+								</div>
+							</h:panelGroup>
+						</fieldset>
+				</div>
+			</e5ui:tabPage>
+			
+		</e5ui:tabPanel>
+		</div>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	        <f:facet name="timeoutPanel">
+	        	<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	        		Пожалуйста, подождите...
+	        	</div>
+	        </f:facet>
+	    </e5ui-comp:splashScreen>
+	    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	    
+	    <e5ui-comp:ajaxStatusGlobal timeout="300">
+			<f:facet name="waitPanel">
+				<div
+					style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+					Пожалуйста, подождите...</div>
+			</f:facet>
+		</e5ui-comp:ajaxStatusGlobal>
+	    
+	    <e5ui:multiMarker id="main_form_marker" rendered="true" displayMode="window"
+			hintWindowStyleClass="e5ui-marker-hintWindow"
+			hintWindowInfoStyleClass="e5ui-marker-hintWindow-info"
+			hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
+			hintWindowErrorStyleClass="e5ui-marker-hintWindow-error"
+			hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal">
+			<h:button onclick="e5ui_multiMarker.remove('main_form_marker'); return false;" value="ОК" />
+		</e5ui:multiMarker>
+	    
+	    <h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+	    <h:outputStylesheet library="css" name="multiMarker.css" />
+	    <h:outputStylesheet library="css" name="tabPanel.css" />
+	</ui:define>
+	
+</ui:composition>
+</html>

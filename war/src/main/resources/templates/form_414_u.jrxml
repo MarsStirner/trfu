@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Форма 420-А_у-П4" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="3.138428376721006"/>
+	<property name="ireport.x" value="1746"/>
+	<property name="ireport.y" value="195"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="IssueDates">
+		<parameter name="component_id" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[SELECT
+wf_history.`startDate` as issueDate,
+     trfu_blood_components.`id` AS trfu_blood_components_id,
+     trfu_blood_components.`number` AS trfu_blood_components_number,
+     trfu_blood_components.`donorCode` AS trfu_blood_components_donorCode,
+     trfu_blood_component_types.`value` AS trfu_blood_component_types_value,
+     trfu_blood_donation_requests.`number` AS trfu_blood_donation_requests_number,
+     trfu_donors.`lastName` AS trfu_donors_lastName,
+     trfu_donors.`middleName` AS trfu_donors_middleName,
+     trfu_donors.`firstName` AS trfu_donors_firstName,
+     trfu_donors.`number` AS trfu_donors_number,
+     trfu_blood_components.`id` AS trfu_blood_components_id,
+     wf_history.`startDate` AS wf_history_startDate,
+     wf_history.`commentary` AS wf_history_commentary,
+     trfu_blood_groups.`number` AS trfu_blood_groups_number,
+     trfu_classifiers.`value` AS trfu_classifiers_value,
+     trfu_blood_components.`volume` AS trfu_blood_components_volume,
+     trfu_blood_components.`parentNumber` AS trfu_blood_components_parentNumber,
+     trfu_blood_donation_requests.`factDate` AS trfu_blood_donation_requests_factDate,
+     trfu_blood_components.`purchased` AS trfu_blood_components_purchased
+FROM
+     `wf_history` wf_history INNER JOIN `trfu_blood_component_history` trfu_blood_component_history ON wf_history.`id` = trfu_blood_component_history.`history_entry_id`
+     LEFT OUTER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_history.`component_id` = trfu_blood_components.`id`
+     INNER JOIN `trfu_blood_component_types` trfu_blood_component_types ON trfu_blood_components.`componentType_id` = trfu_blood_component_types.`id`
+     LEFT OUTER JOIN `trfu_blood_donation_requests` trfu_blood_donation_requests ON trfu_blood_components.`donationId` = trfu_blood_donation_requests.`id`
+     INNER JOIN `trfu_blood_groups` trfu_blood_groups ON trfu_blood_components.`bloodGroup_id` = trfu_blood_groups.`id`
+     INNER JOIN `trfu_classifiers` trfu_classifiers ON trfu_blood_components.`rhesusFactor_id` = trfu_classifiers.`id`
+     LEFT OUTER JOIN `trfu_donors` trfu_donors ON trfu_blood_donation_requests.`donor_id` = trfu_donors.`id`
+WHERE
+ wf_history.`from_status_id` = 2
+and trfu_blood_components.id = $P{component_id}]]>
+		</queryString>
+		<field name="issueDate" class="java.sql.Timestamp"/>
+		<field name="trfu_blood_components_id" class="java.lang.Integer"/>
+		<field name="trfu_blood_components_number" class="java.lang.String"/>
+		<field name="trfu_blood_components_donorCode" class="java.lang.String"/>
+		<field name="trfu_blood_component_types_value" class="java.lang.String"/>
+		<field name="trfu_blood_donation_requests_number" class="java.lang.String"/>
+		<field name="trfu_donors_lastName" class="java.lang.String"/>
+		<field name="trfu_donors_middleName" class="java.lang.String"/>
+		<field name="trfu_donors_firstName" class="java.lang.String"/>
+		<field name="trfu_donors_number" class="java.lang.String"/>
+		<field name="wf_history_startDate" class="java.sql.Timestamp"/>
+		<field name="wf_history_commentary" class="java.lang.String"/>
+		<field name="trfu_blood_groups_number" class="java.lang.Integer"/>
+		<field name="trfu_classifiers_value" class="java.lang.String"/>
+		<field name="trfu_blood_components_volume" class="java.lang.Integer"/>
+		<field name="trfu_blood_components_parentNumber" class="java.lang.String"/>
+		<field name="trfu_blood_donation_requests_factDate" class="java.sql.Timestamp"/>
+		<field name="trfu_blood_components_purchased" class="java.lang.Boolean"/>
+	</subDataset>
+	<parameter name="Date" class="java.util.Date"/>
+	<parameter name="Institution" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="Division" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[/*form_414_u*/
+
+SELECT
+     trfu_blood_components.`id` AS trfu_blood_components_id,
+     trfu_blood_components.`number` AS trfu_blood_components_number,
+     trfu_blood_components.`donorCode` AS trfu_blood_components_donorCode,
+     trfu_blood_component_types.`value` AS trfu_blood_component_types_value,
+     trfu_blood_donation_requests.`number` AS trfu_blood_donation_requests_number,
+     trfu_donors.`lastName` AS trfu_donors_lastName,
+     trfu_donors.`middleName` AS trfu_donors_middleName,
+     trfu_donors.`firstName` AS trfu_donors_firstName,
+     trfu_donors.`number` AS trfu_donors_number,
+     trfu_blood_components.`id` AS trfu_blood_components_id,
+     wf_history.`startDate` AS wf_history_startDate,
+     wf_history.`commentary` AS wf_history_commentary,
+     trfu_blood_groups.`number` AS trfu_blood_groups_number,
+     trfu_classifiers.`value` AS trfu_classifiers_value,
+     trfu_blood_components.`volume` AS trfu_blood_components_volume,
+     trfu_blood_components.`parentNumber` AS trfu_blood_components_parentNumber,
+     trfu_blood_donation_requests.`factDate` AS trfu_blood_donation_requests_factDate,
+     trfu_blood_components.`purchased` AS trfu_blood_components_purchased
+FROM
+     `wf_history` wf_history INNER JOIN `trfu_blood_component_history` trfu_blood_component_history ON wf_history.`id` = trfu_blood_component_history.`history_entry_id`
+     LEFT OUTER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_history.`component_id` = trfu_blood_components.`id`
+     INNER JOIN `trfu_blood_component_types` trfu_blood_component_types ON trfu_blood_components.`componentType_id` = trfu_blood_component_types.`id`
+     LEFT OUTER JOIN `trfu_blood_donation_requests` trfu_blood_donation_requests ON trfu_blood_components.`donationId` = trfu_blood_donation_requests.`id`
+     INNER JOIN `trfu_blood_groups` trfu_blood_groups ON trfu_blood_components.`bloodGroup_id` = trfu_blood_groups.`id`
+     INNER JOIN `trfu_classifiers` trfu_classifiers ON trfu_blood_components.`rhesusFactor_id` = trfu_classifiers.`id`
+     LEFT OUTER JOIN `trfu_donors` trfu_donors ON trfu_blood_donation_requests.`donor_id` = trfu_donors.`id`
+WHERE
+     DATE(wf_history.`startDate`) = $P{Date}
+ AND wf_history.`to_status_id` = 2
+
+GROUP BY
+     trfu_blood_components_id
+ORDER BY
+     wf_history.`startDate` ASC]]>
+	</queryString>
+	<field name="trfu_blood_components_id" class="java.lang.Integer"/>
+	<field name="trfu_blood_components_number" class="java.lang.String"/>
+	<field name="trfu_blood_components_donorCode" class="java.lang.String"/>
+	<field name="trfu_blood_component_types_value" class="java.lang.String"/>
+	<field name="trfu_blood_donation_requests_number" class="java.lang.String"/>
+	<field name="trfu_donors_lastName" class="java.lang.String"/>
+	<field name="trfu_donors_middleName" class="java.lang.String"/>
+	<field name="trfu_donors_firstName" class="java.lang.String"/>
+	<field name="trfu_donors_number" class="java.lang.String"/>
+	<field name="wf_history_startDate" class="java.sql.Timestamp"/>
+	<field name="wf_history_commentary" class="java.lang.String"/>
+	<field name="trfu_blood_groups_number" class="java.lang.Integer"/>
+	<field name="trfu_classifiers_value" class="java.lang.String"/>
+	<field name="trfu_blood_components_volume" class="java.lang.Integer"/>
+	<field name="trfu_blood_components_parentNumber" class="java.lang.String"/>
+	<field name="trfu_blood_donation_requests_factDate" class="java.sql.Timestamp"/>
+	<field name="trfu_blood_components_purchased" class="java.lang.Boolean"/>
+	<variable name="trfu_blood_component_history_component_id_1" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="trfu_blood_components_id_1" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{trfu_blood_components_id}]]></variableExpression>
+	</variable>
+	<variable name="trfu_blood_components_id_2" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{trfu_blood_components_id}]]></variableExpression>
+	</variable>
+	<variable name="trfu_blood_components_volume_1" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{trfu_blood_components_volume}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="58" splitType="Stretch">
+			<staticText>
+				<reportElement x="725" y="0" width="77" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Форма 414/у]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="0" y="36" width="802" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ЖУРНАЛ КАРАНТИНИЗАЦИИ ЗА "+new SimpleDateFormat("dd.MM.yyyy").format($P{Date})]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="78" y="18" width="647" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Division}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="78" y="0" width="647" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement style="table_TD" x="0" y="0" width="35" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[N
+п.п.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="331" y="0" width="136" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Ф.И.О. донора]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="578" y="0" width="41" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Резус]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="35" y="0" width="60" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Дата
+закладки]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="467" y="0" width="66" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[№ донации]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="226" y="0" width="45" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Объем,
+мл]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="533" y="0" width="45" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Группа крови]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="95" y="0" width="131" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Наименование компонента]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="271" y="0" width="60" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Дата
+донации]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="619" y="0" width="68" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Дата выдачи из карантина]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="687" y="0" width="115" height="25"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[Подпись ответственного]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="32" splitType="Stretch">
+			<textField>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="0" y="0" width="35" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd.MM.yyyy" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="35" y="0" width="60" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{wf_history_startDate}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="331" y="0" width="136" height="32"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_donors_lastName}==null?"":$F{trfu_donors_lastName}+" "+$F{trfu_donors_firstName}+" "+$F{trfu_donors_middleName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="95" y="0" width="131" height="32"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_blood_component_types_value}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="226" y="0" width="45" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_blood_components_volume}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="467" y="0" width="66" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_blood_components_purchased}.equals( true )?$F{trfu_blood_components_donorCode}:$F{trfu_blood_components_parentNumber}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="533" y="0" width="45" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_blood_groups_number}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="578" y="0" width="41" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_classifiers_value}.equals( "Положительный" )?$F{trfu_classifiers_value}.replace( "Положительный", "+"):$F{trfu_classifiers_value}.replace( "Отрицательный", "-")]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd.MM.yyyy" isBlankWhenNull="true">
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="271" y="0" width="60" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trfu_blood_donation_requests_factDate}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement style="table_TD" x="687" y="0" width="115" height="32"/>
+			</frame>
+			<frame>
+				<reportElement style="table_TD" x="619" y="0" width="68" height="32"/>
+				<componentElement>
+					<reportElement key="table 1" x="0" y="0" width="68" height="32"/>
+					<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+						<datasetRun subDataset="IssueDates">
+							<datasetParameter name="component_id">
+								<datasetParameterExpression><![CDATA[$F{trfu_blood_components_id}]]></datasetParameterExpression>
+							</datasetParameter>
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+						<jr:column width="68">
+							<jr:detailCell style="table 1_TD" height="32" rowSpan="1">
+								<textField pattern="dd.MM.yyyy">
+									<reportElement x="0" y="0" width="68" height="32"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Tahoma" size="9"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{issueDate}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:table>
+				</componentElement>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="26" splitType="Stretch">
+			<textField>
+				<reportElement x="135" y="11" width="487" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Всего: "+($V{trfu_blood_components_id_2}==null?"":$V{trfu_blood_components_id_2})+" конт.  "+($V{trfu_blood_components_volume_1}==null?"":$V{trfu_blood_components_volume_1})+" мл"]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

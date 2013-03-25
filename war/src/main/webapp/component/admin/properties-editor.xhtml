@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <h:outputStylesheet library="bootstrap/css" name="bootstrap.min.css"/>
+        <h:outputScript library="bootstrap/js" name="bootstrap.min.js"/>
+    </h:head>
+    <h:body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="#">Настройка системы</a>
+                </div>
+            </div>
+        </div>
+        <br/><br/><br/>
+
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span2">
+                    <div class="row">
+                        <ul class="nav nav-list nav-pills nav-stacked">
+                            <li class="nav-header">
+                                Меню
+                            </li>
+                            <li>
+                                <button class="btn btn-info" onclick="dialog.show()">
+                                    Выбор файла
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="span9 offset2">
+                    <div class="page-header">
+                        <h2>
+                            <h:outputText id="fileName" value="#{propertiesRedactorBean.selectedFile}"/>
+                        </h2>
+                    </div>
+                    <h:form id="redactor">
+                        Путь в файловой системе:
+                        <h:outputText value="#{propertiesRedactorBean.selectedProperties.path}"/>
+                        <br/>
+
+                        <h:form id="redactorForm">
+                            <p:dataTable id="redactor_form_table" border="0" cellpadding="0" cellspacing="0"
+                                         value="#{propertiesRedactorBean.selectedProperties.keys}" var="key">
+                                <p:column>
+                                    <f:facet name="header">
+                                        Параметр
+                                    </f:facet>
+                                    <h:outputText value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].alias}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        Тип
+                                    </f:facet>
+                                    <h:outputText
+                                            value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        Шаблон
+                                    </f:facet>
+                                    <h:outputText
+                                            value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].pattern}"
+                                            rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'String'}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        Значение
+                                    </f:facet>
+
+                                    <h:inputText
+                                            id="stringInput"
+                                            rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'String'}"
+                                            value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}"
+                                            validator="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].validate}"
+                                            style="width:95%;"
+                                            >
+                                    </h:inputText>
+                                    <h:message for="stringInput"  style="color:red"/>
+
+                                    <h:inputText
+                                            id="intInput"
+                                            rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'Integer'}"
+                                            value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}">
+                                        <f:validateLongRange minimum="-2147483647" maximum="2147483647"/>
+                                    </h:inputText>
+                                    <h:message for="intInput"  style="color:red"/>
+
+                                    <h:inputText
+                                            id="longInput"
+                                            rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'Long'}"
+                                            value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}">
+                                            <f:validateLongRange />
+                                    </h:inputText>
+                                    <h:message for="longInput"  style="color:red"/>
+
+                                    <h:inputText
+                                            id="doubleInput"
+                                            rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'Double'}"
+                                            value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}">
+                                            <f:validateDoubleRange/>
+                                    </h:inputText>
+                                    <h:message for="doubleInput"  style="color:red"/>
+
+                                    <h:inputSecret
+                                            redisplay="true"
+                                            id="passwordInput"
+                                            rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'Password'}"
+                                            value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}"/>
+
+
+
+                                    <p:calendar
+                                            rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'Date'}"
+                                            value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}"/>
+                                    <p:calendar pattern="HH:mm:ss" timeOnly="true"
+                                                rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'Time'}"
+                                                value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}"/>
+                                    <p:calendar pattern="MM/dd/yyyy HH:mm:ss"
+                                                rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'DateTime'}"
+                                                value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}"/>
+
+                                    <h:selectBooleanCheckbox
+                                            rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'Boolean'}"
+                                            value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}"/>
+                                </p:column>
+                            </p:dataTable>
+                            <br/>
+                            <p:commandButton value="Сохранить"
+                                             actionListener="#{propertiesRedactorBean.processRedact}"
+                                             update=":redactor"/>
+                        </h:form>
+
+                    </h:form>
+                </div>
+            </div>
+
+        </div>
+
+        <p:dialog header="Files list" widgetVar="dialog"
+                  showEffect="fade" hideEffect="fade">
+            <h:panelGrid id="fileDialog" columns="2" cellpadding="5">
+                <h:form id="fileSelectForm">
+                    <p:dataTable id="file_select_table" border="0" cellpadding="0" cellspacing="0"
+                                 value="#{propertiesRedactorBean.fileNames}" var="row"
+                                 selection="#{propertiesRedactorBean.selectedFile}"
+                                 emptyMessage=""
+                                 selectionMode="single" rowKey="#{row}">
+
+                        <p:column style="width:800px;">
+                            <f:facet name="header">
+                                <p>Имя файла</p>
+                            </f:facet>
+                            <h:outputText value="#{row}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <br/>
+                    <p:commandButton value="Выбрать"
+                                     actionListener="#{propertiesRedactorBean.processSelection}"
+                                     update=":redactor :fileName" oncomplete="dialog.hide()"/>
+                </h:form>
+            </h:panelGrid>
+        </p:dialog>
+
+    <h:outputStylesheet library="css" name="portal.css" />
+    </h:body>
+</f:view>
+</html>

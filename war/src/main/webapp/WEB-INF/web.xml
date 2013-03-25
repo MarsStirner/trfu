@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <description>NIIDG Transfusion</description>
+    <display-name>NIIDG Transfusion</display-name>
+    
+    <context-param>
+		<param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	
+	<context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+    
+    <!-- <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>WEB-INF/classes/applicationContext.xml</param-value>
+    </context-param> -->
+    
+    <servlet>
+        <description>Faces Servlet</description>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+    
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.xhtml</welcome-file>
+    </welcome-file-list>
+    
+    <listener>
+		<listener-class>
+			ru.efive.medicine.niidg.trfu.uifaces.SessionListener
+		</listener-class>
+	</listener>
+	<filter>
+		<filter-name>SessionTimeoutFilter</filter-name>
+		<filter-class>
+			ru.efive.medicine.niidg.trfu.uifaces.SessionTimeoutFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>SessionTimeoutFilter</filter-name>
+		<url-pattern>*.xhtml</url-pattern> 
+	</filter-mapping>
+    
+    <filter>
+    	<filter-name>AuthenticationFilter</filter-name>
+    	<filter-class>ru.efive.medicine.niidg.trfu.uifaces.AuthenticationFilter</filter-class>
+ 	</filter>
+ 	<filter-mapping>
+    	<filter-name>AuthenticationFilter</filter-name>
+    	<url-pattern>/component/*</url-pattern>
+	</filter-mapping>
+    
+    <context-param>
+	    <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+	    <param-value>true</param-value>
+	</context-param>
+    
+    <context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:/log4j.xml</param-value>
+	</context-param>
+	
+	<!--context-param>
+		<param-name>primefaces.THEME</param-name>
+		<param-value>none</param-value>
+	</context-param-->
+</web-app>

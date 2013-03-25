@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
+		<h:outputScript library="js" name="views.js" target="head" />
+	</ui:define>
+	
+	<ui:define name="header_top">
+		<div id="viewtitle">Лечебные процедуры по номеру</div>
+	</ui:define>
+	
+	<ui:define name="header_buttons">
+		<div class="defbutton">
+			<h:outputLink value="#{contextPath}/component/medical/medical_operation.xhtml" target="_blank">
+				<h:graphicImage value="#{resource['images:newf_buttn_icon.png']}" />
+            	Новая процедура
+            	<f:param name="docAction" value="create" />
+			</h:outputLink>
+		</div>
+		<div class="defbutton">
+			<h:commandLink action="#{medicalOperationList.refresh()}">
+				<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+            	Обновить
+            	<e5ui:formPartTarget formPart="main_table_part"/>
+           	</h:commandLink>
+		</div>
+		<div class="top">
+			<h:commandLink styleClass="top_link" onclick="return false;">
+				<span><h:graphicImage value="#{resource['images:blank.png']}" />Отчетность</span>
+			</h:commandLink>
+			<div class="sub">
+				<div class="item">
+					<h:outputLink value="#{contextPath}/component/report/report_template.xhtml" target="_blank">
+						<h:graphicImage value="#{resource['images:blank.png']}" />
+						<f:param name="docAction" value="create" />
+						<f:param name="templateName" value="Medical_operations_types.jrxml" />
+						Перечень процедур по типам
+					</h:outputLink>
+				</div>
+				<div class="item">
+					<h:outputLink value="#{contextPath}/component/report/report_template.xhtml" target="_blank">
+						<h:graphicImage value="#{resource['images:blank.png']}" />
+						<f:param name="docAction" value="create" />
+						<f:param name="templateName" value="Medical_operations_recipients.jrxml" />
+						Перечень процедур по реципиентам
+					</h:outputLink>
+				</div>
+				<div class="item">
+					<h:outputLink value="#{contextPath}/component/report/report_template.xhtml" target="_blank">
+						<h:graphicImage value="#{resource['images:blank.png']}" />
+						<f:param name="docAction" value="create" />
+						<f:param name="templateName" value="Medical_operations_divisions.jrxml" />
+						Перечень процедур по отделениям
+					</h:outputLink>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+
+	<ui:define name="content">
+		<script type="text/javascript">
+			document.ondblclick = function DoubleClick(evt) {
+				if (window.getSelection)
+					window.getSelection().removeAllRanges();
+				else if (document.selection)
+					document.selection.empty();
+			}
+		</script>
+		<h:outputScript>
+        	function goToDocument(id) {
+        		if (id != 0) {
+        			window.open('#{facesContext.externalContext.requestContextPath}/component/medical/medical_operation.xhtml?docId=' + id,'_blank');
+				}
+			}
+        </h:outputScript>
+		<e5ui:formPart id="main_table_part">
+			<div id="main_table">
+				<div id="searchbar" class="main_searchbar">
+					<h:inputText id="filter_string" value="#{medicalOperationList.filter}" 
+								style="display:block; float:left; width:60%; margin:2px 10px;" title="Поиск" />
+					<h:commandButton value=" " action="#{medicalOperationList.changePageOffset(0)}" styleClass="searchbutton">
+						<f:ajax execute=":main_content_form:filter_string" render=":main_content_form:main_data_tbl :main_content_form:main_data_paging" />
+					</h:commandButton>
+				</div>
+				<div class="wrap_main" id="table_wrap">
+					<div class="inner" id="table_inner">
+						<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl"
+									value="#{medicalOperationList.documents}" var="row" grouping="false">
+							<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+							<e5ui:column style="min-width:5em">
+								<f:facet name="header">
+									<h:commandLink action="#{medicalOperationList.sort('number')}">
+			                        	Номер
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.number}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:5em">
+								<f:facet name="header">
+									<h:commandLink action="#{medicalOperationList.sort('created')}">
+			                        	Дата создания
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.created}">
+									<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+								</h:outputText>
+							</e5ui:column>
+							<e5ui:column style="min-width:12em">
+								<f:facet name="header">
+									<h:commandLink action="#{medicalOperationList.sort('donor.lastName,donor.firstName,donor.middleName')}">
+			                        	Донор
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.donor.descriptionShort}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:8em">
+								<f:facet name="header">
+									<h:commandLink action="#{medicalOperationList.sort('operationForm.value')}">
+			                        	Вид процедуры
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.operationForm}" converter="ClassifierConverter" />
+							</e5ui:column>
+							<e5ui:column style="min-width:6em">
+								<f:facet name="header">
+									<h:commandLink action="#{medicalOperationList.sort('operationType')}">
+			                        	Тип процедуры
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.operationType eq 0? 'Ауто': 'Алло'}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:6em">
+								<f:facet name="header">
+									<h:commandLink action="#{medicalOperationList.sort('operationType')}">
+			                        	Родственная
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText rendered="#{row.operationType eq 1}" value="#{row.related? 'Да': 'Нет'}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:7em">
+								<f:facet name="header">
+									<h:commandLink action="#{medicalOperationList.sort('recipient')}">
+			                        	Реципиент
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.recipient}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:12em">
+								<f:facet name="header">
+			                        <p>Комментарии</p>
+			                    </f:facet>
+								<h:outputText value="#{row.commentary}" />
+							</e5ui:column>
+						</e5ui:dataTable>
+					</div>
+				</div>
+				<div id="table_paging">
+					<h:panelGroup id="main_data_paging">
+						<e5ui-comp:tablePager documentListHolder="#{medicalOperationList}" style="display:inline;" />
+						<e5ui-comp:tablePageSizeSelector documentListHolder="#{medicalOperationList}" style="display:inline;float:right;" pageSizes="10,25,50,100" />
+					</h:panelGroup>
+				</div>
+			</div>
+		</e5ui:formPart>
+	</ui:define>
+	
+</ui:composition>
+
+</html>

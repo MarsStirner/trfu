@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<!-- #{donorMatch.document.id}  -->
+		<e5ui-comp:userSessionUpdate interval="300" />
+		<h:outputScript library="js" name="forms.js" target="head" />
+		<e5ui-comp:outputUtilScript />
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+	
+	<ui:define name="header">
+		<div id="form_header">
+			<div class="actionbar">
+				<div class="menu">
+					<h:panelGroup rendered="false">
+						<div class="defbutton">
+							<h:commandLink action="#{donorMatch.edit}" rendered="#{donorMatch.viewState}">
+								<h:graphicImage value="#{resource['images:edit_buttn.png']}" />
+								Редактировать
+							</h:commandLink>
+						</div>
+						<div class="defbutton">
+							<h:commandLink action="#{donorMatch.cancel}" rendered="#{donorMatch.editState or donorMatch.createState}">
+								<h:graphicImage value="#{resource['images:button-cancel.png']}" />
+								Отменить
+							</h:commandLink>
+						</div>
+						<div class="defbutton">
+							<h:commandLink action="#{donorMatch.save}" rendered="#{donorMatch.editState or donorMatch.createState}">
+								<h:graphicImage value="#{resource['images:save_buttn.png']}" />
+								Сохранить
+							</h:commandLink>
+						</div>
+					</h:panelGroup>
+					<div class="defbutton">
+						<h:commandLink action="#{donorMatch.search}" rendered="#{donorMatch.editState or donorMatch.createState}">
+							<h:graphicImage value="#{resource['images:button-search.png']}" />
+							Подобрать
+						</h:commandLink>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="content">
+		<div id="header_content">
+			<h:panelGroup rendered="#{donorMatch.createState}">
+				<div class="name">Подбор доноров</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{donorMatch.editState or donorMatch.viewState}">
+				<div class="name">
+					<div>
+						<span>Подбор доноров</span>
+					</div>
+				</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{donorMatch.notFoundState}">
+				<div class="name">404 - Подбор не найден</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{donorMatch.forbiddenState}">
+				<div class="name">403 - Действие запрещено</div>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{not(donorMatch.createState or donorMatch.editState or donorMatch.viewState or donorMatch.notFoundState or donorMatch.forbiddenState)}">
+				<div class="name">В доступе отказано</div>
+			</h:panelGroup>
+		</div>
+		
+		<div class="main_content">
+			<div class="row">
+				<fieldset>
+					<legend>
+						<label><span class="title">Параметры подбора</span> </label>
+					</legend>
+					<div class="wrap">
+						<div class="inner">
+							<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" style="width:auto;"
+										value="#{donorMatch.document.criteriaList}" var="row" grouping="false">
+								<e5ui:column style="width:10px;">
+									<h:selectBooleanCheckbox value="#{row.necessary}" disabled="#{donorMatch.viewState}" />
+								</e5ui:column>
+								<e5ui:column style="width:150px;">
+									<f:facet name="header">
+								   		<p>Фенотип</p>
+								   	</f:facet>
+									<h:outputText value="#{row.phenotype.type.value}" />
+								</e5ui:column>
+								<e5ui:column style="width:150px;">
+									<f:facet name="header">
+								   		<p>Результат</p>
+								   	</f:facet>
+								   	<h:panelGroup rendered="#{donorMatch.viewState}">
+								   		<h:outputText value="#{row.phenotype.value}" />
+								   	</h:panelGroup>
+								   	<h:panelGroup rendered="#{donorMatch.editState or donorMatch.createState}">
+								   		<h:selectOneRadio layout="lineDirection" value="#{row.phenotype.value}">
+											<f:selectItems value="#{dictionaryManagement.getValuesByCategory(row.phenotype.type.value)}" />
+										</h:selectOneRadio>
+								   	</h:panelGroup>
+								</e5ui:column>
+							</e5ui:dataTable>
+						</div>
+					</div>
+					<div class="row">
+						<table class="form_grid" style="width:auto;">
+							<tr class="row">
+								<td><h:selectBooleanCheckbox value="#{donorMatch.document.searchBloodGroup}" /></td>
+								<td>Группа крови:</td>
+								<td>
+									<h:selectOneMenu value="#{donorMatch.document.bloodGroup}" converter="BloodGroupConverter">
+										<f:selectItems value="#{dictionaryManagement.bloodGroups}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr class="row">
+								<td><h:selectBooleanCheckbox value="#{donorMatch.document.searchRhesus}" /></td>
+								<td>Резус-принадлежность:</td>
+								<td>
+									<h:selectOneMenu value="#{donorMatch.document.rhesusFactor}" converter="ClassifierConverter">
+										<f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</fieldset>
+			</div>
+			<div class="row">
+				<fieldset>
+					<legend>
+						<label><span class="title">Подходящие доноры</span> </label>
+					</legend>
+					<div class="wrap" style="max-height:800px;">
+						<div class="inner" style="max-height:800px;">
+							<script type="text/javascript">
+								document.ondblclick = function DoubleClick(evt) {
+									if (window.getSelection)
+										window.getSelection().removeAllRanges();
+									else if (document.selection)
+										document.selection.empty();
+								}
+							</script>
+							<h:outputScript>
+					        	function goToDocument(id) {
+					        		if (id != 0) {
+					        			window.open('#{facesContext.externalContext.requestContextPath}/component/donor.xhtml?docId=' + id,'_blank');
+									}
+								}
+					        </h:outputScript>
+							<e5ui:dataTable id="main_select_table" border="0" cellpadding="0" cellspacing="0"
+										value="#{donorMatch.matchResultList}"
+										var="row" grouping="false">
+								<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+								<e5ui:column>
+									<f:facet name="header">
+										<p>Номер</p>
+									</f:facet>
+									<h:outputText value="#{row.number}" />
+									<h:commandLink id="selectLink" style="display: none;"
+												rendered="#{not donorMatch.selected(row)}"
+												action="#{donorMatch.select(row)}"/>
+									<h:commandLink id="unselectLink" style="display: none;"
+												rendered="#{donorMatch.selected(row)}"
+												action="#{donorMatch.unselect(row)}" />
+								</e5ui:column>
+								<e5ui:column>
+									<f:facet name="header">
+										<p>ФИО</p>
+									</f:facet>
+									<h:outputText value="#{row.descriptionShort}" />
+								</e5ui:column>
+								<e5ui:column>
+									<f:facet name="header">
+										<p>Категория</p>
+									</f:facet>
+									<h:outputText value="#{row.category eq 0? 'Первичный': row.category eq 1? 'Кадровый': 'Повторный'}" />
+								</e5ui:column>
+								<e5ui:column>
+									<f:facet name="header">
+										<p>Группа крови</p>
+									</f:facet>
+									<h:outputText value="#{row.bloodGroup}" converter="BloodGroupConverter" />
+									<h:outputText style="margin-left:5px;" value="#{row.rhesusFactor}" converter="ClassifierConverter" />
+								</e5ui:column>
+							</e5ui:dataTable>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+	        <f:facet name="timeoutPanel">
+	        	<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+	        		Пожалуйста, подождите...
+	        	</div>
+	        </f:facet>
+	    </e5ui-comp:splashScreen>
+	    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+	    <h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+	    <h:outputStylesheet library="css" name="multiMarker.css" />
+	    
+        <e5ui:multiMarker id="main_form_marker" rendered="true"
+			hintWindowStyleClass="e5ui-marker-hintWindow"
+			hintWindowInfoStyleClass="e5ui-marker-hintWindow-info"
+			hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
+			hintWindowErrorStyleClass="e5ui-marker-hintWindow-error"
+			hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal"
+			displayMode="window">
+			<h:button
+				onclick="e5ui_multiMarker.remove('main_form_marker'); return false;"
+				value="ОК" />
+		</e5ui:multiMarker>
+        
+	</ui:define>
+	
+</ui:composition>
+</html>
