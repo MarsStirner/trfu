@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.Division;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
+import ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 @Named("divisionList")
@@ -57,6 +60,14 @@ public class DivisionListHolderBean extends AbstractDocumentListHolderBean<Divis
 	
 	public void setFilter(String filter) {
 		this.filter = filter;
+	}
+	
+	public void loadExternalData() {
+		if (!IntegrationHelper.updateDivisions()) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "Ошибка при обновлении списка подразделений. Попробуйте повторить позже", ""));
+		}
+		refresh();
 	}
 	
 	

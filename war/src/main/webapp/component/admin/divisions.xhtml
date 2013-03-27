@@ -47,7 +47,7 @@
 			</h:outputLink>
 		</div>
 		<div class="defbutton">
-			<h:commandLink action="#{divisionList.refresh()}">
+			<h:commandLink action="#{divisionList.loadExternalData()}">
 				<h:graphicImage value="#{resource['images:button-refresh.png']}" />
             	Обновить
             	<e5ui:formPartTarget formPart="main_table_part"/>

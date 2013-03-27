@@ -46,7 +46,7 @@ public class ExtrernalMedicalServiceTest {
     }
     
     //@Test
-    public void processComponentRequestTest() {
+    public void processComponentRequestTest() throws Exception {
     	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
     	BloodComponentOrderRequest request = ((BloodComponentOrderRequestDAOImpl) ctx.getBean(ApplicationHelper.COMPONENT_ORDER_DAO)).get(1452);
     	ActionResult result = IntegrationHelper.processComponentRequest(request);

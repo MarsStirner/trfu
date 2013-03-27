@@ -2846,6 +2846,13 @@ public final class ProcessFactory {
 				activity.setParentAction(toStatusAction);
 				activites.add(activity);
 				
+				activity = new InvokeMethodActivity();
+				list = new ArrayList<Object>();
+				list.add(t);
+				activity.setInvokeInformation("ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper", "processComponentRequest", list);
+				activity.setParentAction(toStatusAction);
+				activites.add(activity);
+				
 				toStatusAction.setPreActionActivities(activites);
 
 				fromStatusActions.add(toStatusAction);
@@ -2967,6 +2974,13 @@ public final class ProcessFactory {
 				list.add(10);
 				list.add(6);
 				activity.setInvokeInformation("ru.efive.medicine.niidg.trfu.wf.util.WorkflowHelper", "setChildBloodComponentStatus", list);
+				activity.setParentAction(toStatusAction);
+				activites.add(activity);
+				
+				activity = new InvokeMethodActivity();
+				list = new ArrayList<Object>();
+				list.add(t);
+				activity.setInvokeInformation("ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper", "processComponentRequest", list);
 				activity.setParentAction(toStatusAction);
 				activites.add(activity);
 				

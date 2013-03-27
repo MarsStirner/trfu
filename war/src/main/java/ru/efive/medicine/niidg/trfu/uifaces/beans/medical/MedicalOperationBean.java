@@ -32,6 +32,7 @@ import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.UserSelectModalBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListHolderBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
@@ -177,6 +178,20 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	public void registerOperation() {
+		try {
+			ActionResult result = IntegrationHelper.processMedicalOperation(getDocument());
+			if (!result.isProcessed()) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, result.getDescription(), ""));
+			}
+		}
+		catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка", ""));
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

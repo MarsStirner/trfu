@@ -100,6 +100,12 @@
 							</e5ui:formPart>
 						</div>
 					</h:panelGroup>
+					<div class="defbutton">
+						<h:commandLink action="#{medicalOperation.registerOperation()}" rendered="#{medicalOperation.editState or medicalOperation.viewState}">
+							<h:graphicImage value="#{resource['images:button-request.png']}" />
+							Зарегистрировать процедуру
+						</h:commandLink>
+					</div>
                     <div class="top">
                     	<h:commandLink styleClass="top_link" onclick="return false;">
                     		<span>
@@ -242,10 +248,22 @@
 										<td class="first">Врач-трансфузиолог:</td>
 										<td><h:outputText value="#{medicalOperation.document.transfusiologist.description}" class="wide" /></td>
 									</tr>
-									<tr class="row">
-										<td class="first">Реципиент:</td>
-										<td><h:outputText value="#{medicalOperation.document.recipient}" class="wide" /></td>
-									</tr>
+									<h:panelGroup rendered="#{medicalOperation.document.fromMIS}">
+										<tr class="row">
+											<td class="first">Реципиент:</td>
+											<td><h:outputText value="#{medicalOperation.document.recipientDescription}" class="wide" /></td>
+										</tr>
+										<tr class="row">
+											<td class="first">Назначивший врач:</td>
+											<td><h:outputText value="#{medicalOperation.document.attendingDoctorDescription}" class="wide" /></td>
+										</tr>
+									</h:panelGroup>
+									<h:panelGroup rendered="#{not (medicalOperation.document.fromMIS)}">
+										<tr class="row">
+											<td class="first">Реципиент:</td>
+											<td><h:outputText value="#{medicalOperation.document.recipient}" class="wide" /></td>
+										</tr>
+									</h:panelGroup>
 									<tr class="row">
 										<td class="first">УНП:</td>
 										<td><h:outputText value="#{medicalOperation.document.unp}" class="wide" /></td>
@@ -402,7 +420,7 @@
 									<tr class="row">
 										<td class="first">Фактическая дата:</td>
 										<td>
-											<e5ui-comp:inputDate id="factDate" value="#{bloodComponent.document.factDate}" lang="ru" />
+											<e5ui-comp:inputDate id="factDate" value="#{medicalOperation.document.factDate}" lang="ru" />
 										</td>
 									</tr>
 									<tr class="row">
@@ -464,10 +482,22 @@
 											</e5ui-comp:modalWindow>
 										</td>
 									</tr>
-									<tr class="row">
-										<td class="first">Реципиент:</td>
-										<td><h:inputText value="#{medicalOperation.document.recipient}" class="wide" /></td>
-									</tr>
+									<h:panelGroup rendered="#{medicalOperation.document.fromMIS}">
+										<tr class="row">
+											<td class="first">Реципиент:</td>
+											<td><h:outputText value="#{medicalOperation.document.recipientDescription}" class="wide" /></td>
+										</tr>
+										<tr class="row">
+											<td class="first">Назначивший врач:</td>
+											<td><h:outputText value="#{medicalOperation.document.attendingDoctorDescription}" class="wide" /></td>
+										</tr>
+									</h:panelGroup>
+									<h:panelGroup rendered="#{not (medicalOperation.document.fromMIS)}">
+										<tr class="row">
+											<td class="first">Реципиент:</td>
+											<td><h:inputText value="#{medicalOperation.document.recipient}" class="wide" /></td>
+										</tr>
+									</h:panelGroup>
 									<tr class="row">
 										<td class="first">УНП:</td>
 										<td><h:inputText value="#{medicalOperation.document.unp}" class="wide" /></td>

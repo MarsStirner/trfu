@@ -159,7 +159,7 @@
 			                        	<f:ajax render="main_data_tbl"/>
 			                        </h:commandLink>
 			                    </f:facet>
-								<h:outputText value="#{row.recipient}" />
+								<h:outputText value="#{row.fromMIS? row.recipientDescription: row.recipient}" />
 							</e5ui:column>
 							<e5ui:column style="min-width:12em">
 								<f:facet name="header">
