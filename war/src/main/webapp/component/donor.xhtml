@@ -215,6 +215,10 @@
 									</td>
 								</tr>
 								<tr class="row">
+									<td class="first">Номер карты:</td>
+									<td><h:outputText value="#{donor.document.extensionNumber}" class="wide" /></td>
+								</tr>
+								<tr class="row">
 									<td class="first">Паспорт:</td>
 									<td>
 										<span>серия</span> <h:outputText style="margin:0 5px;" value="#{donor.document.passportSeries}" />
@@ -326,6 +330,10 @@
 									<td>
 										<e5ui-comp:inputDate id="deliveryDate" value="#{donor.document.birth}" lang="ru" />
 									</td>
+								</tr>
+								<tr class="row">
+									<td class="first">Номер карты:</td>
+									<td><h:inputText value="#{donor.document.extensionNumber}" class="wide" /></td>
 								</tr>
 								<tr class="row">
 									<td class="first">Паспорт:</td>

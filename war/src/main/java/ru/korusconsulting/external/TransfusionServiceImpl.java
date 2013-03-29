@@ -17,10 +17,8 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "TransfusionServiceImpl", targetNamespace = "http://korus.ru/tmis/ws/transfusion", wsdlLocation = "http://ftmis-core2-node1.gfish.fccho-moscow.ru:8080/tmis-ws-transfusion/TransfusionServiceImpl?wsdl")
-public class TransfusionServiceImpl
-    extends Service
-{
+@WebServiceClient(name = "TransfusionServiceImpl", targetNamespace = "http://korus.ru/tmis/ws/transfusion", wsdlLocation = "TransfusionServiceImpl.wsdl")
+public class TransfusionServiceImpl extends Service {
 
     private final static URL TRANSFUSIONSERVICEIMPL_WSDL_LOCATION;
     private final static WebServiceException TRANSFUSIONSERVICEIMPL_EXCEPTION;
@@ -90,5 +88,4 @@ public class TransfusionServiceImpl
         }
         return TRANSFUSIONSERVICEIMPL_WSDL_LOCATION;
     }
-
 }

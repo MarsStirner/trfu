@@ -446,6 +446,14 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 		return result;
 	}
 
+	public String getExtensionNumber() {
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber) {
+		this.extensionNumber = extensionNumber;
+	}
+
 	/**
 	 * дата создания документа
 	*/
@@ -624,6 +632,9 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	
 	@Transient
 	public static final String DEFAULT_SEARCH_FIELD = "content";
+	
+	@Column(name="extension_number")
+	private String extensionNumber;
 	
 	
 	private static final long serialVersionUID = 1L;

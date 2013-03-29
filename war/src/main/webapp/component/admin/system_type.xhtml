@@ -78,6 +78,10 @@
                             <td class="first">Код:</td>
                             <td><h:outputText value="#{bloodSystemType.document.code}" class="wide" /></td>
                         </tr>
+                        <tr class="row">
+                            <td class="first">Единица измерения (1С):</td>
+                            <td><h:outputText value="#{bloodSystemType.document.unit}" class="wide" /></td>
+                        </tr>
                     </table>
                 </div>
             </h:panelGroup>
@@ -90,9 +94,11 @@
                         </tr>
                         <tr class="row">
                             <td class="first">Код:</td>
-                            <td>
-                                <h:inputText value="#{bloodSystemType.document.code}" class="wide" />
-                            </td>
+                            <td><h:inputText value="#{bloodSystemType.document.code}" class="wide" /></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="first">Единица измерения (1С):</td>
+                            <td><h:inputText value="#{bloodSystemType.document.unit}" class="wide" /></td>
                         </tr>
                     </table>
                 </div>

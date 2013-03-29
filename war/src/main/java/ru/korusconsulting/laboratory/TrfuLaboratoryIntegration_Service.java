@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "trfu-laboratory-integration", targetNamespace = "http://www.korusconsulting.ru", wsdlLocation = "http://localhost:8585/transfusion/trfu-laboratory-integration?wsdl")
+@WebServiceClient(name = "trfu-laboratory-integration", targetNamespace = "http://www.korusconsulting.ru", wsdlLocation = "http://test3.gfish.fccho-moscow.ru/trfu-laboratory-integration?wsdl")
 public class TrfuLaboratoryIntegration_Service
     extends Service
 {
@@ -30,7 +30,7 @@ public class TrfuLaboratoryIntegration_Service
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://localhost:8585/transfusion/trfu-laboratory-integration?wsdl");
+            url = new URL("http://test3.gfish.fccho-moscow.ru/trfu-laboratory-integration?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

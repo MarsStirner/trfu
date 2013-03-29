@@ -353,53 +353,58 @@ public class IntegrationHelper {
 	
     public static ActionResult processComponentRequest(BloodComponentOrderRequest orderRequest) throws java.net.MalformedURLException {
     	ActionResult result = new ActionResult();
-    	
-    	FacesContext context = FacesContext.getCurrentInstance();
-		ApplicationPropertiesHolder propertiesHolder = 
-			(ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
-		
-    	boolean process = true;
-		Object enabled = propertiesHolder.getProperty("application", "mis.integration.enabled");
-		if (enabled == null) {
-			logger.warn("Wrong system configuration. Property mis.integration.enabled is not set");
-		}
-		else {
-			try {
-				process = (Boolean) enabled;
-			}
-			catch (ClassCastException e) {
-				logger.warn("Wrong system configuration. Property laboratory.integration.enabled must be boolean");
-				process = true;
-			}
-		}
-		Object serviceAddress = propertiesHolder.getProperty("application", "mis.integration.address");
-		
-		if (process) {
-	    	TransfusionServiceImpl medicalService = new TransfusionServiceImpl(new java.net.URL(serviceAddress.toString()));
+    	if (orderRequest.isFromMIS()) {
 	    	
-	        GregorianCalendar calendar = new GregorianCalendar();
-	        calendar.setTime(orderRequest.getFactDate());
-	        XMLGregorianCalendar factDate = new XMLGregorianCalendarImpl(calendar);
-	        OrderIssueInfo component = new OrderIssueInfo();
-	
-	        component.setBloodGroupId(orderRequest.getBloodGroup().getNumber());
-	        component.setComponentTypeId(orderRequest.getComponentType().getId());
-	        component.setDonorId(orderRequest.getRecipientId());
-	        component.setDoseCount(orderRequest.getDoseCount());
-	        component.setNumber(orderRequest.getNumber());
-	        component.setRhesusFactorId(orderRequest.getRhesusFactor().getValue().equals("отрицательный")?1:0);
-	        //component.setId(Integer.valueOf(orderRequest.getExternalNumber()));
-	        component.setVolume(orderRequest.getVolume());
-	        
-	        IssueResult issueResult = medicalService.getPortTransfusion().setOrderIssueResult(orderRequest.getId(),factDate, Arrays.asList(component), orderRequest.getCommentary());
-	        
-	        result.setProcessed(issueResult.isResult());
-	        result.setDescription(issueResult.getDescription());
-		}
-		else {
-			System.out.println("MIS integration disabled");
-			result.setProcessed(true);
-		}
+	    	FacesContext context = FacesContext.getCurrentInstance();
+			ApplicationPropertiesHolder propertiesHolder = 
+				(ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
+			
+	    	boolean process = true;
+			Object enabled = propertiesHolder.getProperty("application", "mis.integration.enabled");
+			if (enabled == null) {
+				logger.warn("Wrong system configuration. Property mis.integration.enabled is not set");
+			}
+			else {
+				try {
+					process = (Boolean) enabled;
+				}
+				catch (ClassCastException e) {
+					logger.warn("Wrong system configuration. Property laboratory.integration.enabled must be boolean");
+					process = true;
+				}
+			}
+			Object serviceAddress = propertiesHolder.getProperty("application", "mis.integration.address");
+			
+			if (process) {
+		    	TransfusionServiceImpl medicalService = new TransfusionServiceImpl(new java.net.URL(serviceAddress.toString()));
+		    	
+		        GregorianCalendar calendar = new GregorianCalendar();
+		        calendar.setTime(orderRequest.getFactDate());
+		        XMLGregorianCalendar factDate = new XMLGregorianCalendarImpl(calendar);
+		        OrderIssueInfo component = new OrderIssueInfo();
+		
+		        component.setBloodGroupId(orderRequest.getBloodGroup().getNumber());
+		        component.setComponentTypeId(orderRequest.getComponentType().getId());
+		        component.setDonorId(orderRequest.getRecipientId());
+		        component.setDoseCount(orderRequest.getDoseCount());
+		        component.setNumber(orderRequest.getNumber());
+		        component.setRhesusFactorId(orderRequest.getRhesusFactor().getValue().equals("отрицательный")?1:0);
+		        //component.setId(Integer.valueOf(orderRequest.getExternalNumber()));
+		        component.setVolume(orderRequest.getVolume());
+		        
+		        IssueResult issueResult = medicalService.getPortTransfusion().setOrderIssueResult(orderRequest.getId(),factDate, Arrays.asList(component), orderRequest.getCommentary());
+		        
+		        result.setProcessed(issueResult.isResult());
+		        result.setDescription(issueResult.getDescription());
+			}
+			else {
+				System.out.println("MIS integration disabled");
+				result.setProcessed(true);
+			}
+    	}
+    	else {
+    		result.setProcessed(true);
+    	}
         return result;
     }
     

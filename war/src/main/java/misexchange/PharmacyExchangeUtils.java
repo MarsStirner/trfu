@@ -1,6 +1,7 @@
 package misexchange;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.hl7.v3.*;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
@@ -19,14 +20,37 @@ public class PharmacyExchangeUtils {
     private ApplicationPropertiesHolder propertiesHolder;
     JAXBContext jaxbContext;
     private MISExchange misExchange;
+    
+    private static final Logger logger = Logger.getLogger(PharmacyExchangeUtils.class);
 
-    public PharmacyExchangeUtils() throws JAXBException {
+    public PharmacyExchangeUtils() throws JAXBException, java.net.MalformedURLException {
     	FacesContext context = FacesContext.getCurrentInstance();
     	if (context != null) {
     		propertiesHolder = (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
     	}
     	if (propertiesHolder == null || (Boolean) propertiesHolder.getProperty("application","pharmacy.integration.enabled")) {
-    		misExchange = new MISExchange();
+    		Object address = this.propertiesHolder.getProperty("application", "pharmacy.integration.address");
+    		if (address == null || StringUtils.isEmpty(address.toString())) {
+    			misExchange = new MISExchange();
+    		}
+    		else {
+    			misExchange = new MISExchange(new java.net.URL(address.toString()));
+    		}
+    		jaxbContext = JAXBContext.newInstance(POCDMT000040ClinicalDocument.class);
+        }
+    }
+    
+    public PharmacyExchangeUtils(ApplicationPropertiesHolder propertiesHolder) throws JAXBException, java.net.MalformedURLException {
+    	FacesContext context = FacesContext.getCurrentInstance();
+    	this.propertiesHolder = propertiesHolder;
+    	if (this.propertiesHolder == null || (Boolean) this.propertiesHolder.getProperty("application","pharmacy.integration.enabled")) {
+    		Object address = this.propertiesHolder.getProperty("application", "pharmacy.integration.address");
+    		if (address == null || StringUtils.isEmpty(address.toString())) {
+    			misExchange = new MISExchange();
+    		}
+    		else {
+    			misExchange = new MISExchange(new java.net.URL(address.toString()));
+    		}
     		jaxbContext = JAXBContext.newInstance(POCDMT000040ClinicalDocument.class);
         }
     }
@@ -84,7 +108,8 @@ public class PharmacyExchangeUtils {
     }
 
     public boolean checkBloodSystemCount(BloodSystemType systemType, Integer count) {
-        if(!(Boolean)propertiesHolder.getProperty("application","pharmacy.integration.enabled")){
+        if (!(Boolean) propertiesHolder.getProperty("application","pharmacy.integration.enabled")) {
+        	logger.warn("1C integration disabled");
             return true;
         }
         MISExchangePortType portType = misExchange.getMISExchangeSoap();
@@ -96,18 +121,24 @@ public class PharmacyExchangeUtils {
 
 
 
-    public void decreaseBloodSystemsCount(BloodDonationRequest donationRequest) throws UnsupportedEncodingException, JAXBException {
+    public boolean decreaseBloodSystemsCount(BloodDonationRequest donationRequest) throws UnsupportedEncodingException, JAXBException {
+    	if (!(Boolean) propertiesHolder.getProperty("application","pharmacy.integration.enabled")) {
+    		logger.warn("1C integration disabled");
+            return true;
+        }
         MISExchangePortType portType = misExchange.getMISExchangeSoap();
         for (BloodSystem system:donationRequest.getBloodSystems()){
-            POCDMT000040ClinicalDocument document = createDocument(donationRequest, createDrug(system.getType()), system.getCount()); //unmarshalXml(POCDMT000040LabeledDrug.class, system.getType().getContent())
+            POCDMT000040ClinicalDocument document = createDocument(donationRequest, createDrug(system.getType()), system.getCount(), system.getType().getUnit());
             RCMRIN000002UV02 message = createMessage(document);
             String s1 = marshalDocument(document);
             String s2 = marshalDocument(message.getMessage());
-            System.out.println(s1);
-            System.out.println(s2);
+            //System.out.println(s1);
+            //System.out.println(s2);
             MCCIIN000002UV01 result = portType.processHL7V3Message(message);
-            System.out.println(marshalDocument(result));
+            logger.warn("Result of blood system write-off:");
+            logger.warn(marshalDocument(result));
         }
+        return true;
     }
 
     private RCMRIN000002UV02 createMessage(POCDMT000040ClinicalDocument document) throws JAXBException {
@@ -194,7 +225,7 @@ public class PharmacyExchangeUtils {
 		return (T) jaxbUnmarshaller.unmarshal(is);
     }
 
-    private POCDMT000040ClinicalDocument createDocument(BloodDonationRequest donationRequest, POCDMT000040LabeledDrug drug, Integer count) {
+    private POCDMT000040ClinicalDocument createDocument(BloodDonationRequest donationRequest, POCDMT000040LabeledDrug drug, Integer count, String unit) {
     	org.hl7.v3.ObjectFactory objectFactory = new org.hl7.v3.ObjectFactory();
         POCDMT000040ClinicalDocument document = new POCDMT000040ClinicalDocument();
 
@@ -235,7 +266,8 @@ public class PharmacyExchangeUtils {
         POCDMT000040RecordTarget target = new POCDMT000040RecordTarget();
         POCDMT000040PatientRole role = new POCDMT000040PatientRole();
         II patienId = createId(donationRequest.getDonor().getUuid());
-        patienId.setExtension("2012/11782"); // нужно указывать номер карты пациента
+        String extensionNumber = StringUtils.isEmpty(donationRequest.getDonor().getExtensionNumber())? "2012/11782": donationRequest.getDonor().getExtensionNumber();
+        patienId.setExtension(extensionNumber); // нужно указывать номер карты пациента
         role.getId().add(patienId);
         POCDMT000040Patient patient = new POCDMT000040Patient();
         PN patName = new PN();
@@ -296,7 +328,7 @@ public class PharmacyExchangeUtils {
         ts2.setNullFlavor(NullFlavor.NI);
         encounter.setEffectiveTime(ts2);
         II cardId = createId("1b264840-5555-4444-89fd-1f6b355dfa91");
-        cardId.setExtension("2012/11782");
+        cardId.setExtension(extensionNumber);
         encounter.getId().add(cardId);
         //encounter.getId().add(createId(donationRequest.getUuid()));
         CE ce = new CE();
@@ -335,12 +367,12 @@ public class PharmacyExchangeUtils {
                                 IVLPQ ivlpq = new IVLPQ();
                                 //ivlpq.setValue("1");
                                 PQ center = new PQ();
-                                center.setValue("1");
-                                center.setUnit("шт.");
+                                center.setValue(Integer.toString(count));
+                                center.setUnit(unit);
                                 PQR translation = new PQR();
                                 translation.setCodeSystemName("RLS");
                                 ED value = new ED();
-                                value.getContent().add("шт.");
+                                value.getContent().add(unit);
                                 translation.setOriginalText(value);
                                 center.getTranslation().add(translation);
                                 ivlpq.setCenter(center);
@@ -368,12 +400,12 @@ public class PharmacyExchangeUtils {
 		                        ivlpq = new IVLPQ();
 		                        //ivlpq.setValue("1");
 		                        center = new PQ();
-                                center.setValue("1");
-                                center.setUnit("ml");
+                                center.setValue(Integer.toString(count));
+                                center.setUnit(unit);
                                 translation = new PQR();
                                 translation.setCodeSystemName("RLS");
                                 value = new ED();
-                                value.getContent().add("мл");
+                                value.getContent().add(unit);
                                 translation.setOriginalText(value);
                                 center.getTranslation().add(translation);
                                 ivlpq.setCenter(center);

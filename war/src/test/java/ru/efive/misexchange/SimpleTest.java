@@ -24,10 +24,9 @@ public class SimpleTest {
     @Before
     public void init() throws IOException, PropertyTypeNotSupported, ParseException, NoPropertyStoragePathException, JAXBException {
         ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
-        utils = new PharmacyExchangeUtils();
         ApplicationPropertiesHolder propertiesHolder = new ApplicationPropertiesHolder();
         propertiesHolder.init();
-        utils.setPropertiesHolder(propertiesHolder);
+        utils = new PharmacyExchangeUtils(propertiesHolder);
     }
     
     //@Test

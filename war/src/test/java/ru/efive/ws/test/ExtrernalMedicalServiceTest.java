@@ -4,25 +4,40 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import ru.efive.medicine.niidg.trfu.context.NoPropertyStoragePathException;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentOrderRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentOrderRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.Division;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.util.PropertyTypeNotSupported;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper;
 import ru.efive.wf.core.ActionResult;
 import ru.korusconsulting.external.DivisionInfo;
 import ru.korusconsulting.external.TransfusionServiceImpl;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
+
 public class ExtrernalMedicalServiceTest {
+	ClassPathXmlApplicationContext ctx;
 	TransfusionServiceImpl medicalService;
 	
     //@Before
-    public void init(){
-         medicalService = new TransfusionServiceImpl();
+    public void init() throws IOException, PropertyTypeNotSupported, ParseException, NoPropertyStoragePathException, JAXBException {
+    	ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+        ApplicationPropertiesHolder propertiesHolder = new ApplicationPropertiesHolder();
+        propertiesHolder.init();
+        
+        Object serviceAddress = propertiesHolder.getProperty("application", "mis.integration.address");
+        System.out.println(serviceAddress);
+        
+        medicalService = new TransfusionServiceImpl(new java.net.URL(serviceAddress.toString()));
     }
     
     //@Test
@@ -47,7 +62,6 @@ public class ExtrernalMedicalServiceTest {
     
     //@Test
     public void processComponentRequestTest() throws Exception {
-    	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
     	BloodComponentOrderRequest request = ((BloodComponentOrderRequestDAOImpl) ctx.getBean(ApplicationHelper.COMPONENT_ORDER_DAO)).get(1452);
     	ActionResult result = IntegrationHelper.processComponentRequest(request);
     	System.out.println(result.getDescription());
