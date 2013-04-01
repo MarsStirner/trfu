@@ -3,6 +3,7 @@ package ru.efive.medicine.niidg.trfu.dao;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.medicine.niidg.trfu.filters.BloodComponentsFilter;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
@@ -1056,4 +1058,74 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		}
 	}
 	
+	public long countDocument(BloodComponentsFilter filter) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+        addNotDeletedCriteria(detachedCriteria);
+        addNotSplittedCriteria(detachedCriteria);
+		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<BloodComponent> findDocuments(
+			BloodComponentsFilter filter, int offset, int count,
+			String orderBy, boolean orderAsc) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		addNotDeletedCriteria(detachedCriteria);
+		addNotSplittedCriteria(detachedCriteria);
+		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+		return getHibernateTemplate().findByCriteria(
+				getSearchCriteria(detachedCriteria, filter), offset,
+				count);
+	}
+
+	private void addNotSplittedCriteria(DetachedCriteria detachedCriteria) {
+		detachedCriteria.add(Restrictions.ne("statusId", 100));
+	}
+	
+	protected DetachedCriteria getSearchCriteria(DetachedCriteria criteria,
+			BloodComponentsFilter filter) {
+		if (filter != null) {
+			Conjunction conjunction = Restrictions.conjunction();
+			String number = filter.getNumber();
+			int bloodComponentTypeId = filter.getBloodComponentTypeId();
+			String donorCode = filter.getDonorCode();
+			int makerId = filter.getMakerId();
+			int bloodGroupId = filter.getBloodGroupId();
+			int rhesusFactorId = filter.getRhesusFactorId();
+			Date donationDate = filter.getDonationDate();
+			Date expirationDate = filter.getExpirationDate();
+			int statusId = filter.getStatusId();
+			
+			if (StringUtils.isNotEmpty(number)) {
+				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
+			}
+			if (StringUtils.isNotEmpty(donorCode)) {
+				conjunction.add(Restrictions.ilike("donorCode", donorCode, MatchMode.ANYWHERE));
+			}
+	        if (bloodGroupId != BloodComponentsFilter.BLOOD_GROUP_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("bloodGroup.id", bloodGroupId));
+	        }
+	        if (rhesusFactorId != BloodComponentsFilter.RHESUS_FACTOR_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("rhesusFactor.id", rhesusFactorId));
+	        }
+			if (donationDate != null) {
+				addDateSearchCriteria(conjunction, donationDate, "donationDate");
+			}
+			if (expirationDate != null) {
+				addDateSearchCriteria(conjunction, expirationDate, "expirationDate");
+			}
+	        if (statusId != BloodComponentsFilter.BLOOD_COMPONENT_STATUS_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("statusId", statusId));
+	        }
+	        if (bloodComponentTypeId != BloodComponentsFilter.BLOOD_COMPONENT_TYPE_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("componentType.id", bloodComponentTypeId));
+	        }
+	        if (makerId != BloodComponentsFilter.MAKER_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("maker.id", makerId));
+	        }
+			
+			criteria.add(conjunction);
+		}
+        return criteria;
+	}
 }

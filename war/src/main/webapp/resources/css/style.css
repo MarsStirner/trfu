@@ -388,3 +388,25 @@ div.menu div.username div.sub .item a {width:92px;}
 span.hl {font-weight:bold;}
 
 div.datepicker {z-index: 110;}
+
+/* filters */
+#filter_panel {
+	background:#D1F3DB;
+	margin: 0;
+	float:right;
+	font-size:12px;
+	width:320px;
+	padding-left: 5px;
+	padding-top: 5px;
+}
+
+#filter_panel_buttons {
+	height:32px;
+}
+
+#filter_panel_parameters table tbody td {padding: 3px 5px; border-style: none;}
+#filter_panel_parameters table tbody tr:hover td {background: none;}
+
+.filterPanelParameter {width: 170px;}
+.filterPanelParameterWide {width: 305px;}
+.filterPanelParameterTitle {width: 120px; vertical-align: middle;}

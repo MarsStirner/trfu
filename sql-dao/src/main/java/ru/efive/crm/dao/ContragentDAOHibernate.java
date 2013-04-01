@@ -117,4 +117,11 @@ public class ContragentDAOHibernate extends GenericDAOHibernate<Contragent> {
 	    }
 	    return null;
 	  }
+	
+	@SuppressWarnings("unchecked")
+	public List<Contragent> getContragents() {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		addNotDeletedCriteria(detachedCriteria);
+		return getHibernateTemplate().findByCriteria(detachedCriteria);
+	}
 }

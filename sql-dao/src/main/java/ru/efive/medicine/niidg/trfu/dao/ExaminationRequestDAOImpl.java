@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
@@ -15,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
 
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
+import ru.efive.medicine.niidg.trfu.filters.ExaminationsFilter;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRequest> {
@@ -462,4 +464,67 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
         }
     }
 
+	@SuppressWarnings("unchecked")
+	public List<ExaminationRequest> findDocuments(
+			ExaminationsFilter filter, int offset, int count,
+			String orderBy, boolean orderAsc) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		addNotDeletedCriteria(detachedCriteria);
+		addNotPlannedCriteria(detachedCriteria);
+		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+		return getHibernateTemplate().findByCriteria(
+				getSearchCriteria(detachedCriteria, filter), offset,
+				count);
+	}
+
+	private DetachedCriteria getSearchCriteria(
+			DetachedCriteria criteria, ExaminationsFilter filter) {
+		if (filter != null) {
+			Conjunction conjunction = Restrictions.conjunction();
+			String number = filter.getNumber();
+			String donor = filter.getDonor();
+			Date created = filter.getCreated();
+			Date planDate = filter.getPlanDate();
+			int statusId = filter.getStatusId();
+			int examinationTypeId = filter.getExaminationTypeId();
+			
+			if (StringUtils.isNotEmpty(number)) {
+				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
+			}
+			if (StringUtils.isNotEmpty(donor)) {
+	            criteria.createAlias("donor", "donor", CriteriaSpecification.INNER_JOIN);
+	            Disjunction disjunction = Restrictions.disjunction();
+	            disjunction.add(Restrictions.ilike("donor.lastName", donor, MatchMode.ANYWHERE));
+	            disjunction.add(Restrictions.ilike("donor.middleName", donor, MatchMode.ANYWHERE));
+	            disjunction.add(Restrictions.ilike("donor.firstName", donor, MatchMode.ANYWHERE));
+	            conjunction.add(disjunction);
+			}
+			if (created != null) {
+				addDateSearchCriteria(conjunction, created, "created");
+			}
+			if (planDate != null) {
+				addDateSearchCriteria(conjunction, planDate, "planDate");
+			}
+	        if (statusId != ExaminationsFilter.EXAMINATION_STATUS_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("statusId", statusId));
+	        }
+	        if (examinationTypeId != ExaminationsFilter.EXAMINATION_TYPE_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("examinationType", examinationTypeId));
+	        }
+			
+			criteria.add(conjunction);
+		}
+        return criteria;
+	}
+
+	public long countDocument(ExaminationsFilter filter) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+        addNotDeletedCriteria(detachedCriteria);
+		addNotPlannedCriteria(detachedCriteria);
+		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+	}
+
+	private void addNotPlannedCriteria(DetachedCriteria detachedCriteria) {
+        detachedCriteria.add(Restrictions.ne("statusId", 9));
+	}
 }

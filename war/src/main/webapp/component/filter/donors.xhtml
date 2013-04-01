@@ -1,0 +1,349 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
+		<h:outputScript library="js" name="views_with_filters.js" target="head" />
+		<h:outputScript library="js" name="donors_filter.js" target="head" />
+	</ui:define>
+	
+	<ui:define name="header_top">
+		<div id="viewtitle">Доноры</div>
+	</ui:define>
+	
+	<ui:define name="header_buttons">
+		<div class="defbutton">
+			<h:outputLink value="#{contextPath}/component/donor.xhtml" target="_blank">
+				<h:graphicImage value="#{resource['images:newf_buttn_icon.png']}" />
+            	Новый донор
+            	<f:param name="docAction" value="create" />
+			</h:outputLink>
+		</div>
+		<div class="defbutton">
+			<h:commandLink action="#{donorFilterableList.pressRefresh()}">
+				<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+            	Обновить
+           	</h:commandLink>
+		</div>
+		<div class="defbutton">
+			<h:outputLink value="#{contextPath}/component/print/donors.xhtml" target="_blank">
+            	<h:graphicImage value="#{resource['images:button-print.png']}" />
+				Печать
+			</h:outputLink>	
+		</div>
+		<div class="defbutton" id="hide_filter_div" style="display: none;">
+			<h:commandLink action="#{donorFilterableList.hideFilterPanel()}" onclick="hideFilter();">
+				<h:graphicImage value="#{resource['images:filter-delete-icon_16.png']}" />
+				<f:ajax />
+            	Скрыть фильтр
+           	</h:commandLink>
+		</div>
+		<div class="defbutton" id="show_filter_div" style="display: none;">
+			<h:commandLink action="#{donorFilterableList.showFilterPanel()}" onclick="showFilter();">
+				<h:graphicImage value="#{resource['images:filter-add-icon_16.png']}" />
+				<f:ajax />
+            	Показать фильтр
+           	</h:commandLink>
+		</div>
+	</ui:define>
+
+	<ui:define name="content">
+		<script type="text/javascript">
+			document.ondblclick = function DoubleClick(evt) {
+				if (window.getSelection)
+					window.getSelection().removeAllRanges();
+				else if (document.selection)
+					document.selection.empty();
+			}
+		</script>
+		<h:outputScript>
+        	function goToDocument(id) {
+        		if (id != 0) {
+        			window.open('#{facesContext.externalContext.requestContextPath}/component/donor.xhtml?docId=' + id,'_blank');
+				}
+			}
+        </h:outputScript>
+		<e5ui:formPart id="main_table_part">
+			<div id="main_table">
+				<div class="wrap_main" id="table_wrap" style="float: right;">
+					<div class="inner" id="table_inner">
+						<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl"
+									value="#{donorFilterableList.documents}" var="row" grouping="false">
+							<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+							<e5ui:column style="min-width:10em">
+								<f:facet name="header">
+									<h:commandLink action="#{donorFilterableList.sort('lastName,firstName,middleName')}">
+			                        	ФИО
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.descriptionShort}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:5em">
+								<f:facet name="header">
+									<h:commandLink action="#{donorFilterableList.sort('number')}">
+			                        	Номер
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.number}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:8em">
+								<f:facet name="header">
+									<h:commandLink action="#{donorFilterableList.sort('category')}">
+			                        	Категория
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.category eq 0? 'Первичный': row.category eq 1? 'Кадровый': 'Повторный'}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:7em">
+								<f:facet name="header">
+			                        <p>Группа крови</p>
+			                    </f:facet>
+								<h:outputText value="#{row.bloodGroup.value}" /> <h:outputText style="margin-left:5px;" value="#{row.rhesusFactor}" converter="ClassifierConverter" />
+							</e5ui:column>
+							<e5ui:column style="min-width:10em">
+								<f:facet name="header">
+			                        <p>Статус</p>
+			                    </f:facet>
+								<h:outputText value="#{row.statusName}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:12em">
+								<f:facet name="header">
+			                        <p>Комментарии</p>
+			                    </f:facet>
+								<h:outputText value="#{row.commentary}" />
+							</e5ui:column>
+						</e5ui:dataTable>
+					</div>
+				</div>
+
+
+			 	<div id="filter_panel" style="display: none; float: left;">
+					<div id="filter_panel_buttons">
+						<div class="defbutton">
+						</div>
+				  		<div class="defbutton">
+							<h:commandLink action="#{donorFilterableList.applyFilter()}">
+								<h:graphicImage value="#{resource['images:button-search.png']}" />
+           						Применить фильтр
+							</h:commandLink>
+						</div>
+				  		<div class="defbutton">
+							<h:commandLink action="#{donorFilterableList.resetFilter()}">
+								<h:graphicImage value="#{resource['images:button-reject.png']}" />
+								Очистить фильтр
+							</h:commandLink>
+						</div>
+					</div>
+						
+					<div id="filter_panel_parameters">
+						<table id="filter_panel_parameters_table">
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.numberTitle}" />:
+								</td>
+								<td>
+									<h:inputText size="25" maxlength="10" value="#{donorFilterableList.currentFilter.number}" styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.createdTitle}" />:
+								</td>
+								<td><e5ui-comp:inputDate id="donors_filter_created_parameter" value="#{donorFilterableList.currentFilter.created}" lang="ru" /></td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.lastNameTitle}" />:
+								</td>
+								<td>
+									<h:inputText size="25" maxlength="25" value="#{donorFilterableList.currentFilter.lastName}" styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.firstNameTitle}" />:
+								</td>
+								<td>
+									<h:inputText size="25" maxlength="25" value="#{donorFilterableList.currentFilter.firstName}" styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.middleNameTitle}" />:
+								</td>
+								<td>
+									<h:inputText size="25" maxlength="25" value="#{donorFilterableList.currentFilter.middleName}" styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.birthTitle}" />:
+								</td>
+								<td><e5ui-comp:inputDate id="donors_filter_birth_parameter" value="#{donorFilterableList.currentFilter.birth}" lang="ru" /></td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.genderTitle}" />:
+								</td>
+								<td>
+									<h:selectOneMenu id="donors_filter_gender_parameter" value="#{donorFilterableList.currentFilter.genderId}" styleClass="filterPanelParameter">
+										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.genderNullValue}" />
+										<f:selectItems value="#{dictionaryManagement.genders}" 
+												var="gender" 
+												itemLabel="#{gender.value}" 
+												itemValue="#{gender.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.documentTypeTitle}" />:
+								</td>
+								<td>
+									<h:selectOneMenu id="donors_filter_document_type_parameter" value="#{donorFilterableList.currentFilter.documentTypeId}" styleClass="filterPanelParameter" onchange="changeDocumentTypeParameter(this);">
+										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.documentTypeNullValue}" />
+										<f:selectItems value="#{donorFilterableList.documentTypes}" 
+												var="documentType" 
+												itemLabel="#{documentType.value}" 
+												itemValue="#{documentType.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.documentSeriesTitle}" />:
+								</td>
+								<td>
+									<h:inputText id="donors_filter_document_series_parameter" 
+											size="25" 
+											maxlength="25" 
+											value="#{donorFilterableList.currentFilter.documentSeries}" 
+											styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.documentNumberTitle}" />:
+								</td>
+								<td>
+									<h:inputText id="donors_filter_document_number_parameter" 
+											size="25" 
+											maxlength="25" 
+											value="#{donorFilterableList.currentFilter.documentNumber}" 
+											styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.externalNumberTitle}" />:
+								</td>
+								<td>
+									<h:inputText size="25" maxlength="25" value="#{donorFilterableList.currentFilter.externalNumber}" styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.factAddressTitle}" escape="false" />:
+								</td>
+								<td style="vertical-align: middle;">
+									<h:inputText size="25" maxlength="25" value="#{donorFilterableList.currentFilter.factAddress}" styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.donorStatusTitle}" />:
+								</td>
+								<td>
+									<h:selectOneMenu id="donors_filter_status_id_parameter" value="#{donorFilterableList.currentFilter.statusId}" styleClass="filterPanelParameter">
+										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.statusNullValue}" />
+										<f:selectItems value="#{dictionaryManagement.donorStatuses}" 
+												var="donorStatus" 
+												itemLabel="#{donorStatus.value}" 
+												itemValue="#{donorStatus.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.bloodGroupTitle}" />:
+								</td>
+								<td>
+									<h:selectOneMenu id="donors_filter_blood_group_id_parameter" value="#{donorFilterableList.currentFilter.bloodGroupId}" styleClass="filterPanelParameter">
+										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.bloodGroupNullValue}" />  
+										<f:selectItems value="#{dictionaryManagement.bloodGroups}" 
+												var="bloodGroup" 
+												itemLabel="#{bloodGroup.value}" 
+												itemValue="#{bloodGroup.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.rhesusFactorTitle}" />:
+								</td>
+								<td>
+									<h:selectOneMenu id="donors_filter_rhesus_factor_id_parameter" value="#{donorFilterableList.currentFilter.rhesusFactorId}" styleClass="filterPanelParameter">
+										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.rhesusFactorNullValue}" />  
+										<f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" 
+												var="rhesusFactor" 
+												itemLabel="#{rhesusFactor.value}" 
+												itemValue="#{rhesusFactor.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.pastQuarantineTitle}" escape="false" />:
+								</td>
+								<td style="vertical-align: middle;">
+									<h:selectOneMenu id="donors_filter_past_quarantine_parameter" value="#{donorFilterableList.currentFilter.pastQuarantineId}" styleClass="filterPanelParameter">
+										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.pastQuarantineNullValue}" />
+										<f:selectItems value="#{donorFilterableList.pastQuarantineObjects}" 
+												var="pastQuarantineObject" 
+												itemLabel="#{pastQuarantineObject.value}" 
+												itemValue="#{pastQuarantineObject.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div id="table_paging">
+					<h:panelGroup id="main_data_paging">
+						<e5ui-comp:tablePager documentListHolder="#{donorFilterableList}" style="display:inline;" />
+						<e5ui-comp:tablePageSizeSelector documentListHolder="#{donorFilterableList}" style="display:inline;float:right;" pageSizes="10,25,50,100" />
+					</h:panelGroup>
+				</div>
+			</div>
+		</e5ui:formPart>
+
+		<h:outputScript rendered="#{donorFilterableList.isFilterPanelActive()}">
+			showFilter();
+		</h:outputScript>
+		<h:outputScript rendered="#{not donorFilterableList.isFilterPanelActive()}">
+			hideFilter();
+		</h:outputScript>
+
+		<h:outputScript rendered="#{donorFilterableList.currentFilter.documentTypeId == 0}">
+			disableDocumentParameters();
+		</h:outputScript>
+		<h:outputScript rendered="#{not (donorFilterableList.currentFilter.documentTypeId == 0)}">
+			enableDocumentParameters();
+		</h:outputScript>
+	</ui:define>
+	
+</ui:composition>
+
+</html>

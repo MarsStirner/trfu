@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
+		<h:outputScript library="js" name="views_with_filters.js" target="head" />
+	</ui:define>
+	
+	<ui:define name="header_top">
+		<div id="viewtitle">Обращения на обследование</div>
+	</ui:define>
+	
+	<ui:define name="header_buttons">
+		<div class="defbutton">
+			<h:outputLink value="#{contextPath}/component/examination.xhtml" target="_blank">
+				<h:graphicImage value="#{resource['images:newf_buttn_icon.png']}" />
+            	Новое обращение
+            	<f:param name="docAction" value="create" />
+			</h:outputLink>
+		</div>
+		<div class="defbutton">
+			<h:commandLink action="#{examinationRequestFilterableList.pressRefresh()}">
+				<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+            	Обновить
+           	</h:commandLink>
+		</div>
+		<div class="defbutton">
+			<h:outputLink value="#{contextPath}/component/print/examinations.xhtml" target="_blank">
+            	<h:graphicImage value="#{resource['images:button-print.png']}" />
+				Печать
+			</h:outputLink>	
+		</div>
+		<div class="defbutton" id="hide_filter_div" style="display: none;">
+			<h:commandLink action="#{examinationRequestFilterableList.hideFilterPanel()}" onclick="hideFilter();">
+				<h:graphicImage value="#{resource['images:filter-delete-icon_16.png']}" />
+				<f:ajax />
+            	Скрыть фильтр
+           	</h:commandLink>
+		</div>
+		<div class="defbutton" id="show_filter_div" style="display: none;">
+			<h:commandLink action="#{examinationRequestFilterableList.showFilterPanel()}" onclick="showFilter();">
+				<h:graphicImage value="#{resource['images:filter-add-icon_16.png']}" />
+				<f:ajax />
+            	Показать фильтр
+           	</h:commandLink>
+		</div>
+	</ui:define>
+
+	<ui:define name="content">
+		<script type="text/javascript">
+			document.ondblclick = function DoubleClick(evt) {
+				if (window.getSelection)
+					window.getSelection().removeAllRanges();
+				else if (document.selection)
+					document.selection.empty();
+			}
+		</script>
+		<h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+		<h:outputScript>
+        	function goToDocument(id) {
+        		if (id != 0) {
+        			window.open('#{facesContext.externalContext.requestContextPath}/component/examination.xhtml?docId=' + id,'_blank');
+				}
+			}
+        </h:outputScript>
+        <e5ui:formPart id="main_table_part">
+			<div id="main_table">
+				<div class="wrap_main" id="table_wrap" style="float: right;">
+					<div class="inner" id="table_inner">
+						<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl"
+									value="#{examinationRequestFilterableList.documents}" var="row" grouping="false">
+							<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+							<e5ui:column style="min-width:5em">
+								<f:facet name="header">
+									<h:commandLink action="#{examinationRequestFilterableList.sort('number')}">
+			                        	Номер
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.number}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:7em">
+								<f:facet name="header">
+									<h:commandLink action="#{examinationRequestFilterableList.sort('created')}">
+			                        	Дата создания
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.created}">
+									<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+								</h:outputText>
+							</e5ui:column>
+							<e5ui:column style="min-width:10em">
+								<f:facet name="header">
+									<h:commandLink action="#{examinationRequestFilterableList.sort('donor.lastName,donor.firstName,donor.middleName')}">
+			                        	Донор
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.donor.descriptionShort}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:9em">
+								<f:facet name="header">
+									<h:commandLink action="#{examinationRequestFilterableList.sort('examinationType')}">
+			                        	Обследование
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.examinationType eq 0? 'Первичное': 'Повторное'}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:7em">
+								<f:facet name="header">
+									<h:commandLink action="#{examinationRequestFilterableList.sort('planDate')}">
+			                        	Планируемая дата
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.planDate}">
+									<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm" />
+								</h:outputText>
+							</e5ui:column>
+							<e5ui:column style="min-width:10em">
+								<f:facet name="header">
+			                        <p>Статус</p>
+			                    </f:facet>
+								<h:outputText value="#{row.statusName}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:12em">
+								<f:facet name="header">
+			                        <p>Комментарии</p>
+			                    </f:facet>
+								<h:outputText value="#{row.commentary}" />
+							</e5ui:column>
+						</e5ui:dataTable>
+					</div>
+				</div>
+				
+			 	<div id="filter_panel" style="display: none; float: left;">
+					<div id="filter_panel_buttons">
+						<div class="defbutton">
+						</div>
+				  		<div class="defbutton">
+							<h:commandLink action="#{examinationRequestFilterableList.applyFilter()}">
+								<h:graphicImage value="#{resource['images:button-search.png']}" />
+           						Применить фильтр
+							</h:commandLink>
+						</div>
+				  		<div class="defbutton">
+							<h:commandLink action="#{examinationRequestFilterableList.resetFilter()}">
+								<h:graphicImage value="#{resource['images:button-reject.png']}" />
+								Очистить фильтр
+							</h:commandLink>
+						</div>
+					</div>
+						
+					<div id="filter_panel_parameters">
+						<table id="filter_panel_parameters_table">
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{examinationRequestFilterableList.currentFilter.numberTitle}" />:
+								</td>
+								<td>
+									<h:inputText size="25" maxlength="10" value="#{examinationRequestFilterableList.currentFilter.number}" styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{examinationRequestFilterableList.currentFilter.donorTitle}" />:
+								</td>
+								<td>
+									<h:inputText size="25" maxlength="25" value="#{examinationRequestFilterableList.currentFilter.donor}" styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{examinationRequestFilterableList.currentFilter.createdTitle}" />:
+								</td>
+								<td>
+									<e5ui-comp:inputDate id="examinations_filter_created_parameter" value="#{examinationRequestFilterableList.currentFilter.created}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{examinationRequestFilterableList.currentFilter.examinationPlanDateTitle}" escape="false" />:
+								</td>
+								<td style="vertical-align: middle;">
+									<e5ui-comp:inputDate id="examinations_filter_plan_date_parameter" value="#{examinationRequestFilterableList.currentFilter.planDate}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{examinationRequestFilterableList.currentFilter.examinationTypeTitle}" />:
+								</td>
+								<td>
+									<h:selectOneMenu id="examinations_filter_examination_type_id_parameter" 
+											value="#{examinationRequestFilterableList.currentFilter.examinationTypeId}" styleClass="filterPanelParameter">
+										<f:selectItem itemLabel="" itemValue="#{examinationRequestFilterableList.currentFilter.examinationTypeNullValue}" />
+										<f:selectItems value="#{dictionaryManagement.examinationTypes}" 
+												var="examinationType" 
+												itemLabel="#{examinationType.value}" 
+												itemValue="#{examinationType.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{examinationRequestFilterableList.currentFilter.statusTitle}" />:
+								</td>
+								<td>
+									<h:selectOneMenu id="examinations_filter_status_id_parameter" value="#{examinationRequestFilterableList.currentFilter.statusId}" styleClass="filterPanelParameter">
+										<f:selectItem itemLabel="" itemValue="#{examinationRequestFilterableList.currentFilter.examinationStatusNullValue}" />
+										<f:selectItems value="#{dictionaryManagement.examinationStatuses}" 
+												var="examinationStatus" 
+												itemLabel="#{examinationStatus.value}" 
+												itemValue="#{examinationStatus.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				
+				<div id="table_paging">
+					<h:panelGroup id="main_data_paging">
+						<e5ui-comp:tablePager documentListHolder="#{examinationRequestFilterableList}" style="display:inline;" />
+						<e5ui-comp:tablePageSizeSelector documentListHolder="#{examinationRequestFilterableList}" style="display:inline;float:right;" pageSizes="10,25,50,100" />
+					</h:panelGroup>
+				</div>
+			</div>
+		</e5ui:formPart>
+
+		<h:outputScript rendered="#{examinationRequestFilterableList.isFilterPanelActive()}">
+			showFilter();
+		</h:outputScript>
+		<h:outputScript rendered="#{not examinationRequestFilterableList.isFilterPanelActive()}">
+			hideFilter();
+		</h:outputScript>
+	</ui:define>
+
+</ui:composition>
+
+</html>

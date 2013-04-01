@@ -8,18 +8,27 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import ru.efive.crm.dao.ContragentDAOHibernate;
+import ru.efive.crm.data.Contragent;
 import ru.efive.crm.data.ContragentNomenclature;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Anticoagulant;
+import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentStatus;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
+import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationStatus;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
+import ru.efive.medicine.niidg.trfu.data.dictionary.DonorStatus;
 import ru.efive.medicine.niidg.trfu.data.dictionary.DonorType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationEntryType;
+import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationStatus;
+import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationType;
+import ru.efive.medicine.niidg.trfu.data.dictionary.Gender;
 import ru.efive.medicine.niidg.trfu.data.dictionary.ProcessingType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.QualityControlMappingEntry;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Recommendation;
+import ru.efive.medicine.niidg.trfu.data.dictionary.TransfusionType;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 @Named("dictionaryManagement")
@@ -305,4 +314,85 @@ public class DictionaryManagementBean implements Serializable {
 	
 	
 	private static final long serialVersionUID = -7887415733134653639L;
+	
+	/**
+	 * Возвращает список полов (женский, мужской).
+	 * 
+	 * @return список полов.
+	 */
+	public List<Gender> getGenders() {
+		return getDictionaryDAO().getGenders();
+	}
+
+	/**
+	 * Возвращает список статусов доноров.
+	 * 
+	 * @return список статусов доноров.
+	 */
+	public List<DonorStatus> getDonorStatuses() {
+		return getDictionaryDAO().getDonorStatuses();
+	}
+
+	/**
+	 * Возвращает список статусов компонентов крови.
+	 * 
+	 * @return список статусов компонентов крови.
+	 */
+	public List<BloodComponentStatus> getBloodComponentStatuses() {
+		return getDictionaryDAO().getBloodComponentStatuses();
+	}
+
+	/**
+	 * Возвращает список статусов обращений на обследование.
+	 * 
+	 * @return список статусов обращений на обследование.
+	 */
+	public List<ExaminationStatus> getExaminationStatuses() {
+		return getDictionaryDAO().getExaminationStatuses();
+	}
+
+	/**
+	 * Возвращает список типов обращений на обследование.
+	 * 
+	 * @return список типов обращений на обследование.
+	 */
+	public List<ExaminationType> getExaminationTypes() {
+		return getDictionaryDAO().getExaminationTypes();
+	}
+
+	/**
+	 * Возвращает список статусов донаций крови.
+	 * 
+	 * @return список статусов донаций крови.
+	 */
+	public List<BloodDonationStatus> getBloodDonationStatuses() {
+		return getDictionaryDAO().getBloodDonationStatuses();
+	}
+
+	/**
+	 * Возвращает список видов трансфузии.
+	 * 
+	 * @return список видов трансфузии.
+	 */
+	public List<TransfusionType> getTransfusionTypes() {
+		return getDictionaryDAO().getTransfusionTypes();
+	}
+
+	/**
+	 * Метод для удобного получения DAO по работе со справочной информацией.
+	 * @return DAO для работы со справочной информацией.
+	 */
+	protected DictionaryDAOImpl getDictionaryDAO() {
+		return sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO);
+	}
+
+	/**
+	 * Возвращает список контрагентов.
+	 * 
+	 * @return список контрагентов.
+	 */
+	public List<Contragent> getContragents() {
+		ContragentDAOHibernate dao = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO);
+		return dao.getContragents();
+	}
 }

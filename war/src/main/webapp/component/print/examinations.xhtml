@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" /> 
+	<h:outputScript library="h/js" name="jquery.js" target="head" />
+	<h:outputStylesheet library="css" name="datatable.css" />
+	<title>Печать</title>	
+</h:head>
+<h:body>
+
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+  
+	<div style="text-align: center; font-size: 13px;">
+		<p style="vertical-align: middle;">
+			<h:graphicImage value="#{resource['images:logo.png']}" id="logo" />
+		</p>
+		<p>Федеральный научно-клинический центр <br></br> детской гематологии, онкологии и иммунологии</p>
+	</div>
+	<br></br>
+	<br></br>
+	<p style="text-align:center; text-decoration:underline; font-size: 14px"><b>Результаты фильтрации по форме "Обращения на обследования"</b></p>
+	<br></br>
+	<br></br>
+			
+	<div id="filter_parameters" style="font-size:14px;">
+		<table>
+			<ui:repeat value="#{examinationRequestFilterableList.filterParametersForPrinting}" var="parametersPair">
+			<tr>
+				<td class="filterParametersLeftColumnTitle">
+					<h:outputText value="#{parametersPair.leftParameter.title}" escape="false" />
+				</td>
+				<td>
+					<h:outputText value="#{parametersPair.leftParameter.value}" />
+				</td>
+				<td class="filterParametersRightColumnTitle">
+					<h:outputText value="#{parametersPair.rightParameter.title}" escape="false" />
+				</td>
+				<td>
+					<h:outputText value="#{parametersPair.rightParameter.value}" />
+				</td>
+			</tr>
+			</ui:repeat>
+		</table>
+	</div>
+	<br />
+			
+	<div id="print_table">
+		<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" value="#{examinationRequestFilterableList.documentsForPrinting}" var="row" >
+			<e5ui:column style="min-width:5em">
+				<f:facet name="header">									
+					Номер			                        	
+				</f:facet>
+				<h:outputText value="#{row.number}" />
+			</e5ui:column>
+			<e5ui:column style="min-width:7em">
+				<f:facet name="header">									
+					Дата создания			                        	
+				</f:facet>
+				<h:outputText value="#{row.created}">
+					<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+				</h:outputText>
+			</e5ui:column>
+			<e5ui:column style="min-width:10em">
+				<f:facet name="header">								
+					Донор			                        	
+				</f:facet>
+				<h:outputText value="#{row.donor.descriptionShort}" />
+			</e5ui:column>
+			<e5ui:column style="min-width:9em">
+				<f:facet name="header">									
+					Обследование			                        	
+				</f:facet>
+				<h:outputText value="#{row.examinationType eq 0? 'Первичное': 'Повторное'}" />
+			</e5ui:column>
+			<e5ui:column style="min-width:7em">
+				<f:facet name="header">									
+					Планируемая дата			                        	
+				</f:facet>
+				<h:outputText value="#{row.planDate}">
+					<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm" />
+				</h:outputText>
+			</e5ui:column>
+			<e5ui:column style="min-width:10em">
+				<f:facet name="header">
+					Статус
+				</f:facet>
+				<h:outputText value="#{row.statusName}" />
+			</e5ui:column>
+			<e5ui:column style="min-width:12em">
+				<f:facet name="header">
+					Комментарии
+				</f:facet>
+				<h:outputText value="#{row.commentary}" />
+			</e5ui:column>
+		</e5ui:dataTable>
+	</div>
+					
+	<br />	
+	<div style="text-align:right; font-size:14px; width: 100%;">
+		<h:outputText value="#{printDate.currentDate}" />
+	</div>
+</h:body>
+</html>

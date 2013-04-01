@@ -69,4 +69,8 @@ public class BloodComponentType extends DictionaryEntity {
 	private boolean used;
 	
 	private static final long serialVersionUID = 6086994767559295755L;
+	
+	public String getCodeAndValue() {
+		return toString();
+	} 	
 }

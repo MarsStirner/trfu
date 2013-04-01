@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -13,9 +14,11 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.util.Assert;
 
 import ru.efive.dao.sql.entity.AbstractEntity;
+import ru.efive.medicine.niidg.trfu.util.DateHelper;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -356,4 +359,34 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 	}
 	
 	private Class<T> persistentClass;
+	
+	protected DetachedCriteria createDetachedCriteria() {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+		return detachedCriteria;
+	}
+
+	protected void addNotDeletedCriteria(DetachedCriteria detachedCriteria) {
+		detachedCriteria.add(Restrictions.eq("deleted", false));
+	}
+
+	protected void addOrderCriteria(String orderBy, boolean orderAsc,
+			DetachedCriteria detachedCriteria) {
+		String[] ords = orderBy == null ? null : orderBy.split(",");
+		if (ords != null) {
+			if (ords.length > 1) {
+				addOrder(detachedCriteria, ords, orderAsc);
+			} else {
+				addOrder(detachedCriteria, orderBy, orderAsc);
+			}
+		}
+	}
+	
+	protected void addDateSearchCriteria(Conjunction conjunction, Date created,
+			String dateField) {
+		Date fromDate = DateHelper.getDateWithoutTime(created);
+		Date toDate = DateHelper.getDateWithoutTime(DateHelper.getTomorrowDate(created));
+		conjunction.add(Restrictions.ge(dateField, fromDate));
+		conjunction.add(Restrictions.le(dateField, toDate));
+	}
 }

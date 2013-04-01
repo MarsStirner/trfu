@@ -1,9 +1,11 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
@@ -12,6 +14,7 @@ import org.hibernate.criterion.Restrictions;
 
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
+import ru.efive.medicine.niidg.trfu.filters.BloodDonationsFilter;
 
 public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonationRequest> {
 	
@@ -311,4 +314,63 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
             return (BloodDonationRequest) list.get(0);
         return null;
     }
+
+	public long countDocument(BloodDonationsFilter filter) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		addNotDeletedCriteria(detachedCriteria);
+		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+	}
+
+	protected DetachedCriteria getSearchCriteria(DetachedCriteria criteria,
+			BloodDonationsFilter filter) {
+		if (filter != null) {
+			Conjunction conjunction = Restrictions.conjunction();
+			String number = filter.getNumber();
+			String donor = filter.getDonor();
+			Date created = filter.getCreated();
+			int statusId = filter.getStatusId();
+			int donorTypeId = filter.getDonorTypeId();
+			int donationTypeId = filter.getDonationTypeId();
+
+			if (StringUtils.isNotEmpty(number)) {
+				conjunction.add(Restrictions.ilike("number", number,
+						MatchMode.ANYWHERE));
+			}
+			if (StringUtils.isNotEmpty(donor)) {
+	            criteria.createAlias("donor", "donor", CriteriaSpecification.INNER_JOIN);
+	            Disjunction disjunction = Restrictions.disjunction();
+	            disjunction.add(Restrictions.ilike("donor.lastName", donor, MatchMode.ANYWHERE));
+	            disjunction.add(Restrictions.ilike("donor.middleName", donor, MatchMode.ANYWHERE));
+	            disjunction.add(Restrictions.ilike("donor.firstName", donor, MatchMode.ANYWHERE));
+	            conjunction.add(disjunction);
+			}
+			if (created != null) {
+				addDateSearchCriteria(conjunction, created, "created");
+			}
+	        if (statusId != BloodDonationsFilter.BLOOD_DONATION_STATUS_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("statusId", statusId));
+	        }
+	        if (donorTypeId != BloodDonationsFilter.DONOR_TYPE_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("donorType.id", donorTypeId));
+	        }
+	        if (donationTypeId != BloodDonationsFilter.BLOOD_DONATION_TYPE_NULL_VALUE) {
+		        criteria.createAlias("factEntries", "factEntries", CriteriaSpecification.INNER_JOIN);
+		        conjunction.add(Restrictions.eq("factEntries.donationType.id", donationTypeId));
+	        }
+
+			criteria.add(conjunction);
+		}
+		return criteria;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<BloodDonationRequest> findDocuments(
+			BloodDonationsFilter filter, int offset, int count, String orderBy,
+			boolean orderAsc) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		addNotDeletedCriteria(detachedCriteria);
+		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+		return getHibernateTemplate().findByCriteria(
+				getSearchCriteria(detachedCriteria, filter), offset, count);
+	}
 }

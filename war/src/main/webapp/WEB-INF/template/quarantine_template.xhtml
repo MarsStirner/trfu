@@ -30,6 +30,15 @@
 						<f:facet name="content">
 							<span>Доноры</span>
 						</f:facet>
+							<e5ui:menuItem selected="#{currentView eq '/component/filter/donors.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/filter/donors.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Доноры
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+<!--  						
 						<e5ui:menuItem selected="#{currentView eq '/component/donors_quarantine_finish_invite.xhtml'}">
 	                    	<f:facet name="content">
 	                    		<h:outputLink value="#{contextPath}/component/donors_quarantine_finish_invite.xhtml">
@@ -38,12 +47,21 @@
 	                    		</h:outputLink>
 	                        </f:facet>
 	                   	</e5ui:menuItem>
+-->	                   	
 					</e5ui:menuItem>
 					
 					<e5ui:menuItem collapsable="true">
 							<f:facet name="content">
 								<span>Компоненты крови</span>
 							</f:facet>
+							<e5ui:menuItem selected="#{currentView eq '/component/filter/blood_components.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/filter/blood_components.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Компоненты крови
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
 	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_in_quarantine.xhtml'}">
 	                    		<f:facet name="content">
 	                    			<h:outputLink value="#{contextPath}/component/blood_components_in_quarantine.xhtml">

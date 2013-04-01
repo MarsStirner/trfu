@@ -1,9 +1,11 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
@@ -15,6 +17,7 @@ import org.springframework.dao.DataAccessException;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
 
 public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	
@@ -410,4 +413,109 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	}
 	
 	private Map<Integer, String> highlightedMap = new HashMap<Integer, String>();*/
+    
+	public long countDocument(DonorsFilter donorsFilter) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+        addNotDeletedCriteria(detachedCriteria);
+		return getCountOf(getSearchCriteria(detachedCriteria, donorsFilter));
+	}
+
+	private DetachedCriteria getSearchCriteria(DetachedCriteria criteria,
+			DonorsFilter donorsFilter) {
+		if (donorsFilter != null) {
+			Conjunction conjunction = Restrictions.conjunction();
+			String number = donorsFilter.getNumber();
+			String lastName = donorsFilter.getLastName();
+			String firstName = donorsFilter.getFirstName();
+			String middleName = donorsFilter.getMiddleName();
+			Date created = donorsFilter.getCreated();
+			Date birth = donorsFilter.getBirth();
+			int genderId = donorsFilter.getGenderId();
+			int documentTypeId = donorsFilter.getDocumentTypeId();
+			String documentNumber = donorsFilter.getDocumentNumber();
+			String documentSeries = donorsFilter.getDocumentSeries();
+			String externalNumber = donorsFilter.getExternalNumber();
+			String factAddress = donorsFilter.getFactAddress();
+			int statusId = donorsFilter.getStatusId();
+			int bloodGroupId = donorsFilter.getBloodGroupId();
+			int rhesusFactorId = donorsFilter.getRhesusFactorId();
+			int pastQuarantineId = donorsFilter.getPastQuarantineId();
+			
+			if (StringUtils.isNotEmpty(number)) {
+				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
+			}
+			if (StringUtils.isNotEmpty(lastName)) {
+				conjunction.add(Restrictions.ilike("lastName", lastName, MatchMode.ANYWHERE));
+			}
+			if (StringUtils.isNotEmpty(firstName)) {
+				conjunction.add(Restrictions.ilike("firstName", firstName, MatchMode.ANYWHERE));
+			}
+			if (StringUtils.isNotEmpty(middleName)) {
+				conjunction.add(Restrictions.ilike("middleName", middleName, MatchMode.ANYWHERE));
+			}
+			if (created != null) {
+				addDateSearchCriteria(conjunction, created, "created");
+			}
+			if (birth != null) {
+				addDateSearchCriteria(conjunction, birth, "birth");
+			}
+	        if (genderId != DonorsFilter.GENDER_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("gender", genderId));
+	        }
+	        if (documentTypeId != DonorsFilter.DOCUMENT_TYPE_NULL_VALUE) {
+		        if (StringUtils.isNotEmpty(documentNumber)) {
+		        	if (documentTypeId == DonorsFilter.PASSPORT_DOCUMENT_TYPE) {
+	    				conjunction.add(Restrictions.ilike("passportNumber", documentNumber, MatchMode.ANYWHERE));
+		        	} else {
+	    				conjunction.add(Restrictions.ilike("insuranceNumber", documentNumber, MatchMode.ANYWHERE));
+		        	}
+		        }
+		        if (StringUtils.isNotEmpty(documentSeries)) {
+		        	if (documentTypeId == DonorsFilter.PASSPORT_DOCUMENT_TYPE) {
+	    				conjunction.add(Restrictions.ilike("passportSeries", documentSeries, MatchMode.ANYWHERE));
+		        	} else {
+	    				conjunction.add(Restrictions.ilike("insuranceSeries", documentSeries, MatchMode.ANYWHERE));
+		        	}
+		        }
+	        }
+			if (StringUtils.isNotEmpty(externalNumber)) {
+				conjunction.add(Restrictions.ilike("externalNumber", externalNumber, MatchMode.ANYWHERE));
+			}
+			if (StringUtils.isNotEmpty(factAddress)) {
+				conjunction.add(Restrictions.ilike("factAddress", factAddress, MatchMode.ANYWHERE));
+			}
+	        if (statusId != DonorsFilter.DONOR_STATUS_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("statusId", statusId));
+	        }
+	        if (bloodGroupId != DonorsFilter.BLOOD_GROUP_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("bloodGroup.id", bloodGroupId));
+	        }
+	        if (rhesusFactorId != DonorsFilter.RHESUS_FACTOR_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("rhesusFactor.id", rhesusFactorId));
+	        }
+	        if (pastQuarantineId != DonorsFilter.PAST_QUARANTINE_NULL_VALUE) {
+		        criteria.createAlias("rejection", "rejection", CriteriaSpecification.INNER_JOIN);
+	        	if (pastQuarantineId == DonorsFilter.PAST_QUARANTINE_YES_VALUE) {
+		        	conjunction.add(Restrictions.le("rejection.expiration", new Date()));
+	        	} else {
+	    			Disjunction disjunction = Restrictions.disjunction();
+	    			disjunction.add(Restrictions.ge("rejection.expiration", new Date()));
+	    			disjunction.add(Restrictions.isNull("rejection.expiration"));
+	    			conjunction.add(disjunction);
+	        	}
+	        }
+			criteria.add(conjunction);
+		}
+        return criteria;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Donor> findDocuments(DonorsFilter donorsFilter, int offset,
+			int count, String orderBy, boolean orderAsc) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+        addNotDeletedCriteria(detachedCriteria);
+        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, donorsFilter), offset, count);
+	}
+    
 }

@@ -1,6 +1,7 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,11 +14,12 @@ import org.hibernate.criterion.Restrictions;
 
 import ru.efive.dao.sql.dao.DictionaryDAOHibernate;
 import ru.efive.dao.sql.entity.DictionaryEntity;
+import ru.efive.dao.sql.entity.IdentifiedEntity;
 import ru.efive.medicine.niidg.trfu.data.dictionary.*;
 
 public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> {
 	
-	public <T extends DictionaryEntity> T get(Class<T> persistentClass, Serializable id) {
+	public <T extends IdentifiedEntity> T get(Class<T> persistentClass, Serializable id) {
 		return (T) getHibernateTemplate().get(persistentClass, id);
 	}
 	
@@ -908,4 +910,242 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
         return getHibernateTemplate().findByCriteria(detachedCriteria);
     }
 
+	/**
+	 * Список полов.
+	 */
+	protected List<Gender> genders = null;
+	/**
+	 * Список статусов доноров. На самом деле список статусов доноров является справочной информацией 
+	 * и такую информацию желательно хранить в базе данных. Как альтернатива для работы можно завести подобный 
+	 * список и вести с ним работу через методы {@link #getDonorStatuses()} и {@link #getDonorStatus(int)} или их аналоги. 
+	 * Делать это было необходимо с самого начала реализации приложения, а не использовать код наподобии 
+	 * {@link ru.efive.medicine.niidg.trfu.util.ApplicationHelper#getStatusName(String, int)}. 
+	 * Данный список и методы {@link #getDonorStatuses()} и {@link #getDonorStatus(int)}
+	 * были введены для удобства работы во время реализации фильтра для представления "Доноры".
+	 */
+	protected List<DonorStatus> donorStatuses = null;
+	/**
+	 * Список статусов компонентов крови. Со списком этих статусов в приложении такая же ситуация, 
+	 * как и со списком статусов доноров.
+	 */
+	protected List<BloodComponentStatus> bloodComponentStatuses = null;
+	/**
+	 * Список статусов обращений на обследование. Со списком этих статусов в приложении такая же ситуация, 
+	 * как и со списком статусов доноров.
+	 */
+	protected List<ExaminationStatus> examinationStatuses = null;
+	/**
+	 * Список статусов донаций крови. Со списком этих статусов в приложении такая же ситуация, 
+	 * как и со списком статусов доноров.
+	 */
+	protected List<BloodDonationStatus> bloodDonationStatuses = null;
+	/**
+	 * Список типов обращений на обследование. 
+	 */
+	protected List<ExaminationType> examinationTypes = null;
+	/**
+	 * Список видов трансфузии. 
+	 */
+	protected List<TransfusionType> transfusionTypes = null;
+
+	/**
+	 * Получение списка полов (женский, мужской).
+	 * @return список полов.
+	 */
+	public List<Gender> getGenders() {
+		if (genders == null) {
+			genders = new ArrayList<Gender>();
+			genders.add(new Gender(0, "Ж"));
+			genders.add(new Gender(1, "М"));
+		}		
+		return genders;
+	}
+
+	/**
+	 * Получение списка статусов доноров.
+	 * @return список статусов доноров.
+	 */
+	public List<DonorStatus> getDonorStatuses() {
+		if (donorStatuses == null) {
+			donorStatuses = new ArrayList<DonorStatus>();
+			donorStatuses.add(new DonorStatus(1, "Кандидат"));
+			donorStatuses.add(new DonorStatus(2, "Донор"));
+			donorStatuses.add(new DonorStatus(-1, "Временный отвод"));
+			donorStatuses.add(new DonorStatus(-2, "Абсолютный отвод"));
+		}		
+		return donorStatuses;
+	}
+	/**
+	 * Получение списка статусов компонентов крови.
+	 * @return список статусов компонентов крови.
+	 */
+	public List<BloodComponentStatus> getBloodComponentStatuses() {
+		if (bloodComponentStatuses == null) {
+			bloodComponentStatuses = new ArrayList<BloodComponentStatus>();
+			bloodComponentStatuses.add(new BloodComponentStatus(1, "Зарегистрирован"));
+			bloodComponentStatuses.add(new BloodComponentStatus(2, "В карантине"));
+			bloodComponentStatuses.add(new BloodComponentStatus(3, "Готов к выдаче"));
+			bloodComponentStatuses.add(new BloodComponentStatus(4, "Задержка"));
+			bloodComponentStatuses.add(new BloodComponentStatus(5, "Готов к выдаче из карантина"));
+			bloodComponentStatuses.add(new BloodComponentStatus(6, "Брак из карантина"));
+			bloodComponentStatuses.add(new BloodComponentStatus(10, "Выдан"));
+			bloodComponentStatuses.add(new BloodComponentStatus(11, "Забронирован"));
+			bloodComponentStatuses.add(new BloodComponentStatus(-1, "Брак"));
+			bloodComponentStatuses.add(new BloodComponentStatus(-2, "Списан"));
+			bloodComponentStatuses.add(new BloodComponentStatus(-10, "Утилизирован"));
+			bloodComponentStatuses.add(new BloodComponentStatus(100, "Разделен"));
+		}		
+		return bloodComponentStatuses;
+	}
+	/**
+	 * Получение списка статусов обращений на обследование.
+	 * @return список статусов обращений на обследование.
+	 */
+	public List<ExaminationStatus> getExaminationStatuses() {
+		if (examinationStatuses == null) {
+			examinationStatuses = new ArrayList<ExaminationStatus>();
+			examinationStatuses.add(new ExaminationStatus(1, "Заполнение"));
+			examinationStatuses.add(new ExaminationStatus(2, "Осмотр"));
+			examinationStatuses.add(new ExaminationStatus(3, "Получение результатов анализов"));
+			examinationStatuses.add(new ExaminationStatus(4, "Определение допуска к донорству"));
+			examinationStatuses.add(new ExaminationStatus(5, "Допущен"));
+			examinationStatuses.add(new ExaminationStatus(6, "Направлен на дообследование"));
+			examinationStatuses.add(new ExaminationStatus(7, "Первичное исследование"));
+			examinationStatuses.add(new ExaminationStatus(9, "Запланировано"));
+			examinationStatuses.add(new ExaminationStatus(-1, "Отвод от донорства"));
+			examinationStatuses.add(new ExaminationStatus(-2, "Отменено"));
+		}		
+		return examinationStatuses;
+	}
+
+	/**
+	 * Получение списка статусов донаций крови.
+	 * @return список статусов донаций крови.
+	 */
+	public List<BloodDonationStatus> getBloodDonationStatuses() {
+		if (bloodDonationStatuses == null) {
+			bloodDonationStatuses = new ArrayList<BloodDonationStatus>();
+			bloodDonationStatuses.add(new BloodDonationStatus(1, "Заполнение"));
+			bloodDonationStatuses.add(new BloodDonationStatus(2, "Донация"));
+			bloodDonationStatuses.add(new BloodDonationStatus(3, "Получение результатов анализов"));
+			bloodDonationStatuses.add(new BloodDonationStatus(4, "Паспортизация"));
+			bloodDonationStatuses.add(new BloodDonationStatus(9, "Запланировано"));
+			bloodDonationStatuses.add(new BloodDonationStatus(21, "Фракционирование"));
+			bloodDonationStatuses.add(new BloodDonationStatus(-1, "Отвод от донорства"));
+			bloodDonationStatuses.add(new BloodDonationStatus(-2, "Донация не состоялась"));
+			bloodDonationStatuses.add(new BloodDonationStatus(-3, "Донация отменена"));
+		}		
+		return bloodDonationStatuses;
+	}
+
+	/**
+	 * Получение списка типов обращений на обследование.
+	 * @return список типов обращений на обследование.
+	 */
+	public List<ExaminationType> getExaminationTypes() {
+		if (examinationTypes == null) {
+			examinationTypes = new ArrayList<ExaminationType>();
+			examinationTypes.add(new ExaminationType(0, "Первичное"));
+			examinationTypes.add(new ExaminationType(1, "Повторное"));
+		}		
+		return examinationTypes;
+	}
+
+	/**
+	 * Получение списка видов трансфузии.
+	 * @return список видов трансфузии.
+	 */
+	public List<TransfusionType> getTransfusionTypes() {
+		if (transfusionTypes == null) {
+			transfusionTypes = new ArrayList<TransfusionType>();
+			transfusionTypes.add(new TransfusionType(0, "Плановая"));
+			transfusionTypes.add(new TransfusionType(1, "Экстренная"));
+		}		
+		return transfusionTypes;
+	}
+	 
+	/**
+	 * Получение пола по идентификатору.
+	 * 
+	 * @param id идентификатор пола.
+	 * @return найденный по идентификатору объект.
+	 */
+	public Gender getGender(int id) {
+		return findObject(id, getGenders());
+	}
+
+	/**
+	 * Получение статуса донора по идентификатору.
+	 * 
+	 * @param id идентификатор статуса донора.
+	 * @return найденный по идентификатору статус донора.
+	 */
+	public DonorStatus getDonorStatus(int id) {
+		return findObject(id, getDonorStatuses());
+	}
+	
+	/**
+	 * Получение статуса компонента крови по идентификатору.
+	 * 
+	 * @param id идентификатор статуса компонента крови.
+	 * @return найденный по идентификатору статус донора.
+	 */
+	public BloodComponentStatus getBloodComponentStatus(int id) {
+		return findObject(id, getBloodComponentStatuses());
+	}
+
+	/**
+	 * Получение статуса обращения на обследование по идентификатору.
+	 * 
+	 * @param id идентификатор статуса обращения на обследование.
+	 * @return найденный по идентификатору статус обращения на обследование.
+	 */
+	public ExaminationStatus getExaminationStatus(int id) {
+		return findObject(id, getExaminationStatuses());
+	}
+
+	/**
+	 * Получение статуса донации крови по идентификатору.
+	 * 
+	 * @param id идентификатор статуса донации крови.
+	 * @return найденный по идентификатору статус донации крови.
+	 */
+	public BloodDonationStatus getBloodDonationStatus(int id) {
+		return findObject(id, getBloodDonationStatuses());
+	}
+
+	/**
+	 * Получение типа обращения на обследование по идентификатору.
+	 * 
+	 * @param id идентификатор типа обращения на обследование.
+	 * @return найденный по идентификатору тип обращения на обследование.
+	 */
+	public ExaminationType getExaminationType(int id) {
+		return findObject(id, getExaminationTypes());
+	}
+	
+	/**
+	 * Получение вида трансфузии по идентификатору.
+	 * 
+	 * @param id идентификатор вида трансфузии.
+	 * @return найденный по идентификатору вид трансфузии.
+	 */
+	public TransfusionType getTransfusionType(int id) {
+		return findObject(id, getTransfusionTypes());
+	}
+
+	/**
+	 * Generic метод для поиска объекта по его идентификатору в коллекции объектов.
+	 * @param id идентификатор объекта.
+	 * @param objects коллекция объектов в которой осуществляется поиск.
+	 * @return найденный объект.
+	 */
+	public static <T extends DictionaryEntity> T findObject(int id, List<T> objects) {
+		for (T object : objects) {
+			if (object.getId() == id) {
+				return object;
+			}
+		}
+		return null;
+	}
 }

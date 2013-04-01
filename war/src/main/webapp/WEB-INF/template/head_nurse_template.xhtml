@@ -30,6 +30,15 @@
 							<f:facet name="content">
 								<span>Доноры</span>
 							</f:facet>
+							<e5ui:menuItem selected="#{currentView eq '/component/filter/donors.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/filter/donors.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Доноры
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+<!--  							
 							<e5ui:menuItem selected="#{currentView eq '/component/donors.xhtml'}">
 	                    		<f:facet name="content">
 	                    			<h:outputLink value="#{contextPath}/component/donors.xhtml">
@@ -86,6 +95,7 @@
 	                    			</h:outputLink>
 	                        	</f:facet>
 	                   		</e5ui:menuItem>
+-->	                   		
 	                   		<e5ui:menuItem selected="#{currentView eq '/component/donor_match.xhtml'}">
 	                    		<f:facet name="content">
 	                    			<h:outputLink value="#{contextPath}/component/donor_match.xhtml" target="_blank">
@@ -101,6 +111,15 @@
 							<f:facet name="content">
 								<span>Компоненты крови</span>
 							</f:facet>
+							<e5ui:menuItem selected="#{currentView eq '/component/filter/blood_components.xhtml'}">
+	                    		<f:facet name="content">
+	                    			<h:outputLink value="#{contextPath}/component/filter/blood_components.xhtml">
+	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    				Компоненты крови
+	                    			</h:outputLink>
+	                        	</f:facet>
+	                   		</e5ui:menuItem>
+<!--  							
 							<e5ui:menuItem selected="#{currentView eq '/component/blood_components.xhtml'}">
 	                    		<f:facet name="content">
 	                    			<h:outputLink value="#{contextPath}/component/blood_components.xhtml">
@@ -117,6 +136,7 @@
 	                    			</h:outputLink>
 	                        	</f:facet>
 	                   		</e5ui:menuItem>
+-->	                   		
 	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_in_quarantine.xhtml'}">
 	                    		<f:facet name="content">
 	                    			<h:outputLink value="#{contextPath}/component/blood_components_in_quarantine.xhtml">
@@ -201,6 +221,15 @@
 	                   			<f:facet name="content">
 									<span>Обращения на донацию</span>
 								</f:facet>
+								<e5ui:menuItem selected="#{currentView eq '/component/filter/blood_donations.xhtml'}">
+			                    	<f:facet name="content">
+			                    		<h:outputLink value="#{contextPath}/component/filter/blood_donations.xhtml">
+			                    			<h:graphicImage value="#{resource['images:leaf.gif']}" />
+			                    			Обращения на донацию
+			                    		</h:outputLink>
+			                        </f:facet>
+			                   	</e5ui:menuItem>
+<!--  								
 								<e5ui:menuItem selected="#{currentView eq '/component/blood_donations.xhtml'}">
 			                    	<f:facet name="content">
 			                    		<h:outputLink value="#{contextPath}/component/blood_donations.xhtml">
@@ -225,12 +254,22 @@
 			                    		</h:outputLink>
 			                       	</f:facet>
 			                   	</e5ui:menuItem>
+-->			                   	
 					</e5ui:menuItem>
 					
 					<e5ui:menuItem collapsable="true">
 						<f:facet name="content">
 							<span>Заявки на выдачу КК</span>
 						</f:facet>
+						<e5ui:menuItem selected="#{currentView eq '/component/filter/blood_component_orders.xhtml'}">
+	                    	<f:facet name="content">
+	                    		<h:outputLink value="#{contextPath}/component/filter/blood_component_orders.xhtml">
+	                    			<h:graphicImage value="#{resource['images:leaf.gif']}" />
+	                    			Заявки на выдачу КК
+	                    		</h:outputLink>
+	                       	</f:facet>
+	                   	</e5ui:menuItem>
+<!--  						
 						<e5ui:menuItem selected="#{currentView eq '/component/blood_component_orders.xhtml'}">
 	                    	<f:facet name="content">
 	                    		<h:outputLink value="#{contextPath}/component/blood_component_orders.xhtml">
@@ -239,6 +278,7 @@
 	                    		</h:outputLink>
 	                       	</f:facet>
 	                   	</e5ui:menuItem>
+-->	                   	
 	                   	<e5ui:menuItem selected="#{currentView eq '/component/blood_component_orders_reserved.xhtml'}">
 	                    	<f:facet name="content">
 	                    		<h:outputLink value="#{contextPath}/component/blood_component_orders_reserved.xhtml">

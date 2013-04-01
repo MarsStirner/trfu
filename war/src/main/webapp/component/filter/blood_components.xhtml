@@ -1,0 +1,326 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
+		<h:outputScript library="js" name="views_with_filters.js" target="head" />
+	</ui:define>
+	
+	<ui:define name="header_top">
+		<div id="viewtitle">Компоненты крови</div>
+	</ui:define>
+	
+	<ui:define name="header_buttons">
+		<div class="defbutton">
+			<h:outputLink value="#{contextPath}/component/blood_component.xhtml" target="_blank">
+				<h:graphicImage value="#{resource['images:newf_buttn_icon.png']}" />
+            	Зарегистрировать КК
+            	<f:param name="docAction" value="create" />
+			</h:outputLink>
+		</div>
+		<div class="defbutton">
+			<h:outputLink value="#{contextPath}/component/purchased_component_reg.xhtml" target="_blank">
+				<h:graphicImage value="#{resource['images:add_component.png']}" />
+            	Зарегистрировать закупленный КК
+			</h:outputLink>
+		</div>
+		<div class="defbutton">
+			<h:commandLink action="#{bloodComponentFilterableList.pressRefresh()}">
+				<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+            	Обновить
+           	</h:commandLink>
+		</div>
+		<div class="defbutton">
+			<h:outputLink value="#{contextPath}/component/print/blood_components.xhtml" target="_blank">
+            	<h:graphicImage value="#{resource['images:button-print.png']}" />
+				Печать
+			</h:outputLink>	
+		</div>
+		<div class="defbutton" id="hide_filter_div" style="display: none;">
+			<h:commandLink action="#{bloodComponentFilterableList.hideFilterPanel()}" onclick="hideFilter();">
+				<h:graphicImage value="#{resource['images:filter-delete-icon_16.png']}" />
+				<f:ajax />
+            	Скрыть фильтр
+           	</h:commandLink>
+		</div>
+		<div class="defbutton" id="show_filter_div" style="display: none;">
+			<h:commandLink action="#{bloodComponentFilterableList.showFilterPanel()}" onclick="showFilter();">
+				<h:graphicImage value="#{resource['images:filter-add-icon_16.png']}" />
+				<f:ajax />
+            	Показать фильтр
+           	</h:commandLink>
+		</div>
+	</ui:define>
+
+	<ui:define name="content">
+		<script type="text/javascript">
+			document.ondblclick = function DoubleClick(evt) {
+				if (window.getSelection)
+					window.getSelection().removeAllRanges();
+				else if (document.selection)
+					document.selection.empty();
+			}
+		</script>
+		<h:outputScript>
+        	function goToDocument(id) {
+        		if (id != 0) {
+        			window.open('#{facesContext.externalContext.requestContextPath}/component/blood_component.xhtml?docId=' + id,'_blank');
+				}
+			}
+        </h:outputScript>
+		<e5ui:formPart id="main_table_part">
+			<div id="main_table">
+				<div class="wrap_main" id="table_wrap" style="float: right;">
+					<div class="inner" id="table_inner">
+						<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl"
+									value="#{bloodComponentFilterableList.documents}" var="row" grouping="false">
+							<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+							<e5ui:column style="min-width:5em">
+								<f:facet name="header">
+									<h:commandLink action="#{bloodComponentFilterableList.sort('parentNumber,number')}">
+			                        	Номер
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.fullNumber}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:10em">
+								<f:facet name="header">
+									<h:commandLink action="#{bloodComponentFilterableList.sort('componentType.value')}">
+			                        	Компонент
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.componentType}" converter="BloodComponentTypeConverter" />
+							</e5ui:column>
+							<e5ui:column style="min-width:5em">
+								<f:facet name="header">
+									<h:commandLink action="#{bloodComponentFilterableList.sort('volume')}">
+			                        	Объем
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.volume}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:8em">
+								<f:facet name="header">
+									<h:commandLink action="#{bloodComponentFilterableList.sort('anticoagulant.value')}">
+			                        	Антикоагулянт
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.anticoagulant}" converter="AnticoagulantConverter" />
+							</e5ui:column>
+							<e5ui:column style="min-width:7em">
+								<f:facet name="header">
+									<h:commandLink action="#{bloodComponentFilterableList.sort('bloodGroup.id,rhesusFactor.id')}">
+			                        	Группа крови
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.bloodGroup}" converter="BloodGroupConverter" />
+								<h:outputText style="margin-left:5px;" value="#{row.rhesusFactor}" converter="ClassifierConverter" />
+							</e5ui:column>
+							<e5ui:column style="min-width:5em">
+								<f:facet name="header">
+									<h:commandLink action="#{bloodComponentFilterableList.sort('expirationDate')}">
+			                        	Срок хранения
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.expirationDate}">
+									<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+								</h:outputText>
+							</e5ui:column>
+							<e5ui:column style="min-width:10em">
+								<f:facet name="header">
+			                        <p>Статус</p>
+			                    </f:facet>
+								<h:outputText value="#{row.statusName}" />
+							</e5ui:column>
+						</e5ui:dataTable>
+					</div>
+				</div>
+				
+			 	<div id="filter_panel" style="display: none; float: left;">
+					<div id="filter_panel_buttons">
+						<div class="defbutton">
+						</div>
+				  		<div class="defbutton">
+							<h:commandLink action="#{bloodComponentFilterableList.applyFilter()}">
+								<h:graphicImage value="#{resource['images:button-search.png']}" />
+           						Применить фильтр
+							</h:commandLink>
+						</div>
+				  		<div class="defbutton">
+							<h:commandLink action="#{bloodComponentFilterableList.resetFilter()}">
+								<h:graphicImage value="#{resource['images:button-reject.png']}" />
+								Очистить фильтр
+							</h:commandLink>
+						</div>
+					</div>
+						
+					<div id="filter_panel_parameters">
+						<table id="filter_panel_parameters_table">
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.numberTitle}" />:
+								</td>
+								<td>
+									<h:inputText size="25" maxlength="25" value="#{bloodComponentFilterableList.currentFilter.number}" styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.donorCodeTitle}" />:
+								</td>
+								<td>
+									<h:inputText size="25" maxlength="25" value="#{bloodComponentFilterableList.currentFilter.donorCode}" styleClass="filterPanelParameter" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.bloodGroupTitle}" />:
+								</td>
+								<td>
+									<h:selectOneMenu id="blood_components_filter_blood_group_id_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.bloodGroupId}" styleClass="filterPanelParameter">
+										<f:selectItem itemLabel="" itemValue="#{bloodComponentFilterableList.currentFilter.bloodGroupNullValue}" />  
+										<f:selectItems value="#{dictionaryManagement.bloodGroups}" 
+												var="bloodGroup" 
+												itemLabel="#{bloodGroup.value}" 
+												itemValue="#{bloodGroup.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.rhesusFactorTitle}" />:
+								</td>
+								<td>
+									<h:selectOneMenu id="blood_components_filter_rhesus_factor_id_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.rhesusFactorId}" styleClass="filterPanelParameter">
+										<f:selectItem itemLabel="" itemValue="#{bloodComponentFilterableList.currentFilter.rhesusFactorNullValue}" />  
+										<f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" 
+												var="rhesusFactor" 
+												itemLabel="#{rhesusFactor.value}" 
+												itemValue="#{rhesusFactor.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.donationDateTitle}" />:
+								</td>
+								<td>
+									<e5ui-comp:inputDate id="blood_components_filter_donation_date_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.donationDate}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.expirationDateTitle}" escape="false" />:
+								</td>
+								<td style="vertical-align: middle;">
+									<e5ui-comp:inputDate id="blood_components_filter_expiration_date_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.expirationDate}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.statusTitle}" />:
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<h:selectOneMenu id="blood_components_filter_status_id_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.statusId}" styleClass="filterPanelParameterWide">
+										<f:selectItem itemLabel="" itemValue="#{bloodComponentFilterableList.currentFilter.statusNullValue}" />
+										<f:selectItems value="#{dictionaryManagement.bloodComponentStatuses}" 
+												var="bloodComponentStatus" 
+												itemLabel="#{bloodComponentStatus.value}" 
+												itemValue="#{bloodComponentStatus.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.bloodComponentTypeTitle}" />:
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<h:selectOneMenu id="blood_components_filter_blood_component_type_id_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.bloodComponentTypeId}" styleClass="filterPanelParameterWide">
+										<f:selectItem itemLabel="" itemValue="#{bloodComponentFilterableList.currentFilter.bloodComponentTypeNullValue}" />
+										<f:selectItems value="#{dictionaryManagement.usedBloodComponentTypes}" 
+												var="bloodComponentType" 
+												itemLabel="#{bloodComponentType.codeAndValue}" 
+												itemValue="#{bloodComponentType.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.makerTitle}" />:
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<h:selectOneMenu id="blood_components_filter_maker_id_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.makerId}" styleClass="filterPanelParameterWide">
+										<f:selectItem itemLabel="" itemValue="#{bloodComponentFilterableList.currentFilter.makerNullValue}" />
+										<f:selectItems value="#{dictionaryManagement.contragents}" 
+												var="listItem" 
+												itemLabel="#{listItem.fullName}" 
+												itemValue="#{listItem.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				
+				<div id="table_paging">
+					<h:panelGroup id="main_data_paging">
+						<e5ui-comp:tablePager documentListHolder="#{bloodComponentFilterableList}" style="display:inline;" />
+						<e5ui-comp:tablePageSizeSelector documentListHolder="#{bloodComponentFilterableList}" style="display:inline;float:right;" pageSizes="10,25,50,100" />
+					</h:panelGroup>
+				</div>
+			</div>
+		</e5ui:formPart>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+			<f:facet name="timeoutPanel">
+				<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+					Пожалуйста, подождите...</div>
+			</f:facet>
+		</e5ui-comp:splashScreen>
+		<script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+		<h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="tablePager.css" />
+		<h:outputStylesheet library="css" name="menu.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+		<h:outputStylesheet library="css" name="multiMarker.css" />
+
+		<h:outputScript rendered="#{bloodComponentFilterableList.isFilterPanelActive()}">
+			showFilter();
+		</h:outputScript>
+		<h:outputScript rendered="#{not bloodComponentFilterableList.isFilterPanelActive()}">
+			hideFilter();
+		</h:outputScript>
+	</ui:define>
+	
+</ui:composition>
+
+</html>
