@@ -13,7 +13,7 @@
 	<h:outputStylesheet library="css" name="datatable.css" />
 	<title>Печать</title>	
 </h:head>
-<h:body>
+<h:body style="height: auto;">
 
 	<h:outputScript>
         $(document).ready(function() {
@@ -57,48 +57,45 @@
 
 	<div id="print_table">
 		<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" value="#{bloodComponentFilterableList.documentsForPrinting}" var="row">
-			<e5ui:column style="min-width:5em">
+			<e5ui:column>
 				<f:facet name="header">									
 					Номер			                        	
 				</f:facet>
 				<h:outputText value="#{row.fullNumber}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:10em">
+			<e5ui:column>
 				<f:facet name="header">									
 					Компонент			                        	
 				</f:facet>
 				<h:outputText value="#{row.componentType}" converter="BloodComponentTypeConverter" />
 			</e5ui:column>
-			<e5ui:column style="min-width:5em">
+			<e5ui:column>
 				<f:facet name="header">									
 					Объем			                        	
 				</f:facet>
 				<h:outputText value="#{row.volume}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:8em">
+			<e5ui:column>
 				<f:facet name="header">									
 					Антикоагулянт			                        	
 				</f:facet>
 				<h:outputText value="#{row.anticoagulant}" converter="AnticoagulantConverter" />
 			</e5ui:column>
-			<e5ui:column style="min-width:7em">
+			<e5ui:column>
 				<f:facet name="header">									
 					Группа крови			                        	
 				</f:facet>
-				<h:outputText value="#{row.bloodGroup}" converter="BloodGroupConverter" />
-				<h:outputText style="margin-left:5px;" value="#{row.rhesusFactor}" converter="ClassifierConverter" />
+				<h:outputText value="#{row.bloodGroup}" converter="BloodGroupConverter" /><br/><h:outputText value="#{row.rhesusFactor}" converter="ClassifierConverter" />
 			</e5ui:column>
-			<e5ui:column style="min-width:5em">
+			<e5ui:column>
 				<f:facet name="header">									
 					Срок хранения			                        	
 				</f:facet>
-				<h:outputText value="#{row.expirationDate}">
-				<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
-				</h:outputText>
+				<h:outputText value="#{row.expirationDate}"><f:convertDateTime type="date" pattern="dd.MM.yyyy"/></h:outputText>
 			</e5ui:column>
-			<e5ui:column style="min-width:10em">
+			<e5ui:column>
 				<f:facet name="header">
-					<p>Статус</p>
+					Статус
 				</f:facet>
 				<h:outputText value="#{row.statusName}" />
 			</e5ui:column>

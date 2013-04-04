@@ -13,7 +13,7 @@
 	<h:outputStylesheet library="css" name="datatable.css" />
 	<title>Печать</title>	
 </h:head>
-<h:body>
+<h:body style="height: auto;">
 
 	<h:outputScript>
         $(document).ready(function() {
@@ -57,47 +57,43 @@
 			
 	<div id="print_table">
 		<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" value="#{examinationRequestFilterableList.documentsForPrinting}" var="row" >
-			<e5ui:column style="min-width:5em">
+			<e5ui:column>
 				<f:facet name="header">									
-					Номер			                        	
+					Номер
 				</f:facet>
 				<h:outputText value="#{row.number}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:7em">
+			<e5ui:column>
 				<f:facet name="header">									
-					Дата создания			                        	
+					Дата создания
 				</f:facet>
-				<h:outputText value="#{row.created}">
-					<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
-				</h:outputText>
+				<h:outputText value="#{row.created}"><f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/></h:outputText>
 			</e5ui:column>
-			<e5ui:column style="min-width:10em">
+			<e5ui:column>
 				<f:facet name="header">								
-					Донор			                        	
+					Донор
 				</f:facet>
 				<h:outputText value="#{row.donor.descriptionShort}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:9em">
+			<e5ui:column>
 				<f:facet name="header">									
-					Обследование			                        	
+					Обследование
 				</f:facet>
 				<h:outputText value="#{row.examinationType eq 0? 'Первичное': 'Повторное'}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:7em">
+			<e5ui:column>
 				<f:facet name="header">									
-					Планируемая дата			                        	
+					Планируемая дата
 				</f:facet>
-				<h:outputText value="#{row.planDate}">
-					<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm" />
-				</h:outputText>
+				<h:outputText value="#{row.planDate}"><f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm" /></h:outputText>
 			</e5ui:column>
-			<e5ui:column style="min-width:10em">
+			<e5ui:column>
 				<f:facet name="header">
 					Статус
 				</f:facet>
 				<h:outputText value="#{row.statusName}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:12em">
+			<e5ui:column>
 				<f:facet name="header">
 					Комментарии
 				</f:facet>

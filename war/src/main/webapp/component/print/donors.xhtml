@@ -13,7 +13,7 @@
 	<h:outputStylesheet library="css" name="datatable.css" />
 	<title>Печать</title>	
 </h:head>
-<h:body>
+<h:body style="height: auto;">
 
 	<h:outputScript>
         $(document).ready(function() {
@@ -57,39 +57,39 @@
 	
 	<div id="print_table">
 		<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" value="#{donorFilterableList.documentsForPrinting}" var="row" grouping="false">
-			<e5ui:column style="min-width:10em">
+			<e5ui:column>
 				<f:facet name="header">
-                   	<p>ФИО</p>
+                   	ФИО
                 </f:facet>
 				<h:outputText value="#{row.descriptionShort}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:5em">
+			<e5ui:column>
 				<f:facet name="header">									
-                   	<p>Номер</p>
+                   	Номер
                 </f:facet>
 				<h:outputText value="#{row.number}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:8em">
+			<e5ui:column>
 				<f:facet name="header">									
-                   	<p>Категория</p>			                        
+                   	Категория
                 </f:facet>
 				<h:outputText value="#{row.category eq 0? 'Первичный': row.category eq 1? 'Кадровый': 'Повторный'}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:7em">
+			<e5ui:column>
 				<f:facet name="header">
-                    <p>Группа крови</p>
+                    Группа крови
                 </f:facet>
-				<h:outputText value="#{row.bloodGroup.value}" /> <h:outputText style="margin-left:5px;" value="#{row.rhesusFactor}" converter="ClassifierConverter" />
+				<h:outputText value="#{row.bloodGroup.value}" /><br/><h:outputText value="#{row.rhesusFactor}" converter="ClassifierConverter" />
 			</e5ui:column>
-			<e5ui:column style="min-width:10em">
+			<e5ui:column>
 				<f:facet name="header">
-                    <p>Статус</p>
+                    Статус
                 </f:facet>
 				<h:outputText value="#{row.statusName}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:12em">
+			<e5ui:column>
 				<f:facet name="header">
-                    <p>Комментарии</p>
+                    Комментарии
                 </f:facet>
 				<h:outputText value="#{row.commentary}" />
 			</e5ui:column>

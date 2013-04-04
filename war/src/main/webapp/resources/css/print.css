@@ -17,8 +17,8 @@ p {margin: 3px 1px}
 
 #print_table {overflow: auto;}
 #print_table table {border: none;}
-#print_table table thead th {text-align:left; border:none;}
-#print_table table tbody td {border:1px solid #ededed; border-left:none; border-right:none;}
+#print_table table thead th {text-align:left; border:none; padding: 0 5px; white-space: normal;}
+#print_table table tbody td {border:1px solid #ededed; border-left:none; border-right:none; padding: 3px 5px;}
 #print_table table tbody tr:hover td {background: none;}
 
 .filterParametersLeftColumnTitle {padding-right: 20px; font-weight: bold;}

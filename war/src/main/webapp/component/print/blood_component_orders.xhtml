@@ -13,7 +13,7 @@
 	<h:outputStylesheet library="css" name="datatable.css" />
 	<title>Печать</title>	
 </h:head>
-<h:body>
+<h:body style="height: auto;">
 
 	<h:outputScript>
         $(document).ready(function() {
@@ -57,35 +57,33 @@
 
 	<div id="print_table">
 		<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" value="#{bloodComponentOrderFilterableList.documentsForPrinting}" var="row" >
-			<e5ui:column style="min-width:5em">
+			<e5ui:column>
 				<f:facet name="header">
 					Номер
 				</f:facet>
 				<h:outputText value="#{row.number}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:8em">
+			<e5ui:column>
 				<f:facet name="header">
 					Дата регистрации
 				</f:facet>
-				<h:outputText value="#{row.created}">
-					<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
-				</h:outputText>
+				<h:outputText value="#{row.created}"><f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/></h:outputText>
 			</e5ui:column>
-			<e5ui:column style="min-width:10em">
+			<e5ui:column>
 				<f:facet name="header">
 					Реципиент
 				</f:facet>
 				<h:outputText value="#{row.recipient}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:10em">
+			<e5ui:column>
 				<f:facet name="header">
 					Компонент
 				</f:facet>
 				<h:outputText value="#{row.componentType}" converter="BloodComponentTypeConverter" />
 			</e5ui:column>
-			<e5ui:column style="min-width:9em">
+			<e5ui:column>
 				<f:facet name="header">									
-					Вид трансфузии			                        	
+					Вид трансфузии
 				</f:facet>
 				<h:outputText value="#{row.transfusionType eq 0? 'Плановая': 'Экстренная'}" />
 				<h:panelGroup rendered="#{row.transfusionType eq 0}">
@@ -95,13 +93,13 @@
 					</h:outputText>
 				</h:panelGroup>
 			</e5ui:column>
-			<e5ui:column style="min-width:9em">
+			<e5ui:column>
 				<f:facet name="header">
 					Отделение
 				</f:facet>
 				<h:outputText value="#{row.division}" />
 			</e5ui:column>
-			<e5ui:column style="min-width:10em">
+			<e5ui:column>
 				<f:facet name="header">
 					Статус
 				</f:facet>
