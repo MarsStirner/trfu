@@ -262,6 +262,20 @@
 							</tr>
 							<tr>
 								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{donorFilterableList.currentFilter.donorCategoryTitle}" />:
+								</td>
+								<td>
+									<h:selectOneMenu id="donors_filter_category_id_parameter" value="#{donorFilterableList.currentFilter.categoryId}" styleClass="filterPanelParameter">
+										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.categoryNullValue}" />
+										<f:selectItems value="#{dictionaryManagement.donorCategories}" 
+												var="donorCategory" 
+												itemLabel="#{donorCategory.value}" 
+												itemValue="#{donorCategory.id}" />
+									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
 									<h:outputText value="#{donorFilterableList.currentFilter.donorStatusTitle}" />:
 								</td>
 								<td>

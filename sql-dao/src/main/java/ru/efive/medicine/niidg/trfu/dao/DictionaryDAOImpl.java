@@ -947,6 +947,10 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	 * Список видов трансфузии. 
 	 */
 	protected List<TransfusionType> transfusionTypes = null;
+	/**
+	 * Список категорий доноров. 
+	 */
+	protected List<DonorCategory> donorCategories = null;
 
 	/**
 	 * Получение списка полов (женский, мужской).
@@ -1065,6 +1069,20 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	}
 	 
 	/**
+	 * Получение списка категорий доноров.
+	 * @return список категорий доноров.
+	 */
+	public List<DonorCategory> getDonorCategories() {
+		if (donorCategories == null) {
+			donorCategories = new ArrayList<DonorCategory>();
+			donorCategories.add(new DonorCategory(0, "Первичный"));
+			donorCategories.add(new DonorCategory(1, "Кадровый"));
+			donorCategories.add(new DonorCategory(2, "Повторный"));
+		}		
+		return donorCategories;
+	}
+
+	/**
 	 * Получение пола по идентификатору.
 	 * 
 	 * @param id идентификатор пола.
@@ -1132,6 +1150,16 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	 */
 	public TransfusionType getTransfusionType(int id) {
 		return findObject(id, getTransfusionTypes());
+	}
+
+	/**
+	 * Получение категории донора по идентификатору.
+	 * 
+	 * @param id идентификатор категории донора.
+	 * @return найденная по идентификатору категория донора.
+	 */
+	public DonorCategory getDonorCategory(int id) {
+		return findObject(id, getDonorCategories());
 	}
 
 	/**

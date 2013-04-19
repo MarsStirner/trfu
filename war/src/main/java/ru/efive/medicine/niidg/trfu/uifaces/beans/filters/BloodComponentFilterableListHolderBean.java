@@ -67,12 +67,16 @@ public class BloodComponentFilterableListHolderBean extends AbstractFilterableLi
 		Date donationDate = storedFilter.getDonationDate();
 		Date expirationDate = storedFilter.getExpirationDate();
 		int statusId = storedFilter.getStatusId();
+		String fio = storedFilter.getFio();
 
 		if (StringUtils.isNotEmpty(number)) {
 			parameters.add(new FilterParameter(BloodComponentsFilter.NUMBER_TITLE, number));
 		}
 		if (StringUtils.isNotEmpty(donorCode)) {
 			parameters.add(new FilterParameter(BloodComponentsFilter.DONOR_CODE_TITLE, donorCode));
+		}
+		if (StringUtils.isNotEmpty(fio)) {
+			parameters.add(new FilterParameter(BloodComponentsFilter.FIO_TITLE, fio));
 		}
         if (bloodGroupId != AbstractFilter.BLOOD_GROUP_NULL_VALUE) {
         	BloodGroup bloodGroup = getDictionaryDAO().get(BloodGroup.class, bloodGroupId);

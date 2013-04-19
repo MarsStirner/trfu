@@ -42,6 +42,10 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	 * Значение "нет" для признака "прошедние карантинизацию".
 	 */
 	public static final int PAST_QUARANTINE_NO_VALUE = 2;
+	/**
+	 * "Нулевое" значение для категории донора.
+	 */
+	public static final int DONOR_CATEGORY_NULL_VALUE = -1;
 
 	/**
 	 * Номер донора.
@@ -112,6 +116,11 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	 * 0 - любые, значение по умолчанию, прописано в константе PAST_QUARANTINE_NULL_VALUE).
 	 */
 	private int pastQuarantineId;
+	/**
+	 * Категория донора (0 - Первичный; 1 - Кадровый; 2 - Повторный;
+	 * -1 - любой, значение по умолчанию, прописано в константе DONOR_CATEGORY_NULL_VALUE).
+	 */
+	private int categoryId;
 	
     /**
      * Конструктор по умолчанию.
@@ -279,8 +288,20 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		return DONOR_STATUS_NULL_VALUE;
 	}
 
+	public int getCategoryNullValue() {
+		return DONOR_CATEGORY_NULL_VALUE;
+	}
+
 	public int getPastQuarantineNullValue() {
 		return PAST_QUARANTINE_NULL_VALUE;
+	}
+
+	public int getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(int categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	@Override
@@ -305,6 +326,7 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		bloodGroupId = BLOOD_GROUP_NULL_VALUE;
 		rhesusFactorId = RHESUS_FACTOR_NULL_VALUE;
 		pastQuarantineId = PAST_QUARANTINE_NULL_VALUE;
+		categoryId = DONOR_CATEGORY_NULL_VALUE;
 	}
 
 	@Override
@@ -325,5 +347,6 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		setBloodGroupId(source.getBloodGroupId());
 		setRhesusFactorId(source.getRhesusFactorId());
 		setPastQuarantineId(source.getPastQuarantineId());
+		setCategoryId(source.getCategoryId());
 	}
 }

@@ -19,6 +19,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationStatus;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
+import ru.efive.medicine.niidg.trfu.data.dictionary.DonorCategory;
 import ru.efive.medicine.niidg.trfu.data.dictionary.DonorStatus;
 import ru.efive.medicine.niidg.trfu.data.dictionary.DonorType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationEntryType;
@@ -376,6 +377,15 @@ public class DictionaryManagementBean implements Serializable {
 	 */
 	public List<TransfusionType> getTransfusionTypes() {
 		return getDictionaryDAO().getTransfusionTypes();
+	}
+
+	/**
+	 * Возвращает список категорий доноров.
+	 * 
+	 * @return список видов категорий доноров.
+	 */
+	public List<DonorCategory> getDonorCategories() {
+		return getDictionaryDAO().getDonorCategories();
 	}
 
 	/**

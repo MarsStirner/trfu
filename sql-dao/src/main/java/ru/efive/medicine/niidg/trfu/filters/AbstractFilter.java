@@ -62,6 +62,10 @@ public abstract class AbstractFilter<T> implements Serializable {
 	 */
 	public static final String FACT_ADDRESS_TITLE = "Фактический <br/>адрес проживания";
 	/**
+	 * Подпись для параметра "Категория донора".
+	 */
+	public static final String DONOR_CATEGORY_TITLE = "Категория донора";
+	/**
 	 * Подпись для параметра "Статус донора".
 	 */
 	public static final String DONOR_STATUS_TITLE = "Статус донора";
@@ -149,6 +153,10 @@ public abstract class AbstractFilter<T> implements Serializable {
 	 * Подпись для параметра "Дата регистрации".
 	 */
 	public static final String REGISTRATION_DATE_TITLE = "Дата регистрации";
+	/**
+	 * Подпись для параметра "ФИО".
+	 */
+	public static final String FIO_TITLE = "ФИО";
 	
 	/**
 	 * "Нулевое" значение для группы крови.
@@ -217,6 +225,10 @@ public abstract class AbstractFilter<T> implements Serializable {
 
 	public String getDonorStatusTitle() {
 		return DONOR_STATUS_TITLE;
+	}
+
+	public String getDonorCategoryTitle() {
+		return DONOR_CATEGORY_TITLE;
 	}
 
 	public String getStatusTitle() {
@@ -301,6 +313,10 @@ public abstract class AbstractFilter<T> implements Serializable {
 
 	public String getRegistrationDateTitle() {
 		return REGISTRATION_DATE_TITLE;
+	}
+
+	public String getFioTitle() {
+		return FIO_TITLE;
 	}
 
 	public int getBloodGroupNullValue() {

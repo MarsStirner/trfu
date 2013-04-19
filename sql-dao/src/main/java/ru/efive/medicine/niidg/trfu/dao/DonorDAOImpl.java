@@ -440,6 +440,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 			int bloodGroupId = donorsFilter.getBloodGroupId();
 			int rhesusFactorId = donorsFilter.getRhesusFactorId();
 			int pastQuarantineId = donorsFilter.getPastQuarantineId();
+			int categoryId = donorsFilter.getCategoryId();
 			
 			if (StringUtils.isNotEmpty(number)) {
 				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
@@ -484,6 +485,9 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 			if (StringUtils.isNotEmpty(factAddress)) {
 				conjunction.add(Restrictions.ilike("factAddress", factAddress, MatchMode.ANYWHERE));
 			}
+	        if (categoryId != DonorsFilter.DONOR_CATEGORY_NULL_VALUE) {
+	        	conjunction.add(Restrictions.eq("category", categoryId));
+	        }
 	        if (statusId != DonorsFilter.DONOR_STATUS_NULL_VALUE) {
 	        	conjunction.add(Restrictions.eq("statusId", statusId));
 	        }

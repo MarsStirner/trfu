@@ -1095,9 +1095,16 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 			Date donationDate = filter.getDonationDate();
 			Date expirationDate = filter.getExpirationDate();
 			int statusId = filter.getStatusId();
+			String fio = filter.getFio();
 			
 			if (StringUtils.isNotEmpty(number)) {
-				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
+				String[] numbers = number.split("-");
+				if (numbers.length == 1) {
+					conjunction.add(Restrictions.ilike("number", numbers[0], MatchMode.ANYWHERE));
+				} else {
+					conjunction.add(Restrictions.ilike("parentNumber", numbers[0], MatchMode.ANYWHERE));
+					conjunction.add(Restrictions.ilike("number", numbers[1], MatchMode.ANYWHERE));
+				}
 			}
 			if (StringUtils.isNotEmpty(donorCode)) {
 				conjunction.add(Restrictions.ilike("donorCode", donorCode, MatchMode.ANYWHERE));
@@ -1123,7 +1130,16 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	        if (makerId != BloodComponentsFilter.MAKER_NULL_VALUE) {
 	        	conjunction.add(Restrictions.eq("maker.id", makerId));
 	        }
-			
+			if (StringUtils.isNotEmpty(fio)) {
+	            criteria.createAlias("donation", "donation", CriteriaSpecification.INNER_JOIN);
+	            criteria.createAlias("donation.donor", "donor", CriteriaSpecification.INNER_JOIN);
+	            Disjunction disjunction = Restrictions.disjunction();
+	            disjunction.add(Restrictions.ilike("donor.lastName", fio, MatchMode.ANYWHERE));
+	            disjunction.add(Restrictions.ilike("donor.middleName", fio, MatchMode.ANYWHERE));
+	            disjunction.add(Restrictions.ilike("donor.firstName", fio, MatchMode.ANYWHERE));
+	            conjunction.add(disjunction);
+			}	        
+	        
 			criteria.add(conjunction);
 		}
         return criteria;

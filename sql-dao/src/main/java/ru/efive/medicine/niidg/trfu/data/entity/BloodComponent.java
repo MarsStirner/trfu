@@ -791,4 +791,19 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
 	
 	
 	private static final long serialVersionUID = -7114694453722100437L;
+	
+    /**
+     * Донация
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "donationId", insertable = false, updatable = false)
+    private BloodDonationRequest donation;
+
+	public BloodDonationRequest getDonation() {
+		return donation;
+	}
+
+	public void setDonation(BloodDonationRequest donation) {
+		this.donation = donation;
+	}
 }

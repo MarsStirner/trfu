@@ -13,6 +13,7 @@ import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
+import ru.efive.medicine.niidg.trfu.data.dictionary.DonorCategory;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Gender;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
@@ -71,6 +72,7 @@ public class DonorFilterableListHolderBean extends AbstractFilterableListHolderB
 		int bloodGroupId = storedFilter.getBloodGroupId();
 		int rhesusFactorId = storedFilter.getRhesusFactorId();
 		int pastQuarantineId = storedFilter.getPastQuarantineId();
+		int categoryId = storedFilter.getCategoryId();
 
 		if (StringUtils.isNotEmpty(number)) {
 			parameters.add(new FilterParameter(DonorsFilter.NUMBER_TITLE, number));
@@ -120,6 +122,13 @@ public class DonorFilterableListHolderBean extends AbstractFilterableListHolderB
 		}
 		if (StringUtils.isNotEmpty(factAddress)) {
 			parameters.add(new FilterParameter(DonorsFilter.FACT_ADDRESS_TITLE, factAddress));
+		}
+		if (categoryId != DonorsFilter.DONOR_CATEGORY_NULL_VALUE) {
+			DonorCategory donorCategory = getDictionaryDAO().getDonorCategory(categoryId);
+        	if (donorCategory != null) {
+				parameters.add(new FilterParameter(DonorsFilter.DONOR_CATEGORY_TITLE,
+						donorCategory.getValue()));
+        	}
 		}
         if (statusId != DonorsFilter.DONOR_STATUS_NULL_VALUE) {
     		String statusName = ApplicationHelper.getStatusName("Donor", statusId);

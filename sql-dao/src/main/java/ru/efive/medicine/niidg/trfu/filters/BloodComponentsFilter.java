@@ -60,6 +60,10 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 	 * 0 - любой, значение по умолчанию, прописано в константе BLOOD_COMPONENT_STATUS_NULL_VALUE).
 	 */
 	private int statusId;
+	/**
+	 * ФИО донора.
+	 */
+	private String fio;
 	
     public String getNumber() {
 		return number;
@@ -137,6 +141,14 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 		return MAKER_NULL_VALUE;
 	}
 
+	public String getFio() {
+		return fio;
+	}
+
+	public void setFio(String fio) {
+		this.fio = fio;
+	}
+
 	/**
      * Конструктор по умолчанию.
      */
@@ -164,6 +176,7 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 		statusId = BLOOD_COMPONENT_STATUS_NULL_VALUE;
 		bloodGroupId = BLOOD_GROUP_NULL_VALUE;
 		rhesusFactorId = RHESUS_FACTOR_NULL_VALUE;
+		fio = null;
 	}
 
 	@Override
@@ -177,5 +190,6 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 		setStatusId(source.getStatusId());
 		setBloodGroupId(source.getBloodGroupId());
 		setRhesusFactorId(source.getRhesusFactorId());
+		setFio(source.getFio());
 	}
 }
