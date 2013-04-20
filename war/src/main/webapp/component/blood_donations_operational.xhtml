@@ -429,10 +429,14 @@
                     </fieldset>
                 </div>
             </div>
-            <div class="e5ui-modal-bottombuttons">
-                <h:panelGroup id="op_edit_bottom">
-                    <h:outputText rendered="#{not operationalSession.isReady()}" value="Заполните все необходимые поля"/>
-                    <h:button rendered="#{operationalSession.isReady()}" onclick="operationalEditorVar.clickClose(); return false;" value="Закрыть"/>
+			<div class="e5ui-modal-bottombuttons" style="margin: 10px 0px; width: 100%;">
+				<h:panelGroup id="op_edit_bottom" layout="block">
+					<div style="float: left; padding-left: 10px;">
+						<h:outputText rendered="#{not operationalSession.isReady()}" value="Заполните все необходимые поля"/>
+					</div>
+					<div style="float: right; padding-right: 10px;">
+						<h:button onclick="operationalEditorVar.clickClose(); return false;" value="Закрыть"/>
+					</div>
                 </h:panelGroup>
             </div>
 
