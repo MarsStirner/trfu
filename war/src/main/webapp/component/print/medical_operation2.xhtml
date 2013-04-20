@@ -197,10 +197,12 @@
 									<td>
 										<h:outputText value="#{medicalOperation.document.operationReport.equipment}" converter="ClassifierConverter" />
 									</td>
+									<ui:fragment rendered="#{medicalOperation.document.operationReport.bloodWarmer == true}">
 									<td>
 										<h:selectBooleanCheckbox value="#{medicalOperation.document.operationReport.bloodWarmer}" disabled="#{medicalOperation.viewState}" />
 										<h:outputText value="Подогреватель крови" />
 									</td>
+									</ui:fragment>
 								</tr>
 							</table>
 						</div>
