@@ -1,6 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.filters;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +10,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentOrderRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
@@ -17,6 +21,8 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.TransfusionType;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentOrderRequest;
 import ru.efive.medicine.niidg.trfu.filters.AbstractFilter;
 import ru.efive.medicine.niidg.trfu.filters.BloodComponentOrdersFilter;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.BloodComponentOrdersDocxGenerator;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.BloodComponentOrdersXlsGenerator;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.util.DateHelper;
 
@@ -33,7 +39,7 @@ public class BloodComponentOrderFilterableListHolderBean
 	}
 
 	@Override
-	protected List<FilterParameter> getNotNullFilterParameters() {
+	public List<FilterParameter> getNotNullFilterParameters() {
 		List<FilterParameter> parameters = new ArrayList<FilterParameter>();
 		String number = storedFilter.getNumber();
 		Date created = storedFilter.getCreated();
@@ -110,8 +116,7 @@ public class BloodComponentOrderFilterableListHolderBean
 			}
 		}
 		if (transfusionTypeId != BloodComponentOrdersFilter.TRANSFUSION_TYPE_NULL_VALUE) {
-			TransfusionType transfusionType = getDictionaryDAO()
-					.getTransfusionType(transfusionTypeId);
+			TransfusionType transfusionType = getTransfusionType(transfusionTypeId);
 			if (transfusionType != null) {
 				parameters.add(new FilterParameter(
 						AbstractFilter.TRANSFUSION_TYPE_TITLE, transfusionType
@@ -127,14 +132,18 @@ public class BloodComponentOrderFilterableListHolderBean
 		return parameters;
 	}
 
+	public TransfusionType getTransfusionType(int transfusionTypeId) {
+		return getDictionaryDAO().getTransfusionType(transfusionTypeId);
+	}
+
 	@Override
-	protected List<BloodComponentOrderRequest> loadDocuments(int offset,
-			int pageSize) {
+	public List<BloodComponentOrderRequest> loadDocuments(int offset,
+			int pageSize, BloodComponentOrdersFilter filter) {
 		try {
 			return sessionManagement.getDAO(
 					BloodComponentOrderRequestDAOImpl.class,
 					ApplicationHelper.COMPONENT_ORDER_DAO).findDocuments(
-					storedFilter, offset, pageSize, getSorting().getColumnId(),
+					filter, offset, pageSize, getSorting().getColumnId(),
 					getSorting().isAsc());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -143,18 +152,41 @@ public class BloodComponentOrderFilterableListHolderBean
 	}
 
 	@Override
-	protected void initFilters() {
-		currentFilter = new BloodComponentOrdersFilter();
-		storedFilter = new BloodComponentOrdersFilter();
+	public void formXlsContent(Workbook wb, File logoFile) throws Exception {
+		new BloodComponentOrdersXlsGenerator(wb, logoFile, this).formContent();
 	}
 
 	@Override
-	protected int getTotalCount() {
+	public String getFormTitle() {
+		return "Заявки на выдачу КК";
+	}
+
+	@Override
+	public void formDocxContent(WordprocessingMLPackage pkg, File logoFile)
+			throws Exception {
+		new BloodComponentOrdersDocxGenerator(pkg, logoFile, this)
+				.formContent();
+	}
+
+	@Override
+	public List<String> getFormColumns() {
+		return Arrays.asList(new String[] { "Номер", "Дата\nрегистрации",
+				"Реципиент", "Компонент", "Вид трансфузии", "Отделение",
+				"Статус" });
+	}
+
+	@Override
+	public BloodComponentOrdersFilter createFilterInstance() {
+		return new BloodComponentOrdersFilter();
+	}
+
+	@Override
+	public int getTotalCount(BloodComponentOrdersFilter filter) {
 		try {
 			long count = sessionManagement.getDAO(
 					BloodComponentOrderRequestDAOImpl.class,
 					ApplicationHelper.COMPONENT_ORDER_DAO).countDocument(
-					storedFilter);
+					filter);
 			return new Long(count).intValue();
 		} catch (Exception e) {
 			e.printStackTrace();

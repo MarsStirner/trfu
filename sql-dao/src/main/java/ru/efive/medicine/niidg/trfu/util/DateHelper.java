@@ -66,4 +66,13 @@ public class DateHelper {
 	public static String formatDateByPattern(Date date, String pattern) {
 		return new SimpleDateFormat(pattern).format(date);
 	}
+
+	/**
+	 * Метод используется для получения текущей даты.
+	 * 
+	 * @return текущую дату в формате "dd.MM.yyyy HH:mm".
+	 */
+	public static String getCurrentDate() {
+		return DateHelper.formatDateByPattern(new Date(), "dd.MM.yyyy HH:mm");
+	}
 }

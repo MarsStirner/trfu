@@ -1,7 +1,6 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.print;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -24,6 +23,6 @@ public class PrintDateBean implements Serializable{
 	 * @return текущую дату в формате "dd.MM.yyyy HH:mm".
 	 */
 	public String getCurrentDate() {
-		return DateHelper.formatDateByPattern(new Date(), "dd.MM.yyyy HH:mm");
+		return DateHelper.getCurrentDate();
 	}
 }

@@ -111,6 +111,63 @@
 			<scope>system</scope>
       		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/fonts-ext-1.0.jar</systemPath>
 		</dependency>
+
+		<dependency>
+			<groupId>poi-libraries</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.7</version>
+			<scope>system</scope>
+      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/poi-3.7-20101029.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>poi-libraries</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.7</version>
+			<scope>system</scope>
+      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/poi-ooxml-3.7-20101029.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>poi-libraries</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>3.7</version>
+			<scope>system</scope>
+      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/poi-ooxml-schemas-3.7-20101029.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>poi-libraries</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+			<version>3.7</version>
+			<scope>system</scope>
+      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/poi-scratchpad-3.7-20101029.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>docx-libraries</groupId>
+			<artifactId>docx4j</artifactId>
+			<version>2.8.1</version>
+			<scope>system</scope>
+      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/docx4j-2.8.1.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>docx-libraries</groupId>
+			<artifactId>xmlgraphics-commons</artifactId>
+			<version>1.4</version>
+			<scope>system</scope>
+      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/xmlgraphics-commons-1.4.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>docx-libraries</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/commons-io-1.0.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>docx-libraries</groupId>
+			<artifactId>jaxb-xmldsig-core</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/jaxb-xmldsig-core-1.0.0.jar</systemPath>
+		</dependency>
 		
 		<dependency>  
 			<groupId>org.primefaces</groupId>  

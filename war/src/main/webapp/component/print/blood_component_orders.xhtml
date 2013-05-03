@@ -35,19 +35,13 @@
 
 	<div id="filter_parameters" style="font-size:14px;">
 		<table>
-			<ui:repeat value="#{bloodComponentOrderFilterableList.filterParametersForPrinting}" var="parametersPair">
+			<ui:repeat value="#{bloodComponentOrderFilterableList.notNullFilterParameters}" var="parameter">
 			<tr>
 				<td class="filterParametersLeftColumnTitle">
-					<h:outputText value="#{parametersPair.leftParameter.title}" escape="false" />
+					<h:outputText value="#{parameter.title}" escape="false" />
 				</td>
 				<td>
-					<h:outputText value="#{parametersPair.leftParameter.value}" />
-				</td>
-				<td class="filterParametersRightColumnTitle">
-					<h:outputText value="#{parametersPair.rightParameter.title}" escape="false" />
-				</td>
-				<td>
-					<h:outputText value="#{parametersPair.rightParameter.value}" />
+					<h:outputText value="#{parameter.value}" />
 				</td>
 			</tr>
 			</ui:repeat>

@@ -1,6 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.filters;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -8,11 +10,15 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 
 import ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationType;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
 import ru.efive.medicine.niidg.trfu.filters.ExaminationsFilter;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.ExaminationRequestsDocxGenerator;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.ExaminationRequestsXlsGenerator;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.util.DateHelper;
 
@@ -29,25 +35,12 @@ public class ExaminationRequestFilterableListHolderBean
 	}
 
 	@Override
-	protected int getTotalCount() {
-		try {
-			long count = sessionManagement.getDAO(
-					ExaminationRequestDAOImpl.class,
-					ApplicationHelper.EXAMINATION_DAO).countDocument(
-					storedFilter);
-			return new Long(count).intValue();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return 0;
-	}
-
-	@Override
-	protected List<ExaminationRequest> loadDocuments(int offset, int pageSize) {
+	public List<ExaminationRequest> loadDocuments(int offset, int pageSize,
+			ExaminationsFilter filter) {
 		try {
 			return sessionManagement.getDAO(ExaminationRequestDAOImpl.class,
-					ApplicationHelper.EXAMINATION_DAO).findDocuments(
-					storedFilter, offset, pageSize, getSorting().getColumnId(),
+					ApplicationHelper.EXAMINATION_DAO).findDocuments(filter,
+					offset, pageSize, getSorting().getColumnId(),
 					getSorting().isAsc());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,7 +49,7 @@ public class ExaminationRequestFilterableListHolderBean
 	}
 
 	@Override
-	protected List<FilterParameter> getNotNullFilterParameters() {
+	public List<FilterParameter> getNotNullFilterParameters() {
 		List<FilterParameter> parameters = new ArrayList<FilterParameter>();
 		String number = storedFilter.getNumber();
 		String donor = storedFilter.getDonor();
@@ -92,8 +85,7 @@ public class ExaminationRequestFilterableListHolderBean
 					statusName));
 		}
 		if (examinationTypeId != ExaminationsFilter.EXAMINATION_TYPE_NULL_VALUE) {
-			ExaminationType examinationType = getDictionaryDAO()
-					.getExaminationType(examinationTypeId);
+			ExaminationType examinationType = getExaminationType(examinationTypeId);
 			if (examinationType != null) {
 				parameters.add(new FilterParameter(
 						ExaminationsFilter.EXAMINATION_TYPE_TITLE,
@@ -104,9 +96,50 @@ public class ExaminationRequestFilterableListHolderBean
 		return parameters;
 	}
 
+	public ExaminationType getExaminationType(int examinationTypeId) {
+		ExaminationType examinationType = getDictionaryDAO()
+				.getExaminationType(examinationTypeId);
+		return examinationType;
+	}
+
 	@Override
-	protected void initFilters() {
-		currentFilter = new ExaminationsFilter();
-		storedFilter = new ExaminationsFilter();
+	public void formXlsContent(Workbook wb, File logoFile) throws Exception {
+		new ExaminationRequestsXlsGenerator(wb, logoFile, this).formContent();
+	}
+
+	@Override
+	public String getFormTitle() {
+		return "Обращения на обследования";
+	}
+
+	@Override
+	public void formDocxContent(WordprocessingMLPackage pkg, File logoFile)
+			throws Exception {
+		new ExaminationRequestsDocxGenerator(pkg, logoFile, this).formContent();
+	}
+
+	@Override
+	public List<String> getFormColumns() {
+		return Arrays.asList(new String[] { "Номер", "Дата\nсоздания", "Донор",
+				"Обследование", "Планируемая\nдата", "Статус", "Комментарии" });
+	}
+
+	@Override
+	public ExaminationsFilter createFilterInstance() {
+		return new ExaminationsFilter();
+	}
+
+	@Override
+	public int getTotalCount(ExaminationsFilter filter) {
+		try {
+			long count = sessionManagement.getDAO(
+					ExaminationRequestDAOImpl.class,
+					ApplicationHelper.EXAMINATION_DAO).countDocument(
+					filter);
+			return new Long(count).intValue();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 }

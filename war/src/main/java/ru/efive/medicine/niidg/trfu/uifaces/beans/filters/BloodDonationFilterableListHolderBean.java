@@ -1,6 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.filters;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -8,12 +10,16 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 
 import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.filters.BloodDonationsFilter;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.BloodDonationsDocxGenerator;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.BloodDonationsXlsGenerator;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.util.DateHelper;
 
@@ -30,7 +36,7 @@ public class BloodDonationFilterableListHolderBean
 	}
 
 	@Override
-	protected List<FilterParameter> getNotNullFilterParameters() {
+	public List<FilterParameter> getNotNullFilterParameters() {
 		List<FilterParameter> parameters = new ArrayList<FilterParameter>();
 		String number = storedFilter.getNumber();
 		String donor = storedFilter.getDonor();
@@ -82,10 +88,11 @@ public class BloodDonationFilterableListHolderBean
 	}
 
 	@Override
-	protected List<BloodDonationRequest> loadDocuments(int offset, int pageSize) {
+	public List<BloodDonationRequest> loadDocuments(int offset, int pageSize,
+			BloodDonationsFilter filter) {
 		try {
 			return sessionManagement.getDAO(BloodDonationRequestDAOImpl.class,
-					ApplicationHelper.DONATION_DAO).findDocuments(storedFilter,
+					ApplicationHelper.DONATION_DAO).findDocuments(filter,
 					offset, pageSize, getSorting().getColumnId(),
 					getSorting().isAsc());
 		} catch (Exception e) {
@@ -95,17 +102,38 @@ public class BloodDonationFilterableListHolderBean
 	}
 
 	@Override
-	protected void initFilters() {
-		currentFilter = new BloodDonationsFilter();
-		storedFilter = new BloodDonationsFilter();
+	public void formXlsContent(Workbook wb, File logoFile) throws Exception {
+		new BloodDonationsXlsGenerator(wb, logoFile, this).formContent();
 	}
 
 	@Override
-	protected int getTotalCount() {
+	public String getFormTitle() {
+		return "Обращения на донацию";
+	}
+
+	@Override
+	public void formDocxContent(WordprocessingMLPackage pkg, File logoFile)
+			throws Exception {
+		new BloodDonationsDocxGenerator(pkg, logoFile, this).formContent();
+	}
+
+	@Override
+	public List<String> getFormColumns() {
+		return Arrays.asList(new String[] { "Номер", "Дата\nсоздания", "Донор",
+				"Тип донора", "Вид донорства", "Статус", "Комментарии" });
+	}
+
+	@Override
+	public BloodDonationsFilter createFilterInstance() {
+		return new BloodDonationsFilter();
+	}
+
+	@Override
+	public int getTotalCount(BloodDonationsFilter filter) {
 		try {
 			long count = sessionManagement.getDAO(
 					BloodDonationRequestDAOImpl.class,
-					ApplicationHelper.DONATION_DAO).countDocument(storedFilter);
+					ApplicationHelper.DONATION_DAO).countDocument(filter);
 			return new Long(count).intValue();
 		} catch (Exception e) {
 			e.printStackTrace();

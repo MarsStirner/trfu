@@ -33,11 +33,35 @@
             	Обновить
            	</h:commandLink>
 		</div>
-		<div class="defbutton">
-			<h:outputLink value="#{contextPath}/component/print/donors.xhtml" target="_blank">
+		<div class="top" style="height: 27px;">
+        	<h:commandLink styleClass="top_link" onclick="return false;">
             	<h:graphicImage value="#{resource['images:button-print.png']}" />
 				Печать
-			</h:outputLink>	
+			</h:commandLink>
+			<div class="sub">
+            	<div class="item">
+					<h:outputLink value="#{contextPath}/component/print/donors.xhtml" target="_blank">
+		            	<h:graphicImage value="#{resource['images:blank.png']}" />
+						Печать из браузера
+					</h:outputLink>	
+				</div>
+				<div class="item">
+					<h:outputLink value="#{contextPath}/filter-results-export">
+						<h:graphicImage value="#{resource['images:button-export.png']}" />
+						<f:param name="bean" value="donorFilterableList" />
+						<f:param name="ext" value="docx" />
+						Экспорт в Word
+					</h:outputLink>	
+				</div>
+				<div class="item">
+					<h:outputLink value="#{contextPath}/filter-results-export">
+						<h:graphicImage value="#{resource['images:button-export.png']}" />
+						<f:param name="bean" value="donorFilterableList" />
+						<f:param name="ext" value="xlsx" />
+						Экспорт в Excel
+					</h:outputLink>	
+				</div>
+			</div>
 		</div>
 		<div class="defbutton" id="hide_filter_div" style="display: none;">
 			<h:commandLink action="#{donorFilterableList.hideFilterPanel()}" onclick="hideFilter();">

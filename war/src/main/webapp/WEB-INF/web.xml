@@ -74,4 +74,15 @@
 		<param-name>primefaces.THEME</param-name>
 		<param-value>none</param-value>
 	</context-param-->
+	
+   <servlet>
+      <servlet-name>filter-results-export</servlet-name>
+      <servlet-class>ru.efive.medicine.niidg.trfu.servlet.FilterResultsExportServlet</servlet-class>
+   </servlet>
+
+   <servlet-mapping>
+      <servlet-name>filter-results-export</servlet-name>
+      <url-pattern>/filter-results-export</url-pattern>
+   </servlet-mapping>
+	
 </web-app>

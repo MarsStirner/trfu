@@ -136,11 +136,11 @@ public abstract class AbstractFilter<T> implements Serializable {
 	/**
 	 * Подпись для параметра "Фамилия реципиента".
 	 */
-	public static final String RECIPIENT_LAST_NAME_TITLE = "Фамилия реципиента";
+	public static final String RECIPIENT_LAST_NAME_TITLE = "Фамилия <br/>реципиента";
 	/**
 	 * Подпись для параметра "Отчество реципиента".
 	 */
-	public static final String RECIPIENT_MIDDLE_NAME_TITLE = "Отчество реципиента";
+	public static final String RECIPIENT_MIDDLE_NAME_TITLE = "Отчество <br/>реципиента";
 	/**
 	 * Подпись для параметра "Вид трансфузии".
 	 */
