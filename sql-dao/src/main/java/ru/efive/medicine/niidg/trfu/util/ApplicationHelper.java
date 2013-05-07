@@ -375,6 +375,9 @@ public final class ApplicationHelper {
     		else if (id == 13) {
     			result = "Отмена выдачи";
     		}
+    		else if (id == VIRUSINAKTIVATION_ID) {
+    			result = VIRUSINAKTIVATION;
+    		}
     		else if (id == 99) {
     			// Готов к выдаче, отрицательная рекация
     			result = "Готов к выдаче";
@@ -615,6 +618,11 @@ public final class ApplicationHelper {
     public static String ANALYSIS_CATEGORY_SECONDARY = "Вторичный";
     public static String ANALYSIS_CATEGORY_COMMON = "Общий";
     
+    /**
+     * Действие "Вирусинактивация" для компонента крови
+     */
+    public static final String VIRUSINAKTIVATION = "Вирусинактивация";
+    public static final Integer VIRUSINAKTIVATION_ID = 14;
     
     public static String STORE_NAME = "E5 TRANSFUSION";
 	public static String NAMESPACE = "http://www.alfresco.org/model/content/1.0";

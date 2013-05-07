@@ -664,6 +664,63 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 			}
 		}
 	};
+	private VirusinaktivationModalBean virusinaktivationModal = new VirusinaktivationModalBean(){
+
+		public void perfomVirusinaktivation(){
+			if(isValid()){
+				BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+				BloodComponent bloodComponent = getDocument();
+				bloodComponent.setPreInactivatedVolume(bloodComponent.getVolume());
+				bloodComponent.setVolume(Integer.parseInt(getVolume()));
+				bloodComponent.setInactivated(true);
+			
+				Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
+				HistoryEntry historyEntry = new HistoryEntry();
+				historyEntry.setCreated(created);
+				historyEntry.setStartDate(created);
+				historyEntry.setOwner(sessionManagement.getLoggedUser());
+				historyEntry.setDocType(bloodComponent.getType());
+				historyEntry.setParentId(bloodComponent.getId());
+//				historyEntry.setActionId(14);
+				historyEntry.setActionId(ApplicationHelper.VIRUSINAKTIVATION_ID);
+				historyEntry.setFromStatusId(bloodComponent.getStatusId());
+				historyEntry.setCommentary("");
+				Set<HistoryEntry> history = bloodComponent.getHistory();
+				history.add(historyEntry);
+		
+				dao.save(bloodComponent);
+				setDocument(bloodComponent);
+				doHide();
+			}else{
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Введите целое число!", ""));
+			}
+		}
+			
+		public void doHide(){
+			virusinaktivationModal.setModalVisible(false);
+		}
+	};
+	
+	/**
+	 * Метод возвращает модальное окно Вирусинактивации
+	 * @return VirusinaktivationModalBean
+	 */
+	public VirusinaktivationModalBean getVirusinaktivationModal(){
+		return virusinaktivationModal;
+	}
+	
+	public boolean isVirusinaktivation(){
+		boolean result = false;
+		if(processorModal.getSelectedAction() != null){
+//			if(processorModal.getSelectedAction().getName().equals("Вирусинактивация")){
+			if(processorModal.getSelectedAction().getName().equals(ApplicationHelper.VIRUSINAKTIVATION)){
+				result = true;
+			}
+		}
+		return result;
+	}
 	
     public ContragentSelectModalHolder getContragentSelectModal() {
         return contragentSelectModal;

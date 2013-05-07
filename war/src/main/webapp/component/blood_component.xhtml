@@ -91,7 +91,10 @@
 									</h:panelGroup>
 									<div class="e5ui-modal-bottombuttons">
 										<h:commandButton action="#{bloodComponent.processorModal.process()}"
-													rendered="#{bloodComponent.processorModal.actionsAvailable or bloodComponent.processorModal.processingState}"
+													rendered="#{(bloodComponent.processorModal.actionsAvailable or bloodComponent.processorModal.processingState) and not(bloodComponent.virusinaktivation)}"
+													value="Выполнить" />
+										<h:commandButton rendered="#{bloodComponent.virusinaktivation}"
+													onclick="actionsModal.clickClose(); virusinaktivationModal.clickOpen('virusinaktivationModal'); return false;"
 													value="Выполнить" />
 										<h:button rendered="#{bloodComponent.processorModal.actionsAvailable or bloodComponent.processorModal.processingState}"
 													onclick="actionsModal.clickClose(); return false;"
@@ -99,6 +102,40 @@
 										<h:button rendered="#{bloodComponent.processorModal.noActionsAvailable or bloodComponent.processorModal.failureState or bloodComponent.processorModal.processedState}"
 													onclick="actionsModal.clickClose(); return false;"
 													value="Закрыть" />
+									</div>
+								</e5ui-comp:modalWindow>
+								
+								<e5ui-comp:modalWindow id="virusinaktivationModal"
+											modalWindowHolder="#{bloodComponent.virusinaktivationModal}"
+											showButtons="false"
+											widgetVar="virusinaktivationModal">
+									<h:panelGroup>
+										<div id="title">Вирусинактивация</div>
+									</h:panelGroup>
+									<h:panelGroup>
+										<div class="wrap" style="height:90px;background-color:#fff;clear:both;">
+											<div class="inner" style="height: 90px;">
+												<table style="padding:7px; height:100%; text-align:left;" border="0"  width="100%" >														
+													<tr>
+														<td>Объем до вирусинактивации, мл:</td>
+														<td><h:outputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" label="volume"/></td>
+													</tr>
+													<tr>
+														<td>Объем компонента, мл:</td>
+														<td>
+															<h:inputText id="status" value="#{bloodComponent.virusinaktivationModal.volume}" 
+																style="font-weight:bold;">
+																<f:ajax event="keyup" />
+															</h:inputText>
+														</td>
+													</tr>
+												</table>		
+											</div>
+										</div>
+									</h:panelGroup>
+									<div class="e5ui-modal-bottombuttons">
+										<h:commandButton type="submit" action="#{bloodComponent.virusinaktivationModal.perfomVirusinaktivation}" value="Выполнить" />
+										<h:button onclick="virusinaktivationModal.clickClose(); actionsModal.clickClose(); return false;" value="Отмена" />
 									</div>
 								</e5ui-comp:modalWindow>
 							</e5ui:formPart>
