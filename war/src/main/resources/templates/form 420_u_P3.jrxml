@@ -144,6 +144,7 @@ WHERE
   OR wf.to_status_id = -1
   OR wf.to_status_id = -10)
   and comp.split=0
+  and comp.deleted = 0
 GROUP BY
   to_status_id
 , trfu_blood_component_types_id

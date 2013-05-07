@@ -52,15 +52,16 @@ FROM
 WHERE
      trfu_blood_donation_entries.`donationType_id` = 4
  AND trfu_blood_donation_requests.`factDate` >= $P{StartDate}
- AND trfu_blood_donation_requests.`factDate` <= $P{EndDate}]]>
+ AND trfu_blood_donation_requests.`factDate` <= $P{EndDate}
+and trfu_blood_donation_requests.deleted = 0]]>
 	</queryString>
 	<field name="trfu_blood_donation_requests_count" class="java.lang.Long"/>
 	<field name="trfu_blood_donation_entries_dose" class="java.lang.Integer"/>
 	<field name="trfu_blood_donation_requests_factDate" class="java.sql.Timestamp"/>
 	<field name="trfu_pheresis_reports_plasmaVolume" class="java.lang.Double"/>
+	<field name="trfu_pheresis_reports_ErVolume" class="java.lang.Double"/>
 	<field name="trfu_blood_donation_requests_analysisCount" class="java.lang.Integer"/>
 	<field name="trfu_pheresis_reports_totalPltVolume" class="java.lang.Double"/>
-	<field name="trfu_pheresis_reports_erVolume" class="java.lang.Double"/>
 	<field name="trfu_pheresis_reports_acErVolume" class="java.lang.Double"/>
 	<field name="trfu_pheresis_reports_acPlasmaVolume" class="java.lang.Double"/>
 	<field name="trfu_pheresis_reports_recievedAcVolume" class="java.lang.Double"/>
@@ -167,8 +168,7 @@ WHERE
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Утверждаю\n"+
-"Главный врач "+ $P{HeadDoctor}
-]]></textFieldExpression>
+"Главный врач "+ $P{HeadDoctor}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

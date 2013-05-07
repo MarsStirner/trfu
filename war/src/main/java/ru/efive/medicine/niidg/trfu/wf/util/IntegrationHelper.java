@@ -1,14 +1,20 @@
 package ru.efive.medicine.niidg.trfu.wf.util;
 
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.faces.context.FacesContext;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hl7.v3.POCDMT000040ClinicalDocument;
 
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
@@ -392,13 +398,13 @@ public class IntegrationHelper {
 		        //component.setId(Integer.valueOf(orderRequest.getExternalNumber()));
 		        component.setVolume(orderRequest.getVolume());
 		        
-		        IssueResult issueResult = medicalService.getPortTransfusion().setOrderIssueResult(orderRequest.getId(),factDate, Arrays.asList(component), orderRequest.getCommentary());
+		        IssueResult issueResult = medicalService.getPortTransfusion().setOrderIssueResult(Integer.parseInt(orderRequest.getExternalNumber()),factDate, Arrays.asList(component), orderRequest.getCommentary());
 		        
 		        result.setProcessed(issueResult.isResult());
 		        result.setDescription(issueResult.getDescription());
 			}
 			else {
-				System.out.println("MIS integration disabled");
+				logger.warn("MIS integration disabled");
 				result.setProcessed(true);
 			}
     	}
@@ -440,7 +446,7 @@ public class IntegrationHelper {
 	    		result.setDescription("В лечебной процедуре не указан донор");
 	    		return result;
 	    	}
-	    	patientCredentials.setId(operation.getDonor().getExternalId());
+	    	patientCredentials.setId(operation.getRecipientExternalId());
 	    	patientCredentials.setFirstName(operation.getDonor().getFirstName());
 	    	patientCredentials.setMiddleName(operation.getDonor().getMiddleName());
 	    	patientCredentials.setLastName(operation.getDonor().getLastName());
@@ -455,6 +461,11 @@ public class IntegrationHelper {
 	    		result.setDescription("Не указан резус-фактор донора");
 	    		return result;
 	    	}
+	    	if (operation.getFactDate() == null) {
+	    		result.setProcessed(false);
+	    		result.setDescription("Не указана фактическая дата проведения процедуры");
+	    		return result;
+	    	}
 	    	patientCredentials.setRhesusFactorId(StringUtils.equalsIgnoreCase(operation.getDonor().getRhesusFactor().getValue(), "положительный")? 0: 1);
 	    	
 	    	if (operation.getDonor().getBirth() == null) {
@@ -467,7 +478,7 @@ public class IntegrationHelper {
 	    	patientCredentials.setBirth(new XMLGregorianCalendarImpl(calendar));
 	    	
 		    ProcedureInfo procedureInfo = new ProcedureInfo();
-		    procedureInfo.setId(operation.getId());
+		    procedureInfo.setId(operation.getExternalId());
 		    calendar = new GregorianCalendar();
 	    	calendar.setTime(operation.getFactDate() == null? operation.getCreated(): operation.getFactDate());
 		    procedureInfo.setFactDate(new XMLGregorianCalendarImpl(calendar));
@@ -572,16 +583,31 @@ public class IntegrationHelper {
 		    	}
 	    	}
 	    	
+		    try {
+		    	logger.warn(marshalDocument(PatientCredentials.class, patientCredentials));
+		    	logger.warn(marshalDocument(ProcedureInfo.class, procedureInfo));
+		    }
+		    catch (JAXBException e) {
+		    	logger.error(e);
+		    }
 	    	IssueResult issueResult = medicalService.getPortTransfusion().setProcedureResult(patientCredentials, procedureInfo, eritrocyteMass, measures, finalVolumeList);
 	    	
 	        result.setProcessed(issueResult.isResult());
 	        result.setDescription(issueResult.getDescription());
 		}
 		else {
-			System.out.println("MIS integration disabled");
+			logger.warn("MIS integration disabled");
 			result.setProcessed(true);
 		}
         return result;
+    }
+    
+    private static String marshalDocument(Class clazz, Object document) throws JAXBException {
+        Marshaller marshaller = JAXBContext.newInstance(clazz).createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        StringWriter stringWriter = new StringWriter();
+        marshaller.marshal(document, stringWriter);
+        return stringWriter.toString();
     }
     
     public static boolean updateDivisions() {
@@ -630,7 +656,7 @@ public class IntegrationHelper {
 	            }
     		}
     		else {
-    			System.out.println("MIS integration disabled");
+    			logger.warn("MIS integration disabled");
     		}
             result = true;
     	}

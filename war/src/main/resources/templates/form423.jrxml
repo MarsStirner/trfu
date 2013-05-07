@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report3" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.2100000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -995,6 +995,7 @@ inner join trfu_blood_component_types type on comp.componentType_id=type.id
 inner join trfu_blood_component_history comp_hist on comp_hist.component_id=comp.id
 inner join wf_history wf on comp_hist.history_entry_id=wf.id
  where comp.componentType_id<>68 and comp.status_id<>-1
+ and comp.deleted = 0
 group by comp_type]]>
 	</queryString>
 	<field name="donationDate" class="java.sql.Timestamp"/>

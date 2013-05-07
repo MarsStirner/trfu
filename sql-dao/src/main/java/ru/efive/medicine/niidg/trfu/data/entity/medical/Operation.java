@@ -197,6 +197,14 @@ public class Operation extends Document implements ProcessedData {
 		(StringUtils.isEmpty(recipientMiddleName)? "": recipientMiddleName)).trim();
 	}
 	
+	public int getRecipientExternalId() {
+		return recipientExternalId;
+	}
+
+	public void setRecipientExternalId(int recipientExternalId) {
+		this.recipientExternalId = recipientExternalId;
+	}
+
 	public String getIbNumber() {
 		return ibNumber;
 	}
@@ -411,6 +419,15 @@ public class Operation extends Document implements ProcessedData {
 	}
 	
 	
+	public int getExternalId() {
+		return externalId;
+	}
+
+	public void setExternalId(int externalId) {
+		this.externalId = externalId;
+	}
+
+
 	/**
 	 * Номер
 	 */
@@ -487,6 +504,8 @@ public class Operation extends Document implements ProcessedData {
 	 * Фамилия реципиента
 	 */
 	private String recipientLastName;
+	
+	private int recipientExternalId;
 	
 	/**
 	 * № ИБ
@@ -609,6 +628,7 @@ public class Operation extends Document implements ProcessedData {
 	
 	private boolean fromMIS = false;
 	
+	private int externalId;
 	
 	private static final long serialVersionUID = -8145103746578726409L;
 }

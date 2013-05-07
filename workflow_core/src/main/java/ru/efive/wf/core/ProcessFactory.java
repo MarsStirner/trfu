@@ -2053,6 +2053,12 @@ public final class ProcessFactory {
 				activity.setParentAction(toStatusAction);
 				activites.add(activity);
 				
+				activity = new InvokeMethodActivity();
+				list = new ArrayList<Object>();
+				list.add(t);
+				activity.setInvokeInformation("misexchange.PharmacyExchangeUtils", "decreaseBloodSystemsCount", list);
+				activity.setParentAction(toStatusAction);
+				activites.add(activity);
 
 				activity = new InvokeMethodActivity();
 				list = new ArrayList<Object>();
@@ -2144,6 +2150,13 @@ public final class ProcessFactory {
 				activity = new InvokeMethodActivity();
 				list = new ArrayList<Object>();
 				list.add(t);
+				activity.setInvokeInformation("misexchange.PharmacyExchangeUtils", "decreaseBloodSystemsCount", list);
+				activity.setParentAction(toStatusAction);
+				activites.add(activity);
+				
+				activity = new InvokeMethodActivity();
+				list = new ArrayList<Object>();
+				list.add(t);
 				activity.setInvokeInformation("ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper", "queryAppointment", list);
 				activity.setParentAction(toStatusAction);
 				activites.add(activity);
@@ -2217,6 +2230,13 @@ public final class ProcessFactory {
 				list = new ArrayList<Object>();
 				list.add(t);
 				activity.setInvokeInformation("misexchange.PharmacyExchangeUtils", "checkDonationRequest", list);
+				activity.setParentAction(toStatusAction);
+				activites.add(activity);
+				
+				activity = new InvokeMethodActivity();
+				list = new ArrayList<Object>();
+				list.add(t);
+				activity.setInvokeInformation("misexchange.PharmacyExchangeUtils", "decreaseBloodSystemsCount", list);
 				activity.setParentAction(toStatusAction);
 				activites.add(activity);
 				

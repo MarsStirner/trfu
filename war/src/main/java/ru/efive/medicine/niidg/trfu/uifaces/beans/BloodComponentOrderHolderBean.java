@@ -31,6 +31,8 @@ import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
 import ru.efive.wf.core.ActionResult;
+import ru.efive.wf.core.activity.EditableProperty;
+import ru.efive.wf.core.util.EngineHelper;
 
 @Named("bloodComponentOrder")
 @ConversationScoped
@@ -392,6 +394,16 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
 			}
 			setDocument(request);
 			BloodComponentOrderHolderBean.this.save();
+		}
+		@Override
+		protected void doProcessException(ActionResult actionResult) {
+			if (getSelectedAction() != null) {
+				for (EditableProperty property: getSelectedAction().getProperties()) {
+					if (property.getName().equals(EngineHelper.PROP_WF_RESULT_DESCRIPTION) && property.getValue() != null) {
+						setActionResult(property.getValue().toString());
+					}
+				}
+			}
 		}
 	};
 	

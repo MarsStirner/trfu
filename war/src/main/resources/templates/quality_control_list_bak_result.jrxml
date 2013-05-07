@@ -53,7 +53,8 @@ ON tests.type_id = anal_types.id
 WHERE
   comp.inControl = TRUE and
 date(comp.`DonationDate`) = date($P{ControlDate})
-and anal_types.`value` like '%стерильно%']]>
+and anal_types.`value` like '%стерильно%'
+AND comp.deleted = 0]]>
 	</queryString>
 	<field name="trfu_analysis_types_value" class="java.lang.String"/>
 	<field name="trfu_blood_component_types_value" class="java.lang.String"/>
@@ -70,7 +71,7 @@ and anal_types.`value` like '%стерильно%']]>
 				<staticText>
 					<reportElement positionType="Float" x="0" y="20" width="555" height="39"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma" size="13" isBold="true"/>
+						<font fontName="Tahoma" size="14" isBold="false"/>
 					</textElement>
 					<text><![CDATA[Протокол исследований показателей контроля качества]]></text>
 				</staticText>
@@ -105,7 +106,7 @@ and anal_types.`value` like '%стерильно%']]>
 				<textField pattern="">
 					<reportElement positionType="Float" x="183" y="126" width="322" height="20"/>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Tahoma" size="12" isBold="true"/>
+						<font fontName="Tahoma" size="13" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{trfu_blood_components_parentNumber}==null?"":$F{trfu_blood_components_parentNumber}]]></textFieldExpression>
 				</textField>
@@ -120,7 +121,7 @@ and anal_types.`value` like '%стерильно%']]>
 					<reportElement style="table_TD" positionType="FixRelativeToBottom" x="0" y="185" width="158" height="20"/>
 					<box leftPadding="3"/>
 					<textElement>
-						<font fontName="Tahoma" size="10" isBold="true"/>
+						<font fontName="Tahoma" size="12" isBold="false"/>
 					</textElement>
 					<text><![CDATA[Показатель]]></text>
 				</staticText>
@@ -128,7 +129,7 @@ and anal_types.`value` like '%стерильно%']]>
 					<reportElement style="table_TD" positionType="FixRelativeToBottom" x="158" y="185" width="191" height="20"/>
 					<box leftPadding="3"/>
 					<textElement>
-						<font fontName="Tahoma" size="10" isBold="true"/>
+						<font fontName="Tahoma" size="12" isBold="false"/>
 					</textElement>
 					<text><![CDATA[Норма]]></text>
 				</staticText>
@@ -136,7 +137,7 @@ and anal_types.`value` like '%стерильно%']]>
 					<reportElement style="table_TD" positionType="FixRelativeToBottom" x="349" y="185" width="206" height="20"/>
 					<box leftPadding="3"/>
 					<textElement>
-						<font fontName="Tahoma" size="10" isBold="true"/>
+						<font fontName="Tahoma" size="12" isBold="false"/>
 					</textElement>
 					<text><![CDATA[Результат]]></text>
 				</staticText>

@@ -296,6 +296,8 @@ public class TransfusionMedicalService {
 	            logger.warn("TransfusionMedicalService - failed to register medical procedure. Donor not saved");
 	        }
 	    	
+	    	operation.setExternalId(procedureInfo.getId());
+	    	operation.setRecipientExternalId(patientCredentials.getId());
 	    	operation.setDonor(donor);
 	    	operation.setRecipient(patientCredentials.getFirstName());
 	    	operation.setRecipientMiddleName(patientCredentials.getMiddleName());
@@ -395,7 +397,7 @@ public class TransfusionMedicalService {
     public List<ComponentType> getComponentTypes() {
     	List<ComponentType> result = new ArrayList<ComponentType>();
     	try {
-	        List<BloodComponentType> bloodComponentTypes = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).findBloodComponentTypes(false, "code", true);
+	        List<BloodComponentType> bloodComponentTypes = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).findUsedBloodComponentTypes(false, "code", true);
 	        for (BloodComponentType bloodComponentType : bloodComponentTypes){
 	            ComponentType componentType = new ComponentType();
 	            componentType.setId(bloodComponentType.getId());
@@ -439,7 +441,6 @@ public class TransfusionMedicalService {
 	}
     
     private void initializeBloodComponentOrderRequest(BloodComponentOrderRequest request) {
-    	request.setStatusId(1);
 		Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
 		request.setCreated(created);
 		request.setFromMIS(true);
@@ -456,7 +457,26 @@ public class TransfusionMedicalService {
 		historyEntry.setCommentary("По требованию МИС");
 		Set<HistoryEntry> history = new HashSet<HistoryEntry>();
 		history.add(historyEntry);
+		
+		Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
+		calendar.add(Calendar.SECOND, 1);
+		Date registered = calendar.getTime();
+		historyEntry = new HistoryEntry();
+		historyEntry.setCreated(registered);
+		historyEntry.setStartDate(registered);
+		historyEntry.setDocType(request.getType());
+		historyEntry.setParentId(request.getId());
+		historyEntry.setActionId(1);
+		historyEntry.setFromStatusId(1);
+		historyEntry.setToStatusId(2);
+		historyEntry.setEndDate(registered);
+		historyEntry.setProcessed(true);
+		historyEntry.setCommentary("");
+		history.add(historyEntry);
+		
 		request.setHistory(history);
+		
+		request.setStatusId(2);
     }
     
     private void initializeMedicalOperation(Operation operation) {

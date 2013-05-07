@@ -65,7 +65,7 @@ from
   inner join trfu_blood_donation_request_fact_entries fact on fact.donation_id = req.id
   inner join trfu_blood_donation_entries entr on entr.id = fact.entry_id
   where date(comp.donationDate)=date($P{FactDonationDate}) and ( type.value like 'Эри%')
-and comp.maker_id='11' and comp.status_id!='100'  group by comp.parentNumber) as table1
+and comp.maker_id='11' and comp.status_id!='100' and comp.deleted = 0 group by comp.parentNumber) as table1
 join
 (select comp.parentNumber, comp.bloodGroup_id as bloodGroup, cl.value as rezus,sum(comp.volume) as plazm_volume,
 	entr.dose as dosa
@@ -75,7 +75,7 @@ join
   inner join trfu_blood_donation_request_fact_entries fact on fact.donation_id = req.id
   inner join trfu_blood_donation_entries entr on entr.id = fact.entry_id
   where date(comp.donationDate)=date($P{FactDonationDate}) and ( type.value like 'плазма%')
-and comp.maker_id='11' and comp.status_id!='100' group by comp.parentNumber) as table2
+and comp.maker_id='11' and comp.status_id!='100'and comp.deleted = 0 group by comp.parentNumber) as table2
 join
 (select comp.parentNumber, comp.bloodGroup_id as bloodGroup, cl.value as rezus,sum(comp.volume) as leik_volume,
 entr.dose as dosa
@@ -85,7 +85,7 @@ entr.dose as dosa
   inner join trfu_blood_donation_request_fact_entries fact on fact.donation_id = req.id
   inner join trfu_blood_donation_entries entr on entr.id = fact.entry_id
   where date(comp.donationDate)=date($P{FactDonationDate}) and ( type.value like 'Лейкотромбомасса%')
-and comp.maker_id='11' and comp.status_id!='100' group by parentNumber) as table3
+and comp.maker_id='11' and comp.status_id!='100' and comp.deleted = 0 group by parentNumber) as table3
 on table1.parentNumber = table2.parentNumber and table2.parentNumber=table3.parentNumber
 group by table1.parentNumber]]>
 	</queryString>

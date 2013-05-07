@@ -53,6 +53,7 @@ FROM
 WHERE
      wf_history.`to_status_id` = -1
  AND DATE(wf_history.`startDate`) = $P{Date}
+and trfu_blood_components.deleted = 0
 ORDER BY
      wf_history.`startDate` ASC]]>
 	</queryString>

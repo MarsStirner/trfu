@@ -327,7 +327,8 @@ public class PharmacyExchangeUtils {
         IVLTS ts2 = new IVLTS();
         ts2.setNullFlavor(NullFlavor.NI);
         encounter.setEffectiveTime(ts2);
-        II cardId = createId("1b264840-5555-4444-89fd-1f6b355dfa91");
+        String extensionUuid = StringUtils.isEmpty(donationRequest.getDonor().getExtensionUuid())? "1b264840-5555-4444-89fd-1f6b355dfa91": donationRequest.getDonor().getExtensionUuid();
+        II cardId = createId(extensionUuid);
         cardId.setExtension(extensionNumber);
         encounter.getId().add(cardId);
         //encounter.getId().add(createId(donationRequest.getUuid()));
