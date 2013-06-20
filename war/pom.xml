@@ -15,23 +15,9 @@
     <parent>
 	<groupId>ru.efive.medicine.niidg</groupId>
         <artifactId>trfu</artifactId>
-        <version>0.2.2-SNAPSHOT</version>
+        <version>0.2.3-SNAPSHOT</version>
     </parent>
 
-	<build>
-    	<resources>
-      		<resource>
-        		<directory>src/main/java/ru/efive/medicine/niidg/trfu/uifaces/beans/filters/export</directory>
-				<targetPath>ru/efive/medicine/niidg/trfu/uifaces/beans/filters/export</targetPath>
-       			<includes>
-       				<include>export_template.docx</include>
-       				<include>export_template.xls</include>
-       				<include>export_template.xlsx</include>
-       			</includes>
-    		</resource>
-    	</resources>
-  	</build>
-  
     <dependencies>
     	<dependency>
             <groupId>org.glassfish.extras</groupId>

@@ -26,7 +26,8 @@ public class FilterResultsExportGenerator {
 		InputStream is = null;
 		Workbook wb = null;
 		try {
-			is = getClass().getResourceAsStream(templateFilename);
+//			is = getClass().getResourceAsStream(templateFilename);
+			is = this.getClass().getClassLoader().getResourceAsStream("templates/" + templateFilename);
 			wb = WorkbookFactory.create(is);
 		} finally {
 			if (is != null) {
@@ -54,7 +55,8 @@ public class FilterResultsExportGenerator {
 		InputStream is = null;
 		WordprocessingMLPackage pkg = null;
 		try {
-			is = getClass().getResourceAsStream("export_template.docx");
+//			is = getClass().getResourceAsStream("export_template.docx");
+			is = this.getClass().getClassLoader().getResourceAsStream("templates/export_template.docx");
 			pkg = WordprocessingMLPackage.load(is);
 		} finally {
 			if (is != null) {

@@ -136,7 +136,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 		return result;
 	}
 	
-	protected boolean saveReport() {
+	public boolean saveReport() {
 		boolean result = false;
 		try {
 			ReportTemplate template = sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).save(getDocument());
@@ -156,7 +156,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 		return result;
 	}
 	
-	protected boolean previewReport() {
+	public boolean previewReport() {
 		boolean result = false;
 		try {
 			Map<String, Object> genericProperties = new HashMap<String, Object>();
