@@ -63,6 +63,192 @@
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
+	<subDataset name="Vsego_ost_plasm_rashod_plasm">
+		<parameter name="StartDate" class="java.util.Date"/>
+		<parameter name="EndDate" class="java.util.Date"/>
+		<queryString>
+			<![CDATA[SELECT * from
+
+(select
+	sum(comp.volume) as trfu_blood_components_pl
+from trfu_blood_components comp
+	inner join trfu_blood_component_types comp_types
+	on comp.componentType_id = comp_types.id
+	inner join trfu_blood_component_history hist
+	on comp.id = hist.component_id
+	inner join wf_history wf
+	on hist.history_entry_id = wf.id
+where wf.to_status_id = 10
+	and wf.startDate between '2012-06-01 00:00:00' and '2012-06-30 23:59:59'
+	and comp.deleted = 0
+	and comp_types.value LIKE '%плазма%'
+	and comp.id not in (select
+							sub_comp.id
+						from trfu_blood_components sub_comp
+							inner join trfu_blood_component_history sub_hist
+							on sub_comp.id = sub_hist.component_id
+							inner join wf_history sub_wf
+							on sub_hist.history_entry_id = sub_wf.id
+						where sub_wf.to_status_id <> 10
+							and sub_wf.startDate between wf.startDate and '2012-06-30 23:59:59'
+							and sub_comp.id = comp.id)
+) as table11
+
+JOIN
+
+(select
+sum(trfu_blood_components.`volume`) as plasm_brak
+FROM
+     `trfu_blood_component_types` trfu_blood_component_types INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
+ inner join `trfu_blood_component_history` trfu_blood_component_history on trfu_blood_components.`id` = trfu_blood_component_history.`component_id`
+inner join `wf_history` wf_history on wf_history.`id`=trfu_blood_component_history.`history_entry_id`
+WHERE
+(trfu_blood_component_types.`value` LIKE '%плазма%')
+and trfu_blood_components.`deleted` = 0
+ AND DATE(wf_history.`startDate`) >= DATE($P{StartDate})
+ AND DATE(wf_history.`startDate`) <=DATE($P{EndDate})
+ AND wf_history.`to_status_id` = -2
+and trfu_blood_components.`status_id` = -2
+) as table21
+
+JOIN
+
+(SELECT sum(comp.volume) as plasm_ostatok_2
+
+FROM
+  trfu_blood_components comp
+
+INNER JOIN trfu_blood_component_types comp_types
+
+ON comp.componentType_id = comp_types.id
+
+INNER JOIN trfu_blood_component_history hist
+
+ON comp.id = hist.component_id
+INNER JOIN wf_history wf
+ON hist.history_entry_id = wf.id
+WHERE
+
+  wf.to_status_id = 3
+
+  AND wf.startDate = (
+  SELECT max(wf_in.startDate)
+  FROM
+
+    trfu_blood_component_history hist_in
+  INNER JOIN wf_history wf_in
+
+  ON hist_in.history_entry_id = wf_in.id
+
+  WHERE
+ (wf_in.startDate) <= ADDDATE(($P{EndDate}),1)
+
+    AND hist_in.component_id = comp.id
+
+  )
+  AND (comp.expirationDate) >=($P{EndDate})
+ AND (comp.status_id <> 100
+  OR (comp.status_id = 100 and comp.splitDate>ADDDATE(($P{EndDate}),1)))
+  and comp.deleted=0
+ and  (comp_types.`value` LIKE '%плазма%')) as table31
+
+JOIN
+
+
+
+(SELECT sum(comp.volume)  as plasm_ostatok
+
+FROM
+  trfu_blood_components comp
+
+INNER JOIN trfu_blood_component_types comp_types
+
+ON comp.componentType_id = comp_types.id
+
+INNER JOIN trfu_blood_component_history hist
+
+ON comp.id = hist.component_id
+INNER JOIN wf_history wf
+ON hist.history_entry_id = wf.id
+WHERE
+
+  wf.to_status_id = 3
+
+  AND wf.startDate = (
+  SELECT max(wf_in.startDate)
+  FROM
+
+    trfu_blood_component_history hist_in
+  INNER JOIN wf_history wf_in
+
+  ON hist_in.history_entry_id = wf_in.id
+
+  WHERE
+    (wf_in.startDate) <= date($P{StartDate})
+
+    AND hist_in.component_id = comp.id
+
+  )
+  AND (comp.expirationDate) >= adddate(($P{StartDate}),-1)
+ AND (comp.status_id <> 100
+  OR (comp.status_id = 100 and comp.splitDate>=($P{StartDate})))
+  and comp.deleted=0
+ and  (comp_types.`value` LIKE '%плазма%')) as table1
+
+JOIN
+
+(select sum(trfu_blood_components.`volume`)  as plasm_eksped_volume
+FROM
+     `trfu_blood_components` trfu_blood_components INNER JOIN `trfu_blood_donation_requests` trfu_blood_donation_requests ON trfu_blood_components.`donationId` = trfu_blood_donation_requests.`id`
+     INNER JOIN `trfu_blood_donation_request_fact_entries` trfu_blood_donation_request_fact_entries ON trfu_blood_donation_requests.`id` = trfu_blood_donation_request_fact_entries.`donation_id`
+     INNER JOIN `trfu_blood_donation_entries` trfu_blood_donation_entries ON trfu_blood_donation_request_fact_entries.`entry_id` = trfu_blood_donation_entries.`id`
+     INNER JOIN `trfu_blood_component_types` trfu_blood_component_types ON trfu_blood_components.`componentType_id` = trfu_blood_component_types.`id`
+     inner join `trfu_blood_component_history` trfu_blood_component_history on trfu_blood_components.`id` = trfu_blood_component_history.`component_id`
+inner join `wf_history` wf_history on wf_history.`id`=trfu_blood_component_history.`history_entry_id`
+     where
+trfu_blood_components.deleted=0
+and trfu_blood_components.maker_id='11'
+and trfu_blood_component_types.value like '%плазма%' and trfu_blood_components.status_id!='-1'
+and (trfu_blood_components.status_id='100' or (trfu_blood_components.status_id='10' and trfu_blood_components.split=0) or trfu_blood_components.status_id='-2' or trfu_blood_components.status_id='3' )
+and wf_history.`to_status_id`='3' and date(startDate)>=date($P{StartDate}) and date(startDate)<=date($P{EndDate})) as table2
+
+JOIN
+
+(select sum(trfu_blood_components.`volume`) as plasm_eksped_volume_dr
+FROM
+     `trfu_blood_components` trfu_blood_components
+      INNER JOIN `trfu_blood_component_types` trfu_blood_component_types ON trfu_blood_components.`componentType_id` = trfu_blood_component_types.`id`
+     where
+ trfu_blood_components.maker_id!='11'
+ and trfu_blood_components.deleted=0
+and trfu_blood_component_types.value like '%плазма%' and trfu_blood_components.status_id!='-1' and trfu_blood_components.split=false
+and date(receivedDate)>=date($P{StartDate}) and date(receivedDate)<=date($P{EndDate})) as table3]]>
+		</queryString>
+		<field name="plasm_ostatok" class="java.math.BigDecimal"/>
+		<field name="plasm_eksped_volume" class="java.math.BigDecimal"/>
+		<field name="plasm_eksped_volume_dr" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_pl" class="java.math.BigDecimal"/>
+		<field name="plasm_brak" class="java.math.BigDecimal"/>
+		<field name="plasm_ostatok_2" class="java.math.BigDecimal"/>
+		<variable name="plasm_eksped_volume" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{plasm_eksped_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_eksped_volume}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="plasm_eksped_volume_dr" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{plasm_eksped_volume_dr}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_eksped_volume_dr}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="plasm_ostatok" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{plasm_ostatok}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_ostatok}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="plasm_rashod_volume" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_pl}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_pl}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="plasm_brak_volume" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{plasm_brak}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_brak}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="plasm_ostatok_volume" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{plasm_ostatok_2}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_ostatok_2}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+	</subDataset>
 	<subDataset name="Rashod_ervzv">
 		<parameter name="StartDate" class="java.util.Date"/>
 		<parameter name="EndDate" class="java.util.Date"/>
@@ -433,98 +619,6 @@ WHERE
 			<variableExpression><![CDATA[$F{tromb_ostatok}==null?(java.math.BigDecimal.valueOf(0)):$F{tromb_ostatok}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
 		</variable>
 	</subDataset>
-	<subDataset name="Rashod_plasm">
-		<parameter name="StartDate" class="java.util.Date"/>
-		<parameter name="EndDate" class="java.util.Date"/>
-		<queryString>
-			<![CDATA[SELECT * from
-
-(select
-sum(trfu_blood_components.`volume`) as trfu_blood_components_pl
-FROM
- `trfu_blood_component_types` trfu_blood_component_types INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id`
-= trfu_blood_components.`componentType_id`
-     left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` =
-trfu_blood_component_order_requests.`id`
-WHERE
-     trfu_blood_components.`deleted` = 0
- AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE($P{StartDate})
- AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE($P{EndDate})
- AND trfu_blood_component_order_requests.`status_id` = 3
-and (trfu_blood_component_types.`value` LIKE '%плазма%')
-) as table1
-
-JOIN
-
-(select
-sum(trfu_blood_components.`volume`) as plasm_brak
-FROM
-     `trfu_blood_component_types` trfu_blood_component_types INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
- inner join `trfu_blood_component_history` trfu_blood_component_history on trfu_blood_components.`id` = trfu_blood_component_history.`component_id`
-inner join `wf_history` wf_history on wf_history.`id`=trfu_blood_component_history.`history_entry_id`
-WHERE
-(trfu_blood_component_types.`value` LIKE '%плазма%')
-and trfu_blood_components.`deleted` = 0
- AND DATE(wf_history.`startDate`) >= DATE($P{StartDate})
- AND DATE(wf_history.`startDate`) <=DATE($P{EndDate})
- AND wf_history.`to_status_id` = -2
-and trfu_blood_components.`status_id` = -2
-) as table2
-
-JOIN
-
-(SELECT sum(comp.volume) as plasm_ostatok
-
-FROM
-  trfu_blood_components comp
-
-INNER JOIN trfu_blood_component_types comp_types
-
-ON comp.componentType_id = comp_types.id
-
-INNER JOIN trfu_blood_component_history hist
-
-ON comp.id = hist.component_id
-INNER JOIN wf_history wf
-ON hist.history_entry_id = wf.id
-WHERE
-
-  wf.to_status_id = 3
-
-  AND wf.startDate = (
-  SELECT max(wf_in.startDate)
-  FROM
-
-    trfu_blood_component_history hist_in
-  INNER JOIN wf_history wf_in
-
-  ON hist_in.history_entry_id = wf_in.id
-
-  WHERE
- (wf_in.startDate) <= ADDDATE(($P{EndDate}),1)
-
-    AND hist_in.component_id = comp.id
-
-  )
-  AND (comp.expirationDate) >=($P{EndDate})
- AND (comp.status_id <> 100
-  OR (comp.status_id = 100 and comp.splitDate>ADDDATE(($P{EndDate}),1)))
-  and comp.deleted=0
- and  (comp_types.`value` LIKE '%плазма%')) as table3]]>
-		</queryString>
-		<field name="trfu_blood_components_pl" class="java.math.BigDecimal"/>
-		<field name="plasm_brak" class="java.math.BigDecimal"/>
-		<field name="plasm_ostatok" class="java.math.BigDecimal"/>
-		<variable name="plasm_rashod_volume" class="java.math.BigDecimal">
-			<variableExpression><![CDATA[$F{trfu_blood_components_pl}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_pl}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
-		</variable>
-		<variable name="plasm_brak_volume" class="java.math.BigDecimal">
-			<variableExpression><![CDATA[$F{plasm_brak}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_brak}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
-		</variable>
-		<variable name="plasm_ostatok_volume" class="java.math.BigDecimal">
-			<variableExpression><![CDATA[$F{plasm_ostatok}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_ostatok}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
-		</variable>
-	</subDataset>
 	<subDataset name="Vsego_ost_ervzv">
 		<parameter name="StartDate" class="java.util.Date"/>
 		<parameter name="EndDate" class="java.util.Date"/>
@@ -892,92 +986,6 @@ and date(receivedDate)>=date($P{StartDate}) and date(receivedDate)<=date($P{EndD
 			<variableExpression><![CDATA[$F{tromb_ostatok}==null?(java.math.BigDecimal.valueOf(0)):$F{tromb_ostatok}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
 		</variable>
 	</subDataset>
-	<subDataset name="Vsego_ost_plasm">
-		<parameter name="StartDate" class="java.util.Date"/>
-		<parameter name="EndDate" class="java.util.Date"/>
-		<queryString>
-			<![CDATA[SELECT * from
-(SELECT sum(comp.volume)  as plasm_ostatok
-
-FROM
-  trfu_blood_components comp
-
-INNER JOIN trfu_blood_component_types comp_types
-
-ON comp.componentType_id = comp_types.id
-
-INNER JOIN trfu_blood_component_history hist
-
-ON comp.id = hist.component_id
-INNER JOIN wf_history wf
-ON hist.history_entry_id = wf.id
-WHERE
-
-  wf.to_status_id = 3
-
-  AND wf.startDate = (
-  SELECT max(wf_in.startDate)
-  FROM
-
-    trfu_blood_component_history hist_in
-  INNER JOIN wf_history wf_in
-
-  ON hist_in.history_entry_id = wf_in.id
-
-  WHERE
-    (wf_in.startDate) <= date($P{StartDate})
-
-    AND hist_in.component_id = comp.id
-
-  )
-  AND (comp.expirationDate) >= adddate(($P{StartDate}),-1)
- AND (comp.status_id <> 100
-  OR (comp.status_id = 100 and comp.splitDate>=($P{StartDate})))
-  and comp.deleted=0
- and  (comp_types.`value` LIKE '%плазма%')) as table1
-
-JOIN
-
-(select sum(trfu_blood_components.`volume`)  as plasm_eksped_volume
-FROM
-     `trfu_blood_components` trfu_blood_components INNER JOIN `trfu_blood_donation_requests` trfu_blood_donation_requests ON trfu_blood_components.`donationId` = trfu_blood_donation_requests.`id`
-     INNER JOIN `trfu_blood_donation_request_fact_entries` trfu_blood_donation_request_fact_entries ON trfu_blood_donation_requests.`id` = trfu_blood_donation_request_fact_entries.`donation_id`
-     INNER JOIN `trfu_blood_donation_entries` trfu_blood_donation_entries ON trfu_blood_donation_request_fact_entries.`entry_id` = trfu_blood_donation_entries.`id`
-     INNER JOIN `trfu_blood_component_types` trfu_blood_component_types ON trfu_blood_components.`componentType_id` = trfu_blood_component_types.`id`
-     inner join `trfu_blood_component_history` trfu_blood_component_history on trfu_blood_components.`id` = trfu_blood_component_history.`component_id`
-inner join `wf_history` wf_history on wf_history.`id`=trfu_blood_component_history.`history_entry_id`
-     where
-trfu_blood_components.deleted=0
-and trfu_blood_components.maker_id='11'
-and trfu_blood_component_types.value like '%плазма%' and trfu_blood_components.status_id!='-1'
-and (trfu_blood_components.status_id='100' or (trfu_blood_components.status_id='10' and trfu_blood_components.split=0) or trfu_blood_components.status_id='-2' or trfu_blood_components.status_id='3' )
-and wf_history.`to_status_id`='3' and date(startDate)>=date($P{StartDate}) and date(startDate)<=date($P{EndDate})) as table2
-
-JOIN
-
-(select sum(trfu_blood_components.`volume`) as plasm_eksped_volume_dr
-FROM
-     `trfu_blood_components` trfu_blood_components
-      INNER JOIN `trfu_blood_component_types` trfu_blood_component_types ON trfu_blood_components.`componentType_id` = trfu_blood_component_types.`id`
-     where
- trfu_blood_components.maker_id!='11'
- and trfu_blood_components.deleted=0
-and trfu_blood_component_types.value like '%плазма%' and trfu_blood_components.status_id!='-1' and trfu_blood_components.split=false
-and date(receivedDate)>=date($P{StartDate}) and date(receivedDate)<=date($P{EndDate})) as table3]]>
-		</queryString>
-		<field name="plasm_ostatok" class="java.math.BigDecimal"/>
-		<field name="plasm_eksped_volume" class="java.math.BigDecimal"/>
-		<field name="plasm_eksped_volume_dr" class="java.math.BigDecimal"/>
-		<variable name="plasm_eksped_volume" class="java.math.BigDecimal">
-			<variableExpression><![CDATA[$F{plasm_eksped_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_eksped_volume}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
-		</variable>
-		<variable name="plasm_eksped_volume_dr" class="java.math.BigDecimal">
-			<variableExpression><![CDATA[$F{plasm_eksped_volume_dr}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_eksped_volume_dr}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
-		</variable>
-		<variable name="plasm_ostatok" class="java.math.BigDecimal">
-			<variableExpression><![CDATA[$F{plasm_ostatok}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_ostatok}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
-		</variable>
-	</subDataset>
 	<parameter name="StartDate" class="java.util.Date"/>
 	<parameter name="EndDate" class="java.util.Date"/>
 	<parameter name="Institution" class="java.lang.String">
@@ -995,7 +1003,6 @@ inner join trfu_blood_component_types type on comp.componentType_id=type.id
 inner join trfu_blood_component_history comp_hist on comp_hist.component_id=comp.id
 inner join wf_history wf on comp_hist.history_entry_id=wf.id
  where comp.componentType_id<>68 and comp.status_id<>-1
- and comp.deleted = 0
 group by comp_type]]>
 	</queryString>
 	<field name="donationDate" class="java.sql.Timestamp"/>
@@ -1418,56 +1425,6 @@ group by comp_type]]>
 					</jr:column>
 				</jr:table>
 			</componentElement>
-			<componentElement>
-				<reportElement key="table 2" x="442" y="124" width="106" height="31"/>
-				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Rashod_plasm">
-						<datasetParameter name="StartDate">
-							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
-						</datasetParameter>
-						<datasetParameter name="EndDate">
-							<datasetParameterExpression><![CDATA[$P{EndDate}]]></datasetParameterExpression>
-						</datasetParameter>
-						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					</datasetRun>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="42">
-						<jr:tableFooter height="31" rowSpan="1">
-							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="42" height="31"/>
-								<textElement textAlignment="Center">
-									<font fontName="Tahoma"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$V{plasm_rashod_volume}]]></textFieldExpression>
-							</textField>
-						</jr:tableFooter>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="64">
-						<jr:tableFooter height="31" rowSpan="1">
-							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
-								<textElement textAlignment="Center">
-									<font fontName="Tahoma"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$V{plasm_rashod_volume}]]></textFieldExpression>
-							</textField>
-						</jr:tableFooter>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-				</jr:table>
-			</componentElement>
 			<staticText>
 				<reportElement style="table_TD" x="548" y="0" width="43" height="31"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -1611,7 +1568,7 @@ group by comp_type]]>
 			<componentElement>
 				<reportElement key="table 4" x="704" y="124" width="98" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Rashod_plasm">
+					<datasetRun subDataset="Vsego_ost_plasm_rashod_plasm">
 						<datasetParameter name="EndDate">
 							<datasetParameterExpression><![CDATA[$P{EndDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1639,7 +1596,7 @@ group by comp_type]]>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{plasm_ostatok_volume}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{plasm_eksped_volume}.add($V{plasm_eksped_volume_dr}).add($V{plasm_ostatok}).subtract($V{plasm_rashod_volume}.add($V{plasm_brak_volume}))]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
@@ -2281,9 +2238,9 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 15" x="152" y="124" width="290" height="31"/>
+				<reportElement key="table 15" x="152" y="124" width="396" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_plasm">
+					<datasetRun subDataset="Vsego_ost_plasm_rashod_plasm">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -2348,6 +2305,30 @@ group by comp_type]]>
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$V{plasm_eksped_volume}.add($V{plasm_eksped_volume_dr}).add($V{plasm_ostatok})]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
+						<jr:detailCell height="0" rowSpan="1"/>
+					</jr:column>
+					<jr:column width="42">
+						<jr:tableFooter height="31" rowSpan="1">
+							<textField pattern="###0.000">
+								<reportElement style="table_TD" x="0" y="0" width="42" height="31"/>
+								<textElement textAlignment="Center">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{plasm_rashod_volume}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
+						<jr:detailCell height="0" rowSpan="1"/>
+					</jr:column>
+					<jr:column width="64">
+						<jr:tableFooter height="31" rowSpan="1">
+							<textField pattern="###0.000">
+								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<textElement textAlignment="Center">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{plasm_rashod_volume}]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
