@@ -462,6 +462,14 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 		this.extensionUuid = extensionUuid;
 	}
 
+	public boolean isSendNews() {
+		return sendNews;
+	}
+
+	public void setSendNews(boolean sendNews) {
+		this.sendNews = sendNews;
+	}
+
 	/**
 	 * дата создания документа
 	*/
@@ -646,6 +654,9 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	
 	@Column(name="extension_uuid")
 	private String extensionUuid;
+	
+	@Column(name="send_news")
+	private boolean sendNews;
 	
 	private static final long serialVersionUID = 1L;
 }

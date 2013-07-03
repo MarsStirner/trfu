@@ -101,7 +101,7 @@
 						</div>
 					</h:panelGroup>
 					<div class="defbutton">
-						<h:commandLink action="#{medicalOperation.registerOperation()}" rendered="#{(medicalOperation.editState or medicalOperation.viewState) and medicalOperation.document.fromMIS}">
+						<h:commandLink action="#{medicalOperation.registerOperation()}" rendered="#{(medicalOperation.editState or medicalOperation.viewState) and medicalOperation.document.fromMIS and (not medicalOperation.document.sentToMIS)}">
 							<h:graphicImage value="#{resource['images:button-request.png']}" />
 							Зарегистрировать процедуру
 						</h:commandLink>
@@ -121,8 +121,6 @@
 							        Процедурный лист
 						        </h:outputLink>
 					        </div>
-                        </div>
-                        <div class="sub">
                         	<div class="item">
 						        <h:outputLink value="#{contextPath}/component/print/medical_operation2.xhtml" target="_blank">
 							        <h:graphicImage value="#{resource['images:blank.png']}" />
@@ -209,7 +207,10 @@
 									<tr class="row">
 										<td class="first">Дата/время регистрации:</td>
 										<td>
-											<h:outputText value="#{medicalOperation.document.created}" class="wide">
+											<h:outputText value="#{medicalOperation.document.created}" class="wide" rendered="#{not medicalOperation.document.sentToMIS}">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+											<h:outputText value="#{medicalOperation.document.registrationDate}" class="wide" rendered="#{medicalOperation.document.sentToMIS}">
 												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
 											</h:outputText>
 										</td>
@@ -379,7 +380,7 @@
 														</div>
 														<div style="clear:both;">
 															<h:panelGroup id="donor_paging">
-																<e5ui-comp:tablePager id="pager" documentListHolder="#{medicalOperation.donorSelectModal.donorList}" />
+																<e5ui-comp:tablePager documentListHolder="#{medicalOperation.donorSelectModal.donorList}" />
 					                                    	</h:panelGroup>
 					                                    </div>
 					                                </div>
@@ -394,7 +395,10 @@
 									<tr class="row">
 										<td class="first">Дата/время регистрации:</td>
 										<td>
-											<h:outputText value="#{medicalOperation.document.created}" class="wide">
+											<h:outputText value="#{medicalOperation.document.created}" class="wide" rendered="#{not medicalOperation.document.sentToMIS}">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+											</h:outputText>
+											<h:outputText value="#{medicalOperation.document.registrationDate}" class="wide" rendered="#{medicalOperation.document.sentToMIS}">
 												<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
 											</h:outputText>
 										</td>
@@ -471,7 +475,7 @@
 													</div>
 													<div style="clear:both;">
 														<h:panelGroup id="user_paging">
-															<e5ui-comp:tablePager id="pager" documentListHolder="#{medicalOperation.transfusiologistSelectModal.userList}" />
+															<e5ui-comp:tablePager documentListHolder="#{medicalOperation.transfusiologistSelectModal.userList}" />
 				                                        </h:panelGroup>
 				                                    </div>
 				                                </div>

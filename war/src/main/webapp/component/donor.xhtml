@@ -265,8 +265,10 @@
 									<td><h:outputText value="#{donor.document.mail}" class="wide" /></td>
 								</tr>
 								<tr class="row">
-									<td class="first">Комментарии:</td>
-									<td><h:outputText value="#{donor.document.commentary}" class="wide" /></td>
+									<td colspan="2">
+										<h:selectBooleanCheckbox value="#{donor.document.sendNews}" disabled="true" />
+										<h:outputText value="Рассылать новости" />
+									</td>
 								</tr>
 							</table>
 						</div>
@@ -540,6 +542,12 @@
 								<tr class="row">
 									<td class="first">Электронная почта:</td>
 									<td><h:inputText value="#{donor.document.mail}" class="wide" /></td>
+								</tr>
+								<tr class="row">
+									<td colspan="2">
+										<h:selectBooleanCheckbox value="#{donor.document.sendNews}" />
+										<h:outputText value="Рассылать новости" />
+									</td>
 								</tr>
 								<h:panelGroup rendered="#{sessionManagement.admin}">
 									<tr class="row">

@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+
+    <context:component-scan base-package="ru.efive.medicine.niidg.trfu.wf.util"/>
+    <task:scheduler id="scheduler" pool-size="10"/>
+    <task:annotation-driven />
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>file:///${efive.trfu.home}/static/repository.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <property name="defaultAutoCommit" value="true"/>
+        <property name="maxWait" value="1"/>
+        <property name="maxIdle" value="10"/>
+        <property name="maxActive" value="100"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="logAbandoned" value="true"/>
+        <property name="removeAbandonedTimeout" value="30"/>
+	<property name="initialSize" value="10"/>
+	<property name="testOnBorrow" value="true"/>
+	<property name="testOnReturn" value="true"/>
+	<property name="testWhileIdle" value="true"/>
+	<property name="timeBetweenEvictionRunsMillis" value="1800000"/>
+	<property name="numTestsPerEvictionRun" value="3"/>
+	<property name="minEvictableIdleTimeMillis" value="1800000"/>
+	<property name="validationQuery" value="SELECT 1"/>
+    </bean>
+
+    <!-- Hibernate SessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan">
+            <list>
+                <value>ru.efive.dao.sql.entity</value>
+                <value>ru.efive.dao.sql.entity.user</value>
+                <value>ru.efive.medicine.niidg.trfu.data</value>
+                <value>ru.efive.medicine.niidg.trfu.data.entity</value>
+                <value>ru.efive.medicine.niidg.trfu.data.dictionary</value>
+                <value>ru.efive.medicine.niidg.trfu.data.entity.medical</value>
+                <value>ru.efive.medicine.niidg.trfu.data.entity.integration</value>
+                <value>ru.efive.crm.data</value>
+                <value>ru.efive.dao.sql.wf.entity</value>
+                <value>ru.efive.dao.sql.entity.document</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="format_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
+                <prop key="net.sf.ehcache.configurationResourceName">ehcache.xml</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.default_batch_fetch_size">10</prop>
+                <prop key="hibernate.max_fetch_depth">2</prop>
+                <prop key="hibernate.generate_statistics">false</prop>
+                <prop key="hibernate.jdbc.use_get_generated_keys">true</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.jdbc.fetch_size">10</prop>
+                <prop key="hibernate.jdbc.batch_size">10</prop>
+                <prop key="hibernate.dbcp.whenExhaustedAction">2</prop>
+                <prop key="hibernate.connection.autocommit">true</prop>
+                <!-- <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
+                <prop key="hibernate.search.default.indexBase">./lucene/indexes</prop> -->
+            </props>
+        </property>
+    </bean>
+
+    <!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
+
+    <!--
+     Data access object: Hibernate implementation.
+    -->
+
+    <!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="transactionInterceptor"
+          class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="save">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="userDao" class="ru.efive.dao.sql.dao.user.UserDAOHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="userDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="userDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="roleDao" class="ru.efive.dao.sql.dao.user.RoleDAOHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="roleDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="roleDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="appointmentDao" class="ru.efive.dao.sql.dao.user.AppointmentDAOHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="appointmentDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="appointmentDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="donorDao" class="ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="donorDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="donorDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="bloodComponentDao" class="ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="bloodComponentDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="bloodComponentDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="requestDao" class="ru.efive.medicine.niidg.trfu.dao.RequestDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="requestDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="requestDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="examinationDao" class="ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="examinationDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="examinationDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="anamnesisDao" class="ru.efive.medicine.niidg.trfu.dao.AnamnesisDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="anamnesisDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="anamnesisDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="analysisDao" class="ru.efive.medicine.niidg.trfu.dao.AnalysisDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="analysisDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="analysisDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="examinationEntryDao" class="ru.efive.medicine.niidg.trfu.dao.ExaminationEntryDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="examinationEntryDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="examinationEntryDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="divisionDao" class="ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="componentOrderDao" class="ru.efive.medicine.niidg.trfu.dao.BloodComponentOrderRequestDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="componentOrderDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="componentOrderDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="donationDao" class="ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="donationDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="donationDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="dictionaryDao" class="ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="dictionaryDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="dictionaryDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="pheresisDao" class="ru.efive.medicine.niidg.trfu.dao.PheresisDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="pheresisDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="pheresisDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="donorRejectionDao" class="ru.efive.medicine.niidg.trfu.dao.DonorRejectionDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="donorRejectionDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="donorRejectionDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="operationalCrewDao" class="ru.efive.medicine.niidg.trfu.dao.OperationalCrewDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="operationalCrewDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="operationalCrewDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="bloodSystemDao" class="ru.efive.medicine.niidg.trfu.dao.BloodSystemDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="bloodSystemDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="bloodSystemDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="bloodSystemTypeDao" class="ru.efive.medicine.niidg.trfu.dao.BloodSystemTypeDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <bean id="bloodSystemTypeDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="bloodSystemTypeDao" />
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="quarantineTypeDao" class="ru.efive.medicine.niidg.trfu.dao.QuarantineTypeDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="quarantineTypeDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="quarantineTypeDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="componentProcessingMappingDao"
+          class="ru.efive.medicine.niidg.trfu.dao.BloodComponentProcessingMappingDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="componentProcessingMappingDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="componentProcessingMappingDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="timeTableDao" class="ru.efive.medicine.niidg.trfu.dao.TimeTableDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="timeTableDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="timeTableDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- medical business objects -->
+    <bean id="medicalDao" class="ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="medicalDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="medicalDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="informationDao" class="ru.efive.medicine.niidg.trfu.dao.InformationEntryDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="informationDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="informationDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="externalAppointmentDao" class="ru.efive.medicine.niidg.trfu.dao.ExternalAppointmentDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="externalAppointmentDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="externalAppointmentDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="externalAnalysisResultDao" class="ru.efive.medicine.niidg.trfu.dao.ExternalAnalysisResultDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="externalAnalysisResultDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="externalAnalysisResultDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- external business objects -->
+    <bean id="contragentDao" class="ru.efive.crm.dao.ContragentDAOHibernate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="contragentDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="contragentDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="contragentNomenclatureDao" class="ru.efive.crm.dao.NomenclatureDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="contragentNomenclatureDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="contragentNomenclatureDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- temporal business objects -->
+    <bean id="patientDao" class="ru.efive.medicine.niidg.trfu.dao.PatientDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="patientDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="patientDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- workflow business objects -->
+    <bean id="historyDao" class="ru.efive.dao.sql.wf.dao.HistoryDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="historyDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="historyDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="reportDao" class="ru.efive.medicine.niidg.trfu.dao.ReportDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="reportDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="reportDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="emailTemplateDao" class="ru.efive.medicine.niidg.trfu.dao.EmailTemplateDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="emailTemplateDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="emailTemplateDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="textTemplateDao" class="ru.efive.medicine.niidg.trfu.dao.TextTemplateDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="textTemplateDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="emailTemplateDao"/>
+        <property name="interceptorNames">
+            <list>
+                <value>transactionInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>

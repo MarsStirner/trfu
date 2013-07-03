@@ -3,16 +3,28 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+
+       xmlns:context="http://www.springframework.org/schema/context"
+
        xsi:schemaLocation="
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+
+    <context:component-scan base-package="ru.efive.medicine.niidg.trfu.wf.util"/>
+    <task:scheduler id="scheduler" pool-size="10"/>
+    <task:annotation-driven />
+
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <!-- <value>file:///${efive.trfu.home}/static/repository.properties</value> -->
-                <value>jdbc-test.properties</value>
+                <value>file:///${efive.trfu.home}/static/repository.properties</value>
             </list>
         </property>
     </bean>
@@ -23,7 +35,7 @@
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
         <property name="defaultAutoCommit" value="true"/>
-        <property name="maxWait" value="100"/>
+        <property name="maxWait" value="1"/>
         <property name="maxIdle" value="10"/>
         <property name="maxActive" value="100"/>
         <property name="removeAbandoned" value="true"/>
@@ -35,8 +47,7 @@
     <!-- Hibernate SessionFactory -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
     	<property name="dataSource" ref="dataSource" />
-    	
-    	<property name="packagesToScan">
+        <property name="packagesToScan">
     		<list>
     			<value>ru.efive.dao.sql.entity</value>
     			<value>ru.efive.dao.sql.entity.user</value>
@@ -49,12 +60,11 @@
     			
     			<value>ru.efive.crm.data</value>
     			
-                <value>ru.efive.dao.sql.wf.entity</value>
-                
-                <value>ru.efive.dao.sql.entity.document</value>
+                	<value>ru.efive.dao.sql.wf.entity</value>
+                	
+                	<value>ru.efive.dao.sql.entity.document</value>
     		</list>
     	</property>
-    	
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
@@ -326,19 +336,6 @@
 			</list>
 		</property>
   	</bean>
-
-    <bean id="bloodSystemTypeDao" class="ru.efive.medicine.niidg.trfu.dao.BloodSystemTypeDAOImpl">
-        <property name="sessionFactory" ref="sessionFactory" />
-    </bean>
-
-    <bean id="bloodSystemTypeDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="target" ref="bloodSystemTypeDao" />
-        <property name="interceptorNames">
-            <list>
-                <value>transactionInterceptor</value>
-            </list>
-        </property>
-    </bean>
   	
   	<bean id="quarantineTypeDao" class="ru.efive.medicine.niidg.trfu.dao.QuarantineTypeDAOImpl">
     	<property name="sessionFactory" ref="sessionFactory" />
@@ -499,8 +496,7 @@
 			</list>
 		</property>
   	</bean>
-
-    <bean id="emailTemplateDao" class="ru.efive.medicine.niidg.trfu.dao.EmailTemplateDAOImpl">
+  	<bean id="emailTemplateDao" class="ru.efive.medicine.niidg.trfu.dao.EmailTemplateDAOImpl">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
@@ -525,5 +521,5 @@
             </list>
         </property>
     </bean>
-  	
+
 </beans>

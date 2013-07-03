@@ -187,6 +187,13 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, result.getDescription(), ""));
 			}
+			else {
+				Operation operation = getDocument();
+				operation.setRegistrationDate(new Date());
+				operation.setSentToMIS(true);
+				setDocument(operation);
+				MedicalOperationBean.this.save();
+			}
 		}
 		catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка", ""));

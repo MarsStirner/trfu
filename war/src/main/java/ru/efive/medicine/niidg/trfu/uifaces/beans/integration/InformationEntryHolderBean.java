@@ -1,7 +1,9 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.integration;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
@@ -11,12 +13,16 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
+import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.InformationEntryDaoImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.InformationEntry;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
+import ru.efive.wf.core.activity.MailMessage;
+import ru.efive.wf.core.activity.SendMailActivity;
 
 @Named("information")
 @ConversationScoped
@@ -137,10 +143,49 @@ public class InformationEntryHolderBean extends AbstractDocumentHolderBean<Infor
 		return result;
 	}
 	
+	public boolean sendNewsletter() {
+		boolean result = false;
+		try {
+			InformationEntry entry = getDocument();
+			
+			List<String> addresses = ((DonorDAOImpl) sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO)).findDonorsForNewsletter();
+			
+			if (addresses == null || addresses.isEmpty()) {
+				logger.warn("Empty newsletter list");
+			}
+			else if (!((Boolean) propertiesHolder.getProperty("application","notification.mail.enabled"))) {
+	    		logger.warn("Mail notifications disabled");
+	        }
+			else {
+		        MailMessage message = new MailMessage(new ArrayList<String>(), new ArrayList<String>(), entry.getTitle(), null);
+		        message.setBlindCopyTo(addresses);
+		        message.setBody(entry.getDescription());
+		        message.setContentType("text/html");
+		        
+		        SendMailActivity sendMailActivity = new SendMailActivity();
+		        sendMailActivity.setMessage(message);
+		        sendMailActivity.execute();
+			}
+			
+	        entry.setSent(true);
+			setDocument(entry);
+			save();
+		}
+		catch (Exception e) {
+			result = false;
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка при рассылке новости донорам", ""));
+			logger.error("Ошибка при рассылке новости донорам", e);
+		}
+		return result;
+	}
+	
 	
 	@Inject @Named("sessionManagement")
-	private transient SessionManagementBean sessionManagement = new SessionManagementBean();
+	private transient SessionManagementBean sessionManagement;
 	
+	@Inject
+    @Named("propertiesHolder")
+    private ApplicationPropertiesHolder propertiesHolder;
 	
 	private static final Logger logger = Logger.getLogger(InformationEntryHolderBean.class);
 	

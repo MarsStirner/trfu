@@ -1,20 +1,14 @@
 package ru.efive.medicine.niidg.trfu.wf.util;
 
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.faces.context.FacesContext;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.hl7.v3.POCDMT000040ClinicalDocument;
 
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
@@ -23,6 +17,7 @@ import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAppointment;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalIndicator;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.OperationReport;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.BloodComponentListHolderBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ActionResult;
@@ -382,29 +377,39 @@ public class IntegrationHelper {
 			Object serviceAddress = propertiesHolder.getProperty("application", "mis.integration.address");
 			
 			if (process) {
+				BloodComponentListHolderBean componentsListHolder = 
+						(BloodComponentListHolderBean) context.getApplication().evaluateExpressionGet(context, "#{bloodComponentList}", BloodComponentListHolderBean.class);
+				List<BloodComponent> bloodComponentsList = componentsListHolder.getDocumentsByOrder(orderRequest.getId());
+				
 		    	TransfusionServiceImpl medicalService = new TransfusionServiceImpl(new java.net.URL(serviceAddress.toString()));
 		    	
 		        GregorianCalendar calendar = new GregorianCalendar();
 		        calendar.setTime(orderRequest.getFactDate());
 		        XMLGregorianCalendar factDate = new XMLGregorianCalendarImpl(calendar);
-		        OrderIssueInfo component = new OrderIssueInfo();
-		
-		        component.setBloodGroupId(orderRequest.getBloodGroup().getNumber());
-		        component.setComponentTypeId(orderRequest.getComponentType().getId());
-		        component.setDonorId(orderRequest.getRecipientId());
-		        component.setDoseCount(orderRequest.getDoseCount());
-		        component.setNumber(orderRequest.getNumber());
-		        component.setRhesusFactorId(orderRequest.getRhesusFactor().getValue().equals("отрицательный")?1:0);
-		        //component.setId(Integer.valueOf(orderRequest.getExternalNumber()));
-		        component.setVolume(orderRequest.getVolume());
+		        List<OrderIssueInfo> components = new ArrayList<OrderIssueInfo>();
 		        
-		        IssueResult issueResult = medicalService.getPortTransfusion().setOrderIssueResult(Integer.parseInt(orderRequest.getExternalNumber()),factDate, Arrays.asList(component), orderRequest.getCommentary());
+		        for (BloodComponent bloodComponent: bloodComponentsList) {
+		        	OrderIssueInfo component = new OrderIssueInfo();
+		    		
+			        component.setBloodGroupId(bloodComponent.getBloodGroup().getNumber());
+			        component.setComponentTypeId(bloodComponent.getComponentType().getId());
+			        component.setDonorId(orderRequest.getRecipientId());
+			        component.setDoseCount(bloodComponent.getDoseCount());
+			        component.setNumber(bloodComponent.getNumber());
+			        component.setRhesusFactorId(bloodComponent.getRhesusFactor().getValue().equals("отрицательный")? 1: 0);
+			        component.setComponentId(bloodComponent.getId());
+			        component.setVolume(bloodComponent.getVolume());
+			        
+			        components.add(component);
+		        }
+		        
+		        IssueResult issueResult = medicalService.getPortTransfusion().setOrderIssueResult(Integer.parseInt(orderRequest.getExternalNumber()),factDate, components, orderRequest.getCommentary());
 		        
 		        result.setProcessed(issueResult.isResult());
 		        result.setDescription(issueResult.getDescription());
 			}
 			else {
-				logger.warn("MIS integration disabled");
+				System.out.println("MIS integration disabled");
 				result.setProcessed(true);
 			}
     	}
@@ -543,13 +548,27 @@ public class IntegrationHelper {
 		    		}
 		    		eritrocyteMass.setVolume(report.getEritrocyteMass().getErVolume());
 		    		
-		    		calendar = new GregorianCalendar();
-		        	calendar.setTime(report.getEritrocyteMass().getProductionDate());
-		    		eritrocyteMass.setProductionDate(new XMLGregorianCalendarImpl(calendar));
-		    		
-		    		calendar = new GregorianCalendar();
-		        	calendar.setTime(report.getEritrocyteMass().getExpirationDate());
-		    		eritrocyteMass.setExpirationDate(new XMLGregorianCalendarImpl(calendar));
+		    		if (report.getEritrocyteMass().getProductionDate() != null) {
+                        calendar = new GregorianCalendar();
+                        calendar.setTime(report.getEritrocyteMass().getProductionDate());
+                        eritrocyteMass.setProductionDate(new XMLGregorianCalendarImpl(calendar));
+                    }
+                    else {
+                        result.setProcessed(false);
+                        result.setDescription("Не указана дата производства эр. массы");
+                        return result;
+                    }
+
+                    if (report.getEritrocyteMass().getExpirationDate() != null) {
+                        calendar = new GregorianCalendar();
+                        calendar.setTime(report.getEritrocyteMass().getExpirationDate());
+                        eritrocyteMass.setExpirationDate(new XMLGregorianCalendarImpl(calendar));
+                    }
+                    else {
+                        result.setProcessed(false);
+                        result.setDescription("Не указан срок годности эр. массы");
+                        return result;
+                    }
 		    		
 		    		eritrocyteMass.setHt(report.getEritrocyteMass().getErHt());
 		    		eritrocyteMass.setSalineVolume(report.getEritrocyteMass().getSalineVolume());
@@ -583,31 +602,16 @@ public class IntegrationHelper {
 		    	}
 	    	}
 	    	
-		    try {
-		    	logger.warn(marshalDocument(PatientCredentials.class, patientCredentials));
-		    	logger.warn(marshalDocument(ProcedureInfo.class, procedureInfo));
-		    }
-		    catch (JAXBException e) {
-		    	logger.error(e);
-		    }
 	    	IssueResult issueResult = medicalService.getPortTransfusion().setProcedureResult(patientCredentials, procedureInfo, eritrocyteMass, measures, finalVolumeList);
 	    	
 	        result.setProcessed(issueResult.isResult());
 	        result.setDescription(issueResult.getDescription());
 		}
 		else {
-			logger.warn("MIS integration disabled");
+			System.out.println("MIS integration disabled");
 			result.setProcessed(true);
 		}
         return result;
-    }
-    
-    private static String marshalDocument(Class clazz, Object document) throws JAXBException {
-        Marshaller marshaller = JAXBContext.newInstance(clazz).createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        StringWriter stringWriter = new StringWriter();
-        marshaller.marshal(document, stringWriter);
-        return stringWriter.toString();
     }
     
     public static boolean updateDivisions() {
@@ -656,7 +660,7 @@ public class IntegrationHelper {
 	            }
     		}
     		else {
-    			logger.warn("MIS integration disabled");
+    			System.out.println("MIS integration disabled");
     		}
             result = true;
     	}

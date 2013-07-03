@@ -112,7 +112,7 @@ public class SendMailActivity implements IActivity {
 			if (!sb.toString().trim().equals(""))
 				mimeMessage.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(sb.toString().trim(), false));
 			
-			mimeMessage.setSubject(message.getSubject());
+			mimeMessage.setSubject(message.getSubject(), "UTF-8");
 			mimeMessage.setSentDate(new Date());
 			
 			MimeBodyPart mbp = new MimeBodyPart();

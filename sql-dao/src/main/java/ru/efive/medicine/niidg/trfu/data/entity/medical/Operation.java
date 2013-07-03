@@ -426,6 +426,22 @@ public class Operation extends Document implements ProcessedData {
 	public void setExternalId(int externalId) {
 		this.externalId = externalId;
 	}
+	
+	public boolean isSentToMIS() {
+		return sentToMIS;
+	}
+
+	public void setSentToMIS(boolean sentToMIS) {
+		this.sentToMIS = sentToMIS;
+	}
+
+	public Date getRegistrationDate() {
+		return registrationDate;
+	}
+
+	public void setRegistrationDate(Date registrationDate) {
+		this.registrationDate = registrationDate;
+	}
 
 
 	/**
@@ -626,9 +642,13 @@ public class Operation extends Document implements ProcessedData {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private Set<HistoryEntry> history;
 	
-	private boolean fromMIS = false;
+	private boolean fromMIS;
 	
 	private int externalId;
+	
+	private boolean sentToMIS;
+	
+	private Date registrationDate;
 	
 	private static final long serialVersionUID = -8145103746578726409L;
 }
