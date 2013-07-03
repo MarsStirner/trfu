@@ -19,6 +19,8 @@ function update_content() {
 	if (document.getElementById("filter_panel").style.display != "none") {
 		resizeTableWrapDiv(); 
 	}
+	
+	jQuery("#filter_panel").css({"overflow":"auto","overflow-x":"auto","overflow-y":"auto"});
 };
 
 function resizeTableWrapDiv() {
