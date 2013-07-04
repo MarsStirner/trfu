@@ -47,8 +47,6 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
             detachedCriteria.add(Restrictions.eq("deleted", false));
         }
         
-        detachedCriteria.add(Restrictions.eq("externalId", externalId));
-        
         List<BiomaterialDonor> list = getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
         
         if (list != null && !list.isEmpty()) {
@@ -62,6 +60,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	/*
 	 * Доноры (Лечебный сегмент)
 	 */
+	
 	@SuppressWarnings("unchecked")
 	public List<BiomaterialDonor> findDonors(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(BiomaterialDonor.class);
@@ -96,6 +95,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	/*
 	 * Лечебные процедуры
 	 */
+	
 	@SuppressWarnings("unchecked")
 	public List<Operation> findOperations(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Operation.class);
@@ -157,6 +157,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	/*
 	 * Биоматериалы
 	 */
+	
 	@SuppressWarnings("unchecked")
 	public List<Biomaterial> findBiomaterials(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
@@ -275,6 +276,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	/*
 	 * Обработка
 	 */
+	
 	@SuppressWarnings("unchecked")
 	public List<Processing> findProcessings(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Processing.class);

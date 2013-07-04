@@ -47,14 +47,6 @@
 							</h:commandLink>
 						</div>
 					</h:panelGroup>
-					<h:panelGroup rendered="#{not (information.document.sent)}">
-						<div class="defbutton">
-							<h:commandLink action="#{information.sendNewsletter}" rendered="#{information.editState or information.createState or information.viewState}">
-								<h:graphicImage value="#{resource['images:save_buttn.png']}" />
-								Отправить донорам
-							</h:commandLink>
-						</div>
-					</h:panelGroup>
 				</div>
 			</div>
 		</div>

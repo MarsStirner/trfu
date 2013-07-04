@@ -327,11 +327,6 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         }
     }
 	
-    @SuppressWarnings("unchecked")
-	public List<String> findDonorsForNewsletter() {
-    	String query = "select mail FROM trfu_donors where deleted = false and send_news = true and mail <> '' and mail is not null";
-    	return getSession().createSQLQuery(query).list();
-	}
 	
 	/*
 	@SuppressWarnings("unchecked")

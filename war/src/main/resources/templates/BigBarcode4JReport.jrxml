@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Barcode4JReport" pageWidth="310" pageHeight="288" columnWidth="306" leftMargin="2" rightMargin="2" topMargin="2" bottomMargin="2">
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="62"/>
 	<style name="Tahoma" fontName="Tahoma" fontSize="8"/>
 	<style name="Barcode" fontSize="10"/>
 	<style name="ResusInvertionRectangle" mode="Opaque" forecolor="#000000" backcolor="#FFFFFF" pattern="">
@@ -109,8 +109,6 @@ INNER JOIN trfu_external_appointment_tests appoint_test ON req.appointment_id=ap
 INNER JOIN trfu_tests tests ON tests.id=appoint_test.test_id
 INNER JOIN trfu_analysis_types anal_appoint ON (anal_appoint.id=tests.type_id AND anal_appoint.category="Донация")
 WHERE comp.id=$P{docId} AND anal_appoint.id IN ('18','19','20','21','22')
-AND comp.deleted = "0"
-AND req.deleted = "0"
 
 UNION
 
@@ -121,9 +119,7 @@ trfu_blood_components comp INNER JOIN trfu_blood_donation_requests req ON comp.p
 INNER JOIN trfu_blood_donation_requests_trfu_tests req_test ON req_test.trfu_blood_donation_requests_id=req.id
 INNER JOIN trfu_tests req_tests ON req_test.tests_id=req_tests.id
 INNER JOIN trfu_analysis_types anal_req ON (anal_req.id=req_tests.type_id AND anal_req.category="Донация")
-WHERE comp.id=$P{docId} AND anal_req.id IN ('18','19','20','21','22')
-AND comp.deleted = "0"
-AND req.deleted = "0"]]>
+WHERE comp.id=$P{docId} AND anal_req.id IN ('18','19','20','21','22')]]>
 		</queryString>
 		<field name="donation_analysisValue" class="java.lang.String"/>
 	</subDataset>
@@ -204,10 +200,7 @@ inner join trfu_tests trfu_tests on trfu_tests.id=bloodDonationRequestTestsImmun
 inner join trfu_analysis_types trfu_analysis_types on  type_id=trfu_analysis_types.id
 inner join trfu_blood_component_types type on comp.componentType_id = type.id
 inner join trfu_donors donors on req.donor_id=donors.id
-where comp.id=$P{docId} and trfu_analysis_types.category="Иммуносерология"
-  AND comp.deleted = "0"
-  AND req.deleted = "0"
-  AND donors.deleted = "0"]]>
+where comp.id=$P{docId} and trfu_analysis_types.category="Иммуносерология"]]>
 	</queryString>
 	<field name="preservativeValue" class="java.lang.String"/>
 	<field name="preservativeVolume" class="java.lang.Integer"/>
@@ -462,9 +455,12 @@ where comp.id=$P{docId} and trfu_analysis_types.category="Иммуносерол
 			<textField>
 				<reportElement x="162" y="210" width="100" height="13"/>
 				<textElement>
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Calibri" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cellCount}==0?"":($F{comp_type}.contains("Лейкоцитный")?(($F{doseCount}+" д.д.="+$F{cellCount}+"·10"+"\u2079")):($F{doseCount}+" д.д.="+$F{cellCount}+"·10¹¹"))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{cellCount}==0?"":($F{comp_type}.contains("Лейкоцитный")?(($F{doseCount}+" д.д.="+$F{cellCount}+"·10"+"\u2079")):($F{doseCount}+" д.д.="+$F{cellCount}+"·10¹¹"))
+
+
+]]></textFieldExpression>
 			</textField>
 			<componentElement>
 				<reportElement key="table" x="162" y="131" width="139" height="50"/>

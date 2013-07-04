@@ -45,14 +45,6 @@ public class InformationEntry extends IdentifiedEntity {
 		this.published = published;
 	}
 	
-	public boolean isSent() {
-		return sent;
-	}
-
-	public void setSent(boolean sent) {
-		this.sent = sent;
-	}
-
 	public Date getPublishDate() {
 		return publishDate;
 	}
@@ -110,11 +102,6 @@ public class InformationEntry extends IdentifiedEntity {
 	 * Опубликована ли новость
 	 */
 	private boolean published;
-	
-	/**
-	 * Разослана ли новость
-	 */
-	private boolean sent;
 	
 	/**
 	 * дата публикации новости

@@ -15,7 +15,7 @@
     <parent>
 	<groupId>ru.efive.medicine.niidg</groupId>
         <artifactId>trfu</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.2.5-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -175,12 +175,6 @@
 			<version>3.3.1</version>  
 		</dependency>
 		
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>3.0.6.RELEASE</version>
-        </dependency>
-
     </dependencies>
     
 </project>

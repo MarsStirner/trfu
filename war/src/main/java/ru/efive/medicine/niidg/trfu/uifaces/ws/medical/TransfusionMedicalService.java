@@ -130,7 +130,7 @@ public class TransfusionMedicalService {
 	        request.setDiagnosis(orderInformation.getDiagnosis());
 	        Division ans = null;
 	        if (orderInformation.getDivisionId() != null && orderInformation.getDivisionId() > 0) {
-	        	ans = ((DivisionDAOImpl)ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DIVISION_DAO)).findByExternalId(orderInformation.getDivisionId());
+	        	ans = ((DivisionDAOImpl)ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DIVISION_DAO)).get(orderInformation.getDivisionId());
 	        }
 	        if (ans == null) {
 	        	result.setResult(false);
@@ -296,7 +296,6 @@ public class TransfusionMedicalService {
 	            logger.warn("TransfusionMedicalService - failed to register medical procedure. Donor not saved");
 	        }
 	    	
-	    	operation.setUnp(Integer.toString(patientCredentials.getId()));
 	    	operation.setExternalId(procedureInfo.getId());
 	    	operation.setRecipientExternalId(patientCredentials.getId());
 	    	operation.setDonor(donor);
@@ -318,7 +317,7 @@ public class TransfusionMedicalService {
 	    	
 	        Division ans = null;
 	        if (procedureInfo.getDivisionId() != null && procedureInfo.getDivisionId() > 0) {
-	        	ans = ((DivisionDAOImpl)ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DIVISION_DAO)).findByExternalId(procedureInfo.getDivisionId());
+	        	ans = ((DivisionDAOImpl)ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DIVISION_DAO)).get(procedureInfo.getDivisionId());
 	        }
 	        if (ans == null) {
 	        	result.setResult(false);
