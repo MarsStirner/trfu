@@ -1816,6 +1816,39 @@ public final class ProcessFactory {
 				
 				statuses.put(status.getId(), status);
 				
+				// Выдан -  Отмена выдачи
+				fromStatusActions = new ArrayList<StatusChangeAction>();
+				
+				status = new Status<T>();
+				status.setId(10);
+				status.setName("Выдан");
+				status.setProcessedData(t);
+
+				toStatusAction = new StatusChangeAction(process);
+				
+				toStatusAction.setId(13);
+				toStatusAction.setName("Отмена выдачи");
+				toStatusAction.setInitialStatus(status);
+
+				toStatusAction.setDestinationStatus(readyStatus);
+
+				activites = new ArrayList<IActivity>();
+				localActivity = new ParametrizedPropertyLocalActivity();
+				localActivity.setParentAction(toStatusAction);
+				form = new InputReasonForm();
+				form.setBeanName("bloodComponent");
+				form.setActionCommentaryField(EngineHelper.PROP_WF_RESULT_DESCRIPTION);
+				form.setScope(EditablePropertyScope.LOCAL);
+				localActivity.setDocument(form);
+				activites.add(localActivity);
+				toStatusAction.setLocalActivities(activites);
+
+				fromStatusActions.add(toStatusAction);
+				status.setAvailableActions(fromStatusActions);
+								
+				statuses.put(readyStatus.getId(), readyStatus);
+				statuses.put(status.getId(), status);
+				
 				// Контроль качества
 				List<NoStatusAction> noStatusActions = new ArrayList<NoStatusAction>();
 				
