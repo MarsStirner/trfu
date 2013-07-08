@@ -107,7 +107,11 @@
                                  styleClass="e5ui-inputTime-button #{cc.attrs.disabled or cc.attrs.readonly ? 'disabled' : ''} #{cc.attrs.buttonStyleClass}"
                                  style="#{cc.attrs.buttonStyle}"
                                  value="&nbsp;" type="button"/>
-                <script type="text/javascript">e5ui_inputTime.makeUp({id: "#{cc.clientId}", lang: "#{not empty cc.attrs.lang ? cc.attrs.lang : view.locale.language}", noedit: #{cc.attrs.disableEditor or cc.attrs.readonly}, noSeconds: #{cc.attrs.seconds ? 'false' : 'true'}, hoursInterval: "#{cc.attrs.hoursInterval}", miuntesInterval: "#{cc.attrs.minutesInterval}", secondsInterval: "#{cc.attrs.secondsInterval}"});</script>
+                <script type="text/javascript">
+                	jQuery(function($){
+                    	e5ui_inputTime.makeUp({id: "#{cc.clientId}", lang: "#{not empty cc.attrs.lang ? cc.attrs.lang : view.locale.language}", noedit: #{cc.attrs.disableEditor or cc.attrs.readonly}, noSeconds: #{cc.attrs.seconds ? 'false' : 'true'}, hoursInterval: "#{cc.attrs.hoursInterval}", miuntesInterval: "#{cc.attrs.minutesInterval}", secondsInterval: "#{cc.attrs.secondsInterval}"});
+                	});
+                </script>
             </span>
         </composite:implementation>
     </h:body>
