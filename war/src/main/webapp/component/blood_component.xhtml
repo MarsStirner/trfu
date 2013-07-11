@@ -16,6 +16,26 @@
 		<h:outputScript name="jsf.js" library="javax.faces" target="head"/>
 		<h:outputScript library="js" name="forms.js" target="head" />
 		<e5ui-comp:outputUtilScript />
+		<h:outputScript>
+			var oldtValOnClick;
+			var actions;
+		
+			function checkBloodComponent() {
+				var componentType = $("[id='main_content_form:componentType']");
+				if (componentType.val() != " ") {
+					actions.attr("onclick", oldtValOnClick);
+					actions.click();
+				} else {
+					alert("Необходимо выбрать компонент крови!");
+				}
+			}
+
+			jQuery(function(){
+				actions = $("[id='main_content_form:showActions']");
+				oldtValOnClick = actions.attr("onclick");
+				actions.attr("onclick", "checkBloodComponent()");
+			});
+		</h:outputScript>
 	</ui:define>
 	
 	<ui:define name="left_menu"></ui:define>
@@ -45,7 +65,7 @@
 					</div>
 						<div class="defbutton">
 							<e5ui:formPart id="actions_fp">
-								<h:commandLink onclick="actionsModal.clickOpen('actionsModal'); return false;">
+								<h:commandLink id="showActions" onclick="actionsModal.clickOpen('actionsModal'); return false;">
 									<h:graphicImage value="#{resource['images:button-do.png']}" />
 									Действия
 								</h:commandLink>
