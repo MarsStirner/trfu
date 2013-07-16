@@ -37,6 +37,9 @@ public class LaboratoryIntegration {
             @WebParam(name = "results") List<AnalysisResult> results,
             @WebParam(name = "biomaterialDefects") String biomaterialDefects,
             @WebParam(name = "resultDoctorLisId") int resultDoctorLisId) throws Exception {
+    	
+    	logParameters(orderId, orderBarCode, results, biomaterialDefects, resultDoctorLisId);
+    	
         String result;
         try {
             logger.warn("Received laboratory integration message: orderId=" + orderId + ", orderBarCode=" + orderBarCode);
@@ -204,4 +207,74 @@ public class LaboratoryIntegration {
 
 
     private static final Logger logger = Logger.getLogger(LaboratoryIntegration.class);
+
+    private void logParameters(int orderId, String orderBarCode,
+			List<AnalysisResult> results, String biomaterialDefects,
+			int resultDoctorLisId) {
+		try {
+			logger.warn("setAnalysisResults call parameters: orderId - "
+					+ orderId + "; orderBarCode - " + orderBarCode
+					+ "; biomaterialDefects - " + biomaterialDefects
+					+ "; resultDoctorLisId - " + resultDoctorLisId + ".");
+			
+			logger.warn("Analysis result list elements (list size - "
+					+ results.size() + "):");
+			for (AnalysisResult ar : results) {
+                logger.warn("Analysis result: indicatorName - "
+						+ ar.getIndicatorName() + "; indicatorCode - "
+						+ ar.getIndicatorCode() + "; deviceName - "
+						+ ar.getDeviceName() + "; valueType - "
+						+ ar.getValueType() + "; resultValueText - "
+						+ ar.getResultValueText() + "; resultNormString - "
+						+ ar.getResultNormString()
+						+ "; resultNormalityIndex - "
+						+ ar.getResultNormalityIndex() + "; resultUnit - "
+						+ ar.getResultUnit() + "; resultSignDate - "
+						+ ar.getResultSignDate() + "; resultStatus - "
+						+ ar.getResultStatus() + "; resultComment - "
+						+ ar.getResultComment() + ".");
+                
+                List<ImageValue> imageValues = ar.getImageValues();
+				if (imageValues != null && imageValues.size() > 0) {
+					logger.warn("Image values list elements (list size - "
+							+ imageValues.size() + "):");
+                	for (ImageValue imageValue : imageValues) {
+            			logger.warn("Image value: imageString - "
+            					+ imageValue.getImageString() + ".");
+					}
+                }
+				
+				List<MicroOrganismResult> microValues = ar.getMicroValues();
+				if (microValues != null && microValues.size() > 0) {
+					logger.warn("Micro values list elements (list size - "
+							+ microValues.size() + "):");
+					for (MicroOrganismResult mor : microValues) {
+						logger.warn("Micro organism result: organismLisId - "
+								+ mor.getOrganismLisId() + "; organismName - "
+								+ mor.getOrganismName()
+								+ "; organismConcetration - "
+								+ mor.getOrganismConcetration() + ".");
+					}
+				}
+				
+				List<AntibioticSensitivity> microSensitivity = ar.getMicroSensitivity();
+				if (microSensitivity != null && microSensitivity.size() > 0) {
+					logger.warn("Micro sensitivity list elements (list size - "
+							+ microValues.size() + "):");
+					for (AntibioticSensitivity as : microSensitivity) {
+						logger.warn("Antibiotic Sensitivity: antibioticLisId - "
+								+ as.getAntibioticLisId()
+								+ "; antibioticName - "
+								+ as.getAntibioticName()
+								+ "; mic - "
+								+ as.getMic()
+								+ "; antibioticActivityValue - "
+								+ as.getAntibioticActivityValue() + ".");
+					}
+				}
+			}
+		} catch(Exception e) {
+			// do nothing
+		}
+	}
 }
