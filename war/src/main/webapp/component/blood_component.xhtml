@@ -768,7 +768,7 @@
 														<label><span class="title">Обработка</span> </label>
 													</legend>
 													<div>
-														<h:selectBooleanCheckbox value="#{bloodComponent.document.inactivated}" disabled="#{bloodComponent.viewState}">
+														<h:selectBooleanCheckbox value="#{bloodComponent.document.inactivated}" disabled="true">
 															<f:ajax event="click" listener="#{bloodComponent.inactivatedListener}" render="main_content_form" execute="main_content_form" />
 														</h:selectBooleanCheckbox>
 														<h:outputText value="Вирусинактивация" />
