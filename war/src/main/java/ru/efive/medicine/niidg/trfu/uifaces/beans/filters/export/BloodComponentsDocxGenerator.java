@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.wml.JcEnumeration;
+import org.docx4j.wml.P;
 import org.docx4j.wml.Tr;
 
 import ru.efive.medicine.niidg.trfu.data.dictionary.Anticoagulant;
@@ -19,6 +21,8 @@ import ru.efive.medicine.niidg.trfu.util.DateHelper;
 public class BloodComponentsDocxGenerator
 		extends
 		BaseDocxGenerator<BloodComponentFilterableListHolderBean, BloodComponentsFilter> {
+	
+	private long totalVolume = 0;
 
 	public BloodComponentsDocxGenerator(WordprocessingMLPackage wb,
 			File logoFile, BloodComponentFilterableListHolderBean bean) {
@@ -68,6 +72,23 @@ public class BloodComponentsDocxGenerator
 			createCell(tr, bloodComponent.getStatusName());
 
 			contentTable.getEGContentRowContent().add(tr);
+			
+			totalVolume += bloodComponent.getVolume();
 		}
+		printSummary();
+		printTotalVolume();
+	}
+	
+	private void printTotalVolume() {
+		P p = createParagraphOfText(JcEnumeration.LEFT, false,
+				"Общий объем: " + totalVolume);
+		contentTable.getEGContentRowContent().add(p);
+	}
+		
+	private void printSummary() {
+		int count = bean.getTotalCount(bean.getCurrentFilter());
+		P p = createParagraphOfText(JcEnumeration.LEFT, false,
+				"Итого: " + count);
+		contentTable.getEGContentRowContent().add(p);
 	}
 }

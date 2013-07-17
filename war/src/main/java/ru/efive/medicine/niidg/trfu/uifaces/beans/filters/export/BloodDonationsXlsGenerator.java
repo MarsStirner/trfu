@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
@@ -72,5 +74,16 @@ public class BloodDonationsXlsGenerator
 
 			createDataCell(row, 6, donationRequest.getCommentary());
 		}
+		printSummary();
+	}
+	
+	private void printSummary() {
+		int rowNumber = getRowCount() + 1;
+		int count = bean.getTotalCount(bean.getCurrentFilter());
+		Row row = sheet.createRow(rowNumber);
+		Cell summaryCell = row.createCell(0);
+		summaryCell.setCellValue("Итого: " + count);
+		sheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber, 0,
+				getColumnCount() - 1));
 	}
 }

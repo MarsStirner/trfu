@@ -3,8 +3,10 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export;
 import java.io.File;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
@@ -59,5 +61,16 @@ public class DonorsXlsGenerator extends
 
 			createDataCell(row, 5, donor.getCommentary());
 		}
+		printSummary();
+	}
+	
+	private void printSummary() {
+		int rowNumber = getRowCount() + 1;
+		int count = bean.getTotalCount(bean.getCurrentFilter());
+		Row row = sheet.createRow(rowNumber);
+		Cell summaryCell = row.createCell(0);
+		summaryCell.setCellValue("Итого: " + count);
+		sheet.addMergedRegion(new CellRangeAddress(rowNumber, rowNumber, 0,
+				getColumnCount() - 1));
 	}
 }
