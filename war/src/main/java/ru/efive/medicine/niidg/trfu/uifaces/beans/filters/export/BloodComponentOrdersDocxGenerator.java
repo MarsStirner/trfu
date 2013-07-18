@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.wml.JcEnumeration;
+import org.docx4j.wml.P;
 import org.docx4j.wml.Tr;
 
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
@@ -63,5 +65,13 @@ public class BloodComponentOrdersDocxGenerator
 
 			contentTable.getEGContentRowContent().add(tr);
 		}
+		printSummary();
+	}
+	
+	private void printSummary() {
+		int count = bean.getTotalCount(bean.getCurrentFilter());
+		P p = createParagraphOfText(JcEnumeration.LEFT, false,
+				"Итого: " + count);
+		contentTable.getEGContentRowContent().add(p);
 	}
 }
