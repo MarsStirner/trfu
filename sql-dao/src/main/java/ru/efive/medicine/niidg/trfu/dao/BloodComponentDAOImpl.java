@@ -885,7 +885,6 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         	detachedCriteria.add(Restrictions.eq("deleted", false));
         }
         detachedCriteria.add(Restrictions.eq("statusId", statusId));
-        detachedCriteria.add(Restrictions.isNotEmpty("qualityControlList"));
         detachedCriteria.add(Restrictions.eq("inControl", false));
 		String[] ords = orderBy == null ? null : orderBy.split(",");
 		if (ords != null) {
