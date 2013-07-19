@@ -17,6 +17,14 @@
     <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
     <h:outputScript library="js" name="forms.js" target="head"/>
     <e5ui-comp:outputUtilScript/>
+    <h:outputScript>
+			jQuery(function(){
+				headContent = $("[id='header_content']").find("div:first");
+				if (headContent.text() == '404 - Донация не найдена') {
+					headContent.html('<div class="name">Обращение отменено</div><button onclick="window.close()">Закрыть форму</button>');
+				}
+			});
+		</h:outputScript>
 </ui:define>
 
 <ui:define name="left_menu"></ui:define>

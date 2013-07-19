@@ -68,24 +68,26 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		DonorRejectionDAOImpl dao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, ApplicationHelper.REJECTION_DAO);
 		List<DonorRejection> list = dao.findDocumentsByRequestId("d_" + id);
 
-		if (list.size() > 0) {
-			request.setRejection(list.get(0));
-		}
-		if (request.getAppointment() != null && request.getAppointment().getId() > 0) {
-			request.setAdditionalResults(sessionManagement.getDAO(ExternalAnalysisResultDAOImpl.class, "externalAnalysisResultDao").getResultsByAppointmentId(request.getAppointment().getId()));
-		}
-        if (operational.getCurrentOperationalSetup() != null) {
-            if(operational.getCurrentOperationalSetup().getName()!=null&&!operational.getCurrentOperationalSetup().getName().isEmpty()){
-                request.setOperational(operational.getCurrentOperationalSetup().getName());
-            }
-            if(operational.getCurrentOperationalSetup().getCrew()!=null&&operational.getCurrentOperationalSetup().getCrew().getStaff()!=null){
-                request.setOperationalCrew(operational.getCurrentOperationalSetup().getCrew());
-            }
-        }
+		if (request != null) {
+			if (list.size() > 0) {
+				request.setRejection(list.get(0));
+			}
+			if (request.getAppointment() != null && request.getAppointment().getId() > 0) {
+				request.setAdditionalResults(sessionManagement.getDAO(ExternalAnalysisResultDAOImpl.class, "externalAnalysisResultDao").getResultsByAppointmentId(request.getAppointment().getId()));
+			}
+			if (operational.getCurrentOperationalSetup() != null) {
+				if(operational.getCurrentOperationalSetup().getName()!=null&&!operational.getCurrentOperationalSetup().getName().isEmpty()){
+					request.setOperational(operational.getCurrentOperationalSetup().getName());
+				}
+				if(operational.getCurrentOperationalSetup().getCrew()!=null&&operational.getCurrentOperationalSetup().getCrew().getStaff()!=null){
+					request.setOperationalCrew(operational.getCurrentOperationalSetup().getCrew());
+				}
+			}
 
-        if(request.getBloodSystems()==null)
-            request.setBloodSystems(new ArrayList<BloodSystem>());
-
+			if(request.getBloodSystems()==null)
+				request.setBloodSystems(new ArrayList<BloodSystem>());
+		}	
+		
 		setDocument(request);
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
