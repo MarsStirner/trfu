@@ -203,6 +203,7 @@ public class TransfusionMedicalService {
     		@WebParam(name = "donorInfo") DonorInfo donorInfo,
     		@WebParam(name = "patientCredentials") PatientCredentials patientCredentials,
             @WebParam(name="procedureInfo") ProcedureInfo procedureInfo) {
+    	logParameters(donorInfo, patientCredentials, procedureInfo);
     	OrderResult result = new OrderResult();
     	result.setOrderComment("");
     	try {
@@ -509,6 +510,39 @@ public class TransfusionMedicalService {
 		donor.setCreated(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
 		donor.setDeleted(false);
 		donor.setStatusId(1);
+    }
+    
+    private void logParameters(DonorInfo donorInfo, PatientCredentials patientCredentials, ProcedureInfo procedureInfo) {
+    	try {
+    		logger.warn("Data of DonorInfo:" +
+    				"\nFirstName: " + donorInfo.getFirstName() +
+    				"\nLastName: " + donorInfo.getLastName() +
+    				"\nMiddleName: " + donorInfo.getMiddleName() +
+    				"\nNumber: " + donorInfo.getNumber() +
+    				"\nId: " + donorInfo.getId());
+    		logger.warn("Data of PatientCredentials:" +
+    				"\nFirstName: " + patientCredentials.getFirstName() +
+    				"\nLastName: " + patientCredentials.getLastName() +
+    				"\nMiddleName: " + patientCredentials.getMiddleName() +
+    				"\nBloodGroupId: " + patientCredentials.getBloodGroupId() +
+    				"\nId: " + patientCredentials.getId() + 
+    				"\nRhesusFactorId: " + patientCredentials.getRhesusFactorId() + 
+    				"\nBirth: " + patientCredentials.getBirth());
+    		logger.warn("Data of ProcedureInfo:" +
+    				"\nAttendingPhysicianFirstName: " + procedureInfo.getAttendingPhysicianFirstName() +
+    				"\nAttendingPhysicianLastName: " + procedureInfo.getAttendingPhysicianLastName() +
+    				"\nAttendingPhysicianMiddleName: " + procedureInfo.getAttendingPhysicianMiddleName() +
+    				"\nIbNumber: " + procedureInfo.getIbNumber() +
+    				"\nAttendingPhysicianId: " + procedureInfo.getAttendingPhysicianId() + 
+    				"\nDivisionId: " + procedureInfo.getDivisionId() + 
+    				"\nId: " + procedureInfo.getId() + 
+    				"\nOperationType: " + procedureInfo.getOperationType() + 
+    				"\nPlanDate: " + procedureInfo.getPlanDate() + 
+    				"\nRegistrationDate: " + procedureInfo.getRegistrationDate());
+    	} catch(Exception e) {
+    		// do nothing
+    	}
+
     }
     
 }
