@@ -516,31 +516,37 @@ public class TransfusionMedicalService {
     
     private void logParameters(DonorInfo donorInfo, PatientCredentials patientCredentials, ProcedureInfo procedureInfo) {
     	try {
-    		logger.warn("Data of DonorInfo:" +
-    				"\nFirstName: " + donorInfo.getFirstName() +
-    				"\nLastName: " + donorInfo.getLastName() +
-    				"\nMiddleName: " + donorInfo.getMiddleName() +
-    				"\nNumber: " + donorInfo.getNumber() +
-    				"\nId: " + donorInfo.getId());
-    		logger.warn("Data of PatientCredentials:" +
-    				"\nFirstName: " + patientCredentials.getFirstName() +
-    				"\nLastName: " + patientCredentials.getLastName() +
-    				"\nMiddleName: " + patientCredentials.getMiddleName() +
-    				"\nBloodGroupId: " + patientCredentials.getBloodGroupId() +
-    				"\nId: " + patientCredentials.getId() + 
-    				"\nRhesusFactorId: " + patientCredentials.getRhesusFactorId() + 
-    				"\nBirth: " + patientCredentials.getBirth());
-    		logger.warn("Data of ProcedureInfo:" +
-    				"\nAttendingPhysicianFirstName: " + procedureInfo.getAttendingPhysicianFirstName() +
-    				"\nAttendingPhysicianLastName: " + procedureInfo.getAttendingPhysicianLastName() +
-    				"\nAttendingPhysicianMiddleName: " + procedureInfo.getAttendingPhysicianMiddleName() +
-    				"\nIbNumber: " + procedureInfo.getIbNumber() +
-    				"\nAttendingPhysicianId: " + procedureInfo.getAttendingPhysicianId() + 
-    				"\nDivisionId: " + procedureInfo.getDivisionId() + 
-    				"\nId: " + procedureInfo.getId() + 
-    				"\nOperationType: " + procedureInfo.getOperationType() + 
-    				"\nPlanDate: " + procedureInfo.getPlanDate() + 
-    				"\nRegistrationDate: " + procedureInfo.getRegistrationDate());
+    		if (donorInfo != null) {
+    			logger.warn("Data of DonorInfo:" +
+    					"\nFirstName: " + donorInfo.getFirstName() +
+    					"\nLastName: " + donorInfo.getLastName() +
+    					"\nMiddleName: " + donorInfo.getMiddleName() +
+    					"\nNumber: " + donorInfo.getNumber() +
+    					"\nId: " + donorInfo.getId());
+    		}
+    		if (patientCredentials != null) {
+    			logger.warn("Data of PatientCredentials:" +
+    					"\nFirstName: " + patientCredentials.getFirstName() +
+    					"\nLastName: " + patientCredentials.getLastName() +
+    					"\nMiddleName: " + patientCredentials.getMiddleName() +
+    					"\nBloodGroupId: " + patientCredentials.getBloodGroupId() +
+    					"\nId: " + patientCredentials.getId() + 
+    					"\nRhesusFactorId: " + patientCredentials.getRhesusFactorId() + 
+    					"\nBirth: " + patientCredentials.getBirth());
+    		}
+    		if (procedureInfo != null) {
+    			logger.warn("Data of ProcedureInfo:" +
+    					"\nAttendingPhysicianFirstName: " + procedureInfo.getAttendingPhysicianFirstName() +
+    					"\nAttendingPhysicianLastName: " + procedureInfo.getAttendingPhysicianLastName() +
+    					"\nAttendingPhysicianMiddleName: " + procedureInfo.getAttendingPhysicianMiddleName() +
+    					"\nIbNumber: " + procedureInfo.getIbNumber() +
+    					"\nAttendingPhysicianId: " + procedureInfo.getAttendingPhysicianId() + 
+    					"\nDivisionId: " + procedureInfo.getDivisionId() + 
+    					"\nId: " + procedureInfo.getId() + 
+    					"\nOperationType: " + procedureInfo.getOperationType() + 
+    					"\nPlanDate: " + procedureInfo.getPlanDate() + 
+    					"\nRegistrationDate: " + procedureInfo.getRegistrationDate());
+    		}
     	} catch(Exception e) {
     		// do nothing
     	}
