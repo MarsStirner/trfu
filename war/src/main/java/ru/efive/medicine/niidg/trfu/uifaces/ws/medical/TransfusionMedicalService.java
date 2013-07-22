@@ -203,11 +203,13 @@ public class TransfusionMedicalService {
     		@WebParam(name = "donorInfo") DonorInfo donorInfo,
     		@WebParam(name = "patientCredentials") PatientCredentials patientCredentials,
             @WebParam(name="procedureInfo") ProcedureInfo procedureInfo) {
-    	logParameters(donorInfo, patientCredentials, procedureInfo);
     	OrderResult result = new OrderResult();
     	result.setOrderComment("");
     	try {
 	    	logger.warn("TransfusionMedicalService - Received new medical procedure order message");
+
+	    	logParameters(donorInfo, patientCredentials, procedureInfo);
+	    	
 	    	MedicalOperationDAOImpl dao = (MedicalOperationDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.MEDICAL_DAO);
 	    	if (patientCredentials == null) {
 	    		result.setResult(false);
