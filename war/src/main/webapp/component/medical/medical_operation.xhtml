@@ -103,7 +103,7 @@
 					<div class="defbutton">
 						<h:commandLink action="#{medicalOperation.registerOperation()}" rendered="#{(medicalOperation.editState or medicalOperation.viewState) and medicalOperation.document.fromMIS and (not medicalOperation.document.sentToMIS)}">
 							<h:graphicImage value="#{resource['images:button-request.png']}" />
-							Зарегистрировать процедуру
+							Завершить процедуру
 						</h:commandLink>
 					</div>
                     <div class="top">
@@ -234,7 +234,7 @@
 										</tr>
 									</h:panelGroup>
 									<tr class="row">
-										<td class="first">Фактическая дата:</td>
+										<td class="first">Дата выполнения:</td>
 										<td>
 											<h:outputText value="#{medicalOperation.document.factDate}" class="wide">
 												<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
@@ -422,9 +422,11 @@
 										</tr>
 									</h:panelGroup>
 									<tr class="row">
-										<td class="first">Фактическая дата:</td>
+										<td class="first">Дата выполнения:</td>
 										<td>
-											<e5ui-comp:inputDate id="factDate" value="#{medicalOperation.document.factDate}" lang="ru" />
+											<h:outputText id="factDate" value="#{medicalOperation.document.factDate}" class="wide">
+												<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+											</h:outputText>
 										</td>
 									</tr>
 									<tr class="row">

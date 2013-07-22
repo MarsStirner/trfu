@@ -74,7 +74,7 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 		setDocument(sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).get(Operation.class, id));
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
-		}
+		} 
 	}
 	
 	@Override
@@ -182,6 +182,7 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 	
 	public void registerOperation() {
 		try {
+			getDocument().setFactDate(new Date());
 			ActionResult result = IntegrationHelper.processMedicalOperation(getDocument());
 			if (!result.isProcessed()) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
