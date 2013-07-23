@@ -79,7 +79,7 @@ from trfu_blood_components comp
 	inner join wf_history wf
 	on hist.history_entry_id = wf.id
 where wf.to_status_id = 10
-	and wf.startDate between '2012-06-01 00:00:00' and '2012-06-30 23:59:59'
+	and wf.startDate between DATE($P{StartDate}) and  ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
 	and comp.deleted = 0
 	and comp_types.value LIKE '%плазма%'
 	and comp.id not in (select
@@ -90,7 +90,7 @@ where wf.to_status_id = 10
 							inner join wf_history sub_wf
 							on sub_hist.history_entry_id = sub_wf.id
 						where sub_wf.to_status_id <> 10
-							and sub_wf.startDate between wf.startDate and '2012-06-30 23:59:59'
+							and sub_wf.startDate between wf.startDate and  ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
 							and sub_comp.id = comp.id)
 ) as table11
 
