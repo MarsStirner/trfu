@@ -10,4 +10,9 @@ import javax.persistence.*;
 @Table(name="trfu_medical_donors")
 public class MedicalDonor extends CommonDonor {
 
+	@Override
+	public String toString() {
+		return "MedicalDonor [" + super.toString() + "]";
+	}
+
 }

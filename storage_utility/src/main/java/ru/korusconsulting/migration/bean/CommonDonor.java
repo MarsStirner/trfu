@@ -1,40 +1,31 @@
 package ru.korusconsulting.migration.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.*;
 
 @MappedSuperclass
-public class CommonDonor {
+public class CommonDonor implements Serializable {
 	private static final long serialVersionUID = 1L;
-	/* id донора */
 	private int id;
-	/* фамилия */
 	private String lastName;
-	/* отчество */
 	private String middleName;
-	/* имя */
 	private String firstName;
-	/* Пол (0 - female, 1 - male) */
+	/* Gender (0 - female, 1 - male) */
     private int gender;
-	/* дата рождения */
+	/* Date of birth */
 	private Date birth;
-	/* Серия паспорта */
 	private String passportSeries;
-	/* Номер паспорта */
 	private String passportNumber;
-	/* Серия страхового полиса ОМС */
 	private String insuranceSeries;
-	/* Номер страхового полиса ОМС */
 	private String insuranceNumber;
-	/* Место работы */
 	private String employment;
-	/* Рабочий телефон */
 	private String workPhone;
-	/* Адрес регистрации */
 	private String registrationAddress;
-	/* Телефон */
 	private String phone;
+	/* id from Save Repository of personal data */
+	private Integer temp_stogate_id;
 //----------------------------------------------------------------------------------------
 	@Id
 	public int getId() {
@@ -147,5 +138,26 @@ public class CommonDonor {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	@Column
+	public Integer getTemp_stogate_id() {
+		return temp_stogate_id;
+	}
+
+	public void setTemp_stogate_id(Integer temp_stogate_id) {
+		this.temp_stogate_id = temp_stogate_id;
+	}
+
+	@Override
+	public String toString() {
+		return " id=" + id + ", lastName=" + lastName
+				+ ", middleName=" + middleName + ", firstName=" + firstName
+				+ ", gender=" + gender + ", birth=" + birth
+				+ ", passportSeries=" + passportSeries + ", passportNumber="
+				+ passportNumber + ", insuranceSeries=" + insuranceSeries
+				+ ", insuranceNumber=" + insuranceNumber + ", employment="
+				+ employment + ", workPhone=" + workPhone
+				+ ", registrationAddress=" + registrationAddress + ", phone="
+				+ phone + ", temp_stogate_id=" + temp_stogate_id;
 	}
 }

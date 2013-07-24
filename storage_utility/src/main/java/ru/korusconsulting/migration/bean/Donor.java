@@ -21,4 +21,9 @@ public class Donor extends CommonDonor {
 		this.mail = mail;
 	}
 
+	@Override
+	public String toString() {
+		return "Donor [" + super.toString() + ", mail=" + mail  +"]";
+	}
+
 }
