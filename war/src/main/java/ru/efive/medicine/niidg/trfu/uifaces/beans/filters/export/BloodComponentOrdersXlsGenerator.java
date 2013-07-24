@@ -72,10 +72,10 @@ public class BloodComponentOrdersXlsGenerator
 
 			createDataCell(row, 6, orderRequest.getStatusName());
 		}
-		printSummary();
 	}
 	
-	private void printSummary() {
+	@Override
+	protected void printSummary() {
 		int rowNumber = getRowCount() + 1;
 		int count = bean.getTotalCount(bean.getCurrentFilter());
 		Row row = sheet.createRow(rowNumber);

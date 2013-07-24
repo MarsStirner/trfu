@@ -61,10 +61,10 @@ public class DonorsXlsGenerator extends
 
 			createDataCell(row, 5, donor.getCommentary());
 		}
-		printSummary();
 	}
 	
-	private void printSummary() {
+	@Override
+	protected void printSummary() {
 		int rowNumber = getRowCount() + 1;
 		int count = bean.getTotalCount(bean.getCurrentFilter());
 		Row row = sheet.createRow(rowNumber);

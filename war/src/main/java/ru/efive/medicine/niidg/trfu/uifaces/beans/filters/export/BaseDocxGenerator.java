@@ -69,7 +69,17 @@ public abstract class BaseDocxGenerator<T extends AbstractFilterableListHolderBe
 		printEmptyPara();
 		printTable();
 		printEmptyPara();
+		printSummary();
+		printTotalVolume();
 		printDateTime();
+	}
+	
+	protected void printTotalVolume() {
+		
+	}
+	
+	protected void printSummary() {
+
 	}
 
 	protected void clearContent() {

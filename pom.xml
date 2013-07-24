@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.efive.medicine.niidg</groupId>
     <artifactId>trfu</artifactId>
-    <version>0.3.12-SNAPSHOT</version>
+    <version>0.3.13-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Root NIIDG Transfusion</name>
     <description>Root Project NIIDG Transfusion</description>

@@ -53,10 +53,10 @@ public class DonorsDocxGenerator extends
 
 			contentTable.getEGContentRowContent().add(tr);
 		}
-		printSummary();
 	}
 	
-	private void printSummary() {
+	@Override
+	protected void printSummary() {
 		int count = bean.getTotalCount(bean.getCurrentFilter());
 		P p = createParagraphOfText(JcEnumeration.LEFT, false,
 				"Итого: " + count);

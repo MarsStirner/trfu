@@ -64,10 +64,10 @@ public class ExaminationRequestsXlsGenerator
 
 			createDataCell(row, 6, examinationRequest.getCommentary());
 		}
-		printSummary();
 	}
 	
-	private void printSummary() {
+	@Override
+	protected void printSummary() {
 		int rowNumber = getRowCount() + 1;
 		int count = bean.getTotalCount(bean.getCurrentFilter());
 		Row row = sheet.createRow(rowNumber);

@@ -75,17 +75,17 @@ public class BloodComponentsDocxGenerator
 			
 			totalVolume += bloodComponent.getVolume();
 		}
-		printSummary();
-		printTotalVolume();
 	}
 	
-	private void printTotalVolume() {
+	@Override
+	protected void printTotalVolume() {
 		P p = createParagraphOfText(JcEnumeration.LEFT, false,
 				"Общий объем: " + totalVolume);
 		contentTable.getEGContentRowContent().add(p);
 	}
 		
-	private void printSummary() {
+	@Override
+	protected void printSummary() {
 		int count = bean.getTotalCount(bean.getCurrentFilter());
 		P p = createParagraphOfText(JcEnumeration.LEFT, false,
 				"Итого: " + count);

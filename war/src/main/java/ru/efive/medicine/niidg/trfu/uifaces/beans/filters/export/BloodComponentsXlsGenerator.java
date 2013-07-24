@@ -80,11 +80,10 @@ public class BloodComponentsXlsGenerator
 			
 			totalVolume += bloodComponent.getVolume();
 		}
-		printSummary();
-		printTotalVolume();
 	}
 	
-	private void printTotalVolume() {
+	@Override
+	protected void printTotalVolume() {
 		int rowNumber = getRowCount() + 1;
 		Row row = sheet.createRow(rowNumber);
 		Cell summaryCell = row.createCell(0);
@@ -93,7 +92,8 @@ public class BloodComponentsXlsGenerator
 				getColumnCount() - 1));
 	}
 	
-	private void printSummary() {
+	@Override
+	protected void printSummary() {
 		int rowNumber = getRowCount() + 1;
 		int count = bean.getTotalCount(bean.getCurrentFilter());
 		Row row = sheet.createRow(rowNumber);

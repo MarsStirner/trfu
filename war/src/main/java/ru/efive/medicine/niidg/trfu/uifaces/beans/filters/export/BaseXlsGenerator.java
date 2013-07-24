@@ -49,8 +49,18 @@ public abstract class BaseXlsGenerator<T extends AbstractFilterableListHolderBea
 		printTableHeader();
 		printTableContent();
 		setWidths();
+		printSummary();
+		printTotalVolume();
 		printDateTime();
 		printLogo();
+	}
+	
+	protected void printTotalVolume() {
+		
+	}
+	
+	protected void printSummary() {
+		
 	}
 
 	public void setSheetName() {
