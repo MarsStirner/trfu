@@ -638,32 +638,16 @@
 				        	<div class="actionbar">
 				        		<div class="menu">
 				        			<h:panelGroup rendered="#{donor.requestCreationAvailable}">
-		                                <div class="top">
-		                                	<h:commandLink styleClass="top_link" onclick="return false;">
-		                                		<span>
+				        				<div class="defbutton">
+											<h:outputLink value="#{contextPath}/component/examination.xhtml" target="_blank">
+												<f:param name="docAction" value="create" />
+											    <f:param name="parentId" value="#{donor.document.id}" />
+												<span>
 													<h:graphicImage value="#{resource['images:button-request.png']}" />
-													Новое обращение
+													На обследование
 												</span>
-											</h:commandLink>
-		                                    <div class="sub">
-							                    <div class="item">
-											        <h:outputLink value="#{contextPath}/component/examination.xhtml" target="_blank">
-									        	        <f:param name="docAction" value="create" />
-											        	<f:param name="parentId" value="#{donor.document.id}" />
-												        <h:graphicImage value="#{resource['images:button-request.png']}" />
-		                                                На обследование
-											        </h:outputLink>
-										        </div>
-										        <div class="item">
-											        <h:outputLink value="#{contextPath}/component/blood_donation.xhtml" target="_blank">
-									        	        <f:param name="docAction" value="create" />
-												        <f:param name="parentId" value="#{donor.document.id}" />
-												        <h:graphicImage value="#{resource['images:button-request.png']}" />
-		                                                На донацию
-											        </h:outputLink>
-										        </div>
-		                                    </div>
-		                                </div>
+				           					</h:outputLink>
+										</div>
 		                            </h:panelGroup>
 									<div class="defbutton">
 										<h:commandLink action="false;">
