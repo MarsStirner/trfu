@@ -1055,15 +1055,7 @@
                     <div class="row">
                         <div class="actionbar">
                             <div class="menu">
-                                <div class="defbutton">
-                                    <h:commandLink action="#{bloodDonation.document.addFactEntry()}">
-                                        <h:graphicImage value="#{resource['images:plus.png']}"/>
-                                        <f:ajax render=":main_content_form:fact_donation_editable blood_components"
-                                                execute=":main_content_form:fact_entry_list"/>
-                                        Добавить
-                                    </h:commandLink>
-                                </div>
-                                <h:panelGroup rendered="#{bloodDonation.document.pheresisNecessary}">
+              					<h:panelGroup rendered="#{bloodDonation.document.pheresisNecessary}">
                                     <div class="defbutton">
                                         <h:commandLink action="#{bloodDonation.document.addPheresis()}">
                                             <h:graphicImage value="#{resource['images:blank.png']}"/>
@@ -1086,9 +1078,7 @@
                                         <h:selectOneMenu value="#{row.donationType}"
                                                          converter="BloodDonationTypeConverter">
                                             <f:selectItems value="#{dictionaryManagement.bloodDonationTypes}"/>
-                                            <f:ajax listener="#{bloodDonation.factDonationListener}"
-                                                    render=":main_content_form" execute=":main_content_form"/>
-                                        </h:selectOneMenu>
+                                         </h:selectOneMenu>
                                     </e5ui:column>
                                     <e5ui:column style="min-width:5em;">
                                         <f:facet name="header">

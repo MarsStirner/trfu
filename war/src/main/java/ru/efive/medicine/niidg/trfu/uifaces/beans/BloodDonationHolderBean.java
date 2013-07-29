@@ -37,6 +37,24 @@ import ru.efive.wf.core.util.EngineHelper;
 public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDonationRequest, Integer> {
 	
 	@Override
+	public String edit() {
+		String result = super.edit();
+		boolean isStatusGT1 = getDocument().getStatusId() > 1 ? true : false;
+		boolean isEqIds = false;
+		if (getDocument().getTransfusiologist() != null) {
+			isEqIds = sessionManagement.getLoggedUser().getId() == getDocument().getTransfusiologist().getId() ? true : false;
+		}
+		boolean isOperational = sessionManagement.isOperational();
+		boolean isSizeZero = getDocument().getFactEntries().size() == 0 ? true : false;
+		if (isEditState()) {
+			if (isStatusGT1 && (isEqIds || isOperational || isTransfusiologist() || isHeadNurse()) && isSizeZero) {
+				getDocument().addFactEntry();
+			}
+		}
+		return result;
+	}
+	
+	@Override
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
@@ -91,7 +109,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		setDocument(request);
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
-		}
+		} 
 	}
 	
 	@Override
@@ -209,9 +227,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		return result;
 	}
 	
-	public void factDonationListener(AjaxBehaviorEvent event) {
-		System.out.println("Donation listener fired");
-    }
+
 	
 	public boolean isGranulocytePheresis() {
 		boolean result = false;
