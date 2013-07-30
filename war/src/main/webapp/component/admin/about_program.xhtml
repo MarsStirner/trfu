@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	<ui:define name="running_head">
+		<h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+		<h:outputScript>
+			jQuery(function(){
+				$("div.actionbar").hide();
+			});
+		</h:outputScript>
+	</ui:define>
+	<ui:define name="header_top">
+		<div id="viewtitle">Информация о программе</div>
+	</ui:define>
+	<ui:define name="content">
+        <e5ui:formPart id="main_table_part">
+            <div><h:outputText style="font-weight:bold; font-size:15pt;" value="Служба крови."/></div>
+			<div>
+				<h:outputText style="font-weight:bold; font-style:italic; font-size:12pt;" value="Версия "/>
+				<h:outputText style="font-weight:bold; font-size:12pt;" value="#{versionInfo.versionAssembly}"/>
+				<h:outputText style="font-weight:bold; font-style:italic; font-size:12pt;" value=" от "/>
+				<h:outputText style="font-weight:bold; font-size:12pt;" value="#{versionInfo.dateAssembly}"/>
+			</div>
+        </e5ui:formPart>
+    </ui:define>
+	
+</ui:composition>
+
+</html>
