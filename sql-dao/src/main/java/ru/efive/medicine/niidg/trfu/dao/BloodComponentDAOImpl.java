@@ -807,7 +807,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         	concat.append(phenotype.getValue());
         }
         
-        String query = "select components.id FROM trfu_blood_donation_request_tests_immuno immuno "
+        String query = "select components.id as id FROM trfu_blood_donation_request_tests_immuno immuno "
         	+ "inner join trfu_tests tests ON tests.id = immuno.testsImmuno_id "
         	+ "inner join trfu_blood_donation_requests donations on immuno.trfu_blood_donation_requests_id = donations.id "
         	+ "inner join trfu_blood_components components on donations.number = components.parentNumber "
@@ -820,7 +820,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         	+ "group by components.id "
         	+ "having group_concat(concat('',tests.value) order by tests.id separator '')='" + concat + "'";
         
-        List list = getSession().createSQLQuery(query).list();
+        List list = getSession().createSQLQuery(query).addScalar("id").list();
         
         if (list != null && list.size() > 0) {
         	detachedCriteria.add(Restrictions.in("id", list));
