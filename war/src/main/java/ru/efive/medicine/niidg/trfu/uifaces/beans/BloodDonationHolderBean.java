@@ -37,6 +37,13 @@ import ru.efive.wf.core.util.EngineHelper;
 public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDonationRequest, Integer> {
 	
 	@Override
+	public String save() {
+		getDocument().setFactDate(new Date());
+		String result = super.save();
+		return result;
+	}
+	
+	@Override
 	public String edit() {
 		String result = super.edit();
 		boolean isStatusGT1 = getDocument().getStatusId() > 1 ? true : false;
@@ -49,6 +56,14 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		if (isEditState()) {
 			if (isStatusGT1 && (isEqIds || isOperational || isTransfusiologist() || isHeadNurse()) && isSizeZero) {
 				getDocument().addFactEntry();
+				List<BloodDonationEntry> entryList = getDocument().getEntryList();
+				if (entryList != null && !entryList.isEmpty()) {
+					getDocument().getFactEntryList().get(0).setDonationType(entryList.get(0).getDonationType());
+					getDocument().getFactEntryList().get(0).setDose(entryList.get(0).getDose());
+				}
+			}
+			if (getDocument().getAnalysisCount() == 0) {
+				getDocument().setAnalysisCount(20);
 			}
 		}
 		return result;
@@ -617,6 +632,9 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 				}
 				history.add(getHistoryEntry());
 				request.setHistory(history);
+			}
+			if (request.getStatusId() == 2) {
+				request.setFactDate(new Date());
 			}
 			setDocument(request);
 			BloodDonationHolderBean.this.save();

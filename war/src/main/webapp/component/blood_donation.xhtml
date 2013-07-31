@@ -423,7 +423,7 @@
                 </tr>
             </h:panelGroup>
             <tr class="row">
-                <td class="first">Фактическая дата/время донации:</td>
+                <td class="first">Фактическая дата донации:</td>
                 <td>
                     <h:outputText value="#{bloodDonation.document.factDate}" class="wide">
                         <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
@@ -990,9 +990,11 @@
     </h:panelGroup>
 </h:panelGroup>
 <tr class="row">
-    <td class="first">Фактическая дата/время донации:</td>
+    <td class="first">Фактическая дата донации:</td>
     <td>
-        <e5ui-comp:inputDate id="factDate" value="#{bloodDonation.document.factDate}" lang="ru"/>
+        <h:outputText value="#{bloodDonation.document.factDate}" class="wide">
+        	<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+        </h:outputText>
     </td>
 </tr>
 <h:panelGroup
