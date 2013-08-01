@@ -1,9 +1,6 @@
 package ru.korusconsulting.migration.dao;
 
-import java.io.IOException;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import org.hl7.v3.AD;
 import org.hl7.v3.ActClassControlAct;
@@ -17,7 +14,6 @@ import org.hl7.v3.AdxpStreetAddressLine;
 import org.hl7.v3.AdxpStreetName;
 import org.hl7.v3.COCTMT090003UV01AssignedEntity;
 import org.hl7.v3.COCTMT150000UV02Organization;
-import org.hl7.v3.COCTMT710007UV07Place;
 import org.hl7.v3.CS;
 import org.hl7.v3.EnFamily;
 import org.hl7.v3.EnGiven;
@@ -34,7 +30,6 @@ import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01ControlActProcess;
 import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest;
 import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01Subject1;
 import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01Subject2;
-import org.hl7.v3.PRPAMT101301UV02BirthPlace;
 import org.hl7.v3.PRPAMT101301UV02IdentifiedPerson;
 import org.hl7.v3.PRPAMT101301UV02Person;
 import org.hl7.v3.ParticipationAuthorOriginator;
@@ -50,7 +45,25 @@ import ru.korusconsulting.pdmanager.TmisPdm;
 
 
 public class SRPDDao {
-	public void makeQuery() {
+	private static final String NUMBER_PASSPORT = "OID_НОМЕР_ПАСПОРТА";
+	private static final String OMC = "OID_ОМС";
+	
+	private static final String HOME_PHONE = "tel:";
+	private static final String MOBILE_PHONE = "cell-tel:";
+	private static final String WORKING_PHONE = "working-office-tel:";
+	private static final String EMAIL = "mailto:";
+	
+	public void makeQuery(String family, 
+						  String givven, 
+						  String suffix, 
+						  String numberOMC, 
+						  String numberPassport, 
+						  String homePhone,
+						  String address, 
+						  String workPhone, 
+						  String email, 
+						  String employmentId, 
+						  String birthDate) {
 		TmisPdm service = new TmisPdm();
 		PDManager pdm = service.getPortPdm();
 		PRPAIN101311UV02 parameters = new PRPAIN101311UV02();
@@ -60,9 +73,7 @@ public class SRPDDao {
 		parameters.setCreationTime(ts);
 		/* ------------------------------------------------------ */
 		/* ----------------set interaction Id-------------------- */
-		II ii = new II();
-		ii.setRoot("2.16.840.1.113883.1.6");///////////////////////////////// перегенерировать
-		parameters.setInteractionId(ii);
+		parameters.setInteractionId(createII("2.16.840.1.113883.1.6", null, null));///////////////////////////////// перегенерировать
 		/* ------------------------------------------------------ */
 		/*--------------- set Processing Code-------------------- */
 		CS pc = new CS();
@@ -90,20 +101,30 @@ public class SRPDDao {
 			/* ---set values of subject--- */
 			PRPAIN101311UV02MFMIMT700721UV01Subject1 subj = new PRPAIN101311UV02MFMIMT700721UV01Subject1();
 			subj.setTypeCode(ActRelationshipHasSubject.SUBJ);
-			subj.setRegistrationRequest(makeRegistartionRequest());
+			subj.setRegistrationRequest(makeRegistartionRequest(family, givven, suffix, numberOMC, numberPassport, homePhone, address, workPhone, 
+																email, employmentId, birthDate));
 			/* -------------------------- */
 		cap.setSubject(subj);
 		parameters.setControlActProcess(cap);
 		/* ------------------------------------------------------ */
-		System.out.println("run method");
-		try {
+		//try {
 			System.out.println(pdm.add(parameters));
-		} catch(Exception e) {
+/*		} catch(Exception e) {
 			System.out.println(e);
-		}
+		}*/
 		//System.out.println(parameters);
 	}
-	private PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest makeRegistartionRequest() {
+	private PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest makeRegistartionRequest(String family, 
+																						String givven, 
+																						String suffix, 
+																						String numberOMC, 
+																						String numberPassport, 
+																						String homePhone,
+																						String address, 
+																						String workPhone, 
+																						String email, 
+																						String employmentId, 
+																						String birthDate) {
 		PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest regReq = new PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest();
 		regReq.setClassCode(ActClassRegistration.REG);
 		regReq.setMoodCode(ActMoodRequest.RQO);
@@ -119,9 +140,7 @@ public class SRPDDao {
 		COCTMT090003UV01AssignedEntity assignEntity = new COCTMT090003UV01AssignedEntity();
 		assignEntity.setClassCode(RoleClassAssignedEntity.ASSIGNED);
 		/* -------------- set Id of PD --------------*/
-		II idAssignEntity = new II();
-		idAssignEntity.setNullFlavor(NullFlavor.NI);
-		assignEntity.getId().add(idAssignEntity);
+		assignEntity.getId().add(createII(null,null, NullFlavor.NI));
 		/* ---------------end of ID for pd --------- */
 		autor.setAssignedEntity(assignEntity);
 		regReq.setAuthor(autor);
@@ -131,10 +150,8 @@ public class SRPDDao {
 		subject1.setTypeCode(ParticipationTargetSubject.SBJ);
 		/* ------------ set identifiedPerson ------ */
 		PRPAMT101301UV02IdentifiedPerson identifiedPerson = new PRPAMT101301UV02IdentifiedPerson();
-		II numberPassport = new II();
-		numberPassport.setExtension("123456");
-		numberPassport.setRoot("OID_НОМЕР_ПАСПОРТА");
-		identifiedPerson.getId().add(numberPassport);
+		identifiedPerson.getId().add(createII(NUMBER_PASSPORT, numberPassport, null));
+		identifiedPerson.getId().add(createII(OMC, numberOMC, null));
 		/* --- end of setting  identifiedPerson --- */
 		/* --- set StausCode ---------------------- */
 		CS statusCodeIdPerson = new CS();
@@ -142,15 +159,13 @@ public class SRPDDao {
 		identifiedPerson.setStatusCode(statusCodeIdPerson);
 		/* --- end of setting StatusCode----------- */
 		/* --- setting identified person to Identified Person */
-		identifiedPerson.setIdentifiedPerson(insertPD("Петров", "Пётр", "Петрович", "454545", "4545454", "545454", "petr@email.ru", "25/05/1967"));
+		identifiedPerson.setIdentifiedPerson(insertPD(family, givven, suffix, homePhone, null, workPhone, email, birthDate, address));
 		/* --- end ofsetting identified person to Identified Person */
 		/* --- setting assigningOrganization --- */
 		COCTMT150000UV02Organization assignOrganization = new COCTMT150000UV02Organization();
 		assignOrganization.setClassCode(EntityClassOrganization.ORG);
 		assignOrganization.setDeterminerCode(EntityDeterminerSpecific.INSTANCE);
-		II idAssignOrg = new II();
-		idAssignOrg.setRoot("ORGNAME");// NAME OF ORGANIZATION
-		assignOrganization.getId().add(idAssignOrg);
+		assignOrganization.getId().add(createII(employmentId, null, null));
 		identifiedPerson.setAssigningOrganization(assignOrganization);
 		/* - end of setting assigningOrganization - */
 		subject1.setIdentifiedPerson(identifiedPerson);
@@ -159,8 +174,15 @@ public class SRPDDao {
 		/* ------------------------------------- end of setting Subject1 --------------------------------------------------- */
 		return regReq;
 	}
-	private PRPAMT101301UV02Person insertPD(String family, String given, String suffix, String homePhone, String mobilePhone, String workPhone,
-												String email, String birthTime/*, Map<PostalAddressUse, String[]> adresses, String[] brthPlace*/) {
+	private PRPAMT101301UV02Person insertPD(String family, 
+											String given, 
+											String suffix, 
+											String homePhone, 
+											String mobilePhone, 
+											String workPhone, 
+											String email, 
+											String birthTime, 
+											String adress) {
 		PRPAMT101301UV02Person idPersonToIdPerson = new PRPAMT101301UV02Person();
 		ObjectFactory factory = new ObjectFactory();
 		PN name = factory.createPN();
@@ -171,42 +193,26 @@ public class SRPDDao {
 		EnSuffix suff = factory.createEnSuffix();
 		//suff.getContent().add(suffix);
 		/* add name */
-		name.getContent().add(factory.createENFamily(fam));
-		name.getContent().add(factory.createENGiven(giv));
-		name.getContent().add(factory.createENSuffix(suff));
+		name.getContent().add(/*factory.createENFamily(fam)*/family);
+		name.getContent().add(/*factory.createENGiven(giv)*/given);
+		name.getContent().add(/*factory.createENSuffix(suff)*/suffix);
 		idPersonToIdPerson.getName().add(name);
 		/* setting phones and email */
-		TEL telHome = new TEL();
-		TEL telMobile = new TEL();
-		TEL telWork = new TEL();
-		TEL telEmail = new TEL();
-		telHome.setValue("tel:" + homePhone);
-		telMobile.setValue("cell-tel:" + mobilePhone);
-		telWork.setValue("working-office-tel:" + workPhone);
-		telEmail.setValue("tel:" + email);
-		idPersonToIdPerson.getTelecom().add(telHome);
-		idPersonToIdPerson.getTelecom().add(telMobile);
-		idPersonToIdPerson.getTelecom().add(telWork);
-		idPersonToIdPerson.getTelecom().add(telEmail);
+		idPersonToIdPerson.getTelecom().add(createTEL(HOME_PHONE + homePhone));
+		idPersonToIdPerson.getTelecom().add(createTEL(MOBILE_PHONE + mobilePhone));
+		idPersonToIdPerson.getTelecom().add(createTEL(WORKING_PHONE + workPhone));
+		idPersonToIdPerson.getTelecom().add(createTEL(EMAIL + email));
 		/* end of setting phones and email */
 		TS birthT = new TS();
 		birthT.setValue(birthTime);
 		idPersonToIdPerson.setBirthTime(birthT);
 		/* setting all adresses */
-		//for(String i: typeAddress) {
 		idPersonToIdPerson.getAddr().add(makeAdress(factory, PostalAddressUse.H,
-									"САНКТ-ПЕТЕРБУРГ",
-									"199178, Россия, Санкт-Петербург, Малый пр. В.О. 54, корп. 4", 
-									"Малый пр. В.О.", 
-									"199178",
-									"САНКТ-ПЕТЕРБУРГ"));
-		//}
-		/* setting birthPlace */
-		COCTMT710007UV07Place place = new COCTMT710007UV07Place();
-		place.setAddr(makeAdress(factory, null, "САНКТ-ПЕТЕРБУРГ", null, null, null, null));
-		PRPAMT101301UV02BirthPlace birthPlace = new PRPAMT101301UV02BirthPlace();
-		birthPlace.setBirthplace(place);
-		idPersonToIdPerson.setBirthPlace(birthPlace);
+									null,
+									adress, 
+									null, 
+									null,
+									null));
 		/* end of setting birthPlace */
 		return idPersonToIdPerson;
 	}
@@ -256,12 +262,30 @@ public class SRPDDao {
 		autor.setTypeCode(ParticipationAuthorOriginator.AUT);
 		COCTMT090003UV01AssignedEntity assignedEntity = new COCTMT090003UV01AssignedEntity();
 		assignedEntity.setClassCode(RoleClassAssignedEntity.ASSIGNED);
-		/* setting id */
-		II idAssigneEntity = new II();
-		idAssigneEntity.setNullFlavor(NullFlavor.NI);
-		assignedEntity.getId().add(idAssigneEntity);
-		/* end of setting id */
+		assignedEntity.getId().add(createII(null,null, NullFlavor.NI));
 		autor.setAssignedEntity(assignedEntity);
 		return autor;
+	}
+	/* --------------------- creation id ------------------------- */
+	private II createII(String root, String extension, NullFlavor nullFlavor) {
+		II id = new II();
+		if (!"".equals(root) && root != null) {
+			id.setRoot(root);
+		}
+		if (!"".equals(extension) && extension != null) {
+			id.setExtension(extension);
+		}
+		if (nullFlavor != null) {
+			id.setNullFlavor(nullFlavor);
+		}
+		return id;
+	}
+	/* ---------------------create TEL------------------------------ */
+	private TEL createTEL(String value) {
+		TEL tel = new TEL();
+		if (!"".equals(value) && value != null) {
+			tel.setValue(value);
+		}
+		return tel;
 	}
 }

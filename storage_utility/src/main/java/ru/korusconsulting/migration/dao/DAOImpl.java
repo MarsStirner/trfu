@@ -127,8 +127,9 @@ public class DAOImpl {
 		/*remove donors, that was inserted to SRPD */
 		try {
 			donors.removeAll(getProcessedDonors(false));
+			SRPDDao dao = new SRPDDao();
 			for (CommonDonor i : donors) {
-				currentIdSRPD = insertDonorToSRPD(i);
+				currentIdSRPD = insertDonorToSRPD(dao, i);
 				StartMigration.LOG.info("Data for: " + i + " were send. External id: " + currentIdSRPD);
 				/* this code need for writing objects to file, and recover
 				 * work after failure */
@@ -142,7 +143,10 @@ public class DAOImpl {
 		return null;	
 	}
 	/* Send information about current donor and wait for id from SRPD */
-	private Integer insertDonorToSRPD(CommonDonor donor) {
+	private Integer insertDonorToSRPD(SRPDDao dao, CommonDonor donor) {
+		if (dao == null) {
+			dao = new SRPDDao();
+		}
 		return new Random().nextInt(200);
 	}
 	/* reader from file, for inserted Donor */
