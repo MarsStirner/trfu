@@ -16,6 +16,36 @@
 		<h:outputScript name="jsf.js" library="javax.faces" target="head"/>
 		<h:outputScript library="js" name="forms.js" target="head" />
 		<e5ui-comp:outputUtilScript />
+		<h:outputScript>
+			var isVisibleHistory = false;
+			
+			function changeVisibleHistory() {
+				if (isVisibleHistory) {
+					isVisibleHistory = false;
+				} else {
+					isVisibleHistory = true;
+				}
+				hideShowHistory();
+			}
+			
+			function hideShowHistory() {
+				var blockHistory = $("[id*='history']");
+				if (isVisibleHistory) {
+					blockHistory.show();
+				} else {
+					blockHistory.hide();
+				}
+			}
+			
+			function setCursor(typeCursor) {
+				var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
+				$("[id*='history']").prev().find("a").attr("style", styleTitle);
+			}
+		
+			jQuery(function(){
+				hideShowHistory();
+			});
+		</h:outputScript>
 	</ui:define>
 	
 	<ui:define name="left_menu"></ui:define>
@@ -452,9 +482,10 @@
 				<div>
 					<fieldset>
 						<legend>
-							<label><span class="title">История</span> </label>
+							<a onmouseout="setCursor('default')" onmouseover="setCursor('pointer')" 
+							onclick="changeVisibleHistory();" style="color: #4581c0">История</a> 
 						</legend>
-						<div class="wrap" style="width: 100%; margin: 0px">
+						<div id="history" class="wrap" style="width: 100%; margin: 0px">
 							<div class="inner">
 								<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
 											id="history_list"
