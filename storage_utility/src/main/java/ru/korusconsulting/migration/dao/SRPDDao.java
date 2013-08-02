@@ -1,6 +1,8 @@
 package ru.korusconsulting.migration.dao;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import org.hl7.v3.AD;
 import org.hl7.v3.ActClassControlAct;
@@ -15,12 +17,17 @@ import org.hl7.v3.AdxpStreetName;
 import org.hl7.v3.COCTMT090003UV01AssignedEntity;
 import org.hl7.v3.COCTMT150000UV02Organization;
 import org.hl7.v3.CS;
+import org.hl7.v3.CommunicationFunctionType;
 import org.hl7.v3.EnFamily;
 import org.hl7.v3.EnGiven;
 import org.hl7.v3.EnSuffix;
+import org.hl7.v3.EntityClassDevice;
 import org.hl7.v3.EntityClassOrganization;
 import org.hl7.v3.EntityDeterminerSpecific;
 import org.hl7.v3.II;
+import org.hl7.v3.MCCIMT000100UV01Device;
+import org.hl7.v3.MCCIMT000100UV01Receiver;
+import org.hl7.v3.MCCIMT000100UV01Sender;
 import org.hl7.v3.MFMIMT700721UV01Author2;
 import org.hl7.v3.NullFlavor;
 import org.hl7.v3.ObjectFactory;
@@ -40,6 +47,9 @@ import org.hl7.v3.TEL;
 import org.hl7.v3.TS;
 import org.hl7.v3.XActMoodIntentEvent;
 
+import ru.korusconsulting.migration.StartMigration;
+import ru.korusconsulting.migration.bean.CommonDonor;
+import ru.korusconsulting.migration.bean.Donor;
 import ru.korusconsulting.pdmanager.PDManager;
 import ru.korusconsulting.pdmanager.TmisPdm;
 
@@ -53,17 +63,53 @@ public class SRPDDao {
 	private static final String WORKING_PHONE = "working-office-tel:";
 	private static final String EMAIL = "mailto:";
 	
-	public void makeQuery(String family, 
-						  String givven, 
-						  String suffix, 
-						  String numberOMC, 
-						  String numberPassport, 
-						  String homePhone,
-						  String address, 
-						  String workPhone, 
-						  String email, 
-						  String employmentId, 
-						  String birthDate) {
+	
+	/* Method for sending data about List of donors to SRPD  */
+	public List<CommonDonor> insertToSRPDList(List<CommonDonor> donors) {
+		try {
+			for (CommonDonor i : donors) {
+				i = insertDonorToSRPD(i);
+				StartMigration.LOG.info("Data for: " + i + " were send. External id: " + i.getTemp_stogate_id());
+				//i.setTemp_stogate_id(currentIdSRPD);
+			}
+			return donors;
+		} catch (Exception e) {
+			StartMigration.LOG.error(e.getLocalizedMessage());
+		}
+		return null;	
+	}
+	/* Send information about current donor and wait for id from SRPD */
+	private CommonDonor insertDonorToSRPD(CommonDonor donor) {
+		String email = null;
+		if(donor instanceof Donor) {
+			email = ((Donor)donor).getMail();
+		}
+		Integer idFromSRPD = insertDonorToSRPD(donor.getLastName(),
+								 			   donor.getFirstName(),
+								 			   donor.getMiddleName(),
+								 			   donor.getInsuranceSeries() + donor.getInsuranceNumber(),
+								 			   donor.getPassportSeries() + " " + donor.getPassportNumber(),
+								 			   donor.getPhone(),
+								 			   donor.getRegistrationAddress(),
+								 			   donor.getWorkPhone(),
+								 			   email,
+								 			   donor.getEmployment(),
+								 			   donor.getBirth().toString());
+		donor.setTemp_stogate_id(idFromSRPD);
+		return donor;
+	}
+	
+	private Integer insertDonorToSRPD(String family, 
+						  				  String givven, 
+						  				  String suffix, 
+						  				  String numberOMC, 
+						  				  String numberPassport, 
+						  				  String homePhone,
+						  				  String address, 
+						  				  String workPhone, 
+						  				  String email, 
+						  				  String employmentId, 
+						  				  String birthDate) {
 		TmisPdm service = new TmisPdm();
 		PDManager pdm = service.getPortPdm();
 		PRPAIN101311UV02 parameters = new PRPAIN101311UV02();
@@ -91,8 +137,10 @@ public class SRPDDao {
 		parameters.setAcceptAckCode(aac);
 		/* ------------------------------------------------------ */
 		/* ------------- set Reciever --------------------------- */
+		parameters.getReceiver().add(createReciever());
 		/* ------------------------------------------------------ */
 		/* ------------- set Sender ----------------------------- */
+		parameters.setSender(createSender());
 		/* ------------------------------------------------------ */
 		/* -------------- set controlActProcess ----------------- */
 		PRPAIN101311UV02MFMIMT700721UV01ControlActProcess cap = new PRPAIN101311UV02MFMIMT700721UV01ControlActProcess();
@@ -113,6 +161,7 @@ public class SRPDDao {
 			System.out.println(e);
 		}*/
 		//System.out.println(parameters);
+			return new Random().nextInt();
 	}
 	private PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest makeRegistartionRequest(String family, 
 																						String givven, 
@@ -287,5 +336,27 @@ public class SRPDDao {
 			tel.setValue(value);
 		}
 		return tel;
+	}
+	/* -------------------- create reciever ---------------------- */
+	private MCCIMT000100UV01Receiver createReciever() {
+		MCCIMT000100UV01Receiver reciever = new MCCIMT000100UV01Receiver();
+		reciever.setTypeCode(CommunicationFunctionType.RCV);
+		reciever.setDevice(createDevice());
+		return reciever;
+	}
+	/* -------------------- creation sender ------------------------- */
+	private MCCIMT000100UV01Sender createSender() {
+		MCCIMT000100UV01Sender sender = new MCCIMT000100UV01Sender();
+		sender.setTypeCode(CommunicationFunctionType.SND);
+		sender.setDevice(createDevice());
+		return sender;
+	}
+	/* -------------------- creation device ------------------------ */
+	private MCCIMT000100UV01Device createDevice() {
+		MCCIMT000100UV01Device device = new MCCIMT000100UV01Device();
+		device.setClassCode(EntityClassDevice.DEV);
+		device.setDeterminerCode(EntityDeterminerSpecific.INSTANCE);
+		device.getId().add(createII(null,null,null));
+		return device;
 	}
 }

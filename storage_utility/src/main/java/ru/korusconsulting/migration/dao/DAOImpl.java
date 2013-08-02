@@ -1,17 +1,8 @@
 package ru.korusconsulting.migration.dao;
 
-import java.io.BufferedWriter;
-import java.io.EOFException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -29,7 +20,10 @@ public class DAOImpl {
 	private final String FIRST_DONOR = "first";
 	private final String LAST_DONOR = "last";
 	private final String LIST_IDS_DONORS = "listIds";
-	private final String PROCESSED_DONORS_FILE = "temp.out";
+	private final String MEDICAL_FIRST_DONOR = "mfirst";
+	private final String MEDICAL_LAST_DONOR = "mlast";
+	private final String MEDICAL_LIST_IDS_DONORS = "mlistIds";
+	private final String ID_FFROM_SRPD_NAME = "mtemp_stogate_id";
 	
 	private SessionFactory sessionFactory;
 	private final int maxResults = 200;
@@ -55,11 +49,12 @@ public class DAOImpl {
 		try {
 			session = sessionFactory.openSession();
 			Criteria criteria = session.createCriteria(typeDonorForSelect);
-			getInRange(criteria);
-			getInListIds(criteria);
+			getInRange(criteria, typeDonorForSelect);
+			getInListIds(criteria, typeDonorForSelect);
 			/* Setting point of begin reading and max number Donors from base at one time*/
 			criteria.setFirstResult(beginFrom);
 			criteria.setMaxResults(maxResults);
+			criteria.add(Restrictions.isNull(ID_FFROM_SRPD_NAME));
 			currentSet = (List<CommonDonor>)criteria.list();
 			allDonors = currentSet;
 			beginFrom = maxResults;
@@ -85,24 +80,34 @@ public class DAOImpl {
 		return allDonors;
 	}
 	/* Method could get Donors in some diapazone */
-	private Criteria getInRange(Criteria crit) {
+	private Criteria getInRange(Criteria crit, Class<?> currentClass) {
 		Properties properties = null;
 		try {
 			properties = new Properties();
 			properties.load(StartMigration.class.getClassLoader().getResourceAsStream(PROPERTIE_FILE));
-			crit.add(Restrictions.between("id", Integer.parseInt(properties.getProperty(FIRST_DONOR)), 
-												Integer.parseInt(properties.getProperty(LAST_DONOR))));
+			if(currentClass == Donor.class) {
+				crit.add(Restrictions.between("id", Integer.parseInt(properties.getProperty(FIRST_DONOR)), 
+													Integer.parseInt(properties.getProperty(LAST_DONOR))));
+			} else if(currentClass == MedicalDonor.class) {
+				crit.add(Restrictions.between("id", Integer.parseInt(properties.getProperty(MEDICAL_FIRST_DONOR)), 
+													Integer.parseInt(properties.getProperty(MEDICAL_LAST_DONOR))));
+			}
 		} catch (Exception e) {
 			StartMigration.LOG.error(e);
 		} 
 		return crit;
 	}
-	private Criteria getInListIds(Criteria criteria) {
+	private Criteria getInListIds(Criteria criteria, Class<?> currentClass) {
 		Properties properties = null;
 		try {
 			properties = new Properties();
 			properties.load(StartMigration.class.getClassLoader().getResourceAsStream(PROPERTIE_FILE));
-			String [] idsString = properties.getProperty(LIST_IDS_DONORS).split(" ");
+			String [] idsString = null;
+			if(currentClass == Donor.class) {
+				idsString = properties.getProperty(LIST_IDS_DONORS).split(" ");
+			} else if(currentClass == MedicalDonor.class) {
+				idsString = properties.getProperty(MEDICAL_LIST_IDS_DONORS).split(" ");
+			}
 			List<Integer> ids = new ArrayList<Integer>();
 			/* Creation List of Integers from Array Strings */
 			for(String i : idsString) {
@@ -118,70 +123,6 @@ public class DAOImpl {
 			StartMigration.LOG.error(e);
 		} 
 		return criteria;
-	}
-	
-	/* Method for sending data about List of donors to SRPD  */
-	public List<CommonDonor> insertToSRPDList(List<CommonDonor> donors) {
-		int currentIdSRPD;
-		ObjectOutputStream oos = null;
-		/*remove donors, that was inserted to SRPD */
-		try {
-			donors.removeAll(getProcessedDonors(false));
-			SRPDDao dao = new SRPDDao();
-			for (CommonDonor i : donors) {
-				currentIdSRPD = insertDonorToSRPD(dao, i);
-				StartMigration.LOG.info("Data for: " + i + " were send. External id: " + currentIdSRPD);
-				/* this code need for writing objects to file, and recover
-				 * work after failure */
-				oos = insertProcessedDonor(i, oos);
-				i.setTemp_stogate_id(currentIdSRPD);
-			}
-			return getProcessedDonors(true);
-		} catch (Exception e) {
-			StartMigration.LOG.error(e.getLocalizedMessage());
-		}
-		return null;	
-	}
-	/* Send information about current donor and wait for id from SRPD */
-	private Integer insertDonorToSRPD(SRPDDao dao, CommonDonor donor) {
-		if (dao == null) {
-			dao = new SRPDDao();
-		}
-		return new Random().nextInt(200);
-	}
-	/* reader from file, for inserted Donor */
-	private List<CommonDonor> getProcessedDonors(Boolean removeFile) throws IOException, ClassNotFoundException {
-		List<CommonDonor> processedDonors = new ArrayList<CommonDonor>();
-		try {
-			FileInputStream in = new FileInputStream(PROCESSED_DONORS_FILE);
-			ObjectInputStream ois = new ObjectInputStream(in);
-			CommonDonor donor = (CommonDonor) ois.readObject();
-			while (true) {
-				processedDonors.add(donor);
-				donor = (CommonDonor) ois.readObject();
-			}
-		} catch (EOFException e) {
-			/* after this exception - */
-		}
-		/*if removeFile is true - remove contain of file*/
-		if (removeFile) {
-			FileWriter fstream1 = new FileWriter(PROCESSED_DONORS_FILE);
-	        BufferedWriter out1 = new BufferedWriter(fstream1);
-	        out1.write("");
-	        out1.close();
-		}
-		return processedDonors;
-	}
-	/* write inserted donors of SRPD to file */
-	private ObjectOutputStream insertProcessedDonor(CommonDonor donor, ObjectOutputStream oos) throws IOException {
-		if(oos == null) {
-			FileOutputStream fos = new FileOutputStream(PROCESSED_DONORS_FILE);
-			oos = new ObjectOutputStream(fos);
-		}
-		oos.writeObject(donor);
-		/*oos.flush();
-		oos.close();*/
-		return oos;
 	}
 	/* Insert ids, that was return from SRPD, to base TRFU */
 	public void updateTRFUData(List<CommonDonor> donors) {

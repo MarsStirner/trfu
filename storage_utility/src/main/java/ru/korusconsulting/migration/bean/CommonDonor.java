@@ -1,13 +1,11 @@
 package ru.korusconsulting.migration.bean;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.*;
 
 @MappedSuperclass
-public class CommonDonor implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class CommonDonor {
 	private int id;
 	private String lastName;
 	private String middleName;
