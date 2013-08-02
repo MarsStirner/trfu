@@ -1,9 +1,12 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.filters;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -21,13 +24,22 @@ import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 public abstract class AbstractFilterableListHolderBean<T extends Serializable, F extends AbstractFilter<F>>
 		extends AbstractDocumentListHolderBean<T> {
 	private static final long serialVersionUID = 4901127386797242470L;
-
+	
 	/**
 	 * Конструктор по умолчанию.
 	 */
 	public AbstractFilterableListHolderBean() {
 		super();
 		initFilters();
+	}
+	
+	public void openResetFilterPanel() throws IOException {
+		hideFilterPanel();
+		if (getPagination() != null) {
+			resetFilter();
+		}
+		String url = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("url");
+		FacesContext.getCurrentInstance().getExternalContext().redirect(url);
 	}
 
 	@Override

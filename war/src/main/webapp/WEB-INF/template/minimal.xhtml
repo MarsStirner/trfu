@@ -33,10 +33,11 @@
 							</f:facet>
 							<e5ui:menuItem selected="#{currentView eq '/component/filter/donors.xhtml'}">
 	                    		<f:facet name="content">
-	                    			<h:outputLink value="#{contextPath}/component/filter/donors.xhtml">
-	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
-	                    				Доноры
-	                    			</h:outputLink>
+	                    			<h:commandLink action="#{donorFilterableList.openResetFilterPanel()}">
+	                    				<f:param name="url" value="#{contextPath}/component/filter/donors.xhtml" />
+										<h:graphicImage value="#{resource['images:leaf.gif']}" />
+            							Доноры
+           							</h:commandLink>
 	                        	</f:facet>
 	                   		</e5ui:menuItem>
 <!--  							

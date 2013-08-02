@@ -31,11 +31,12 @@
 								<span>Доноры</span>
 							</f:facet>
 							<e5ui:menuItem selected="#{currentView eq '/component/filter/donors.xhtml'}">
-	                    		<f:facet name="content">
-	                    			<h:outputLink value="#{contextPath}/component/filter/donors.xhtml">
-	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
-	                    				Доноры
-	                    			</h:outputLink>
+								<f:facet name="content">
+	                    		<h:commandLink action="#{donorFilterableList.openResetFilterPanel()}">
+	                    				<f:param name="url" value="#{contextPath}/component/filter/donors.xhtml" />
+										<h:graphicImage value="#{resource['images:leaf.gif']}" />
+            							Доноры
+           						</h:commandLink>
 	                        	</f:facet>
 	                   		</e5ui:menuItem>
 <!--  							
@@ -112,10 +113,11 @@
 							</f:facet>
 							<e5ui:menuItem selected="#{currentView eq '/component/filter/blood_components.xhtml'}">
 	                    		<f:facet name="content">
-	                    			<h:outputLink value="#{contextPath}/component/filter/blood_components.xhtml">
-	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
-	                    				Компоненты крови
-	                    			</h:outputLink>
+	                    			<h:commandLink action="#{bloodComponentFilterableList.openResetFilterPanel()}">
+	                    				<f:param name="url" value="#{contextPath}/component/filter/blood_components.xhtml" />
+										<h:graphicImage value="#{resource['images:leaf.gif']}" />
+            							Компоненты крови
+           							</h:commandLink>
 	                        	</f:facet>
 	                   		</e5ui:menuItem>
 <!--  							
@@ -208,10 +210,11 @@
 								</f:facet>
 								<e5ui:menuItem selected="#{currentView eq '/component/filter/examinations.xhtml'}">
 		                    		<f:facet name="content">
-		                    			<h:outputLink value="#{contextPath}/component/filter/examinations.xhtml">
-		                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
-		                    				Обращения на обследование
-		                    			</h:outputLink>
+		                    			<h:commandLink action="#{examinationRequestFilterableList.openResetFilterPanel()}">
+	                    					<f:param name="url" value="#{contextPath}/component/filter/examinations.xhtml" />
+											<h:graphicImage value="#{resource['images:leaf.gif']}" />
+            								Обращения на обследование
+           								</h:commandLink>
 		                        	</f:facet>
 		                   		</e5ui:menuItem>
 <!--  								
@@ -272,10 +275,11 @@
 								</f:facet>
 								<e5ui:menuItem selected="#{currentView eq '/component/filter/blood_donations.xhtml'}">
 			                    	<f:facet name="content">
-			                    		<h:outputLink value="#{contextPath}/component/filter/blood_donations.xhtml">
-			                    			<h:graphicImage value="#{resource['images:leaf.gif']}" />
-			                    			Обращения на донацию
-			                    		</h:outputLink>
+			                    		<h:commandLink action="#{bloodDonationFilterableList.openResetFilterPanel()}">
+	                    					<f:param name="url" value="#{contextPath}/component/filter/blood_donations.xhtml" />
+											<h:graphicImage value="#{resource['images:leaf.gif']}" />
+            								Обращения на донацию
+           								</h:commandLink>
 			                        </f:facet>
 			                   	</e5ui:menuItem>
 <!--  							
@@ -312,10 +316,11 @@
 						</f:facet>
 						<e5ui:menuItem selected="#{currentView eq '/component/filter/blood_component_orders.xhtml'}">
 	                    	<f:facet name="content">
-	                    		<h:outputLink value="#{contextPath}/component/filter/blood_component_orders.xhtml">
-	                    			<h:graphicImage value="#{resource['images:leaf.gif']}" />
-	                    			Заявки на выдачу КК
-	                    		</h:outputLink>
+	                    		<h:commandLink action="#{bloodComponentOrderFilterableList.openResetFilterPanel()}">
+	                    			<f:param name="url" value="#{contextPath}/component/filter/blood_component_orders.xhtml" />
+									<h:graphicImage value="#{resource['images:leaf.gif']}" />
+            						Заявки на выдачу КК
+           						</h:commandLink>
 	                       	</f:facet>
 	                   	</e5ui:menuItem>
 <!--  						

@@ -45,10 +45,11 @@
 							</f:facet>
 							<e5ui:menuItem selected="#{currentView eq '/component/filter/blood_components.xhtml'}">
 	                    		<f:facet name="content">
-	                    			<h:outputLink value="#{contextPath}/component/filter/blood_components.xhtml">
-	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
-	                    				Компоненты крови
-	                    			</h:outputLink>
+	                    			<h:commandLink action="#{bloodComponentFilterableList.openResetFilterPanel()}">
+	                    				<f:param name="url" value="#{contextPath}/component/filter/blood_components.xhtml" />
+										<h:graphicImage value="#{resource['images:leaf.gif']}" />
+            							Компоненты крови
+           							</h:commandLink>
 	                        	</f:facet>
 	                   		</e5ui:menuItem>
 <!--  							
@@ -142,10 +143,11 @@
 						</f:facet>
 						<e5ui:menuItem selected="#{currentView eq '/component/filter/blood_component_orders.xhtml'}">
 	                    	<f:facet name="content">
-	                    		<h:outputLink value="#{contextPath}/component/filter/blood_component_orders.xhtml">
-	                    			<h:graphicImage value="#{resource['images:leaf.gif']}" />
-	                    			Заявки на выдачу КК
-	                    		</h:outputLink>
+	                    		<h:commandLink action="#{bloodComponentOrderFilterableList.openResetFilterPanel()}">
+	                    			<f:param name="url" value="#{contextPath}/component/filter/blood_component_orders.xhtml" />
+									<h:graphicImage value="#{resource['images:leaf.gif']}" />
+            						Заявки на выдачу КК
+           						</h:commandLink>
 	                       	</f:facet>
 	                   	</e5ui:menuItem>
 <!--  						
