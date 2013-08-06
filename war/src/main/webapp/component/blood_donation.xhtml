@@ -47,6 +47,7 @@
 				hideShowHistory();
 				headContent = $("[id='header_content']").find("div:first");
 				if (headContent.text() == '404 - Донация не найдена') {
+					$("[id='form_header']").hide();
 					headContent.html('<div class="name">Обращение отменено</div><button onclick="window.close()">Закрыть форму</button>');
 				}
 			});
@@ -764,7 +765,7 @@
                     <div id="blood_modal_container" style="margin-top: 0;">
                         <div class="wrap" style="height: 300px;">
                             <div class="inner" style="height: 300px;">
-                                <e5ui:dataTable id="blood_select_table" border="0" cellpadding="0" cellspacing="0"
+                                <e5ui:dataTable id="blood_select_table" border="0" cellpadding="0" cellspacing="0" 
                                                 value="#{bloodDonation.bloodSystemTypeSelectModal.allTypes}"
                                                 var="row" grouping="false" width="100%">
                                     <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
