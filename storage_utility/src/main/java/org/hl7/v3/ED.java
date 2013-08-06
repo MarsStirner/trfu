@@ -1,9 +1,13 @@
 
 package org.hl7.v3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
@@ -36,7 +40,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ED", propOrder = {
     "reference",
-    "thumbnail"
+    "thumbnail",
+    "content"
 })
 @XmlSeeAlso({
     Thumbnail.class,
@@ -48,6 +53,8 @@ public class ED
 
     protected TEL reference;
     protected Thumbnail thumbnail;
+    @XmlMixed
+    protected List<Object> content;
     @XmlAttribute
     protected String mediaType;
     @XmlAttribute
@@ -108,6 +115,16 @@ public class ED
     }
 
     /**
+	 * @return the content
+	 */
+	public List<Object> getContent() {
+		if(content == null) {
+			content = new ArrayList<Object>();
+		}
+		return content;
+	}
+
+	/**
      * Gets the value of the mediaType property.
      * 
      * @return

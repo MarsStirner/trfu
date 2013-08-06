@@ -14,6 +14,7 @@ import org.hl7.v3.AdxpPostalCode;
 import org.hl7.v3.AdxpState;
 import org.hl7.v3.AdxpStreetAddressLine;
 import org.hl7.v3.AdxpStreetName;
+import org.hl7.v3.CE;
 import org.hl7.v3.COCTMT090003UV01AssignedEntity;
 import org.hl7.v3.COCTMT150000UV02Organization;
 import org.hl7.v3.CS;
@@ -94,12 +95,13 @@ public class SRPDDao {
 								 			   donor.getWorkPhone(),
 								 			   email,
 								 			   donor.getEmployment(),
-								 			   donor.getBirth().toString());
+								 			   donor.getBirth().toString(),
+								 			   donor.getGender());
 		donor.setTemp_stogate_id(idFromSRPD);
 		return donor;
 	}
 	
-	private Integer insertDonorToSRPD(String family, 
+	public Integer insertDonorToSRPD(String family, 
 						  				  String givven, 
 						  				  String suffix, 
 						  				  String numberOMC, 
@@ -109,48 +111,37 @@ public class SRPDDao {
 						  				  String workPhone, 
 						  				  String email, 
 						  				  String employmentId, 
-						  				  String birthDate) {
+						  				  String birthDate,
+						  				  Integer genderId) {
 		TmisPdm service = new TmisPdm();
 		PDManager pdm = service.getPortPdm();
-		PRPAIN101311UV02 parameters = new PRPAIN101311UV02();
+		ObjectFactory factory = new ObjectFactory();
+		PRPAIN101311UV02 parameters = factory.createPRPAIN101311UV02();
 		/* -----------------set TimeCreation--------------------- */
-		TS ts = new TS();
-		ts.setValue(new Date().toString());
-		parameters.setCreationTime(ts);
-		/* ------------------------------------------------------ */
+		parameters.setCreationTime(createTS(factory, new Date().toString()));
 		/* ----------------set interaction Id-------------------- */
-		parameters.setInteractionId(createII("2.16.840.1.113883.1.6", null, null));///////////////////////////////// перегенерировать
-		/* ------------------------------------------------------ */
+		parameters.setInteractionId(createII(factory,"2.16.840.1.113883.1.6", null, null));///////////////////////////////// перегенерировать
 		/*--------------- set Processing Code-------------------- */
-		CS pc = new CS();
-		pc.setCode("P");
-		parameters.setProcessingCode(pc);
-		/*------------------------------------------------------- */
+		parameters.setProcessingCode(createCS(factory, "P"));
 		/*------------ set processing Mode Code ----------------- */
-		CS pmc = new CS();
-		pmc.setCode("T");
-		parameters.setProcessingModeCode(pmc);
-		/* ------------------------------------------------------ */
+		parameters.setProcessingModeCode(createCS(factory, "T"));
 		/* ------------------ set accept Ack Code --------------- */
-		CS aac = new CS();
-		aac.setCode("AL");
-		parameters.setAcceptAckCode(aac);
-		/* ------------------------------------------------------ */
+		parameters.setAcceptAckCode(createCS(factory, "AL"));
 		/* ------------- set Reciever --------------------------- */
-		parameters.getReceiver().add(createReciever());
+		parameters.getReceiver().add(createReciever(factory));
 		/* ------------------------------------------------------ */
 		/* ------------- set Sender ----------------------------- */
-		parameters.setSender(createSender());
+		parameters.setSender(createSender(factory));
 		/* ------------------------------------------------------ */
 		/* -------------- set controlActProcess ----------------- */
-		PRPAIN101311UV02MFMIMT700721UV01ControlActProcess cap = new PRPAIN101311UV02MFMIMT700721UV01ControlActProcess();
+		PRPAIN101311UV02MFMIMT700721UV01ControlActProcess cap = factory.createPRPAIN101311UV02MFMIMT700721UV01ControlActProcess();
 		cap.setClassCode(ActClassControlAct.CACT);
 		cap.setMoodCode(XActMoodIntentEvent.RQO);
 			/* ---set values of subject--- */
-			PRPAIN101311UV02MFMIMT700721UV01Subject1 subj = new PRPAIN101311UV02MFMIMT700721UV01Subject1();
+			PRPAIN101311UV02MFMIMT700721UV01Subject1 subj = factory.createPRPAIN101311UV02MFMIMT700721UV01Subject1();
 			subj.setTypeCode(ActRelationshipHasSubject.SUBJ);
-			subj.setRegistrationRequest(makeRegistartionRequest(family, givven, suffix, numberOMC, numberPassport, homePhone, address, workPhone, 
-																email, employmentId, birthDate));
+			subj.setRegistrationRequest(makeRegistartionRequest(factory, family, givven, suffix, numberOMC, numberPassport, homePhone, address, workPhone, 
+																email, employmentId, birthDate, genderId));
 			/* -------------------------- */
 		cap.setSubject(subj);
 		parameters.setControlActProcess(cap);
@@ -163,7 +154,7 @@ public class SRPDDao {
 		//System.out.println(parameters);
 			return new Random().nextInt();
 	}
-	private PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest makeRegistartionRequest(String family, 
+	private PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest makeRegistartionRequest(ObjectFactory factory, String family, 
 																						String givven, 
 																						String suffix, 
 																						String numberOMC, 
@@ -173,57 +164,55 @@ public class SRPDDao {
 																						String workPhone, 
 																						String email, 
 																						String employmentId, 
-																						String birthDate) {
-		PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest regReq = new PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest();
+																						String birthDate,
+																						Integer genderId) {
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
+		PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest regReq = factory.createPRPAIN101311UV02MFMIMT700721UV01RegistrationRequest();
 		regReq.setClassCode(ActClassRegistration.REG);
 		regReq.setMoodCode(ActMoodRequest.RQO);
 		/* --------------- set Status -------------- */
-		CS statusCode = new CS();
-		statusCode.setCode("active");
-		regReq.setStatusCode(statusCode);
-		/* ----------------------------------------- */
+		regReq.setStatusCode(createCS(factory, "active"));
 		/* ------------------------------------------------ set Autor -------------------------------------------------------- */
-		MFMIMT700721UV01Author2 autor = new MFMIMT700721UV01Author2();
+		MFMIMT700721UV01Author2 autor = factory.createMFMIMT700721UV01Author2();
 		autor.setTypeCode(ParticipationAuthorOriginator.AUT);
 		/* -------------- set Asiigned Entity ------ */
-		COCTMT090003UV01AssignedEntity assignEntity = new COCTMT090003UV01AssignedEntity();
+		COCTMT090003UV01AssignedEntity assignEntity = factory.createCOCTMT090003UV01AssignedEntity();
 		assignEntity.setClassCode(RoleClassAssignedEntity.ASSIGNED);
 		/* -------------- set Id of PD --------------*/
-		assignEntity.getId().add(createII(null,null, NullFlavor.NI));
+		assignEntity.getId().add(createII(factory, null,null, NullFlavor.NI));
 		/* ---------------end of ID for pd --------- */
 		autor.setAssignedEntity(assignEntity);
 		regReq.setAuthor(autor);
 		/* ---------------------------------------- end of setting Autor -------- -------------------------------------------*/
 		/* ---------------------------------------- set Subject1------------------------------------------------------------ */
-		PRPAIN101311UV02MFMIMT700721UV01Subject2 subject1 = new PRPAIN101311UV02MFMIMT700721UV01Subject2();
+		PRPAIN101311UV02MFMIMT700721UV01Subject2 subject1 = factory.createPRPAIN101311UV02MFMIMT700721UV01Subject2();
 		subject1.setTypeCode(ParticipationTargetSubject.SBJ);
 		/* ------------ set identifiedPerson ------ */
-		PRPAMT101301UV02IdentifiedPerson identifiedPerson = new PRPAMT101301UV02IdentifiedPerson();
-		identifiedPerson.getId().add(createII(NUMBER_PASSPORT, numberPassport, null));
-		identifiedPerson.getId().add(createII(OMC, numberOMC, null));
+		PRPAMT101301UV02IdentifiedPerson identifiedPerson = factory.createPRPAMT101301UV02IdentifiedPerson();
+		identifiedPerson.getId().add(createII(factory, NUMBER_PASSPORT, numberPassport, null));
+		identifiedPerson.getId().add(createII(factory, OMC, numberOMC, null));
 		/* --- end of setting  identifiedPerson --- */
 		/* --- set StausCode ---------------------- */
-		CS statusCodeIdPerson = new CS();
-		statusCodeIdPerson.setCode("active");
-		identifiedPerson.setStatusCode(statusCodeIdPerson);
-		/* --- end of setting StatusCode----------- */
+		identifiedPerson.setStatusCode(createCS(factory, "active"));
 		/* --- setting identified person to Identified Person */
-		identifiedPerson.setIdentifiedPerson(insertPD(family, givven, suffix, homePhone, null, workPhone, email, birthDate, address));
+		identifiedPerson.setIdentifiedPerson(insertPD(factory,family, givven, suffix, homePhone, null, workPhone, email, birthDate, address, genderId));
 		/* --- end ofsetting identified person to Identified Person */
 		/* --- setting assigningOrganization --- */
 		COCTMT150000UV02Organization assignOrganization = new COCTMT150000UV02Organization();
 		assignOrganization.setClassCode(EntityClassOrganization.ORG);
 		assignOrganization.setDeterminerCode(EntityDeterminerSpecific.INSTANCE);
-		assignOrganization.getId().add(createII(employmentId, null, null));
+		assignOrganization.getId().add(createII(factory, employmentId, null, null));
 		identifiedPerson.setAssigningOrganization(assignOrganization);
 		/* - end of setting assigningOrganization - */
 		subject1.setIdentifiedPerson(identifiedPerson);
 		regReq.setSubject1(subject1);
-		regReq.setAuthor(makeAutor());
+		regReq.setAuthor(makeAutor(factory));
 		/* ------------------------------------- end of setting Subject1 --------------------------------------------------- */
 		return regReq;
 	}
-	private PRPAMT101301UV02Person insertPD(String family, 
+	private PRPAMT101301UV02Person insertPD(ObjectFactory factory, String family, 
 											String given, 
 											String suffix, 
 											String homePhone, 
@@ -231,38 +220,42 @@ public class SRPDDao {
 											String workPhone, 
 											String email, 
 											String birthTime, 
-											String adress) {
-		PRPAMT101301UV02Person idPersonToIdPerson = new PRPAMT101301UV02Person();
-		ObjectFactory factory = new ObjectFactory();
+											String adress,
+											Integer genderId) {
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
+		PRPAMT101301UV02Person idPersonToIdPerson = factory.createPRPAMT101301UV02Person();
+		/* setting gender */
+		idPersonToIdPerson.setAdministrativeGenderCode(createGender(factory, genderId));
 		PN name = factory.createPN();
 		EnFamily fam = factory.createEnFamily();
-		//fam.getContent().add(family);
+		fam.getContent().add(family);
 		EnGiven giv = factory.createEnGiven();
-		//giv.getContent().add(given);
+		giv.getContent().add(given);
 		EnSuffix suff = factory.createEnSuffix();
-		//suff.getContent().add(suffix);
+		suff.getContent().add(suffix);
 		/* add name */
-		name.getContent().add(/*factory.createENFamily(fam)*/family);
-		name.getContent().add(/*factory.createENGiven(giv)*/given);
-		name.getContent().add(/*factory.createENSuffix(suff)*/suffix);
+		name.getContent().add(factory.createENFamily(fam));
+		name.getContent().add(factory.createENGiven(giv));
+		name.getContent().add(factory.createENSuffix(suff));
 		idPersonToIdPerson.getName().add(name);
 		/* setting phones and email */
-		idPersonToIdPerson.getTelecom().add(createTEL(HOME_PHONE + homePhone));
-		idPersonToIdPerson.getTelecom().add(createTEL(MOBILE_PHONE + mobilePhone));
-		idPersonToIdPerson.getTelecom().add(createTEL(WORKING_PHONE + workPhone));
-		idPersonToIdPerson.getTelecom().add(createTEL(EMAIL + email));
+		idPersonToIdPerson.getTelecom().add(createTEL(factory, HOME_PHONE + homePhone));
+		idPersonToIdPerson.getTelecom().add(createTEL(factory, MOBILE_PHONE + mobilePhone));
+		idPersonToIdPerson.getTelecom().add(createTEL(factory, WORKING_PHONE + workPhone));
+		idPersonToIdPerson.getTelecom().add(createTEL(factory, EMAIL + email));
 		/* end of setting phones and email */
 		TS birthT = new TS();
 		birthT.setValue(birthTime);
-		idPersonToIdPerson.setBirthTime(birthT);
+		idPersonToIdPerson.setBirthTime(createTS(factory, birthTime));
 		/* setting all adresses */
 		idPersonToIdPerson.getAddr().add(makeAdress(factory, PostalAddressUse.H,
-									null,
-									adress, 
-									null, 
-									null,
-									null));
-		/* end of setting birthPlace */
+													null,
+													adress, 
+													null, 
+													null,
+													null));
 		return idPersonToIdPerson;
 	}
 	
@@ -280,44 +273,50 @@ public class SRPDDao {
 		}
 		if (!"".equals(city) && city != null) {
 			AdxpCity adxpCity = factory.createAdxpCity();
-			//adxpCity.getContent().add(city);
+			adxpCity.getContent().add(city);
 			adress.getContent().add(factory.createADCity(adxpCity));
 		}
 		if (!"".equals(streetAddressLine) && streetAddressLine != null) {
 			AdxpStreetAddressLine adxpAddressLine = factory.createAdxpStreetAddressLine();
-			//adxpAddressLine.getContent().add(streetAddressLine);
+			adxpAddressLine.getContent().add(streetAddressLine);
 			adress.getContent().add(factory.createADStreetAddressLine(adxpAddressLine));
 		}
 		if (!"".equals(streetName) && streetName != null) {
 			AdxpStreetName adxpStreetName = factory.createAdxpStreetName();
-			//adxpStreetName.getContent().add(streetName);
+			adxpStreetName.getContent().add(streetName);
 			adress.getContent().add(factory.createADStreetName(adxpStreetName));
 		}
 		if (!"".equals(postalCode) && postalCode != null) {
 			AdxpPostalCode adxpPostalCode = factory.createAdxpPostalCode();
-			//adxpPostalCode.getContent().add(postalCode);
+			adxpPostalCode.getContent().add(postalCode);
 			adress.getContent().add(factory.createADPostalCode(adxpPostalCode));
 		}
 		if (!"".equals(state) && state != null) {
 			AdxpState adxpState = factory.createAdxpState();
-			//adxpState.getContent().add(state);
+			adxpState.getContent().add(state);
 			adress.getContent().add(factory.createADState(adxpState));			
 		}
 		return adress;
 	}
 	/* --------------- method for creation autor ------------------- */
-	private MFMIMT700721UV01Author2 makeAutor() {
+	private MFMIMT700721UV01Author2 makeAutor(ObjectFactory factory) {
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
 		MFMIMT700721UV01Author2 autor = new MFMIMT700721UV01Author2();
 		autor.setTypeCode(ParticipationAuthorOriginator.AUT);
 		COCTMT090003UV01AssignedEntity assignedEntity = new COCTMT090003UV01AssignedEntity();
 		assignedEntity.setClassCode(RoleClassAssignedEntity.ASSIGNED);
-		assignedEntity.getId().add(createII(null,null, NullFlavor.NI));
+		assignedEntity.getId().add(createII(factory, null,null, NullFlavor.NI));
 		autor.setAssignedEntity(assignedEntity);
 		return autor;
 	}
 	/* --------------------- creation id ------------------------- */
-	private II createII(String root, String extension, NullFlavor nullFlavor) {
-		II id = new II();
+	private II createII(ObjectFactory factory, String root, String extension, NullFlavor nullFlavor) {
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
+		II id = factory.createII();
 		if (!"".equals(root) && root != null) {
 			id.setRoot(root);
 		}
@@ -330,33 +329,75 @@ public class SRPDDao {
 		return id;
 	}
 	/* ---------------------create TEL------------------------------ */
-	private TEL createTEL(String value) {
-		TEL tel = new TEL();
+	private TEL createTEL(ObjectFactory factory, String value) {
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
+		TEL tel = factory.createTEL();
 		if (!"".equals(value) && value != null) {
 			tel.setValue(value);
 		}
 		return tel;
 	}
 	/* -------------------- create reciever ---------------------- */
-	private MCCIMT000100UV01Receiver createReciever() {
-		MCCIMT000100UV01Receiver reciever = new MCCIMT000100UV01Receiver();
+	private MCCIMT000100UV01Receiver createReciever(ObjectFactory factory) {
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
+		MCCIMT000100UV01Receiver reciever = factory.createMCCIMT000100UV01Receiver();
 		reciever.setTypeCode(CommunicationFunctionType.RCV);
-		reciever.setDevice(createDevice());
+		reciever.setDevice(createDevice(factory));
 		return reciever;
 	}
 	/* -------------------- creation sender ------------------------- */
-	private MCCIMT000100UV01Sender createSender() {
+	private MCCIMT000100UV01Sender createSender(ObjectFactory factory) {
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
 		MCCIMT000100UV01Sender sender = new MCCIMT000100UV01Sender();
 		sender.setTypeCode(CommunicationFunctionType.SND);
-		sender.setDevice(createDevice());
+		sender.setDevice(createDevice(factory));
 		return sender;
 	}
 	/* -------------------- creation device ------------------------ */
-	private MCCIMT000100UV01Device createDevice() {
-		MCCIMT000100UV01Device device = new MCCIMT000100UV01Device();
+	private MCCIMT000100UV01Device createDevice(ObjectFactory factory) {
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
+		MCCIMT000100UV01Device device = factory.createMCCIMT000100UV01Device();
 		device.setClassCode(EntityClassDevice.DEV);
 		device.setDeterminerCode(EntityDeterminerSpecific.INSTANCE);
-		device.getId().add(createII(null,null,null));
+		device.getId().add(createII(factory, null,null,null));
 		return device;
+	}
+	/* -------------------- creation Gender ----------------------- */
+	private CE createGender(ObjectFactory factory, Integer genderId) {
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
+		CE gender = factory.createCE();
+		if (genderId == 0) {
+			gender.setCode("F");
+			gender.setCodeSystem("2.16.840.1.113883.5.1");
+		} else if(genderId == 1) {
+			gender.setCode("M");
+			gender.setCodeSystem("2.16.840.1.113883.5.1");
+		}
+		return gender;
+	}
+	/* -------------------creation CS ----------------------------- */
+	private CS createCS(ObjectFactory factory, String value) {
+		if (factory == null) {
+			factory = new ObjectFactory();
+		}
+		CS code = factory.createCS();
+		code.setCode(value);
+		return code;
+	}
+	/* ------------------ creation TS ----------------------------- */
+	private TS createTS(ObjectFactory factory, String date) {
+		TS ts = factory.createTS();
+		ts.setValue(date);
+		return ts;
 	}
 }
