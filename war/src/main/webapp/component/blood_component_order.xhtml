@@ -658,6 +658,12 @@
 											render=":main_content_form:components_list" execute="modal_select_table"
 											showButtons="false" style="width:80%; max-width:1250px;max-height:70%;overflow-y:auto;" widgetVar="componentMatchModal">
 									<div id="title">Подбор компонентов крови</div>
+									<h:outputScript>
+        								jQuery(function(){
+        									$("select:first option:last").hide();
+        									$("select:last option:last").hide();
+										});
+        							</h:outputScript>
 									<div id="modal_entries_list" style="margin-top:0;">
 										<div class="menu">
 		                    				<div class="defbutton">

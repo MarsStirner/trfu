@@ -91,7 +91,7 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 	public List<BloodComponent> getDocumentsByPhenotypes(List<Analysis> phenotypes, boolean searchBloodGroup, String bloodGroup, boolean searchRhesus, String rhesusFactor) {
 		List<BloodComponent> result = new ArrayList<BloodComponent>();
 		try {
-			if (phenotypes != null && phenotypes.size() > 0) {
+			if (phenotypes != null) {
 				result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findComponentsByPhenotypes(
 						phenotypes, searchBloodGroup, bloodGroup, searchRhesus, rhesusFactor, "parentNumber,number", true);
 			}

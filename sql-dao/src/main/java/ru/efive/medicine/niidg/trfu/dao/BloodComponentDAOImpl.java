@@ -799,6 +799,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         
         StringBuilder concat = new StringBuilder();
         StringBuilder testsSubQuery = new StringBuilder();
+        boolean hasPhenotypes = phenotypes.size() == 0 ? false : true;
+        
         for (Analysis phenotype: phenotypes) {
         	if (!testsSubQuery.toString().equals("")) {
         		testsSubQuery.append(" or ");
@@ -816,9 +818,9 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         	+ "where components.status_id = 3 and (components.expirationDate > sysdate() or components.expirationDate is null) "
         	+ (searchBloodGroup? "and groups.value = '" + bloodGroup + "' ": "")
         	+ (searchRhesus? "and classifiers.value = '" + rhesusFactor + "' ": "")
-        	+ "and tests.type_id in (select id from trfu_analysis_types where " + testsSubQuery + ") "
+        	+ (hasPhenotypes? "and tests.type_id in (select id from trfu_analysis_types where " + testsSubQuery + ") " : "")
         	+ "group by components.id "
-        	+ "having group_concat(concat('',tests.value) order by tests.id separator '')='" + concat + "'";
+        	+ (hasPhenotypes? "having group_concat(concat('',tests.value) order by tests.id separator '')='" + concat + "'" : "");
         
         List list = getSession().createSQLQuery(query).addScalar("id").list();
         
