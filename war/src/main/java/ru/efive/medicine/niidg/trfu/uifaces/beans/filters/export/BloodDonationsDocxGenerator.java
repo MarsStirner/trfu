@@ -20,6 +20,7 @@ import ru.efive.medicine.niidg.trfu.util.DateHelper;
 public class BloodDonationsDocxGenerator
 		extends
 		BaseDocxGenerator<BloodDonationFilterableListHolderBean, BloodDonationsFilter> {
+	private int totalCount = 0;
 
 	public BloodDonationsDocxGenerator(WordprocessingMLPackage wb,
 			File logoFile, BloodDonationFilterableListHolderBean bean) {
@@ -69,11 +70,12 @@ public class BloodDonationsDocxGenerator
 
 			contentTable.getEGContentRowContent().add(tr);
 		}
+		totalCount += data.size();
 	}
 	
 	@Override
 	protected void printSummary() {
-		int count = bean.getTotalCount(bean.getCurrentFilter());
+		int count = totalCount;
 		P p = createParagraphOfText(JcEnumeration.LEFT, false,
 				"Итого: " + count);
 		contentTable.getEGContentRowContent().add(p);

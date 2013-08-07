@@ -20,6 +20,7 @@ import ru.efive.medicine.niidg.trfu.util.DateHelper;
 public class BloodDonationsXlsGenerator
 		extends
 		BaseXlsGenerator<BloodDonationFilterableListHolderBean, BloodDonationsFilter> {
+	private int totalCount = 0;
 
 	public BloodDonationsXlsGenerator(Workbook wb, File logoFile,
 			BloodDonationFilterableListHolderBean bean) {
@@ -74,12 +75,13 @@ public class BloodDonationsXlsGenerator
 
 			createDataCell(row, 6, donationRequest.getCommentary());
 		}
+		totalCount += data.size();
 	}
 	
 	@Override
 	protected void printSummary() {
 		int rowNumber = getRowCount() + 1;
-		int count = bean.getTotalCount(bean.getCurrentFilter());
+		int count = totalCount;
 		Row row = sheet.createRow(rowNumber);
 		Cell summaryCell = row.createCell(0);
 		summaryCell.setCellValue("Итого: " + count);
