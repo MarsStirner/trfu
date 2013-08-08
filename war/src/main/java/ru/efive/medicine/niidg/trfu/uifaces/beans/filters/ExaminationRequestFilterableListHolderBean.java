@@ -52,7 +52,9 @@ public class ExaminationRequestFilterableListHolderBean
 	public List<FilterParameter> getNotNullFilterParameters() {
 		List<FilterParameter> parameters = new ArrayList<FilterParameter>();
 		String number = storedFilter.getNumber();
-		String donor = storedFilter.getDonor();
+		String firstName = storedFilter.getFirstName();
+		String lastName = storedFilter.getLastName();
+		String middleName = storedFilter.getMiddleName();
 		Date created = storedFilter.getCreated();
 		Date planDate = storedFilter.getPlanDate();
 		int statusId = storedFilter.getStatusId();
@@ -62,10 +64,19 @@ public class ExaminationRequestFilterableListHolderBean
 			parameters.add(new FilterParameter(ExaminationsFilter.NUMBER_TITLE,
 					number));
 		}
-		if (StringUtils.isNotEmpty(donor)) {
-			parameters.add(new FilterParameter(ExaminationsFilter.DONOR_TITLE,
-					donor));
+		if (StringUtils.isNotEmpty(firstName)) {
+			parameters.add(new FilterParameter(ExaminationsFilter.FIRST_NAME_TITLE,
+					firstName));
 		}
+		if (StringUtils.isNotEmpty(lastName)) {
+			parameters.add(new FilterParameter(ExaminationsFilter.LAST_NAME_TITLE,
+					lastName));
+		}
+		if (StringUtils.isNotEmpty(middleName)) {
+			parameters.add(new FilterParameter(ExaminationsFilter.MIDDLE_NAME_TITLE,
+					middleName));
+		}
+		
 		if (created != null) {
 			parameters.add(new FilterParameter(
 					ExaminationsFilter.CREATED_TITLE, DateHelper

@@ -23,9 +23,17 @@ public class ExaminationsFilter extends AbstractFilter<ExaminationsFilter> {
 	 */
 	private String number;
 	/**
-	 * Имя, фамилия или отчетство донора.
+	 * Имя донора.
 	 */
-	private String donor;
+	private String firstName;
+	/**
+	 * Фамилия донора.
+	 */
+	private String lastName;
+	/**
+	 * Отчетство донора.
+	 */
+	private String middleName;
 	/**
 	 * Планируемая дата обследования.
 	 */
@@ -62,13 +70,29 @@ public class ExaminationsFilter extends AbstractFilter<ExaminationsFilter> {
 	public void setNumber(String number) {
 		this.number = number;
 	}
-
-	public String getDonor() {
-		return donor;
+	
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setDonor(String donor) {
-		this.donor = donor;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
 	}
 
 	public Date getPlanDate() {
@@ -113,7 +137,9 @@ public class ExaminationsFilter extends AbstractFilter<ExaminationsFilter> {
 
 	protected void setDefaultValues() {
 		number = null;
-		donor = null;
+		firstName = null;
+		lastName = null;
+		middleName = null;
 		created = null;
 		planDate = null;
 		examinationTypeId = EXAMINATION_TYPE_NULL_VALUE;
@@ -128,7 +154,9 @@ public class ExaminationsFilter extends AbstractFilter<ExaminationsFilter> {
 	@Override
 	public void fillFrom(ExaminationsFilter source) {
 		setNumber(source.getNumber());
-		setDonor(source.getDonor());
+		setFirstName(source.getFirstName());
+		setLastName(source.getLastName());
+		setMiddleName(source.getMiddleName());
 		setCreated(source.getCreated());
 		setPlanDate(source.getPlanDate());
 		setStatusId(source.getStatusId());

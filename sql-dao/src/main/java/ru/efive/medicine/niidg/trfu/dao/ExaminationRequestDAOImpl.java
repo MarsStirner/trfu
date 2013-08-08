@@ -482,22 +482,29 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 		if (filter != null) {
 			Conjunction conjunction = Restrictions.conjunction();
 			String number = filter.getNumber();
-			String donor = filter.getDonor();
+			String firstName = filter.getFirstName();
+			String lastName = filter.getLastName();
+			String middleName = filter.getMiddleName();
 			Date created = filter.getCreated();
 			Date planDate = filter.getPlanDate();
 			int statusId = filter.getStatusId();
 			int examinationTypeId = filter.getExaminationTypeId();
 			
+			
 			if (StringUtils.isNotEmpty(number)) {
 				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
 			}
-			if (StringUtils.isNotEmpty(donor)) {
-	            criteria.createAlias("donor", "donor", CriteriaSpecification.INNER_JOIN);
-	            Disjunction disjunction = Restrictions.disjunction();
-	            disjunction.add(Restrictions.ilike("donor.lastName", donor, MatchMode.ANYWHERE));
-	            disjunction.add(Restrictions.ilike("donor.middleName", donor, MatchMode.ANYWHERE));
-	            disjunction.add(Restrictions.ilike("donor.firstName", donor, MatchMode.ANYWHERE));
-	            conjunction.add(disjunction);
+			if (StringUtils.isNotEmpty(firstName) || StringUtils.isNotEmpty(lastName) || StringUtils.isNotEmpty(middleName)) {
+				criteria.createAlias("donor", "donor", CriteriaSpecification.INNER_JOIN);
+				if (StringUtils.isNotEmpty(firstName)) {
+					conjunction.add(Restrictions.ilike("donor.firstName", firstName, MatchMode.ANYWHERE));
+				}
+				if (StringUtils.isNotEmpty(lastName)) {
+					conjunction.add(Restrictions.ilike("donor.lastName", lastName, MatchMode.ANYWHERE));
+				}
+				if (StringUtils.isNotEmpty(middleName)) {
+					conjunction.add(Restrictions.ilike("donor.middleName", middleName, MatchMode.ANYWHERE));
+				}
 			}
 			if (created != null) {
 				addDateSearchCriteria(conjunction, created, "created");
