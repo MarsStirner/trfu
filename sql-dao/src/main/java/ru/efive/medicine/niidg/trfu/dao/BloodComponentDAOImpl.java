@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Hibernate;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
@@ -822,7 +823,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         	+ "group by components.id "
         	+ (hasPhenotypes? "having group_concat(concat('',tests.value) order by tests.id separator '')='" + concat + "'" : "");
         
-        List list = getSession().createSQLQuery(query).addScalar("id").list();
+        List<Integer> list = getSession().createSQLQuery(query).addScalar("id", Hibernate.INTEGER).list();
         
         if (list != null && list.size() > 0) {
         	detachedCriteria.add(Restrictions.in("id", list));

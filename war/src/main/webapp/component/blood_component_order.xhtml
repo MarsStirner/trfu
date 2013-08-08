@@ -660,8 +660,8 @@
 									<div id="title">Подбор компонентов крови</div>
 									<h:outputScript>
         								jQuery(function(){
-        									$("select:first option:last").hide();
-        									$("select:last option:last").hide();
+        									$("select:first option:last").remove();
+        									$("select:last option:last").remove();
 										});
         							</h:outputScript>
 									<div id="modal_entries_list" style="margin-top:0;">
