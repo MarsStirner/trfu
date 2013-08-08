@@ -22,7 +22,11 @@ public class StatusChangeVirusinactivationAction extends StatusChangeAction {
 		BloodComponent component = (BloodComponent) data;
 		BloodComponentType componentType = component.getComponentType();
 		if (!componentType.isLite()) {
-			return !isRectification(component.getDonationId());
+			boolean rectification = isRectification(component.getDonationId());
+			if (!rectification) {
+			   String componentTypeName = componentType.getValue().toLowerCase();
+			   return componentTypeName.contains("плазма") || componentTypeName.contains("тромбоцитный концентрат");
+			}
 		}
 		return false;
 	}
