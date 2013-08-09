@@ -23,7 +23,7 @@ public class DAOImpl {
 	private final String MEDICAL_FIRST_DONOR = "mfirst";
 	private final String MEDICAL_LAST_DONOR = "mlast";
 	private final String MEDICAL_LIST_IDS_DONORS = "mlistIds";
-	private final String ID_FFROM_SRPD_NAME = "mtemp_stogate_id";
+	private final String ID_FFROM_SRPD_NAME = "temp_stogate_id";
 	
 	private SessionFactory sessionFactory;
 	private final int maxResults = 200;
