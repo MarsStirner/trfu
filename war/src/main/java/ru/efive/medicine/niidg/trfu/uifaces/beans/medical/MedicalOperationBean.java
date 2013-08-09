@@ -1,8 +1,10 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.medical;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ConversationScoped;
@@ -14,6 +16,9 @@ import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 
+import ru.efive.dao.sql.entity.enums.RoleType;
+import ru.efive.dao.sql.entity.user.Role;
+import ru.efive.dao.sql.entity.user.User;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
@@ -318,7 +323,11 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 	
 	private DonorSelectModalHolder donorSelectModal = new DonorSelectModalHolder();
 	private UserSelectModalBean transfusiologistSelectModal = new UserSelectModalBean() {
+		@Override
 		public UserListHolderBean getUserList() {
+			List<User> therapistUserList = getTherapistUserList(userList.getDocuments());
+			userList.getDocuments().clear();
+			userList.getDocuments().addAll(therapistUserList);
 			return userList;
 		}
 		@Override
@@ -332,6 +341,27 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 			userList.setFilter("");
 			userList.markNeedRefresh();
 			setUser(null);
+		}
+		
+		private List<User> getTherapistUserList(List<User> userListDoc) {
+			List<User> therapistUserList = new ArrayList<User>();
+			for (User user : userListDoc) {
+				if(findRoleTherapist(user.getRoleList())) {
+					therapistUserList.add(user);
+				}
+			}
+			return therapistUserList;
+		}
+		
+		private boolean findRoleTherapist(List<Role> roleList) {
+			boolean result = false;
+			for (Role role : roleList) {
+				if (RoleType.THERAPIST.equals(role.getRoleType())) {
+					result = true;
+					break;					
+				}
+			}
+			return result;
 		}
 	};
 	
