@@ -21,7 +21,7 @@ import ru.efive.medicine.niidg.trfu.util.DateHelper;
 public class BloodComponentsXlsGenerator
 		extends
 		BaseXlsGenerator<BloodComponentFilterableListHolderBean, BloodComponentsFilter> {
-	
+	private int totalCount = 0;
 	private long totalVolume = 0;
 
 	public BloodComponentsXlsGenerator(Workbook wb, File logoFile,
@@ -80,6 +80,7 @@ public class BloodComponentsXlsGenerator
 			
 			totalVolume += bloodComponent.getVolume();
 		}
+		totalCount += data.size();
 	}
 	
 	@Override
@@ -95,7 +96,7 @@ public class BloodComponentsXlsGenerator
 	@Override
 	protected void printSummary() {
 		int rowNumber = getRowCount() + 1;
-		int count = bean.getTotalCount(bean.getCurrentFilter());
+		int count = totalCount;
 		Row row = sheet.createRow(rowNumber);
 		Cell summaryCell = row.createCell(0);
 		summaryCell.setCellValue("Итого: " + count);

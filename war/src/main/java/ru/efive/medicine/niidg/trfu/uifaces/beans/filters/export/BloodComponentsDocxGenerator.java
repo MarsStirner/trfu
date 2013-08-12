@@ -21,7 +21,7 @@ import ru.efive.medicine.niidg.trfu.util.DateHelper;
 public class BloodComponentsDocxGenerator
 		extends
 		BaseDocxGenerator<BloodComponentFilterableListHolderBean, BloodComponentsFilter> {
-	
+	private int totalCount = 0;
 	private long totalVolume = 0;
 
 	public BloodComponentsDocxGenerator(WordprocessingMLPackage wb,
@@ -75,6 +75,7 @@ public class BloodComponentsDocxGenerator
 			
 			totalVolume += bloodComponent.getVolume();
 		}
+		totalCount += data.size();
 	}
 	
 	@Override
@@ -86,7 +87,7 @@ public class BloodComponentsDocxGenerator
 		
 	@Override
 	protected void printSummary() {
-		int count = bean.getTotalCount(bean.getCurrentFilter());
+		int count = totalCount;
 		P p = createParagraphOfText(JcEnumeration.LEFT, false,
 				"Итого: " + count);
 		contentTable.getEGContentRowContent().add(p);
