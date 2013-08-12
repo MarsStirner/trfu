@@ -1,4 +1,6 @@
+var browserScrollWidth;
 jQuery(document).ready(function() {
+	browserScrollWidth = getBrowserScrollWidth();
 	update_content();
 });
 
@@ -12,7 +14,7 @@ function update_content() {
 	var height = document.body.clientHeight - jQuery("#view_header").height() - jQuery("#footer").height() - jQuery("#table_paging").height()-26;
 	jQuery("#table_wrap").height(height);
 	jQuery("#table_inner").height(height);
-	jQuery("#filter_panel").height(height);
+	jQuery("#filter_panel").height(height + browserScrollWidth);
 	jQuery("#split").height(document.body.clientHeight);
 	jQuery(".e5ui-menu").height(document.body.clientHeight-30);
 	
@@ -43,3 +45,15 @@ function showFilter() {
 	resizeTableWrapDiv(); 
 	resizeTableWrapDiv(); 
 };
+
+function getBrowserScrollWidth() {
+	document.body.style.overflow = "hidden"; 
+	var width = document.body.clientWidth;
+	document.body.style.overflow = "scroll"; 
+	width -= document.body.clientWidth; 
+	if(!width) {
+		width = document.body.offsetWidth - document.body.clientWidth;
+	}
+	document.body.style.overflow = ""; 
+	return width; 
+}
