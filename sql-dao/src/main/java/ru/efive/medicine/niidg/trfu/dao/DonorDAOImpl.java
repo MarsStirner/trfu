@@ -1,10 +1,13 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
@@ -18,6 +21,8 @@ import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
+import ru.korusconsulting.SRPD.DonorHelper;
+import ru.korusconsulting.SRPD.SRPDDao;
 
 public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	
@@ -420,6 +425,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	private Map<Integer, String> highlightedMap = new HashMap<Integer, String>();*/
     
 	public long countDocument(DonorsFilter donorsFilter) {
+		System.out.println("countDocument");
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
         addNotDeletedCriteria(detachedCriteria);
 		return getCountOf(getSearchCriteria(detachedCriteria, donorsFilter));
@@ -524,7 +530,83 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
         addNotDeletedCriteria(detachedCriteria);
         addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, donorsFilter), offset, count);
+        List<Donor> l = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, donorsFilter), offset, count);
+		return l;
 	}
-    
+
+	/* (non-Javadoc)
+	 * @see ru.efive.dao.sql.dao.GenericDAOHibernate#get(java.io.Serializable)
+	 */
+	@Override
+	public Donor get(Serializable id) {
+		Donor donor = super.get(id);
+		if (DonorHelper.USE_SRPD) {
+			Map<DonorHelper.FieldsInMap, Object> map = new SRPDDao().get((Integer)id);
+			donor = new DonorHelper().mergeDonorAndMap(donor, map);
+		}
+		return donor;
+	}
+
+	/* (non-Javadoc)
+	 * @see ru.efive.dao.sql.dao.GenericDAOHibernate#save(ru.efive.dao.sql.entity.AbstractEntity)
+	 */
+	@Override
+	public Donor save(Donor entity) {
+		if (DonorHelper.USE_SRPD) {
+			Session session = null;
+			SRPDDao srpdDao = new SRPDDao();
+			DonorHelper helper = new DonorHelper();
+			try {
+				session = getSession();
+				session.beginTransaction();
+				session.save(entity);
+				Map<DonorHelper.FieldsInMap, Object> query = helper.makeMapFromDonor(entity);
+				/* commit for saving information to TRFU, without temp_stogate_id */
+				Map<DonorHelper.FieldsInMap, Object> answer = srpdDao.insertToSRPD(query);
+				Donor newDonor = helper.mergeDonorAndMap(entity, answer);
+				/* update for writing temp_stogate_id to DB of TRFU */
+				session.update(newDonor);
+				session.getTransaction().commit();
+				return get(entity.getId());
+			} catch(Exception e) {
+				session.getTransaction().rollback();
+			} finally {
+				if (session != null) {
+					session.close();
+				}
+			}
+			return null;
+		} else {
+			return super.save(entity);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see ru.efive.dao.sql.dao.GenericDAOHibernate#update(ru.efive.dao.sql.entity.AbstractEntity)
+	 */
+	@Override
+	public Donor update(Donor entity) {
+		if (DonorHelper.USE_SRPD) {
+			Session session = null;
+			SRPDDao srpdDao = new SRPDDao();
+			DonorHelper helper = new DonorHelper();
+			try {
+				session = getSession();
+				session.beginTransaction();
+				session.update(entity);
+				session.getTransaction().commit();
+				srpdDao.insertToSRPD(helper.makeMapFromDonor(entity));
+				return get(entity.getId());
+			} catch(Exception e) {
+				session.getTransaction().rollback();
+			} finally {
+				if (session != null) {
+					session.close();
+				}
+			}
+			return null;
+		} else {
+			return super.update(entity);
+		}
+	}
 }

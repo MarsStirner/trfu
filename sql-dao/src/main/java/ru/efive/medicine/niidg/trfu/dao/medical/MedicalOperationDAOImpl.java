@@ -3,8 +3,10 @@ package ru.efive.medicine.niidg.trfu.dao.medical;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
@@ -17,6 +19,8 @@ import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Processing;
+import ru.korusconsulting.SRPD.DonorHelper;
+import ru.korusconsulting.SRPD.SRPDDao;
 
 public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	
@@ -25,18 +29,72 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		return Document.class;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T extends Document> T get(Class<T> clazz, Serializable id) {
-		return (T) getHibernateTemplate().get(clazz, id);
+		if (DonorHelper.USE_SRPD && clazz.isInstance(BiomaterialDonor.class)) {
+			BiomaterialDonor donor = (BiomaterialDonor)super.get(id);
+			return (T) new DonorHelper().mergeDonorAndMap(donor, new SRPDDao().get((Integer)id));
+		} else {
+			return (T) getHibernateTemplate().get(clazz, id);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Document> T save(Class<T> clazz, T document) {
-		return (T) save(document);
+		if (DonorHelper.USE_SRPD && clazz.isInstance(BiomaterialDonor.class)) {
+			Session session = null;
+			SRPDDao srpdDao = new SRPDDao();
+			DonorHelper helper = new DonorHelper();
+			try {
+				session = getSession();
+				session.beginTransaction();
+				session.save(document);
+				Map<DonorHelper.FieldsInMap, Object> query = helper.makeMapFromDonor((BiomaterialDonor)document);
+				/* commit for saving information to TRFU, without temp_stogate_id */
+				Map<DonorHelper.FieldsInMap, Object> answer = srpdDao.insertToSRPD(query);
+				BiomaterialDonor newDonor = helper.mergeDonorAndMap((BiomaterialDonor)document, answer);
+				/* update for writing temp_stogate_id to DB of TRFU */
+				session.update(newDonor);
+				session.getTransaction().commit();
+				return (T) get(BiomaterialDonor.class, ((BiomaterialDonor)document).getId());
+			} catch(Exception e) {
+				session.getTransaction().rollback();
+			} finally {
+				if (session != null) {
+					session.close();
+				}
+			}
+			return null;
+		} else {
+			return (T) save(document);
+		}
+			
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Document> T update(Class<T> clazz, T document) {
-		return (T) update(document);
+		if (DonorHelper.USE_SRPD && clazz.isInstance(BiomaterialDonor.class)) {
+			Session session = null;
+			SRPDDao srpdDao = new SRPDDao();
+			DonorHelper helper = new DonorHelper();
+			try {
+				session = getSession();
+				session.beginTransaction();
+				session.update(document);
+				session.getTransaction().commit();
+				srpdDao.insertToSRPD(helper.makeMapFromDonor((BiomaterialDonor)document));
+				return (T) get(((BiomaterialDonor)document).getId());
+			} catch(Exception e) {
+				session.getTransaction().rollback();
+			} finally {
+				if (session != null) {
+					session.close();
+				}
+			}
+			return null;
+		} else {
+			return (T) update(document);
+		}
 	}
 	
 	public BiomaterialDonor getDonorByExternalId(Serializable externalId, boolean showDeleted) {
@@ -395,4 +453,6 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		}
         return criteria;
 	}
+
+	
 }
