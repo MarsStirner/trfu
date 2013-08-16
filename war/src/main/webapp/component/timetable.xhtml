@@ -192,7 +192,7 @@
 										</f:facet>
 									</p:dialog>
 								</div>
-								<h:panelGroup rendered="#{timeTable.entriesSelected}">
+								<h:panelGroup>
 									<div class="defbutton">
 										<p:commandLink actionListener="#{timeTable.deleteSelectedEntry}" update=":main_content_form:main_data_tbl :main_content_form:messages :main_content_form:header_part">
 											<h:graphicImage value="#{resource['images:dell_buttn.png']}" />
@@ -234,7 +234,6 @@
 						<div>
 							<p:dataTable border="0" cellpadding="0" cellspacing="0" width="100%" selection="#{timeTable.selectedTimeTableEntries}"
 										rowKey="#{row.id}" id="main_data_tbl" value="#{timeTable.documents}" var="row" emptyMessage="">
-								<p:ajax event="rowSelect" listener="#{timeTable.handleTimeTableRowSelect}" update=":main_content_form:header_part" />
 								<p:column selectionMode="multiple" style="width:2%" />
 								<p:column style="width:28%;">
 									<f:facet name="header">
