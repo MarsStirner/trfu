@@ -1194,7 +1194,7 @@
 </fieldset>
 </div>
 <h:panelGroup rendered="#{bloodDonation.document.statusId ne 1}" id="blood_components">
-    <div>
+    <div style="overflow: auto;">
         <fieldset>
             <legend>
                 <label><span class="title">Компоненты крови</span> </label>
@@ -1337,7 +1337,7 @@
         </fieldset>
     </div>
 </h:panelGroup>
-<div>
+<div style="overflow: auto;">
     <fieldset>
         <legend>
             <a onmouseout="setCursor('default')" onmouseover="setCursor('pointer')" 
