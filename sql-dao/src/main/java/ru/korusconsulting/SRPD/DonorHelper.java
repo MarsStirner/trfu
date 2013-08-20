@@ -2,8 +2,10 @@ package ru.korusconsulting.SRPD;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.hl7.v3.PRPAIN101306UV02;
@@ -11,6 +13,7 @@ import org.hl7.v3.PRPAIN101312UV02;
 
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
+import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
 
 public class DonorHelper {
 	public enum FieldsInMap {
@@ -26,28 +29,57 @@ public class DonorHelper {
 		EMPLOYMENT,
 		BIRTH ,
 		GENDER,
-		TEMP_STOGATE_ID
+		TEMP_STOGATE_ID,
+		LIST_STOGATE_IDS
 	}
 	
 	private final static String FEMALE = "F";
 	/* flag for using or unusing SRPD */
-	public final static Boolean USE_SRPD = false; 
+	public final static Boolean USE_SRPD = false;
+	
+	/** create {@link Map} of {@link Map}s from result of search in SRPD */
+	public Map<Integer,Map<DonorHelper.FieldsInMap, Object>> makeMapsFromAnswerAfterSearch(PRPAIN101306UV02 answer) {
+		Map<Integer,Map<DonorHelper.FieldsInMap, Object>> map = null;
+		return map;
+	}
+	/** creation Map from {@link DonorsFilter}, which will be contain {@link List}s of parameters for search */
+	public Map<DonorHelper.FieldsInMap, Object> makeMapFromDonorsFilter(DonorsFilter donorsFilter, List<Donor> donors) {
+		Map<DonorHelper.FieldsInMap, Object> map = new HashMap<FieldsInMap,Object>();
+		List<Integer> listIds = new ArrayList<Integer>();
+		for (Donor i: donors) {
+			listIds.add(i.getTempStogateId());
+		}
+		map.put(FieldsInMap.LIST_STOGATE_IDS, listIds);
+		map.put(FieldsInMap.FIRST_NAME, donorsFilter.getFirstName());
+		map.put(FieldsInMap.LAST_NAME, donorsFilter.getLastName());
+		map.put(FieldsInMap.MIDDLE_NAME, donorsFilter.getMiddleName());
+		//map.put(FieldsInMap.FIRST_NAME, OMC_NUMBER);
+		//map.put(FieldsInMap.FIRST_NAME, passport_number);
+		//map.put(FieldsInMap.ADRESS, donorsFilter.getRegistrationAddress());
+		return map;
+	}
 	
 	public Map<FieldsInMap, Object> makeMapFromDonor(Donor donor) {
 		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
 		map.put(FieldsInMap.FIRST_NAME, donor.getFirstName());
-		map.put(FieldsInMap.FIRST_NAME, donor.getLastName());
-		map.put(FieldsInMap.FIRST_NAME, donor.getMiddleName());
+		map.put(FieldsInMap.LAST_NAME, donor.getLastName());
+		map.put(FieldsInMap.MIDDLE_NAME, donor.getMiddleName());
 		//map.put(FieldsInMap.FIRST_NAME, OMC_NUMBER);
 		//map.put(FieldsInMap.FIRST_NAME, passport_number);
-		map.put(FieldsInMap.FIRST_NAME, donor.getPhone());
-		map.put(FieldsInMap.FIRST_NAME, donor.getRegistrationAddress());
-		map.put(FieldsInMap.FIRST_NAME, donor.getWorkPhone());
-		map.put(FieldsInMap.FIRST_NAME, donor.getMail());
-		map.put(FieldsInMap.FIRST_NAME, donor.getEmployment());
-		map.put(FieldsInMap.FIRST_NAME, donor.getBirth());
-		map.put(FieldsInMap.FIRST_NAME, donor.getGender());
-		//map.put(FieldsInMap.FIRST_NAME, donor.getTempStogateId());
+		map.put(FieldsInMap.PHONE, donor.getPhone());
+		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
+		map.put(FieldsInMap.WORK_PHONE, donor.getWorkPhone());
+		map.put(FieldsInMap.EMAIL, donor.getMail());
+		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
+		map.put(FieldsInMap.BIRTH, donor.getBirth());
+		map.put(FieldsInMap.GENDER, donor.getGender());
+		map.put(FieldsInMap.FIRST_NAME, donor.getTempStogateId());
+		return map;
+	}
+	
+	public Map<FieldsInMap, Object> makeMapForGet(Integer idDonorFromSRPD) {
+		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
+		map.put(FieldsInMap.TEMP_STOGATE_ID, idDonorFromSRPD);
 		return map;
 	}
 	
@@ -64,10 +96,19 @@ public class DonorHelper {
 		donor.setWorkPhone(parseTelcom(mapWithValues.get(FieldsInMap.WORK_PHONE).toString()));
 		donor.setMail(parseTelcom(mapWithValues.get(FieldsInMap.EMAIL).toString()));
 		donor.setEmployment(mapWithValues.get(FieldsInMap.EMPLOYMENT).toString());
-		donor.setBirth(createDate(mapWithValues.get(FieldsInMap.FIRST_NAME).toString()));
+		donor.setBirth(createDate(mapWithValues.get(FieldsInMap.BIRTH).toString()));
 		donor.setGender(createGender(mapWithValues.get(FieldsInMap.GENDER).toString()));
-		//donor.setTempStogateId(mapWithValues.get(FieldsInMap.TEMP_STOGATE_ID).toString());*/
+		donor.setTempStogateId(Integer.parseInt(mapWithValues.get(FieldsInMap.TEMP_STOGATE_ID).toString()));
 		return donor;
+	}
+	
+	public List<Donor> mergeDonorsAndMap(List<Donor> donors, Map<Integer, Map<FieldsInMap, Object>> map) {
+		Map<FieldsInMap, Object> values;
+		for(Donor i: donors) {
+			values = map.get(i.getTempStogateId());
+			mergeDonorAndMap(i, values);
+		}
+		return donors;
 	}
 	public Map<FieldsInMap, Object> makeMapFromDonor(BiomaterialDonor donor) {
 		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();

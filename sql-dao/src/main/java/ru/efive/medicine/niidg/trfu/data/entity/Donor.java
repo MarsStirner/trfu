@@ -471,6 +471,20 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	}
 
 	/**
+	 * @return the tempStogateId
+	 */
+	public Integer getTempStogateId() {
+		return tempStogateId;
+	}
+
+	/**
+	 * @param tempStogateId the tempStogateId to set
+	 */
+	public void setTempStogateId(Integer tempStogateId) {
+		this.tempStogateId = tempStogateId;
+	}
+
+	/**
 	 * дата создания документа
 	*/
 	@Temporal(value = TemporalType.TIMESTAMP)
@@ -657,6 +671,9 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	
 	@Column(name="send_news")
 	private boolean sendNews;
+	
+	@Column(name="temp_stogate_id")
+	private Integer tempStogateId;
 	
 	private static final long serialVersionUID = 1L;
 }

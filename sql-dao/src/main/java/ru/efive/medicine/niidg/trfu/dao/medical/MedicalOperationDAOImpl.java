@@ -33,7 +33,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	public <T extends Document> T get(Class<T> clazz, Serializable id) {
 		if (DonorHelper.USE_SRPD && clazz.isInstance(BiomaterialDonor.class)) {
 			BiomaterialDonor donor = (BiomaterialDonor)super.get(id);
-			return (T) new DonorHelper().mergeDonorAndMap(donor, new SRPDDao().get((Integer)id));
+			return (T) new DonorHelper().mergeDonorAndMap(donor, new SRPDDao().get(new DonorHelper().makeMapForGet((Integer)id)));
 		} else {
 			return (T) getHibernateTemplate().get(clazz, id);
 		}
@@ -51,7 +51,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				session.save(document);
 				Map<DonorHelper.FieldsInMap, Object> query = helper.makeMapFromDonor((BiomaterialDonor)document);
 				/* commit for saving information to TRFU, without temp_stogate_id */
-				Map<DonorHelper.FieldsInMap, Object> answer = srpdDao.insertToSRPD(query);
+				Map<DonorHelper.FieldsInMap, Object> answer = srpdDao.addToSRPD(query);
 				BiomaterialDonor newDonor = helper.mergeDonorAndMap((BiomaterialDonor)document, answer);
 				/* update for writing temp_stogate_id to DB of TRFU */
 				session.update(newDonor);
@@ -82,7 +82,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				session.beginTransaction();
 				session.update(document);
 				session.getTransaction().commit();
-				srpdDao.insertToSRPD(helper.makeMapFromDonor((BiomaterialDonor)document));
+				srpdDao.addToSRPD(helper.makeMapFromDonor((BiomaterialDonor)document));
 				return (T) get(((BiomaterialDonor)document).getId());
 			} catch(Exception e) {
 				session.getTransaction().rollback();

@@ -1,6 +1,11 @@
 package ru.efive.medicine.niidg.trfu.filters;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Junction;
 
 /**
  * Фильтр для представления "Доноры".
@@ -121,6 +126,31 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	 * -1 - любой, значение по умолчанию, прописано в константе DONOR_CATEGORY_NULL_VALUE).
 	 */
 	private int categoryId;
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Отображение удалённых доноров или нет
+	 */
+	private boolean showDeleted;
+	/**
+	 * Отображение DonorType.value
+	 */
+	private String donorTypeValue;
+	/**
+	 * Список stogate_id
+	 */
+	private List<Integer> listStogateIds;
+	/**
+	 * Список conjunctions или disjunctions
+	 */
+	private List<Junction> listJunctions;
+	/**
+	 * Список criterion-ов
+	 */
+	private List<Criterion> listCriterions;
+	/**
+	 * Флаг для определения использовать conjunction или disjunction
+	 */
+	private boolean conjunction;
 	
     /**
      * Конструктор по умолчанию.
@@ -303,6 +333,89 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	public void setCategoryId(int categoryId) {
 		this.categoryId = categoryId;
 	}
+	/**
+	 * @return the showDeleted
+	 */
+	public boolean isShowDeleted() {
+		return showDeleted;
+	}
+
+	/**
+	 * @param showDeleted the showDeleted to set
+	 */
+	public void setShowDeleted(boolean showDeleted) {
+		this.showDeleted = showDeleted;
+	}
+
+	/**
+	 * @return the donorTypeValue
+	 */
+	public String getDonorTypeValue() {
+		return donorTypeValue;
+	}
+
+	/**
+	 * @param donorTypeValue the donorTypeValue to set
+	 */
+	public void setDonorTypeValue(String donorTypeValue) {
+		this.donorTypeValue = donorTypeValue;
+	}
+
+	/**
+	 * @return the listStogateIds
+	 */
+	public List<Integer> getListStogateIds() {
+		return listStogateIds;
+	}
+
+	/**
+	 * @param listStogateIds the listStogateIds to set
+	 */
+	public void setListStogateIds(List<Integer> listStogateIds) {
+		this.listStogateIds = listStogateIds;
+	}
+
+	/**
+	 * @return the listJunctions
+	 */
+	public List<Junction> getListJunctions() {
+		return listJunctions;
+	}
+
+	/**
+	 * @param listJunctions the listJunctions to set
+	 */
+	public void setListJunctions(List<Junction> listJunctions) {
+		this.listJunctions = listJunctions;
+	}
+
+	/**
+	 * @return the listCriterions
+	 */
+	public List<Criterion> getListCriterions() {
+		return listCriterions;
+	}
+
+	/**
+	 * @param listCriterions the listCriterions to set
+	 */
+	public void setListCriterions(List<Criterion> listCriterions) {
+		this.listCriterions = listCriterions;
+	}
+
+	/**
+	 * @return the useConjunction
+	 */
+	public boolean isConjunction() {
+		return conjunction;
+	}
+
+	/**
+	 * @param useConjunction the useConjunction to set
+	 */
+	public void setConjunction(boolean conjunction) {
+		this.conjunction = conjunction;
+	}
 
 	@Override
 	public void clear() {
@@ -327,6 +440,13 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		rhesusFactorId = RHESUS_FACTOR_NULL_VALUE;
 		pastQuarantineId = PAST_QUARANTINE_NULL_VALUE;
 		categoryId = DONOR_CATEGORY_NULL_VALUE;
+		/////////////////////////////////////////////////////////
+		showDeleted = false;
+		donorTypeValue = null;
+		listStogateIds = new ArrayList<Integer>();
+		listJunctions = new ArrayList<Junction>();
+		listCriterions = new ArrayList<Criterion>();
+		conjunction = true;
 	}
 
 	@Override
@@ -348,5 +468,7 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		setRhesusFactorId(source.getRhesusFactorId());
 		setPastQuarantineId(source.getPastQuarantineId());
 		setCategoryId(source.getCategoryId());
+		///////////////////////////////////////////////////////
+		setShowDeleted(source.isShowDeleted());
 	}
 }

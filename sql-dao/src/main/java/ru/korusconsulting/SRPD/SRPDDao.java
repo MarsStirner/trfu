@@ -1,8 +1,8 @@
 package ru.korusconsulting.SRPD;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.hl7.v3.AD;
 import org.hl7.v3.ActClassControlAct;
@@ -62,17 +62,34 @@ public class SRPDDao {
 	private static final String WORKING_PHONE = "working-office-tel:";
 	private static final String EMAIL = "mailto:";
 	
+	private PDManager initPDManager() {
+		TmisPdm service = new TmisPdm();
+		return service.getPortPdm();
+	}
+	
+	/* search list of possible donors, which equals parameters for search*/
+	public Map<Integer,Map<DonorHelper.FieldsInMap, Object>> getDonors(Map<DonorHelper.FieldsInMap, Object> parametersForSearch) {
+		PDManager pdm = initPDManager();
+		/* full list, which contain:
+		 * key - id from SRPD
+		 * value - map of PD from SRPD
+		 */
+		Map<Integer,Map<DonorHelper.FieldsInMap, Object>> fullListWithDonorsInformation = null;
+		fullListWithDonorsInformation = new DonorHelper().makeMapsFromAnswerAfterSearch(pdm.findCandidates(createFindToSRPD(parametersForSearch)));
+		return fullListWithDonorsInformation;
+		
+	}
+	
 	/* Search possible information for donors with current id */
-	public Map<DonorHelper.FieldsInMap, Object> get(Integer idPersonFromSRPD) {
+	public Map<DonorHelper.FieldsInMap, Object> get(Map<DonorHelper.FieldsInMap, Object> params) {
 		TmisPdm service = new TmisPdm();
 		PDManager pdm = service.getPortPdm();
-		return new DonorHelper().parseAnswerFromSRPDAfterFind(pdm.findCandidates(createFindToSRPD()));
+		return new DonorHelper().parseAnswerFromSRPDAfterFind(pdm.findCandidates(createFindToSRPD(params)));
 	}
 	
 	/* Send information about current donor and wait for id from SRPD */
-	public Map<DonorHelper.FieldsInMap, Object> insertToSRPD(Map<DonorHelper.FieldsInMap, Object> information) {
-		TmisPdm service = new TmisPdm();
-		PDManager pdm = service.getPortPdm();
+	public Map<DonorHelper.FieldsInMap, Object> addToSRPD(Map<DonorHelper.FieldsInMap, Object> information) {
+		PDManager pdm = initPDManager();
 		PRPAIN101311UV02 parameters = createAddToSRPD(information.get(DonorHelper.FieldsInMap.LAST_NAME).toString(),
 								 			   information.get(DonorHelper.FieldsInMap.FIRST_NAME).toString(),
 								 			   information.get(DonorHelper.FieldsInMap.MIDDLE_NAME).toString(),
@@ -85,11 +102,12 @@ public class SRPDDao {
 								 			   information.get(DonorHelper.FieldsInMap.EMPLOYMENT).toString(),
 								 			   information.get(DonorHelper.FieldsInMap.BIRTH).toString(),
 								 			   (Integer)information.get(DonorHelper.FieldsInMap.GENDER));
+		////////////////////////////////////////Добавить параметр для stogate_id если понадобится
 		return new DonorHelper().parseAnswerFromSRPDAfterAdd(pdm.add(parameters));
 	}
 	
 	/* Creation parameters for findCandidates-method of Web-service */
-	private PRPAIN101305UV02 createFindToSRPD() {
+	private PRPAIN101305UV02 createFindToSRPD(Map<DonorHelper.FieldsInMap, Object> fieldsForSearch) {
 		PRPAIN101305UV02 parameters = new PRPAIN101305UV02();
 		return parameters;
 	}
