@@ -91,13 +91,13 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	 */
 	private String documentNumber;
 	/**
-	 * Серия документа, если нужно добавить.
+	 * Серия страховки ОМС, если нужно добавить.
 	 */
-	private String documentSeries1;
+	private String insuranceSeries;
 	/**
-	 * Номер документа, если нужно добавить.
+	 * Номер страховки ОМС, если нужно добавить.
 	 */
-	private String documentNumber1;
+	private String insuranceNumber;
     /**
      * Номер донора в ЕДЦ.
      */
@@ -110,7 +110,7 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	 * Статус донора (1 - Кандидат; 2 - Донор; -1 - Временный отвод; -2 - Абсолютный отвод; 
 	 * 0 - любой, значение по умолчанию, прописано в константе DONOR_STATUS_NULL_VALUE).
 	 */
-	private int statusId;
+	private List<Integer> listStatusId;
     /**
      * Группа крови. Используются значения из таблицы trfu_blood_groups (BloodGroup тип),
      * к которым добавляется значение 0 - любой, значение по умолчанию, прописано в константе BLOOD_GROUP_NULL_VALUE).
@@ -145,10 +145,6 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	 */
 	private List<Integer> listStorageIds;
 	/**
-	 * Список statusId для выборки одного из
-	 */
-	private List<Integer> listEqStatusId;
-	/**
 	 * Список id-ов для ограничения условий выборки
 	 */
 	private List listIds;
@@ -156,6 +152,14 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	 * Флаг для определения использовать conjunction или disjunction
 	 */
 	private boolean conjunction;
+	/**
+	 * Логин для авторизации, по умолчанию должен быть null
+	 */
+	private String mail;
+	/**
+	 * Пароль для авторизации, по умолчанию должен быть null
+	 */
+	private String password;
 	
     /**
      * Конструктор по умолчанию.
@@ -280,11 +284,14 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	}
 
 	public int getStatusId() {
-		return statusId;
+		if (listStatusId.size() == 0) {
+			return DONOR_STATUS_NULL_VALUE;
+		}
+		return listStatusId.get(0);
 	}
 
 	public void setStatusId(int statusId) {
-		this.statusId = statusId;
+		this.listStatusId.set(0, statusId);
 	}
 
 	public int getBloodGroupId() {
@@ -382,17 +389,17 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 
 
 	/**
-	 * @return the listEqStatusId
+	 * @return the listStatusId
 	 */
-	public List<Integer> getListEqStatusId() {
-		return listEqStatusId;
+	public List<Integer> getLisStatusId() {
+		return listStatusId;
 	}
 
 	/**
-	 * @param listEqStatusId the listEqStatusId to set
+	 * @param listStatusId the listStatusId to set
 	 */
-	public void setListEqStatusId(List<Integer> listEqStatusId) {
-		this.listEqStatusId = listEqStatusId;
+	public void setListStatusId(List<Integer> listStatusId) {
+		this.listStatusId = listStatusId;
 	}
 
 	/**
@@ -424,31 +431,66 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	}
 
 	/**
-	 * @return the documentSeries1
+	 * @return the insuranceSeries
 	 */
-	public String getDocumentSeries1() {
-		return documentSeries1;
+	public String getInsuranceSeries() {
+		return insuranceSeries;
 	}
 
 	/**
-	 * @param documentSeries1 the documentSeries1 to set
+	 * @param insuranceSeries the insuranceSeries1 to set
 	 */
-	public void setDocumentSeries1(String documentSeries1) {
-		this.documentSeries1 = documentSeries1;
+	public void setInsuranceSeries(String insuranceSeries) {
+		this.insuranceSeries = insuranceSeries;
 	}
 
 	/**
-	 * @return the documentNumber1
+	 * @return the insuranceNumber
 	 */
-	public String getDocumentNumber1() {
-		return documentNumber1;
+	public String getInsuranceNumber() {
+		return insuranceNumber;
 	}
 
 	/**
-	 * @param documentNumber1 the documentNumber1 to set
+	 * @param insuranceNumber the insuranceNumber to set
 	 */
-	public void setDocumentNumber1(String documentNumber1) {
-		this.documentNumber1 = documentNumber1;
+	public void setInsuranceNumber(String insuranceNumber) {
+		this.insuranceNumber = insuranceNumber;
+	}
+
+	/**
+	 * @return the listStatusId
+	 */
+	public List<Integer> getListStatusId() {
+		return listStatusId;
+	}
+
+	/**
+	 * @return the mail
+	 */
+	public String getMail() {
+		return mail;
+	}
+
+	/**
+	 * @param mail the mail to set
+	 */
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	@Override
@@ -467,11 +509,10 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		documentTypeId = DOCUMENT_TYPE_NULL_VALUE;
 		documentSeries = null;
 		documentNumber = null;
-		documentSeries1 = null;
-		documentNumber1 = null;
+		insuranceSeries = null;
+		insuranceNumber = null;
 		externalNumber = null;
 		factAddress = null;
-		statusId = DONOR_STATUS_NULL_VALUE;
 		bloodGroupId = BLOOD_GROUP_NULL_VALUE;
 		rhesusFactorId = RHESUS_FACTOR_NULL_VALUE;
 		pastQuarantineId = PAST_QUARANTINE_NULL_VALUE;
@@ -480,9 +521,12 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		showDeleted = false;
 		donorTypeValue = null;
 		listStorageIds = new ArrayList<Integer>();
-		listEqStatusId = new ArrayList<Integer>();
+		listStatusId = new ArrayList<Integer>();
 		listIds = new ArrayList();
 		conjunction = true;
+		listStatusId.add(DONOR_STATUS_NULL_VALUE);
+		mail = null;
+		password = null;
 	}
 
 	@Override
@@ -497,8 +541,8 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		setDocumentTypeId(source.getDocumentTypeId());
 		setDocumentSeries(source.getDocumentSeries());
 		setDocumentNumber(source.getDocumentNumber());
-		setDocumentSeries1(source.getDocumentSeries1());
-		setDocumentNumber1(source.getDocumentNumber1());
+		setInsuranceSeries(source.getInsuranceSeries());
+		setInsuranceNumber(source.getInsuranceNumber());
 		setExternalNumber(source.getExternalNumber());
 		setFactAddress(source.getFactAddress());
 		setStatusId(source.getStatusId());
@@ -510,8 +554,10 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		setShowDeleted(source.isShowDeleted());
 		setDonorTypeValue(source.getDonorTypeValue());
 		setListStorageIds(source.getListStorageIds());
-		setListEqStatusId(source.getListEqStatusId());
+		setListStatusId(source.getListStatusId());
 		setListIds(source.getListIds());
 		setConjunction(source.isConjunction());
+		setMail(source.getMail());
+		setPassword(source.getPassword());
 	}
 }

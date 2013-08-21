@@ -54,8 +54,8 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 			donorsFilter.setDocumentTypeId(DonorsFilter.PASSPORT_DOCUMENT_TYPE);
 			donorsFilter.setDocumentSeries(pattern);//------------------------- for Passport
 			donorsFilter.setDocumentNumber(pattern);
-			donorsFilter.setDocumentSeries1(pattern);//------------------------- for OMC
-			donorsFilter.setDocumentNumber1(pattern);
+			donorsFilter.setInsuranceSeries(pattern);//------------------------- for OMC
+			donorsFilter.setInsuranceNumber(pattern);
 			donorsFilter.setShowDeleted(showDeleted);   
 			donorsFilter.setConjunction(isConjunction);
 			return donorsFilter;
@@ -64,50 +64,41 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	}
 		
 	public List<Donor> findRejectedDocuments(String pattern, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-	    DonorsFilter donorsFilter = createDonorsFilterFromPattern(pattern, showDeleted, false);
-        donorsFilter.getListEqStatusId().add(-1);
-        donorsFilter.getListEqStatusId().add(-2);
-
+	    DonorsFilter donorsFilter = createRejectedDonorsFilter(pattern,	showDeleted);
         return findDocuments(donorsFilter, offset, count, orderBy, orderAsc);
 	}
-	
 	public long countRejectedDocument(String pattern, boolean showDeleted) {
-        DonorsFilter donorsFilter = createDonorsFilterFromPattern(pattern,showDeleted, false);
-        donorsFilter.getListEqStatusId().add(-1);
-        donorsFilter.getListEqStatusId().add(-2);
+        DonorsFilter donorsFilter = createRejectedDonorsFilter(pattern, showDeleted);
         
         return countDocument(donorsFilter);
 	}
 	
+	private DonorsFilter createRejectedDonorsFilter(String pattern,	boolean showDeleted) {
+		DonorsFilter donorsFilter = createDonorsFilterFromPattern(pattern, showDeleted, false);
+        donorsFilter.getListStatusId().add(-1);
+        donorsFilter.getListStatusId().add(-2);
+		return donorsFilter;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Donor> findAvailableDocuments(String pattern, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		String query = "select req.donor_id from trfu_blood_donation_requests req inner join"
-        	+ "(select donation.id, donation.donor_id, min(idle.days) "
-        	+ "from (select * from trfu_blood_donation_requests group by donor_id desc) donation "
-        	+ "inner join trfu_donors donor on donation.donor_id = donor.id "
-        	+ "left outer join trfu_blood_donation_request_fact_entries fact on donation.id = fact.donation_id "
-        	+ "left outer join trfu_blood_donation_entries entries on fact.entry_id = entries.id "
-        	+ "left outer join trfu_blood_donation_types types on entries.donationType_id = types.id "
-        	+ "left outer join trfu_idle_periods idle on entries.donationType_id = idle.donationType_id "
-        	+ "where (donation.status_id = 4 or donation.id is null) and donor.status_id <> -2 "
-        	+ "and TIMESTAMPDIFF(DAY,date(donation.factDate),curdate()) > idle.days "
-        	+ "group by donation.donor_id) tmp on req.id = tmp.id";
-        List list = getSession().createSQLQuery(query).list();
-        
-        query = "select donor.id from trfu_donors donor "
-        	+ "left outer join trfu_blood_donation_requests donation on donation.donor_id = donor.id "
-        	+ "left outer join trfu_examination_requests exam on exam.donor_id = donor.id "
-        	+ "where donation.id is null and donor.status_id <> -2 and (exam.status_id <> -1 or exam.id is null)";
-        list.addAll(getSession().createSQLQuery(query).list());
-        
-        DonorsFilter donorsFilter = createDonorsFilterFromPattern(pattern, showDeleted, false);
+		DonorsFilter donorsFilter = createDonorsFilterFromPattern(pattern, showDeleted, false);
+		
+		List list = createListIdsforFindAvaliableDocuments();
         donorsFilter.setListIds(list);
         
         return findDocuments(donorsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	public long countAvailableDocument(String pattern, boolean showDeleted) {
+		DonorsFilter donorsFilter = createDonorsFilterFromPattern(pattern, showDeleted, false);
+		
+		List list = createListIdsforFindAvaliableDocuments();
+        donorsFilter.setListIds(list);
+      
+        return countDocument(donorsFilter);
+	}
+	private List createListIdsforFindAvaliableDocuments() {
 		String query = "select req.donor_id from trfu_blood_donation_requests req inner join"
         	+ "(select donation.id, donation.donor_id, min(idle.days) "
         	+ "from (select * from trfu_blood_donation_requests group by donor_id desc) donation "
@@ -126,13 +117,8 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         	+ "left outer join trfu_examination_requests exam on exam.donor_id = donor.id "
         	+ "where donation.id is null and donor.status_id <> -2 and (exam.status_id <> -1 or exam.id is null)";
         list.addAll(getSession().createSQLQuery(query).list());
-        
-        DonorsFilter donorsFilter = createDonorsFilterFromPattern(pattern, showDeleted, false);
-        donorsFilter.setListIds(list);
-      
-        return countDocument(donorsFilter);
+		return list;
 	}
-	
 	
 	@SuppressWarnings("unchecked")
 	public List<Donor> findQuarantineFinishInviteDocuments(String pattern, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
@@ -195,17 +181,12 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list != null && list.size() > 0) {
-        	detachedCriteria.add(Restrictions.in("id", list));
-            
-    		String[] ords = orderBy == null ? null : orderBy.split(",");
-    		if (ords != null) {
-    			if (ords.length > 1) {
-    				addOrder(detachedCriteria, ords, orderAsc);
-    			} else {
-    				addOrder(detachedCriteria, orderBy, orderAsc);
-    			}
-    		}
-            return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+        	//detachedCriteria.add(Restrictions.in("id", list));
+        	//addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+            //return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+        	DonorsFilter donorsFilter = new DonorsFilter();
+        	donorsFilter.setListIds(list);
+        	return findDocuments(donorsFilter, -1, -1, orderBy, orderAsc);
         }
         else {
         	return Collections.emptyList();
@@ -223,12 +204,16 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
     @SuppressWarnings("unchecked")
 	public Donor findByLoginAndPassword(String login, String password) throws JDBCConnectionException, DataAccessException {
         if (StringUtils.isNotEmpty(login) && StringUtils.isNotEmpty(password)) {
-        	DetachedCriteria detachedCriteria = createDetachedCriteria();
+        	/*DetachedCriteria detachedCriteria = createDetachedCriteria();
             
             detachedCriteria.add(Restrictions.eq("mail", login));
-            detachedCriteria.add(Restrictions.eq("password", password));
+            detachedCriteria.add(Restrictions.eq("password", password));*/
             
-            List<Donor> donors = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+            //List<Donor> donors = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+        	DonorsFilter donorsFilter = new DonorsFilter();
+        	donorsFilter.setMail(login);
+        	donorsFilter.setPassword(password);
+        	List<Donor> donors = findDocuments(donorsFilter, -1, 1, null, true);
             if ((donors != null) && !donors.isEmpty()) {
                 // don't modify this routine work! (for proxy caching such objects as Personage, Location)
                 Donor donor = donors.get(0);
@@ -249,103 +234,20 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	
     @SuppressWarnings("unchecked")
 	public List<String> findDonorsForNewsletter() {
-    	String query = "select mail FROM trfu_donors where deleted = false and send_news = true and mail <> '' and mail is not null";
-    	return getSession().createSQLQuery(query).list();
+    	if (!DonorHelper.USE_SRPD) {
+    		String query = "select mail FROM trfu_donors where deleted = false and send_news = true and mail <> '' and mail is not null";
+    		return getSession().createSQLQuery(query).list();
+    	} else {
+    		String query = "select temp_storage_id FROM trfu_donors where deleted = false and send_news = true and mail <> '' and mail is not null";
+    		List listIds = getSession().createSQLQuery(query).list();
+    		DonorHelper donorHelper = new DonorHelper();
+    		SRPDDao srpdDao = new SRPDDao();
+    		Map<DonorHelper.FieldsInMap, Object> paramsMap = donorHelper.makeParametersforSearchMails(listIds);
+    		Map<Integer, Map<DonorHelper.FieldsInMap,Object>> resMap = srpdDao.getDonors(paramsMap);
+    		return  donorHelper.getMailsFromMap(resMap);
+    	}
 	}
-	
-	/*
-	@SuppressWarnings("unchecked")
-	public List<Donor> search(String pattern, int offset, int count) {
-		List<Donor> result = new ArrayList<Donor>();
-		try {
-			if (!StringUtils.isEmpty(pattern)) {
-				FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-				
-				QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_31, new String[] {Donor.DEFAULT_SEARCH_FIELD}, new StandardAnalyzer(Version.LUCENE_31));
-				parser.setAllowLeadingWildcard(true);
-				
-				org.apache.lucene.search.Query luceneQuery = parser.parse(pattern);
-				FullTextQuery hibQuery = fullTextSession.createFullTextQuery(luceneQuery, getPersistentClass());
-				hibQuery.setFirstResult(offset).setMaxResults(count);
-				
-				result = hibQuery.list();
-				
-				Analyzer analyzer = fullTextSession.getSearchFactory().getAnalyzer("donor_content");
-				
-				QueryScorer scorer = new QueryScorer(luceneQuery, Donor.DEFAULT_SEARCH_FIELD);
-				SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<span class='hl'>", "</span>");
-				Highlighter highlighter = new Highlighter(formatter, scorer);
-				highlighter.setTextFragmenter(new SimpleSpanFragmenter(scorer, ApplicationHelper.MAX_FRAGMENT_LEN));
-				for (Donor donor : result) {
-					String highlightedText = null;
-					try {
-						highlightedText = highlighter.getBestFragment(analyzer, Donor.DEFAULT_SEARCH_FIELD, donor.getContent());
-					}
-					catch (Exception e) {
-						System.out.println("Failed to highlight text for donor " + donor.getId() + " due to: " + e.toString());
-					}
-					if (highlightedText != null) {
-						highlightedMap.put(donor.getId(), highlightedText);
-					}
-				}
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-	
-	public int countSearch(String pattern) {
-		int result = 0;
-		try {
-			if (!StringUtils.isEmpty(pattern)) {
-				FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-				
-				QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_31, new String[] {Donor.DEFAULT_SEARCH_FIELD}, new StandardAnalyzer(Version.LUCENE_31));
-				parser.setAllowLeadingWildcard(true);
-				
-				FullTextQuery hibQuery = fullTextSession.createFullTextQuery(parser.parse(pattern), getPersistentClass());
-				
-				hibQuery.list();
-				result = hibQuery.getResultSize();
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-	
-	public String getHighlightedText(int id) {
-		return highlightedMap.containsKey(id)? highlightedMap.get(id): "";
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void index() {
-		try {
-			FullTextSession ftSession = Search.getFullTextSession(getSession());
-			ftSession.getTransaction().begin();
-			List<Donor> list = ftSession.createCriteria(Donor.class).list();
-			for (Donor donor: list) {
-				ftSession.index(donor);
-			}
-			ftSession.getTransaction().commit();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private Map<Integer, String> highlightedMap = new HashMap<Integer, String>();*/
-    /*private void addDateSearchCriteria(Junction junction, Date created,
-			String dateField) {
-		Date fromDate = DateHelper.getDateWithoutTime(created);
-		Date toDate = DateHelper.getDateWithoutTime(DateHelper.getTomorrowDate(created));
-		junction.add(Restrictions.ge(dateField, fromDate));
-		junction.add(Restrictions.le(dateField, toDate));
-	}*/
-    
+		   
 	public long countDocument(DonorsFilter donorsFilter) {
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
         addNotDeletedCriteria(detachedCriteria);
@@ -377,6 +279,9 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 			String donorTypeValue = donorsFilter.getDonorTypeValue();
 			boolean showDeleted = donorsFilter.isShowDeleted();
 			List listIds = donorsFilter.getListIds();
+			List<Integer> listStatusesId = donorsFilter.getLisStatusId();
+			String mail = donorsFilter.getMail();
+			String password = donorsFilter.getPassword();
 			
 			if (StringUtils.isNotEmpty(number)) {
 				junction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
@@ -384,7 +289,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 			if (created != null) {
 				addDateSearchCriteria(junction, created, "created");
 			}
-			if (birth != null && (junction instanceof Conjunction)) {
+			if (birth != null) {
 				addDateSearchCriteria(junction, birth, "birth");
 			}
 	        if (genderId != DonorsFilter.GENDER_NULL_VALUE) {
@@ -427,8 +332,8 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	        	int documentTypeId = donorsFilter.getDocumentTypeId();
 				String documentNumber = donorsFilter.getDocumentNumber();
 				String documentSeries = donorsFilter.getDocumentSeries();
-				String documentNumber1 = donorsFilter.getDocumentNumber1();
-				String documentSeries1 = donorsFilter.getDocumentSeries1();
+				String insuranceNumber = donorsFilter.getInsuranceNumber();
+				String insuranceSeries = donorsFilter.getInsuranceSeries();
 				if (StringUtils.isNotEmpty(lastName)) {
 					junction.add(Restrictions.ilike("lastName", lastName, MatchMode.ANYWHERE));
 				}
@@ -442,29 +347,26 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 			        if (StringUtils.isNotEmpty(documentNumber)) {
 			        	if (documentTypeId == DonorsFilter.PASSPORT_DOCUMENT_TYPE) {
 		    				junction.add(Restrictions.ilike("passportNumber", documentNumber, MatchMode.ANYWHERE));
-		    				if(StringUtils.isNotEmpty(documentNumber1)) {
+		    				if(StringUtils.isNotEmpty(insuranceNumber)) {
 		    					junction.add(Restrictions.ilike("insuranceNumber", documentNumber, MatchMode.ANYWHERE));
 		    				}
 			        	} else {
 		    				junction.add(Restrictions.ilike("insuranceNumber", documentNumber, MatchMode.ANYWHERE));
-		    				if(StringUtils.isNotEmpty(documentNumber1)) {
-		    					junction.add(Restrictions.ilike("passportNumber", documentNumber, MatchMode.ANYWHERE));
-		    				}
 			        	}
 			        }
 			        if (StringUtils.isNotEmpty(documentSeries)) {
 			        	if (documentTypeId == DonorsFilter.PASSPORT_DOCUMENT_TYPE) {
 		    				junction.add(Restrictions.ilike("passportSeries", documentSeries, MatchMode.ANYWHERE));
-		    				if (StringUtils.isNotEmpty(documentSeries1)) {
+		    				if (StringUtils.isNotEmpty(insuranceSeries)) {
 		    					junction.add(Restrictions.ilike("insuranceSeries", documentSeries, MatchMode.ANYWHERE));
 		    				}
 			        	} else {
 		    				junction.add(Restrictions.ilike("insuranceSeries", documentSeries, MatchMode.ANYWHERE));
-		    				if (StringUtils.isNotEmpty(documentSeries1)) {
-		    					junction.add(Restrictions.ilike("passportSeries", documentSeries, MatchMode.ANYWHERE));
-		    				}
 			        	}
 			        }
+		        }
+				if (mail != null && StringUtils.isNotEmpty(mail) && password != null && StringUtils.isNotEmpty(password)) {
+		        	criteria.add(Restrictions.eq("mail", mail));
 		        }
 	        }
 	        //////////////////////////// refactoring /////////////////////////////////////////////
@@ -474,15 +376,20 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	        if (donorTypeValue != null) {
 	        	junction.add(Restrictions.ilike("donorType.value", donorTypeValue, MatchMode.ANYWHERE));
 	        }
-	        Disjunction disjun = Restrictions.disjunction();
-	        for (Integer i : donorsFilter.getListEqStatusId()) {
-	        	disjun.add(Restrictions.eq("statusId", i));
+	        if (listStatusesId.size() > 1) {
+	        	Disjunction disjun = Restrictions.disjunction();
+	        	for (int i = 1; i < listStatusesId.size(); i ++) {
+	        		disjun.add(Restrictions.eq("statusId", i));
+	        	}
+	        	criteria.add(disjun);
 	        }
-	        criteria.add(disjun);
 	        
 	        criteria.add(junction);
 	        criteria.add(Restrictions.eq("deleted", !showDeleted));
 	        criteria.add(Restrictions.in("id", listIds));
+	        if (mail != null && StringUtils.isNotEmpty(mail) && password != null && StringUtils.isNotEmpty(password)) {
+	        	criteria.add(Restrictions.eq("password", password));
+	        }
 		}
         return criteria;
 	}

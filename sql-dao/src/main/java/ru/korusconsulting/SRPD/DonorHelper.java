@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hl7.v3.PRPAIN101306UV02;
 import org.hl7.v3.PRPAIN101312UV02;
 
@@ -30,7 +31,7 @@ public class DonorHelper {
 		BIRTH ,
 		GENDER,
 		TEMP_STORAGE_ID,
-		LIST_STOGATE_IDS
+		LIST_STORAGE_IDS
 	}
 	
 	private final static String FEMALE = "F";
@@ -49,7 +50,7 @@ public class DonorHelper {
 		for (Donor i: donors) {
 			listIds.add(i.getTempStorageId());
 		}
-		map.put(FieldsInMap.LIST_STOGATE_IDS, listIds);
+		map.put(FieldsInMap.LIST_STORAGE_IDS, listIds);
 		map.put(FieldsInMap.FIRST_NAME, donorsFilter.getFirstName());
 		map.put(FieldsInMap.LAST_NAME, donorsFilter.getLastName());
 		map.put(FieldsInMap.MIDDLE_NAME, donorsFilter.getMiddleName());
@@ -178,6 +179,24 @@ public class DonorHelper {
 		int index = value.indexOf(":");
 		resValue = value.substring(index+1);
 		return resValue;
+	}
+	
+	public Map<FieldsInMap, Object> makeParametersforSearchMails(List<Integer> donorsSRPDids) {
+		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
+		map.put(FieldsInMap.LIST_STORAGE_IDS, donorsSRPDids);
+		return map;
+	}
+	
+	public List<String> getMailsFromMap(Map<Integer, Map<FieldsInMap,Object>> map) {
+		List<String> list = new ArrayList<String>();
+		String mail;
+		for(Map<FieldsInMap, Object> i : map.values()) {
+			mail = i.get(FieldsInMap.EMAIL).toString();
+			if(mail != null && StringUtils.isNotEmpty(mail)) {
+				list.add(mail);
+			}
+		}
+		return list;
 	}
 
 }
