@@ -320,15 +320,15 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	/**
 	 * @return the tempStogateId
 	 */
-	public Integer getTempStogateId() {
-		return tempStogateId;
+	public Integer getTempStorageId() {
+		return tempStorageId;
 	}
 
 	/**
 	 * @param tempStogateId the tempStogateId to set
 	 */
-	public void setTempStogateId(Integer tempStogateId) {
-		this.tempStogateId = tempStogateId;
+	public void setTempStorageId(Integer tempStorageId) {
+		this.tempStorageId = tempStorageId;
 	}
 
 
@@ -449,7 +449,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	private int statusId;
 	
 	@Column(name="temp_stogate_id")
-	private Integer tempStogateId;
+	private Integer tempStorageId;
     
 	/**
 	 * Для группировок в представлениях

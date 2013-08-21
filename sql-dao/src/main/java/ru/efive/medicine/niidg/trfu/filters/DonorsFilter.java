@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Junction;
-
 /**
  * Фильтр для представления "Доноры".
  * 
@@ -93,6 +90,14 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	 * Номер документа.
 	 */
 	private String documentNumber;
+	/**
+	 * Серия документа, если нужно добавить.
+	 */
+	private String documentSeries1;
+	/**
+	 * Номер документа, если нужно добавить.
+	 */
+	private String documentNumber1;
     /**
      * Номер донора в ЕДЦ.
      */
@@ -138,15 +143,15 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	/**
 	 * Список stogate_id
 	 */
-	private List<Integer> listStogateIds;
+	private List<Integer> listStorageIds;
 	/**
-	 * Список conjunctions или disjunctions
+	 * Список statusId для выборки одного из
 	 */
-	private List<Junction> listJunctions;
+	private List<Integer> listEqStatusId;
 	/**
-	 * Список criterion-ов
+	 * Список id-ов для ограничения условий выборки
 	 */
-	private List<Criterion> listCriterions;
+	private List listIds;
 	/**
 	 * Флаг для определения использовать conjunction или disjunction
 	 */
@@ -364,43 +369,44 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	/**
 	 * @return the listStogateIds
 	 */
-	public List<Integer> getListStogateIds() {
-		return listStogateIds;
+	public List<Integer> getListStorageIds() {
+		return listStorageIds;
 	}
 
 	/**
 	 * @param listStogateIds the listStogateIds to set
 	 */
-	public void setListStogateIds(List<Integer> listStogateIds) {
-		this.listStogateIds = listStogateIds;
+	public void setListStorageIds(List<Integer> listStorageIds) {
+		this.listStorageIds = listStorageIds;
+	}
+
+
+	/**
+	 * @return the listEqStatusId
+	 */
+	public List<Integer> getListEqStatusId() {
+		return listEqStatusId;
 	}
 
 	/**
-	 * @return the listJunctions
+	 * @param listEqStatusId the listEqStatusId to set
 	 */
-	public List<Junction> getListJunctions() {
-		return listJunctions;
+	public void setListEqStatusId(List<Integer> listEqStatusId) {
+		this.listEqStatusId = listEqStatusId;
 	}
 
 	/**
-	 * @param listJunctions the listJunctions to set
+	 * @return the listIds
 	 */
-	public void setListJunctions(List<Junction> listJunctions) {
-		this.listJunctions = listJunctions;
+	public List getListIds() {
+		return listIds;
 	}
 
 	/**
-	 * @return the listCriterions
+	 * @param listIds the listIds to set
 	 */
-	public List<Criterion> getListCriterions() {
-		return listCriterions;
-	}
-
-	/**
-	 * @param listCriterions the listCriterions to set
-	 */
-	public void setListCriterions(List<Criterion> listCriterions) {
-		this.listCriterions = listCriterions;
+	public void setListIds(List listIds) {
+		this.listIds = listIds;
 	}
 
 	/**
@@ -415,6 +421,34 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	 */
 	public void setConjunction(boolean conjunction) {
 		this.conjunction = conjunction;
+	}
+
+	/**
+	 * @return the documentSeries1
+	 */
+	public String getDocumentSeries1() {
+		return documentSeries1;
+	}
+
+	/**
+	 * @param documentSeries1 the documentSeries1 to set
+	 */
+	public void setDocumentSeries1(String documentSeries1) {
+		this.documentSeries1 = documentSeries1;
+	}
+
+	/**
+	 * @return the documentNumber1
+	 */
+	public String getDocumentNumber1() {
+		return documentNumber1;
+	}
+
+	/**
+	 * @param documentNumber1 the documentNumber1 to set
+	 */
+	public void setDocumentNumber1(String documentNumber1) {
+		this.documentNumber1 = documentNumber1;
 	}
 
 	@Override
@@ -433,6 +467,8 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		documentTypeId = DOCUMENT_TYPE_NULL_VALUE;
 		documentSeries = null;
 		documentNumber = null;
+		documentSeries1 = null;
+		documentNumber1 = null;
 		externalNumber = null;
 		factAddress = null;
 		statusId = DONOR_STATUS_NULL_VALUE;
@@ -443,9 +479,9 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		/////////////////////////////////////////////////////////
 		showDeleted = false;
 		donorTypeValue = null;
-		listStogateIds = new ArrayList<Integer>();
-		listJunctions = new ArrayList<Junction>();
-		listCriterions = new ArrayList<Criterion>();
+		listStorageIds = new ArrayList<Integer>();
+		listEqStatusId = new ArrayList<Integer>();
+		listIds = new ArrayList();
 		conjunction = true;
 	}
 
@@ -461,6 +497,8 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		setDocumentTypeId(source.getDocumentTypeId());
 		setDocumentSeries(source.getDocumentSeries());
 		setDocumentNumber(source.getDocumentNumber());
+		setDocumentSeries1(source.getDocumentSeries1());
+		setDocumentNumber1(source.getDocumentNumber1());
 		setExternalNumber(source.getExternalNumber());
 		setFactAddress(source.getFactAddress());
 		setStatusId(source.getStatusId());
@@ -470,5 +508,10 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		setCategoryId(source.getCategoryId());
 		///////////////////////////////////////////////////////
 		setShowDeleted(source.isShowDeleted());
+		setDonorTypeValue(source.getDonorTypeValue());
+		setListStorageIds(source.getListStorageIds());
+		setListEqStatusId(source.getListEqStatusId());
+		setListIds(source.getListIds());
+		setConjunction(source.isConjunction());
 	}
 }

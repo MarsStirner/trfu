@@ -4,8 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -382,7 +382,7 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 		}
 	}
 	
-	protected void addDateSearchCriteria(Conjunction conjunction, Date created,
+	protected void addDateSearchCriteria(Junction conjunction, Date created,
 			String dateField) {
 		Date fromDate = DateHelper.getDateWithoutTime(created);
 		Date toDate = DateHelper.getDateWithoutTime(DateHelper.getTomorrowDate(created));

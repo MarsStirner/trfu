@@ -29,7 +29,7 @@ public class DonorHelper {
 		EMPLOYMENT,
 		BIRTH ,
 		GENDER,
-		TEMP_STOGATE_ID,
+		TEMP_STORAGE_ID,
 		LIST_STOGATE_IDS
 	}
 	
@@ -47,7 +47,7 @@ public class DonorHelper {
 		Map<DonorHelper.FieldsInMap, Object> map = new HashMap<FieldsInMap,Object>();
 		List<Integer> listIds = new ArrayList<Integer>();
 		for (Donor i: donors) {
-			listIds.add(i.getTempStogateId());
+			listIds.add(i.getTempStorageId());
 		}
 		map.put(FieldsInMap.LIST_STOGATE_IDS, listIds);
 		map.put(FieldsInMap.FIRST_NAME, donorsFilter.getFirstName());
@@ -73,13 +73,13 @@ public class DonorHelper {
 		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
 		map.put(FieldsInMap.BIRTH, donor.getBirth());
 		map.put(FieldsInMap.GENDER, donor.getGender());
-		map.put(FieldsInMap.FIRST_NAME, donor.getTempStogateId());
+		map.put(FieldsInMap.FIRST_NAME, donor.getTempStorageId());
 		return map;
 	}
 	
 	public Map<FieldsInMap, Object> makeMapForGet(Integer idDonorFromSRPD) {
 		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
-		map.put(FieldsInMap.TEMP_STOGATE_ID, idDonorFromSRPD);
+		map.put(FieldsInMap.TEMP_STORAGE_ID, idDonorFromSRPD);
 		return map;
 	}
 	
@@ -98,14 +98,14 @@ public class DonorHelper {
 		donor.setEmployment(mapWithValues.get(FieldsInMap.EMPLOYMENT).toString());
 		donor.setBirth(createDate(mapWithValues.get(FieldsInMap.BIRTH).toString()));
 		donor.setGender(createGender(mapWithValues.get(FieldsInMap.GENDER).toString()));
-		donor.setTempStogateId(Integer.parseInt(mapWithValues.get(FieldsInMap.TEMP_STOGATE_ID).toString()));
+		donor.setTempStorageId(Integer.parseInt(mapWithValues.get(FieldsInMap.TEMP_STORAGE_ID).toString()));
 		return donor;
 	}
 	
 	public List<Donor> mergeDonorsAndMap(List<Donor> donors, Map<Integer, Map<FieldsInMap, Object>> map) {
 		Map<FieldsInMap, Object> values;
 		for(Donor i: donors) {
-			values = map.get(i.getTempStogateId());
+			values = map.get(i.getTempStorageId());
 			mergeDonorAndMap(i, values);
 		}
 		return donors;
@@ -123,7 +123,7 @@ public class DonorHelper {
 		map.put(FieldsInMap.FIRST_NAME, donor.getEmployment());
 		map.put(FieldsInMap.FIRST_NAME, donor.getBirth());
 		map.put(FieldsInMap.FIRST_NAME, donor.getGender());
-		//map.put(FieldsInMap.FIRST_NAME, donor.getTempStogateId());
+		map.put(FieldsInMap.FIRST_NAME, donor.getTempStorageId());
 		return map;
 	}
 	
@@ -141,7 +141,8 @@ public class DonorHelper {
 		donor.setEmployment(mapWithValues.get(FieldsInMap.EMPLOYMENT).toString());
 		donor.setBirth(createDate(mapWithValues.get(FieldsInMap.FIRST_NAME).toString()));
 		donor.setGender(createGender(mapWithValues.get(FieldsInMap.GENDER).toString()));
-		//donor.setTempStogateId(mapWithValues.get(FieldsInMap.TEMP_STOGATE_ID).toString());*/
+		donor.setTempStorageId(Integer.parseInt(mapWithValues.get(FieldsInMap.TEMP_STORAGE_ID).toString()));
+		
 		return donor;
 	}
 		

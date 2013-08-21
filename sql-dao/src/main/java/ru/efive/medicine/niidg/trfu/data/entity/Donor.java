@@ -471,17 +471,17 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	}
 
 	/**
-	 * @return the tempStogateId
+	 * @return the tempStorageId
 	 */
-	public Integer getTempStogateId() {
-		return tempStogateId;
+	public Integer getTempStorageId() {
+		return tempStorageId;
 	}
 
 	/**
-	 * @param tempStogateId the tempStogateId to set
+	 * @param tempStorageId the tempStorageId to set
 	 */
-	public void setTempStogateId(Integer tempStogateId) {
-		this.tempStogateId = tempStogateId;
+	public void setTempStorageId(Integer tempStorageId) {
+		this.tempStorageId = tempStorageId;
 	}
 
 	/**
@@ -672,8 +672,8 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	@Column(name="send_news")
 	private boolean sendNews;
 	
-	@Column(name="temp_stogate_id")
-	private Integer tempStogateId;
+	@Column(name="temp_storage_id")
+	private Integer tempStorageId;
 	
 	private static final long serialVersionUID = 1L;
 }
