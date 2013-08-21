@@ -88,47 +88,7 @@ public class SendMailActivity implements IActivity {
 		boolean result = false;
 		try {
 			Session session = (Session) new InitialContext().lookup(Settings.getMessagingService());
-			MimeMessage mimeMessage = new MimeMessage(session);
-			mimeMessage.setSubject(message.getSubject());
-			
-			mimeMessage.setFrom();
-			
-			StringBuilder sb = new StringBuilder();
-			for (String address : message.getSendTo()) {
-				sb.append(address).append(" ");
-			}
-			if (!sb.toString().trim().equals(""))
-				mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(sb.toString().trim(), false));
-			sb = new StringBuilder();
-			for (String address : message.getCopyTo()) {
-				sb.append(address).append(" ");
-			}
-			if (!sb.toString().trim().equals(""))
-				mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress.parse(sb.toString().trim(), false));
-			sb = new StringBuilder();
-			for (String address : message.getBlindCopyTo()) {
-				sb.append(address).append(" ");
-			}
-			if (!sb.toString().trim().equals(""))
-				mimeMessage.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(sb.toString().trim(), false));
-			
-			mimeMessage.setSubject(message.getSubject(), "UTF-8");
-			mimeMessage.setSentDate(new Date());
-			
-			MimeBodyPart mbp = new MimeBodyPart();
-			if (message.getContentType().equals("text/html")) {				
-				mbp.setHeader("Content-Type","text/html; charset=\"utf-8\"");
-				mbp.setContent(message.getBody(), "text/html; charset=utf-8");
-				mbp.setHeader("Content-Transfer-Encoding", "quoted-printable");
-			}
-			else {
-				mbp.setText(message.getBody());
-			}
-			Multipart mp = new MimeMultipart();
-			mp.addBodyPart(mbp);
-			mimeMessage.setContent(mp);
-
-			Transport.send(mimeMessage);
+			executeBySession(session);
 			result = true;
 		}
 		catch (NamingException e) {
@@ -141,6 +101,50 @@ public class SendMailActivity implements IActivity {
 		}
 		
 		return result;
+	}
+	
+	public void executeBySession(Session session) throws MessagingException {
+		MimeMessage mimeMessage = new MimeMessage(session);
+		mimeMessage.setSubject(message.getSubject());
+		
+		mimeMessage.setFrom();
+		
+		StringBuilder sb = new StringBuilder();
+		for (String address : message.getSendTo()) {
+			sb.append(address).append(" ");
+		}
+		if (!sb.toString().trim().equals(""))
+			mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress.parse(sb.toString().trim(), false));
+		sb = new StringBuilder();
+		for (String address : message.getCopyTo()) {
+			sb.append(address).append(" ");
+		}
+		if (!sb.toString().trim().equals(""))
+			mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress.parse(sb.toString().trim(), false));
+		sb = new StringBuilder();
+		for (String address : message.getBlindCopyTo()) {
+			sb.append(address).append(" ");
+		}
+		if (!sb.toString().trim().equals(""))
+			mimeMessage.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(sb.toString().trim(), false));
+		
+		mimeMessage.setSubject(message.getSubject(), "UTF-8");
+		mimeMessage.setSentDate(new Date());
+		
+		MimeBodyPart mbp = new MimeBodyPart();
+		if (message.getContentType().equals("text/html")) {				
+			mbp.setHeader("Content-Type","text/html; charset=\"utf-8\"");
+			mbp.setContent(message.getBody(), "text/html; charset=utf-8");
+			mbp.setHeader("Content-Transfer-Encoding", "quoted-printable");
+		}
+		else {
+			mbp.setText(message.getBody());
+		}
+		Multipart mp = new MimeMultipart();
+		mp.addBodyPart(mbp);
+		mimeMessage.setContent(mp);
+
+		Transport.send(mimeMessage);
 	}
 	
 	@Override

@@ -7,7 +7,7 @@
 
 	<groupId>ru.efive.dao</groupId>
 	<artifactId>alfresco-dao</artifactId>
-	<version>0.3.33-SNAPSHOT</version>
+	<version>0.3.34-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>E5 Alfresco DAO</name>
@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>ru.efive.medicine.niidg</groupId>
 		<artifactId>trfu</artifactId>
-		<version>0.3.33-SNAPSHOT</version>
+		<version>0.3.34-SNAPSHOT</version>
 	</parent>
         
 	<dependencies>
