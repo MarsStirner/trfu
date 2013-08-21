@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<h:outputStylesheet library="css" name="print.css" />
+	<h:outputScript library="e5ui/js" name="jquery.js" target="head" />
+	<title>Опросный лист донора</title>
+    <style type="text/css">
+        p{font-size:12px;}
+    </style>
+</h:head>
+
+<h:body style="font-size:11px;">
+	<!-- #{donor.document.id}  -->
+	<h:outputScript>
+        $(document).ready(function() {
+        	window.print();
+ 		});
+    </h:outputScript>
+    <div style="margin-left:30px; font-size:12px;">
+                        <p style="text-align:right; margin-right:30px;">
+                            <h:graphicImage value="#{resource['images:logo.png']}" id="logo"  />
+                        </p>
+                        <p style="padding:30px; text-align:center; font-weight:bold;">
+                            Опросный лист донора
+                        </p>
+
+<p style="font-style:italic">
+Уважаемый донор! Ваши ответы помогут нам понять, какие средства массовой информации привлекают людей на сдачу крови в нашем Центре. 
+Даже если Вы регулярный донор и уже заполняли эту анкету, просим Вас сделать это еще раз. Нам важно знать, по какой причине 
+Вы пришли сдавать кровь или её компоненты именно сегодня!
+</p>
+<p style="font-style:italic">
+Сегодня Вы пришли сдать кровь в «ФНКЦ ДГОИ им. Дмитрия Рогачева» потому что:
+</p>
+<ul style="list-style-image:url('/resources/images/circle.png')">
+	<li>Прочитал(а) в Интернете:
+		<ul style="list-style-image:url('/resources/images/square.png')">
+     		<li>Сайт  «ФНКЦ ДГОИ им. Дмитрия Рогачева»</li>
+     		<li>Группа в «Вконтакте» «ФНКЦ ДГОИ им. Дмитрия Рогачева»</li>
+     		<li>Сайт и группы в соц. сетях благотворительного фонда «Подари жизнь»</li>
+     		<li>Сайт и группы в соц. сетях «Службы крови» (yadonor.ru)</li>
+     		<li>Другое (укажите, пожалуйста) ______________________________________</li>
+    	</ul>
+	</li>
+	<li>Пригласили сдать кровь:
+		<ul style="list-style-image:url('/resources/images/square.png')">
+     		<li>Знакомые/ друзья/ родственники</li>
+     		<li>Позвонили из фонда «Подари жизнь»</li>
+     		<li>Позвонили из «ФНКЦ ДГОИ им. Дмитрия Рогачева»</li>
+    	</ul>
+	</li>
+	<li>Услышал(а) объявление по радио в «ФНКЦ ДГОИ им. Дмитрия Рогачева»</li>
+	<li>Увидел(а) рекламу на улице/ подъезде/ торговом центре</li>
+	<li>Узнал(а) из телевизионной передачи</li>
+	<li>На меня не влияют сообщения СМИ. Хожу сдавать кровь, когда появляется свободное время</li>
+	<li>Другое (укажите, пожалуйста) ______________________________________________</li>
+</ul>
+<p style="margin-right: 30px; font-style:italic; text-align:right;padding-bottom: 30px;">
+Положите пожалуйста заполненную анкету в ящик с попугаем
+</p>
+	</div>
+</h:body>
+
+</html>

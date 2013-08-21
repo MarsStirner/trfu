@@ -150,6 +150,13 @@
 							        Информированное согласие
 						        </h:outputLink>
 					        </div>
+					         <div class="item">
+						        <h:outputLink value="#{contextPath}/component/print/inquirer_donor.xhtml" target="_blank" rendered="#{donor.editState or donor.viewState}">
+							        <h:graphicImage value="#{resource['images:blank.png']}" />
+							        <f:param name="docId" value="#{donor.document.id}" />
+							        Опросник для донора
+						        </h:outputLink>
+					        </div>
                         </div>
                     </div>
 				</div>
