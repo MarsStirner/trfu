@@ -238,7 +238,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
     		String query = "select mail FROM trfu_donors where deleted = false and send_news = true and mail <> '' and mail is not null";
     		return getSession().createSQLQuery(query).list();
     	} else {
-    		String query = "select temp_storage_id FROM trfu_donors where deleted = false and send_news = true and mail <> '' and mail is not null";
+    		String query = "select temp_storage_id FROM trfu_donors where deleted = false and send_news = true";
     		List listIds = getSession().createSQLQuery(query).list();
     		DonorHelper donorHelper = new DonorHelper();
     		SRPDDao srpdDao = new SRPDDao();

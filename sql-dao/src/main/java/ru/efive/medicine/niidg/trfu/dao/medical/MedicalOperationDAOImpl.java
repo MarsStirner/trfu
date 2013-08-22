@@ -98,8 +98,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	}
 	
 	public BiomaterialDonor getDonorByExternalId(Serializable externalId, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(BiomaterialDonor.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+		DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
         
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
@@ -110,6 +109,9 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
         List<BiomaterialDonor> list = getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
         
         if (list != null && !list.isEmpty()) {
+        	if (DonorHelper.USE_SRPD) {
+        		// logic for work with SRPD
+        	}
         	return list.get(0);
         }
         else {
@@ -122,33 +124,30 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<BiomaterialDonor> findDonors(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(BiomaterialDonor.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+		DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
         
-        if (!showDeleted) {
+        /*if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
+        }*/
+        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+        List<BiomaterialDonor> donors = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "BiomaterialDonor", showDeleted), offset, count);
+        if (DonorHelper.USE_SRPD) {
+        	// logic for work with SRPD
         }
-
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "BiomaterialDonor"), offset, count);
+		return donors;
 	}
 	
 	public long countDonors(String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(BiomaterialDonor.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+		DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
         
-        if (!showDeleted) {
+        /*if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
+        }*/
+		long count = getCountOf(getSearchCriteria(detachedCriteria, filter, "BiomaterialDonor", showDeleted));
+        if (!DonorHelper.USE_SRPD) {
+        	// logic for work with SRPD
         }
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter, "BiomaterialDonor"));
+        return count;
 	}
 	
 	/*
@@ -156,56 +155,71 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Operation> findOperations(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Operation.class);
+		/*DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Operation.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
+        }*/
 
-		String[] ords = orderBy == null ? null : orderBy.split(",");
+		/*String[] ords = orderBy == null ? null : orderBy.split(",");
 		if (ords != null) {
 			if (ords.length > 1) {
 				addOrder(detachedCriteria, ords, orderAsc);
 			} else {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
-		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Operation"), offset, count);
+		}*/
+		DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
+        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+        List<Operation> operations = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Operation", showDeleted), offset, count);
+        if (DonorHelper.USE_SRPD) {
+        	// logic for work with SRPD
+        }
+		return operations;
 	}
 	
 	public long countOperations(String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Operation.class);
+		/*DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Operation.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
+        }*/
+        DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
+        long count = getCountOf(getSearchCriteria(detachedCriteria, filter, "Operation",showDeleted));
+        if (DonorHelper.USE_SRPD) {
+        	// logic for work with SRPD
         }
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter, "Operation"));
+		return count;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Operation> findOperationsByDonor(BiomaterialDonor donor, String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Operation.class);
+		/*DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Operation.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        
+        }*/
+		DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
         if (donor != null && donor.getId() > 0) {
         	detachedCriteria.add(Restrictions.eq("donor.id", donor.getId()));
         	
-        	String[] ords = orderBy == null ? null : orderBy.split(",");
+        	/*String[] ords = orderBy == null ? null : orderBy.split(",");
     		if (ords != null) {
     			if (ords.length > 1) {
     				addOrder(detachedCriteria, ords, orderAsc);
     			} else {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
-    		}
-    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Operation"), offset, count);
+    		}*/
+        	addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+        	List<Operation> operations = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Operation", showDeleted), offset, count);
+        	if (DonorHelper.USE_SRPD) {
+            	// logic for work with SRPD
+            }
+    		return operations;
         }
         else {
         	return Collections.emptyList();
@@ -220,9 +234,9 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
-        if (!showDeleted) {
+        /*if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
+        }*/
 
 		String[] ords = orderBy == null ? null : orderBy.split(",");
 		if (ords != null) {
@@ -232,18 +246,18 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial"), offset, count);
+		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted), offset, count);
 	}
 	
 	public long countBiomaterials(String filter, boolean showDeleted) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
-        if (!showDeleted) {
+        /*if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
+        }*/
         
-		return getCountOf(getSearchCriteria(detachedCriteria, filter, "Biomaterial"));
+		return getCountOf(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -251,9 +265,9 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
-        if (!showDeleted) {
+        /*if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
+        }*/
         
         if (statusId != 0) {
         	detachedCriteria.add(Restrictions.eq("statusId", statusId));
@@ -267,22 +281,22 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial"), offset, count);
+		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted), offset, count);
 	}
 	
 	public long countBiomaterials(String filter, int statusId, boolean showDeleted) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
-        if (!showDeleted) {
+        /*if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
+        }*/
         
         if (statusId != 0) {
         	detachedCriteria.add(Restrictions.eq("statusId", statusId));
         }
         
-		return getCountOf(getSearchCriteria(detachedCriteria, filter, "Biomaterial"));
+		return getCountOf(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -290,9 +304,9 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
-        if (!showDeleted) {
+        /*if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
+        }*/
         
         if (operation != null && operation.getId() > 0) {
         	detachedCriteria.add(Restrictions.eq("operation.id", operation.getId()));
@@ -305,7 +319,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial"), offset, count);
+    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted), offset, count);
         }
         else {
         	return Collections.emptyList();
@@ -316,14 +330,14 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
 		detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
 		
-		if (!showDeleted) {
+		/*if (!showDeleted) {
 			detachedCriteria.add(Restrictions.eq("deleted", false));
-		}
+		}*/
 		
 		if (operation != null && operation.getId() > 0) {
 			detachedCriteria.add(Restrictions.eq("operation.id", operation.getId()));
 			
-			return getCountOf(getSearchCriteria(detachedCriteria, filter, "Biomaterial"));
+			return getCountOf(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted));
 		}
 		else {
 			return 0;
@@ -338,9 +352,9 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Processing.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
-        if (!showDeleted) {
+        /*if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
+        }*/
 
 		String[] ords = orderBy == null ? null : orderBy.split(",");
 		if (ords != null) {
@@ -350,18 +364,18 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Processing"), offset, count);
+		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Processing", showDeleted), offset, count);
 	}
 	
 	public long countProcessings(String filter, boolean showDeleted) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Processing.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
-        if (!showDeleted) {
+        /*if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
+        }*/
         
-		return getCountOf(getSearchCriteria(detachedCriteria, filter, "Processing"));
+		return getCountOf(getSearchCriteria(detachedCriteria, filter, "Processing", showDeleted));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -369,9 +383,9 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Processing.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
-        if (!showDeleted) {
+        /*if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
+        }*/
         
         if (biomaterial != null && biomaterial.getId() > 0) {
         	detachedCriteria.add(Restrictions.eq("biomaterial.id", biomaterial.getId()));
@@ -384,7 +398,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Processing"), offset, count);
+    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Processing", showDeleted), offset, count);
         }
         else {
         	return Collections.emptyList();
@@ -395,14 +409,14 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Processing.class);
 		detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
 		
-		if (!showDeleted) {
+		/*if (!showDeleted) {
 			detachedCriteria.add(Restrictions.eq("deleted", false));
-		}
+		}*/
 		
 		if (biomaterial != null && biomaterial.getId() > 0) {
 			detachedCriteria.add(Restrictions.eq("biomaterial.id", biomaterial.getId()));
 			
-			return getCountOf(getSearchCriteria(detachedCriteria, filter, "Processing"));
+			return getCountOf(getSearchCriteria(detachedCriteria, filter, "Processing", showDeleted));
 		}
 		else {
 			return 0;
@@ -410,35 +424,42 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	}
 	
 	
-	private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, String filter, String type) {
+	private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, String filter, String type, boolean showDeleted) {
+		if (!showDeleted) {
+            criteria.add(Restrictions.eq("deleted", false));
+        }
 		if (StringUtils.isNotEmpty(filter)) {
 			Disjunction disjunction = Restrictions.disjunction();
 			if (type.equals("BiomaterialDonor")) {
 				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("lastName", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("middleName", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("firstName", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("passportSeries", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("passportNumber", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("insuranceSeries", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("insuranceNumber", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("employment", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("workPhone", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("phone", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("registrationAddress", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("factAddress", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("infectiousStatus", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("pregnancy", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("commentary", filter, MatchMode.ANYWHERE));
+				disjunction.add(Restrictions.ilike("infectiousStatus", filter, MatchMode.ANYWHERE));
+				disjunction.add(Restrictions.ilike("pregnancy", filter, MatchMode.ANYWHERE));
+				disjunction.add(Restrictions.ilike("commentary", filter, MatchMode.ANYWHERE));
+				if (!DonorHelper.USE_SRPD) {
+					disjunction.add(Restrictions.ilike("lastName", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("middleName", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("firstName", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("passportSeries", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("passportNumber", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("insuranceSeries", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("insuranceNumber", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("employment", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("workPhone", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("phone", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("registrationAddress", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("factAddress", filter, MatchMode.ANYWHERE));
+				}
 			}
 			else if (type.equals("Operation")) {
 				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
 				disjunction.add(Restrictions.ilike("recipient", filter, MatchMode.ANYWHERE));
 				disjunction.add(Restrictions.ilike("ibNumber", filter, MatchMode.ANYWHERE));
 				criteria.createAlias("donor", "donor", CriteriaSpecification.LEFT_JOIN);
-		        disjunction.add(Restrictions.ilike("donor.lastName", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("donor.middleName", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("donor.firstName", filter, MatchMode.ANYWHERE));
+				if (!DonorHelper.USE_SRPD) {
+					disjunction.add(Restrictions.ilike("donor.lastName", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("donor.middleName", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("donor.firstName", filter, MatchMode.ANYWHERE));
+				}
 			}
 			else if (type.equals("Biomaterial")) {
 				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));

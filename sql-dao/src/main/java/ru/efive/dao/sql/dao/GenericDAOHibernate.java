@@ -362,7 +362,10 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 	private Class<T> persistentClass;
 	
 	protected DetachedCriteria createDetachedCriteria() {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+		return createDetachedCriteria(getPersistentClass());
+	}
+	protected DetachedCriteria createDetachedCriteria(Class clazz) {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(clazz);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
 		return detachedCriteria;
 	}
