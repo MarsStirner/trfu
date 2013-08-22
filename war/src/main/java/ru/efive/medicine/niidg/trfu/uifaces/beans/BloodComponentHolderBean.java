@@ -440,6 +440,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     				component.setSplit(true);
     				component.setSplitVolume(getDocument().getVolume());
     				component.setSplitDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
+    				component.setPreInactivatedVolume(0);
     				
     				HistoryEntry newEntry = new HistoryEntry();
     				newEntry.setActionId(3);
