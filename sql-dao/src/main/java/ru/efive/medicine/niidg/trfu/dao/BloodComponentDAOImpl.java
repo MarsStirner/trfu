@@ -2,8 +2,10 @@ package ru.efive.medicine.niidg.trfu.dao;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,9 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.BloodComponentsFilter;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import ru.korusconsulting.SRPD.DonorHelper;
+import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
+import ru.korusconsulting.SRPD.SRPDDao;
 
 public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	
@@ -1058,10 +1063,14 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	}
 	
 	public long countDocument(BloodComponentsFilter filter) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        addNotDeletedCriteria(detachedCriteria);
-        addNotSplittedCriteria(detachedCriteria);
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+		if (!DonorHelper.USE_SRPD) {
+			DetachedCriteria detachedCriteria = createDetachedCriteria();
+			addNotDeletedCriteria(detachedCriteria);
+			addNotSplittedCriteria(detachedCriteria);
+			return getCountOf(getSearchCriteria(detachedCriteria, filter));
+		} else {
+			return findDocuments(filter, -1, -1, null, true).size();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1129,18 +1138,31 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	        if (makerId != BloodComponentsFilter.MAKER_NULL_VALUE) {
 	        	conjunction.add(Restrictions.eq("maker.id", makerId));
 	        }
-			if (StringUtils.isNotEmpty(fio)) {
-	            criteria.createAlias("donation", "donation", CriteriaSpecification.INNER_JOIN);
-	            criteria.createAlias("donation.donor", "donor", CriteriaSpecification.INNER_JOIN);
-	            Disjunction disjunction = Restrictions.disjunction();
-	            disjunction.add(Restrictions.ilike("donor.lastName", fio, MatchMode.ANYWHERE));
-	            disjunction.add(Restrictions.ilike("donor.middleName", fio, MatchMode.ANYWHERE));
-	            disjunction.add(Restrictions.ilike("donor.firstName", fio, MatchMode.ANYWHERE));
-	            conjunction.add(disjunction);
-			}	        
+	        if (StringUtils.isNotEmpty(fio)) {
+	        	criteria.createAlias("donation", "donation", CriteriaSpecification.INNER_JOIN);
+	        	criteria.createAlias("donation.donor", "donor", CriteriaSpecification.INNER_JOIN);
+	        	Disjunction disjunction = Restrictions.disjunction();
+	        	if (!DonorHelper.USE_SRPD) {
+	        		disjunction.add(Restrictions.ilike("donor.lastName", fio, MatchMode.ANYWHERE));
+	        		disjunction.add(Restrictions.ilike("donor.middleName", fio, MatchMode.ANYWHERE));
+	        		disjunction.add(Restrictions.ilike("donor.firstName", fio, MatchMode.ANYWHERE));
+	        	} else {
+	        		disjunction.add(Restrictions.in("donor.temp_storage_id", listIdsDonorsForFilter(filter)));
+	        	}
+	        	conjunction.add(disjunction);
+	        }
 	        
 			criteria.add(conjunction);
 		}
         return criteria;
+	}
+	
+	private Collection<Integer> listIdsDonorsForFilter(BloodComponentsFilter filter) {
+		Map<DonorHelper.FieldsInMap, Object> mapForSearch = new HashMap<DonorHelper.FieldsInMap, Object>();
+		mapForSearch.put(DonorHelper.FieldsInMap.FIRST_NAME, filter.getFio());
+		mapForSearch.put(DonorHelper.FieldsInMap.LAST_NAME, filter.getFio());
+		mapForSearch.put(DonorHelper.FieldsInMap.MIDDLE_NAME, filter.getFio());
+		Map<Integer, Map<DonorHelper.FieldsInMap,Object>> resMap = new SRPDDao().getDonors(mapForSearch);
+		return resMap.keySet();
 	}
 }
