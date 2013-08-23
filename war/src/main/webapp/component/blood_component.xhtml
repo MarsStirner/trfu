@@ -53,6 +53,16 @@
 					alert("Необходимо выбрать компонент крови!");
 				}
 			}
+			
+			function setPurchasedComponent() {
+				var currentMaker = $("[id='main_content_form:contragentSelectModal:contragent_select_table']").find("tr[class*='grid_row_selected'] td").text();
+				var globalMaker = $("[id*='globalMaker']").val();
+				if (currentMaker == globalMaker) {
+					$("[id*='purchasedComponent']").removeAttr("checked").attr("disabled", "true");
+				} else {
+					$("[id*='purchasedComponent']").removeAttr("disabled");
+				}
+			}
 
 			jQuery(function(){
 				hideShowHistory();
@@ -323,7 +333,9 @@
 				<fieldset>
 					<h:panelGroup rendered="#{not(bloodComponent.document.componentType.lite)}">
 						<div style="margin-top: 10px;">
-							<h:selectBooleanCheckbox value="#{bloodComponent.document.purchased}" disabled="#{bloodComponent.viewState or not (bloodComponent.expeditionEditAvailable)}">
+							<h:selectBooleanCheckbox value="#{bloodComponent.document.purchased}" id="purchasedComponent"
+							disabled="#{bloodComponent.viewState or not (bloodComponent.expeditionEditAvailable) 
+							or (propertiesRedactorBean.selectedProperties.extendedProperties['reports.institution.name'].objectValue eq bloodComponent.document.maker.fullName)}">
 								<f:ajax event="click" render="main_content_form" execute="main_content_form" />
 							</h:selectBooleanCheckbox>
 							<h:outputText value="Закупленный компонент" />
@@ -616,7 +628,9 @@
 									</td>
 									<td>
 										<h:panelGroup id="maker_info">
-											<h:outputText id="maker" value="#{bloodComponent.document.maker.fullName}" class="wide" />
+											<h:inputHidden id="globalMaker" value="#{propertiesRedactorBean.selectedProperties.extendedProperties['reports.institution.name'].objectValue}"/>
+											<h:outputText id="maker" value="#{bloodComponent.document.maker.fullName}" 
+											 class="wide" />
 											<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="#{contextPath}/component/contragent.xhtml" target="_blank">
 												<h:graphicImage value="#{resource['images:link.png']}" />
 									            <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
@@ -666,7 +680,7 @@
 		                                        </div>
 		                                    </div>
 		                                    <div class="e5ui-modal-bottombuttons">
-												<h:button onclick="contragentSelectVar.clickSave(); return false;" value="Выбрать" />
+												<h:button onclick="contragentSelectVar.clickSave();  setPurchasedComponent(); return false;" value="Выбрать" />
 												<h:button onclick="contragentSelectVar.clickClose(); return false;" value="Отмена" />
 											</div>
 										</e5ui-comp:modalWindow>

@@ -11,6 +11,17 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <h:outputStylesheet library="bootstrap/css" name="bootstrap.min.css"/>
         <h:outputScript library="bootstrap/js" name="bootstrap.min.js"/>
+        <h:outputScript>
+        	function setDivision() {
+        		var listVal = $("[id*='listInput']").val();
+        		$("[id*='divisionName']").val(listVal);
+        	}
+        	
+			jQuery(function(){
+				var divisionName = $("[id*='divisionName']").val();
+				$("[id*='listInput']").val(divisionName);
+			});
+		</h:outputScript>
     </h:head>
     <h:body>
         <div class="navbar navbar-fixed-top">
@@ -77,10 +88,22 @@
                                     <f:facet name="header">
                                         Значение
                                     </f:facet>
-
+                                    
+                                    
+ 									<h:inputHidden id="divisionName" rendered="#{key eq 'reports.institution.name'}"
+                                    value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}">
+                                    </h:inputHidden>
+                                    
+                                    <h:selectOneMenu id="listInput" onchange="setDivision()"
+                                    converter="ContragentConverter" rendered="#{key eq 'reports.institution.name'}">
+                                    	<f:selectItems value="#{dictionaryManagement.contragents}"/>
+									</h:selectOneMenu>
+                                    <h:message for="listInput"  style="color:red"/>
+                                    
                                     <h:inputText
                                             id="stringInput"
-                                            rendered="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'String'}"
+                                            rendered="#{(propertiesRedactorBean.selectedProperties.extendedProperties[key].type eq 'String') 
+                                            and not (key eq 'reports.institution.name')}"
                                             value="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].objectValue}"
                                             validator="#{propertiesRedactorBean.selectedProperties.extendedProperties[key].validate}"
                                             style="width:95%;"
