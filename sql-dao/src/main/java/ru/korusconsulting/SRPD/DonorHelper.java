@@ -3,17 +3,27 @@ package ru.korusconsulting.SRPD;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.hl7.v3.PRPAIN101306UV02;
 import org.hl7.v3.PRPAIN101312UV02;
 
+import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
+import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
+import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
+import ru.efive.medicine.niidg.trfu.filters.AppendSRPDFilter;
+import ru.efive.medicine.niidg.trfu.filters.BloodDonationsFilter;
 import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
 
 public class DonorHelper {
@@ -107,9 +117,25 @@ public class DonorHelper {
 		Map<FieldsInMap, Object> values;
 		for(Donor i: donors) {
 			values = map.get(i.getTempStorageId());
-			mergeDonorAndMap(i, values);
+			i = mergeDonorAndMap(i, values);
 		}
 		return donors;
+	}
+	public List<BiomaterialDonor> mergeBiomaterialDonorsAndMap(List<BiomaterialDonor> donors, Map<Integer, Map<FieldsInMap, Object>> map) {
+		Map<FieldsInMap, Object> values;
+		for(BiomaterialDonor i: donors) {
+			values = map.get(i.getTempStorageId());
+			i = mergeDonorAndMap(i, values);
+		}
+		return donors;
+	}
+	public List<Operation> mergeOperationsAndMap(List<Operation> operations, Map<Integer, Map<FieldsInMap, Object>> map) {
+		Map<FieldsInMap, Object> values;
+		for(Operation i: operations) {
+			values = map.get(i.getDonor().getTempStorageId());
+			i.setDonor(mergeDonorAndMap(i.getDonor(), values));
+		}
+		return operations;
 	}
 	public Map<FieldsInMap, Object> makeMapFromDonor(BiomaterialDonor donor) {
 		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
@@ -198,5 +224,86 @@ public class DonorHelper {
 		}
 		return list;
 	}
-
+	/**
+	 * Используется для мержа данных из ЗХПД и списка объектов типа BloodDonationRequest.
+	 * Место использования: BloodDonationRequestDAOImpl
+	 */
+	public List<BloodDonationRequest> mergeListBloodDonationRequestAndMap(List<BloodDonationRequest> list, Map<Integer, Map<FieldsInMap, Object>> map) {
+		for(BloodDonationRequest i : list) {
+			i.setDonor(mergeDonorAndMap(i.getDonor(), map.get(i.getDonor().getTempStorageId())));
+		}
+		return list;
+	}
+	/**
+	 * Используется для создания Map, для дальнейшей передачи в Обработчик ЗХПД-клиента
+	 * Место использования: BloodDonationRequestDAOImpl, MedicalOperationDAOImpl
+	 */
+	public Map<Integer, Map<DonorHelper.FieldsInMap,Object>> listIdsDonorsForFilter(AppendSRPDFilter filter) {
+		Map<DonorHelper.FieldsInMap, Object> mapForSearch = new HashMap<DonorHelper.FieldsInMap, Object>();
+		String firstName = filter.getFirstName();
+		String lastName = filter.getLastName();
+		String middleName = filter.getMiddleName();
+		String passportSeries = filter.getPassportSeries();
+		String passportNumber = filter.getPassportNumber();
+		String insuranceSeries = filter.getInsuranceSeries();
+		String insuranceNumber = filter.getInsuranceNumber();
+		String employment = filter.getEmployment();
+		String workPhone = filter.getWorkPhone();
+		String phone = filter.getPhone();
+		String registrationAdress = filter.getRegistrationAdress();
+		Collection<Integer> listIds = filter.getListSRPDIds();
+		if (StringUtils.isNotEmpty(lastName)) {
+			mapForSearch.put(FieldsInMap.LAST_NAME, lastName);
+		}
+		if (StringUtils.isNotEmpty(middleName)) {
+			mapForSearch.put(FieldsInMap.MIDDLE_NAME, middleName);
+		}
+		if (StringUtils.isNotEmpty(firstName)) {
+			mapForSearch.put(FieldsInMap.FIRST_NAME, firstName);
+		}
+		if (StringUtils.isNotEmpty(passportSeries) && StringUtils.isNotEmpty(passportNumber)) {
+			//mapForSearch.put(FieldsInMap.PASSPORT_NUMBER, passportSeries + passportNumber);
+		}
+		if (StringUtils.isNotEmpty(insuranceSeries) && StringUtils.isNotEmpty(insuranceNumber)) {
+			//mapForSearch.put(FieldsInMap.OMC_NUMBER, insuranceSeries + insuranceSeries);
+		}
+		if (StringUtils.isNotEmpty(employment)) {
+			mapForSearch.put(FieldsInMap.EMPLOYMENT, employment);
+		}
+		if (StringUtils.isNotEmpty(workPhone)) {
+			mapForSearch.put(FieldsInMap.WORK_PHONE, workPhone);
+		}
+		if (StringUtils.isNotEmpty(phone)) {
+			mapForSearch.put(FieldsInMap.PHONE, phone);
+		}
+		if (StringUtils.isNotEmpty(registrationAdress)) {
+			mapForSearch.put(FieldsInMap.ADRESS, registrationAdress);
+		}
+		if (listIds != null) {
+			mapForSearch.put(FieldsInMap.LIST_STORAGE_IDS, listIds);
+		}
+ 		Map<Integer, Map<DonorHelper.FieldsInMap,Object>> resMap = new SRPDDao().getDonors(mapForSearch);
+		return resMap;
+	}
+	public List<Integer> listIdsSRPDFromDonors(List<Donor> donors) {
+		List<Integer> ids = new ArrayList<Integer>();
+		for (Donor i : donors) {
+			ids.add(i.getTempStorageId());
+		}
+		return ids;
+	}
+	public List<Integer> listIdsSRPDFromBiomaterialDonors(List<BiomaterialDonor> donors) {
+		List<Integer> ids = new ArrayList<Integer>();
+		for (BiomaterialDonor i : donors) {
+			ids.add(i.getTempStorageId());
+		}
+		return ids;
+	}
+	public List<Integer> listIdsSRPDFromOperation(List<Operation> operations) {
+		List<Integer> ids = new ArrayList<Integer>();
+		for (Operation i : operations) {
+			ids.add(i.getDonor().getTempStorageId());
+		}
+		return ids;
+	}
 }

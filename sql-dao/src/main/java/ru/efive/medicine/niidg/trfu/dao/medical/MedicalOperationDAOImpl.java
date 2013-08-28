@@ -1,11 +1,13 @@
 package ru.efive.medicine.niidg.trfu.dao.medical;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
@@ -19,7 +21,11 @@ import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Processing;
+import ru.efive.medicine.niidg.trfu.filters.AppendSRPDFilter;
+import ru.efive.medicine.niidg.trfu.filters.BiomaterialDonorsFilter;
+import ru.efive.medicine.niidg.trfu.filters.OperationsFilter;
 import ru.korusconsulting.SRPD.DonorHelper;
+import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
 import ru.korusconsulting.SRPD.SRPDDao;
 
 public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
@@ -98,20 +104,10 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	}
 	
 	public BiomaterialDonor getDonorByExternalId(Serializable externalId, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
-        
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        
-        detachedCriteria.add(Restrictions.eq("externalId", externalId));
-        
-        List<BiomaterialDonor> list = getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
-        
+		BiomaterialDonorsFilter filter = createBiamaterialDonorsFilter(null, showDeleted);
+		filter.setExternalId(externalId);
+		List<BiomaterialDonor> list = findDonors(filter, -1, -1, null, true);
         if (list != null && !list.isEmpty()) {
-        	if (DonorHelper.USE_SRPD) {
-        		// logic for work with SRPD
-        	}
         	return list.get(0);
         }
         else {
@@ -124,30 +120,13 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<BiomaterialDonor> findDonors(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-        List<BiomaterialDonor> donors = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "BiomaterialDonor", showDeleted), offset, count);
-        if (DonorHelper.USE_SRPD) {
-        	// logic for work with SRPD
-        }
-		return donors;
+		BiomaterialDonorsFilter biomaterialFilter = createBiamaterialDonorsFilter(filter, showDeleted);
+		return findDonors(biomaterialFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	public long countDonors(String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-		long count = getCountOf(getSearchCriteria(detachedCriteria, filter, "BiomaterialDonor", showDeleted));
-        if (!DonorHelper.USE_SRPD) {
-        	// logic for work with SRPD
-        }
-        return count;
+        BiomaterialDonorsFilter biomaterialFilter = createBiamaterialDonorsFilter(filter, showDeleted);
+        return countDonors(biomaterialFilter);
 	}
 	
 	/*
@@ -155,69 +134,48 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Operation> findOperations(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		/*DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Operation.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-
-		/*String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}*/
+		OperationsFilter operationFilter= createOperationsFilter(filter, showDeleted);
+		Map<Integer, Map<FieldsInMap, Object>> resMap = null;
+		DonorHelper donorHelper= null;
 		DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
         addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-        List<Operation> operations = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Operation", showDeleted), offset, count);
         if (DonorHelper.USE_SRPD) {
-        	// logic for work with SRPD
+        	donorHelper = new DonorHelper();
+        	resMap = donorHelper.listIdsDonorsForFilter(operationFilter);
+        	operationFilter.setListSRPDIds(resMap.keySet());
+        }
+        List<Operation> operations = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, operationFilter), offset, count);
+        if (DonorHelper.USE_SRPD) {
+        	operations = donorHelper.mergeOperationsAndMap(operations, resMap);
         }
 		return operations;
 	}
 	
 	public long countOperations(String filter, boolean showDeleted) {
-		/*DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Operation.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
         DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
-        long count = getCountOf(getSearchCriteria(detachedCriteria, filter, "Operation",showDeleted));
+        OperationsFilter operationFilter = createOperationsFilter(filter, showDeleted);
         if (DonorHelper.USE_SRPD) {
-        	// logic for work with SRPD
+        	DonorHelper donorHelper = new DonorHelper();
+        	Map<Integer, Map<FieldsInMap, Object>> resMap = donorHelper.listIdsDonorsForFilter(operationFilter);
+        	operationFilter.setListSRPDIds(resMap.keySet());
         }
-		return count;
+		return getCountOf(getSearchCriteria(detachedCriteria, operationFilter));
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Operation> findOperationsByDonor(BiomaterialDonor donor, String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		/*DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Operation.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
 		DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
+		OperationsFilter operationFilter = new OperationsFilter();
         if (donor != null && donor.getId() > 0) {
-        	detachedCriteria.add(Restrictions.eq("donor.id", donor.getId()));
-        	
-        	/*String[] ords = orderBy == null ? null : orderBy.split(",");
-    		if (ords != null) {
-    			if (ords.length > 1) {
-    				addOrder(detachedCriteria, ords, orderAsc);
-    			} else {
-    				addOrder(detachedCriteria, orderBy, orderAsc);
-    			}
-    		}*/
+        	operationFilter.setDonorId(donor.getId());
+        	operationFilter.setShowDeleted(showDeleted);
         	addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-        	List<Operation> operations = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Operation", showDeleted), offset, count);
+        	List<Operation> operations = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, operationFilter), offset, count);
         	if (DonorHelper.USE_SRPD) {
-            	// logic for work with SRPD
+            	DonorHelper donorHelper = new DonorHelper();
+            	operationFilter.setListSRPDIds(donorHelper.listIdsSRPDFromOperation(operations));
+            	Map<Integer, Map<FieldsInMap, Object>> resMap = donorHelper.listIdsDonorsForFilter(operationFilter);
+            	operations = donorHelper.mergeOperationsAndMap(operations, resMap);
             }
     		return operations;
         }
@@ -430,38 +388,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
         }
 		if (StringUtils.isNotEmpty(filter)) {
 			Disjunction disjunction = Restrictions.disjunction();
-			if (type.equals("BiomaterialDonor")) {
-				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-				disjunction.add(Restrictions.ilike("infectiousStatus", filter, MatchMode.ANYWHERE));
-				disjunction.add(Restrictions.ilike("pregnancy", filter, MatchMode.ANYWHERE));
-				disjunction.add(Restrictions.ilike("commentary", filter, MatchMode.ANYWHERE));
-				if (!DonorHelper.USE_SRPD) {
-					disjunction.add(Restrictions.ilike("lastName", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("middleName", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("firstName", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("passportSeries", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("passportNumber", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("insuranceSeries", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("insuranceNumber", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("employment", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("workPhone", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("phone", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("registrationAddress", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("factAddress", filter, MatchMode.ANYWHERE));
-				}
-			}
-			else if (type.equals("Operation")) {
-				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-				disjunction.add(Restrictions.ilike("recipient", filter, MatchMode.ANYWHERE));
-				disjunction.add(Restrictions.ilike("ibNumber", filter, MatchMode.ANYWHERE));
-				criteria.createAlias("donor", "donor", CriteriaSpecification.LEFT_JOIN);
-				if (!DonorHelper.USE_SRPD) {
-					disjunction.add(Restrictions.ilike("donor.lastName", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("donor.middleName", filter, MatchMode.ANYWHERE));
-					disjunction.add(Restrictions.ilike("donor.firstName", filter, MatchMode.ANYWHERE));
-				}
-			}
-			else if (type.equals("Biomaterial")) {
+			if (type.equals("Biomaterial")) {
 				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
 				criteria.createAlias("operation", "operation", CriteriaSpecification.LEFT_JOIN);
 		        disjunction.add(Restrictions.ilike("operation.number", filter, MatchMode.ANYWHERE));
@@ -474,6 +401,211 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		}
         return criteria;
 	}
-
-	
+		private List<BiomaterialDonor> findDonors(BiomaterialDonorsFilter filter,int offset, int count, String orderBy, boolean orderAsc) {
+			DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
+			List<BiomaterialDonor> donors;
+			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
+			addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+			if (DonorHelper.USE_SRPD) {
+				DonorHelper donorHelper = new DonorHelper();
+				Map<Integer,Map<FieldsInMap, Object>> resMap = null;
+				/*this logic will be executed, when some of 'parameters for search in SRPD' will be 'not Null'*/
+				if(filter.isQueryToSRPD()) {
+					resMap = donorHelper.listIdsDonorsForFilter(filter);
+					filter.setListSRPDIds(resMap.keySet());
+				}
+				donors = getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+				/* logic used, when query to SRPD were not execute*/
+				if (resMap == null) {
+					filter.setListSRPDIds(donorHelper.listIdsSRPDFromBiomaterialDonors(donors));
+					resMap = donorHelper.listIdsDonorsForFilter(filter);
+				}
+				donors = donorHelper.mergeBiomaterialDonorsAndMap(donors, resMap);
+			} else {
+				donors = getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+			}
+			return donors;
+		}
+		private long countDonors(BiomaterialDonorsFilter filter) {
+			DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
+			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
+			if(filter.isQueryToSRPD()) {
+				Map<Integer,Map<FieldsInMap, Object>> resMap = new DonorHelper().listIdsDonorsForFilter(filter);
+				filter.setListSRPDIds(resMap.keySet());
+			}
+			return getCountOf(getSearchCriteria(detachedCriteria, filter));
+			
+		}
+		/**
+		 * Creation DetachedCriteria for BiomaterialDonorsFilter
+		 */
+		private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, BiomaterialDonorsFilter filter) {
+			if (filter != null) {
+				Disjunction disjunction = Restrictions.disjunction();
+				Serializable externalId = filter.getExternalId();
+				String number = filter.getNumber();
+				String infectiousStatus = filter.getInfectiousStatus();
+				String pregnancy = filter.getPregnancy();
+				String commentary = filter.getCommentary();
+				String factAdress = filter.getFactAdress();
+				Collection<Integer> listIdsSRPD = filter.getListSRPDIds();
+				if (externalId != null) {
+					disjunction.add(Restrictions.eq("externalId", externalId));
+					
+				}
+				if (StringUtils.isNotEmpty(number)) {
+					disjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
+				}
+				if (StringUtils.isNotEmpty(infectiousStatus)) {
+					disjunction.add(Restrictions.ilike("infectiousStatus", infectiousStatus, MatchMode.ANYWHERE));
+				}
+				if (StringUtils.isNotEmpty(pregnancy)) {
+					disjunction.add(Restrictions.ilike("pregnancy", pregnancy, MatchMode.ANYWHERE));
+				}
+				if (StringUtils.isNotEmpty(commentary)) {
+					disjunction.add(Restrictions.ilike("commentary", commentary, MatchMode.ANYWHERE));
+				}
+				if (StringUtils.isNotEmpty(factAdress)) {
+					disjunction.add(Restrictions.ilike("factAddress", factAdress, MatchMode.ANYWHERE));
+				}
+				if (!DonorHelper.USE_SRPD) {
+					String firstName = filter.getFirstName();
+					String lastName = filter.getLastName();
+					String middleName = filter.getMiddleName();
+					String passportSeries = filter.getPassportSeries();
+					String passportNumber = filter.getPassportNumber();
+					String insuranceSeries = filter.getInsuranceSeries();
+					String insuranceNumber = filter.getInsuranceNumber();
+					String employment = filter.getEmployment();
+					String workPhone = filter.getWorkPhone();
+					String phone = filter.getPhone();
+					String registrationAdress = filter.getRegistrationAdress();
+					if (StringUtils.isNotEmpty(lastName)) {
+						disjunction.add(Restrictions.ilike("lastName", lastName, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(middleName)) {
+						disjunction.add(Restrictions.ilike("middleName", middleName, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(firstName)) {
+						disjunction.add(Restrictions.ilike("firstName", firstName, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(passportSeries)) {
+						disjunction.add(Restrictions.ilike("passportSeries", passportSeries, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(passportNumber)) {
+						disjunction.add(Restrictions.ilike("passportNumber", passportNumber, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(insuranceSeries)) {
+						disjunction.add(Restrictions.ilike("insuranceSeries", insuranceSeries, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(insuranceNumber)) {
+						disjunction.add(Restrictions.ilike("insuranceNumber", insuranceNumber, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(employment)) {
+						disjunction.add(Restrictions.ilike("employment", employment, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(workPhone)) {
+						disjunction.add(Restrictions.ilike("workPhone", workPhone, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(phone)) {
+						disjunction.add(Restrictions.ilike("phone", phone, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(registrationAdress)) {
+						disjunction.add(Restrictions.ilike("registrationAddress", registrationAdress, MatchMode.ANYWHERE));
+					}
+				} else if (listIdsSRPD != null) {
+						disjunction.add(Restrictions.in("temp_storage_id", listIdsSRPD));
+				}
+				criteria.add(disjunction);	
+				criteria.add(Restrictions.eq("deleted", !filter.isShowDeleted()));
+			}
+			return criteria;
+		}
+		/**
+		 * Creation DetachedCriteria for OperationsFilter
+		 */
+		private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, OperationsFilter filter) {
+			if (filter != null) {
+				Disjunction disjunction = Restrictions.disjunction();
+				String number = filter.getNumber();
+				String recepient = filter.getRecepient();
+				String idNumber = filter.getIdNumber();
+				Collection<Integer> listIdsSRPD = filter.getListSRPDIds();
+				Integer donorId = filter.getDonorId();
+				if (StringUtils.isNotEmpty(number)) {
+					disjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
+				}
+				if (StringUtils.isNotEmpty(recepient)) {
+					disjunction.add(Restrictions.ilike("recipient", recepient, MatchMode.ANYWHERE));
+				}
+				if (StringUtils.isNotEmpty(idNumber)) {
+					disjunction.add(Restrictions.ilike("ibNumber", idNumber, MatchMode.ANYWHERE));
+				}
+				criteria.createAlias("donor", "donor", CriteriaSpecification.LEFT_JOIN);
+				if (!DonorHelper.USE_SRPD) {
+					String firstName = filter.getFirstName();
+					String lastName = filter.getLastName();
+					String middleName = filter.getMiddleName();
+					if (StringUtils.isNotEmpty(lastName)) {
+						disjunction.add(Restrictions.ilike("donor.lastName", firstName, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(middleName)) {
+						disjunction.add(Restrictions.ilike("donor.middleName", middleName, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(firstName)) {
+						disjunction.add(Restrictions.ilike("donor.firstName", firstName, MatchMode.ANYWHERE));
+					}
+				} else if (listIdsSRPD != null) {
+					disjunction.add(Restrictions.in("donor.temp_storage_id", listIdsSRPD));
+				}
+				criteria.add(disjunction);
+				criteria.add(Restrictions.eq("deleted", !filter.isShowDeleted()));
+				if (donorId != null) {
+					criteria.add(Restrictions.eq("donor.id", donorId));
+				}
+				
+			}
+			return criteria;
+		}
+		/**
+		 * Create filter for creation DetachedCriteria for BiomaterialDonor
+		 */
+		private BiomaterialDonorsFilter createBiamaterialDonorsFilter(String pattern, boolean showDeleted) {
+			BiomaterialDonorsFilter filter = new BiomaterialDonorsFilter();
+			filter.setShowDeleted(showDeleted);
+			if (StringUtils.isNotEmpty(pattern)) {
+				filter.setNumber(pattern);
+				filter.setPregnancy(pattern);
+				filter.setCommentary(pattern);
+				filter.setLastName(pattern);
+				filter.setFirstName(pattern);
+				filter.setMiddleName(pattern);
+				filter.setPassportSeries(pattern);
+				filter.setPassportNumber(pattern);
+				filter.setInsuranceNumber(pattern);
+				filter.setInsuranceSeries(pattern);
+				filter.setEmployment(pattern);
+				filter.setWorkPhone(pattern);
+				filter.setPhone(pattern);
+				filter.setRegistrationAdress(pattern);
+				filter.setFactAdress(pattern);
+			}
+			return filter;
+		}
+		/**
+		 * Create filter for creation DetachedCriteria for Operation
+		 */
+		private OperationsFilter createOperationsFilter(String pattern, boolean showDeleted) {
+			OperationsFilter filter = new OperationsFilter();
+			filter.setShowDeleted(showDeleted);
+			if (StringUtils.isNotEmpty(pattern)) {
+				filter.setNumber(pattern);
+				filter.setRecepient(pattern);
+				filter.setIdNumber(pattern);
+				filter.setLastName(pattern);
+				filter.setFirstName(pattern);
+				filter.setMiddleName(pattern);
+			}
+			return filter;
+		}
 }
