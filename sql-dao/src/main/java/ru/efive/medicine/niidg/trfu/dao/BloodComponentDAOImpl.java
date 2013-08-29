@@ -9,13 +9,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.transform.Transformers;
 import org.hibernate.type.StringType;
 
 import ru.efive.crm.data.Contragent;
@@ -1066,18 +1072,28 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         addNotSplittedCriteria(detachedCriteria);
 		return getCountOf(getSearchCriteria(detachedCriteria, filter));
 	}
+	
+	protected DetachedCriteria createDetachedCriteriaSub() {
+		DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(BloodComponent.class);
+		idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
+		
+		return idsOnlyCriteria;
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocuments(
 			BloodComponentsFilter filter, int offset, int count,
 			String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-		addNotDeletedCriteria(detachedCriteria);
-		addNotSplittedCriteria(detachedCriteria);
-		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(
-				getSearchCriteria(detachedCriteria, filter), offset,
-				count);
+		DetachedCriteria detachedCriteriaSub = createDetachedCriteriaSub();
+		addNotDeletedCriteria(detachedCriteriaSub);
+		addNotSplittedCriteria(detachedCriteriaSub);
+		detachedCriteriaSub = getSearchCriteria(detachedCriteriaSub, filter);
+		addOrderCriteria(orderBy, orderAsc, detachedCriteriaSub);
+		
+		DetachedCriteria criteria = createDetachedCriteria();
+		criteria.add(Restrictions.in("id", getHibernateTemplate().findByCriteria(detachedCriteriaSub)));
+		
+		return getHibernateTemplate().findByCriteria(criteria, offset, count);
 	}
 
 	private void addNotSplittedCriteria(DetachedCriteria detachedCriteria) {
