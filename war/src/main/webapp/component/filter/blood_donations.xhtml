@@ -12,6 +12,11 @@
 	<ui:define name="running_head">
 		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
 		<h:outputScript library="js" name="views_with_filters.js" target="head" />
+		<h:outputScript>
+			jQuery(function(){
+				$("[id*='blood_donations_filter_status_id_parameter'] option[value='9']").hide();
+			});
+		</h:outputScript>
 	</ui:define>
 	
 	<ui:define name="header_top">
