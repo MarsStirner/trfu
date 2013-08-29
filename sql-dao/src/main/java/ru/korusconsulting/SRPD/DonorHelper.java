@@ -20,6 +20,7 @@ import org.hl7.v3.PRPAIN101312UV02;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.filters.AppendSRPDFilter;
@@ -136,6 +137,14 @@ public class DonorHelper {
 			i.setDonor(mergeDonorAndMap(i.getDonor(), values));
 		}
 		return operations;
+	}
+	public List<Biomaterial> mergeBiomaterialsAndMap(List<Biomaterial> biomaterials, Map<Integer, Map<FieldsInMap, Object>> map) {
+		Map<FieldsInMap, Object> values;
+		for(Biomaterial i: biomaterials) {
+			values = map.get(i.getOperation().getDonor().getTempStorageId());
+			i.getOperation().setDonor(mergeDonorAndMap(i.getOperation().getDonor(), values));
+		}
+		return biomaterials;
 	}
 	public Map<FieldsInMap, Object> makeMapFromDonor(BiomaterialDonor donor) {
 		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
@@ -303,6 +312,16 @@ public class DonorHelper {
 		List<Integer> ids = new ArrayList<Integer>();
 		for (Operation i : operations) {
 			ids.add(i.getDonor().getTempStorageId());
+		}
+		return ids;
+	}
+	/**
+	 * Формирует и возвращает список идентификаторов ЗХПД из списка Biomaterial-ов
+	 */
+	public List<Integer> listIdsSRPDFromBiomaterial(List<Biomaterial> biomaterials) {
+		List<Integer> ids = new ArrayList<Integer>();
+		for (Biomaterial i : biomaterials) {
+			ids.add(i.getOperation().getDonor().getTempStorageId());
 		}
 		return ids;
 	}

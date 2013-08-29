@@ -23,6 +23,7 @@ import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Processing;
 import ru.efive.medicine.niidg.trfu.filters.AppendSRPDFilter;
 import ru.efive.medicine.niidg.trfu.filters.BiomaterialDonorsFilter;
+import ru.efive.medicine.niidg.trfu.filters.BiomaterialsFilter;
 import ru.efive.medicine.niidg.trfu.filters.OperationsFilter;
 import ru.korusconsulting.SRPD.DonorHelper;
 import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
@@ -189,95 +190,39 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Biomaterial> findBiomaterials(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted), offset, count);
+		BiomaterialsFilter biomaterialsFilter = createBiomaterialsFilter(filter, showDeleted);
+		return findBiomaterials(biomaterialsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	public long countBiomaterials(String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted));
+		DetachedCriteria detachedCriteria = createDetachedCriteria(Biomaterial.class);
+		BiomaterialsFilter biomaterialsFilter = createBiomaterialsFilter(filter, showDeleted);
+		return getCountOf(getSearchCriteria(detachedCriteria, biomaterialsFilter));
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Biomaterial> findBiomaterials(String filter, int statusId, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-        
+		BiomaterialsFilter biomaterialsFilter = createBiomaterialsFilter(filter, showDeleted);
         if (statusId != 0) {
-        	detachedCriteria.add(Restrictions.eq("statusId", statusId));
+        	biomaterialsFilter.setStatusId(statusId);
         }
-        
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted), offset, count);
+        return findBiomaterials(biomaterialsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	public long countBiomaterials(String filter, int statusId, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-        
+		BiomaterialsFilter biomaterialFilter = createBiomaterialsFilter(filter, showDeleted);
         if (statusId != 0) {
-        	detachedCriteria.add(Restrictions.eq("statusId", statusId));
+        	biomaterialFilter.setStatusId(statusId);
         }
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted));
+        return countBiomaterials(biomaterialFilter);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Biomaterial> findBiomaterialsByOperation(Operation operation, String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-        
         if (operation != null && operation.getId() > 0) {
-        	detachedCriteria.add(Restrictions.eq("operation.id", operation.getId()));
-        	
-        	String[] ords = orderBy == null ? null : orderBy.split(",");
-    		if (ords != null) {
-    			if (ords.length > 1) {
-    				addOrder(detachedCriteria, ords, orderAsc);
-    			} else {
-    				addOrder(detachedCriteria, orderBy, orderAsc);
-    			}
-    		}
-    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted), offset, count);
+        	BiomaterialsFilter biomaterialsFilter = createBiomaterialsFilter(filter, showDeleted);
+        	biomaterialsFilter.setOperationId(operation.getId());
+        	return findBiomaterials(biomaterialsFilter, offset, count, orderBy, orderAsc);
         }
         else {
         	return Collections.emptyList();
@@ -285,17 +230,10 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	}
 	
 	public long countBiomaterialsByOperation(Operation operation, String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Biomaterial.class);
-		detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-		
-		/*if (!showDeleted) {
-			detachedCriteria.add(Restrictions.eq("deleted", false));
-		}*/
-		
 		if (operation != null && operation.getId() > 0) {
-			detachedCriteria.add(Restrictions.eq("operation.id", operation.getId()));
-			
-			return getCountOf(getSearchCriteria(detachedCriteria, filter, "Biomaterial", showDeleted));
+			BiomaterialsFilter biomaterialsFilter = createBiomaterialsFilter(filter, showDeleted);
+			biomaterialsFilter.setOperationId(operation.getId());
+			return countBiomaterials(biomaterialsFilter);
 		}
 		else {
 			return 0;
@@ -309,11 +247,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	public List<Processing> findProcessings(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Processing.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-
+ 
 		String[] ords = orderBy == null ? null : orderBy.split(",");
 		if (ords != null) {
 			if (ords.length > 1) {
@@ -329,10 +263,6 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Processing.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-        
 		return getCountOf(getSearchCriteria(detachedCriteria, filter, "Processing", showDeleted));
 	}
 	
@@ -340,10 +270,6 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	public List<Processing> findProcessingsByBiomaterial(Biomaterial biomaterial, String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Processing.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
         
         if (biomaterial != null && biomaterial.getId() > 0) {
         	detachedCriteria.add(Restrictions.eq("biomaterial.id", biomaterial.getId()));
@@ -367,10 +293,6 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Processing.class);
 		detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
 		
-		/*if (!showDeleted) {
-			detachedCriteria.add(Restrictions.eq("deleted", false));
-		}*/
-		
 		if (biomaterial != null && biomaterial.getId() > 0) {
 			detachedCriteria.add(Restrictions.eq("biomaterial.id", biomaterial.getId()));
 			
@@ -388,20 +310,24 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
         }
 		if (StringUtils.isNotEmpty(filter)) {
 			Disjunction disjunction = Restrictions.disjunction();
-			if (type.equals("Biomaterial")) {
+			/*if (type.equals("Biomaterial")) {
 				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
 				criteria.createAlias("operation", "operation", CriteriaSpecification.LEFT_JOIN);
 		        disjunction.add(Restrictions.ilike("operation.number", filter, MatchMode.ANYWHERE));
 		        disjunction.add(Restrictions.ilike("operation.recipient", filter, MatchMode.ANYWHERE));
 			}
-			else if (type.equals("Processing")) {
+			else*/ if (type.equals("Processing")) {
 				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
 			}
 	        criteria.add(disjunction);
 		}
         return criteria;
 	}
-		private List<BiomaterialDonor> findDonors(BiomaterialDonorsFilter filter,int offset, int count, String orderBy, boolean orderAsc) {
+	/**
+	 * BiomaterialDonor -универсальный метод использующий фильтр
+	 */
+	
+	private List<BiomaterialDonor> findDonors(BiomaterialDonorsFilter filter,int offset, int count, String orderBy, boolean orderAsc) {
 			DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
 			List<BiomaterialDonor> donors;
 			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
@@ -433,6 +359,27 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				Map<Integer,Map<FieldsInMap, Object>> resMap = new DonorHelper().listIdsDonorsForFilter(filter);
 				filter.setListSRPDIds(resMap.keySet());
 			}
+			return getCountOf(getSearchCriteria(detachedCriteria, filter));
+			
+		}
+		/**
+		 * Biomaterial - универсальные методы для нахождения и подсчётак количества
+		 */
+		private List<Biomaterial> findBiomaterials(BiomaterialsFilter filter,int offset, int count, String orderBy, boolean orderAsc) {
+			DetachedCriteria detachedCriteria = createDetachedCriteria(Biomaterial.class);
+			addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+			@SuppressWarnings("unchecked")
+			List<Biomaterial> biomaterials = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+			if (DonorHelper.USE_SRPD) {
+				DonorHelper donorHelper = new DonorHelper();
+				filter.setListSRPDIds(donorHelper.listIdsSRPDFromBiomaterial(biomaterials));
+				Map<Integer, Map<FieldsInMap, Object>> map = donorHelper.listIdsDonorsForFilter(filter);
+				biomaterials = donorHelper.mergeBiomaterialsAndMap(biomaterials, map);
+			}
+			return biomaterials;
+		}
+		private long countBiomaterials(BiomaterialsFilter filter) {
+			DetachedCriteria detachedCriteria = createDetachedCriteria(Biomaterial.class);
 			return getCountOf(getSearchCriteria(detachedCriteria, filter));
 			
 		}
@@ -568,6 +515,36 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 			return criteria;
 		}
 		/**
+		 * Create DetachedCriteria for search Biomaterials
+		 */
+		private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, BiomaterialsFilter filter) {
+			if (filter != null) {
+				Disjunction disjunction = Restrictions.disjunction();
+				String number = filter.getNumber();
+				String operationNumber = filter.getOperationNumber();
+				String operationRecepient = filter.getOperationRecepient();
+				Integer statusId = filter.getStatusId();
+				if (StringUtils.isNotEmpty(number)) {
+					disjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
+				}
+				if (StringUtils.isNotEmpty(operationNumber) || StringUtils.isNotEmpty(operationRecepient)) {
+					criteria.createAlias("operation", "operation", CriteriaSpecification.LEFT_JOIN);
+				}
+				if (StringUtils.isNotEmpty(operationNumber)) {
+					disjunction.add(Restrictions.ilike("operation.number", operationNumber, MatchMode.ANYWHERE));
+				}
+				if (StringUtils.isNotEmpty(operationRecepient)) {
+					disjunction.add(Restrictions.ilike("operation.recipient", operationRecepient, MatchMode.ANYWHERE));
+				}
+				criteria.add(disjunction);
+				criteria.add(Restrictions.eq("deleted", !filter.isShowDeleted()));
+				if (statusId != null) {
+					criteria.add(Restrictions.eq("statusId", statusId));
+				}
+			}
+			return criteria;
+		}
+		/**
 		 * Create filter for creation DetachedCriteria for BiomaterialDonor
 		 */
 		private BiomaterialDonorsFilter createBiamaterialDonorsFilter(String pattern, boolean showDeleted) {
@@ -605,6 +582,19 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				filter.setLastName(pattern);
 				filter.setFirstName(pattern);
 				filter.setMiddleName(pattern);
+			}
+			return filter;
+		}
+		/**
+		 * Create filter for creation DetachedCriteria for Biomaterial
+		 */
+		private BiomaterialsFilter createBiomaterialsFilter(String pattern, boolean showDeleted) {
+			BiomaterialsFilter filter = new BiomaterialsFilter();
+			filter.setShowDeleted(showDeleted);
+			if (StringUtils.isNotEmpty(pattern)) {
+				filter.setNumber(pattern);
+				filter.setOperationNumber(pattern);
+				filter.setOperationRecepient(pattern);
 			}
 			return filter;
 		}
