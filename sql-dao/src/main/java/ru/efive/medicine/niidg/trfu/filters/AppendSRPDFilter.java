@@ -340,7 +340,7 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 		phone = null;
 		registrationAdress = null;
 		listSRPDIds = null;
-		showDeleted = false;
+		showDeleted = true;
 		conjunction = false;
 		queryToSRPD = false;
 	}

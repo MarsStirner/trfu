@@ -355,9 +355,11 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		private long countDonors(BiomaterialDonorsFilter filter) {
 			DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
 			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
-			if(filter.isQueryToSRPD()) {
-				Map<Integer,Map<FieldsInMap, Object>> resMap = new DonorHelper().listIdsDonorsForFilter(filter);
-				filter.setListSRPDIds(resMap.keySet());
+			if (DonorHelper.USE_SRPD) {
+				if(filter.isQueryToSRPD()) {
+					Map<Integer,Map<FieldsInMap, Object>> resMap = new DonorHelper().listIdsDonorsForFilter(filter);
+					filter.setListSRPDIds(resMap.keySet());
+				}
 			}
 			return getCountOf(getSearchCriteria(detachedCriteria, filter));
 			
@@ -464,7 +466,9 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 						disjunction.add(Restrictions.in("temp_storage_id", listIdsSRPD));
 				}
 				criteria.add(disjunction);	
-				criteria.add(Restrictions.eq("deleted", !filter.isShowDeleted()));
+				if (!filter.isShowDeleted()) {
+					criteria.add(Restrictions.eq("deleted", false));
+				}
 			}
 			return criteria;
 		}
@@ -506,7 +510,9 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 					disjunction.add(Restrictions.in("donor.temp_storage_id", listIdsSRPD));
 				}
 				criteria.add(disjunction);
-				criteria.add(Restrictions.eq("deleted", !filter.isShowDeleted()));
+				if (!filter.isShowDeleted()) {
+					criteria.add(Restrictions.eq("deleted", false));
+				}
 				if (donorId != null) {
 					criteria.add(Restrictions.eq("donor.id", donorId));
 				}
@@ -537,7 +543,9 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 					disjunction.add(Restrictions.ilike("operation.recipient", operationRecepient, MatchMode.ANYWHERE));
 				}
 				criteria.add(disjunction);
-				criteria.add(Restrictions.eq("deleted", !filter.isShowDeleted()));
+				if (!filter.isShowDeleted()) {
+					criteria.add(Restrictions.eq("deleted", false));
+				}
 				if (statusId != null) {
 					criteria.add(Restrictions.eq("statusId", statusId));
 				}
