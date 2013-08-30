@@ -1,6 +1,7 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -22,9 +23,11 @@ import org.springframework.dao.DataAccessException;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
 import ru.efive.medicine.niidg.trfu.util.DateHelper;
 import ru.korusconsulting.SRPD.DonorHelper;
+import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
 import ru.korusconsulting.SRPD.SRPDDao;
 
 public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
@@ -181,9 +184,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list != null && list.size() > 0) {
-        	//detachedCriteria.add(Restrictions.in("id", list));
-        	//addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-            //return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+        	
         	DonorsFilter donorsFilter = new DonorsFilter();
         	donorsFilter.setListIds(list);
         	return findDocuments(donorsFilter, -1, -1, orderBy, orderAsc);
@@ -204,24 +205,13 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
     @SuppressWarnings("unchecked")
 	public Donor findByLoginAndPassword(String login, String password) throws JDBCConnectionException, DataAccessException {
         if (StringUtils.isNotEmpty(login) && StringUtils.isNotEmpty(password)) {
-        	/*DetachedCriteria detachedCriteria = createDetachedCriteria();
-            
-            detachedCriteria.add(Restrictions.eq("mail", login));
-            detachedCriteria.add(Restrictions.eq("password", password));*/
-            
-            //List<Donor> donors = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
         	DonorsFilter donorsFilter = new DonorsFilter();
         	donorsFilter.setMail(login);
         	donorsFilter.setPassword(password);
         	List<Donor> donors = findDocuments(donorsFilter, -1, 1, null, true);
             if ((donors != null) && !donors.isEmpty()) {
                 // don't modify this routine work! (for proxy caching such objects as Personage, Location)
-                Donor donor = donors.get(0);
-                if (donor != null) {
-                    // todo caching proxy objects
-                }
-                
-                return donor;
+                return donors.get(0);
             }
             else {
                 return null;
@@ -252,6 +242,11 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
         addNotDeletedCriteria(detachedCriteria);
         donorsFilter.setConjunction(true);
+        if (DonorHelper.USE_SRPD) {
+        	DonorHelper donorHelper = new DonorHelper();
+        	Map<Integer, Map<FieldsInMap, Object>> resMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
+        	donorsFilter.setListSRPDIds(resMap.keySet());
+        }
 		return getCountOf(getSearchCriteria(detachedCriteria, donorsFilter));
 	}
 
@@ -277,9 +272,9 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 			int categoryId = donorsFilter.getCategoryId();
 			///////////////////////////////////////////////////////
 			String donorTypeValue = donorsFilter.getDonorTypeValue();
-			boolean showDeleted = donorsFilter.isShowDeleted();
-			List listIds = donorsFilter.getListIds();
+			List<Integer> listIds = donorsFilter.getListIds();
 			List<Integer> listStatusesId = donorsFilter.getLisStatusId();
+			Collection<Integer> listSRPDIds = donorsFilter.getListSRPDIds();
 			String mail = donorsFilter.getMail();
 			String password = donorsFilter.getPassword();
 			
@@ -368,6 +363,9 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 				if (mail != null && StringUtils.isNotEmpty(mail) && password != null && StringUtils.isNotEmpty(password)) {
 		        	criteria.add(Restrictions.eq("mail", mail));
 		        }
+	        } 
+	        if (listSRPDIds != null && listSRPDIds.size() > 0) {
+	        	junction.add(Restrictions.in("temp_storage_id", listSRPDIds));
 	        }
 	        //////////////////////////// refactoring /////////////////////////////////////////////
 	        if (!donorsFilter.isConjunction()) {
@@ -385,8 +383,12 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	        }
 	        
 	        criteria.add(junction);
-	        criteria.add(Restrictions.eq("deleted", !showDeleted));
-	        criteria.add(Restrictions.in("id", listIds));
+	        if (!donorsFilter.isShowDeleted()) {
+				criteria.add(Restrictions.eq("deleted", false));
+			}
+	        if (listIds != null && listIds.size() > 0) {
+	        	criteria.add(Restrictions.in("id", listIds));
+	        }
 	        if (mail != null && StringUtils.isNotEmpty(mail) && password != null && StringUtils.isNotEmpty(password)) {
 	        	criteria.add(Restrictions.eq("password", password));
 	        }
@@ -398,14 +400,22 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	public List<Donor> findDocuments(DonorsFilter donorsFilter, int offset,
 			int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		Map<Integer, Map<FieldsInMap, Object>> resMap = null;
+		DonorHelper donorHelper = null;
         addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		List<Donor> donors = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, donorsFilter), offset, count);
-		if (DonorHelper.USE_SRPD) {
-			DonorHelper donorHelper = new DonorHelper();
-			Map<DonorHelper.FieldsInMap, Object> paramForSearchInSRPD = donorHelper.makeMapFromDonorsFilter(donorsFilter, donors);
-			Map<Integer,Map<DonorHelper.FieldsInMap, Object>> resAfterSearchInSRPD = new SRPDDao().getDonors(paramForSearchInSRPD);
-			donors =  donorHelper.mergeDonorsAndMap(donors, resAfterSearchInSRPD);
-		}
+        if (DonorHelper.USE_SRPD && donorsFilter.isQueryToSRPD()) {
+        	donorHelper = new DonorHelper();
+        	resMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
+        	donorsFilter.setListSRPDIds(resMap.keySet());
+        }
+        List<Donor> donors = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, donorsFilter), offset, count);
+        if (DonorHelper.USE_SRPD) {
+        	if (resMap == null) {
+        		donorsFilter.setListSRPDIds(donorHelper.listIdsSRPDFromDonors(donors));
+        		resMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
+        	}
+        	donors = donorHelper.mergeDonorsAndMap(donors, resMap);
+        }
 		return donors;
 	}
 

@@ -170,7 +170,7 @@ public abstract class AbstractFilter<T> implements Serializable {
 	 * "Нулевое" значение для типа компонента крови.
 	 */
 	public static final int BLOOD_COMPONENT_TYPE_NULL_VALUE = 0;
-
+	
 	public int getBloodComponentTypeNullValue() {
 		return BLOOD_COMPONENT_TYPE_NULL_VALUE;
 	}
@@ -338,4 +338,9 @@ public abstract class AbstractFilter<T> implements Serializable {
 	 * @param source объект-источник.
 	 */
 	public abstract void fillFrom(T source);
+
+	public AbstractFilter() {
+		super();
+	}	
+	
 }

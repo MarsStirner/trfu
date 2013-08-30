@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
@@ -21,7 +20,6 @@ import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Processing;
-import ru.efive.medicine.niidg.trfu.filters.AppendSRPDFilter;
 import ru.efive.medicine.niidg.trfu.filters.BiomaterialDonorsFilter;
 import ru.efive.medicine.niidg.trfu.filters.BiomaterialsFilter;
 import ru.efive.medicine.niidg.trfu.filters.OperationsFilter;
@@ -310,13 +308,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
         }
 		if (StringUtils.isNotEmpty(filter)) {
 			Disjunction disjunction = Restrictions.disjunction();
-			/*if (type.equals("Biomaterial")) {
-				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-				criteria.createAlias("operation", "operation", CriteriaSpecification.LEFT_JOIN);
-		        disjunction.add(Restrictions.ilike("operation.number", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("operation.recipient", filter, MatchMode.ANYWHERE));
-			}
-			else*/ if (type.equals("Processing")) {
+			if (type.equals("Processing")) {
 				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
 			}
 	        criteria.add(disjunction);

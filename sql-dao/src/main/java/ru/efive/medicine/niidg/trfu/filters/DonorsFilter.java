@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author Siarhei Ushanau
  */
-public class DonorsFilter extends AbstractFilter<DonorsFilter> {
+public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 	private static final long serialVersionUID = -3981143263084944918L;
 
 	/**
@@ -132,10 +132,6 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	 */
 	private int categoryId;
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/**
-	 * Отображение удалённых доноров или нет
-	 */
-	private boolean showDeleted;
 	/**
 	 * Отображение DonorType.value
 	 */
@@ -345,19 +341,6 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 	public void setCategoryId(int categoryId) {
 		this.categoryId = categoryId;
 	}
-	/**
-	 * @return the showDeleted
-	 */
-	public boolean isShowDeleted() {
-		return showDeleted;
-	}
-
-	/**
-	 * @param showDeleted the showDeleted to set
-	 */
-	public void setShowDeleted(boolean showDeleted) {
-		this.showDeleted = showDeleted;
-	}
 
 	/**
 	 * @return the donorTypeValue
@@ -518,7 +501,6 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		pastQuarantineId = PAST_QUARANTINE_NULL_VALUE;
 		categoryId = DONOR_CATEGORY_NULL_VALUE;
 		/////////////////////////////////////////////////////////
-		showDeleted = false;
 		donorTypeValue = null;
 		listStorageIds = new ArrayList<Integer>();
 		listStatusId = new ArrayList<Integer>();
@@ -529,8 +511,8 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		password = null;
 	}
 
-	@Override
 	public void fillFrom(DonorsFilter source) {
+		super.fillFrom(source);
 		setNumber(source.getNumber());
 		setFirstName(source.getFirstName());
 		setLastName(source.getLastName());
@@ -551,7 +533,6 @@ public class DonorsFilter extends AbstractFilter<DonorsFilter> {
 		setPastQuarantineId(source.getPastQuarantineId());
 		setCategoryId(source.getCategoryId());
 		///////////////////////////////////////////////////////
-		setShowDeleted(source.isShowDeleted());
 		setDonorTypeValue(source.getDonorTypeValue());
 		setListStorageIds(source.getListStorageIds());
 		setListStatusId(source.getListStatusId());

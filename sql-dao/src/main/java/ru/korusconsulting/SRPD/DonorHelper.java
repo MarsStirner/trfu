@@ -294,6 +294,10 @@ public class DonorHelper {
  		Map<Integer, Map<DonorHelper.FieldsInMap,Object>> resMap = new SRPDDao().getDonors(mapForSearch);
 		return resMap;
 	}
+	/**
+	 * Формирует и возвращает список идентификаторов ЗХПД из списка Donor-ов
+	 * Используется: MedicalOperationDAOImpl
+	 */
 	public List<Integer> listIdsSRPDFromDonors(List<Donor> donors) {
 		List<Integer> ids = new ArrayList<Integer>();
 		for (Donor i : donors) {
@@ -301,6 +305,10 @@ public class DonorHelper {
 		}
 		return ids;
 	}
+	/**
+	 * Формирует и возвращает список идентификаторов ЗХПД из списка BiomaterialDonor-ов
+	 * Используется: MedicalOperationDAOImpl
+	 */
 	public List<Integer> listIdsSRPDFromBiomaterialDonors(List<BiomaterialDonor> donors) {
 		List<Integer> ids = new ArrayList<Integer>();
 		for (BiomaterialDonor i : donors) {
@@ -308,6 +316,10 @@ public class DonorHelper {
 		}
 		return ids;
 	}
+	/**
+	 * Формирует и возвращает список идентификаторов ЗХПД из списка Operation
+	 * Используется: MedicalOperationDAOImpl
+	 */
 	public List<Integer> listIdsSRPDFromOperation(List<Operation> operations) {
 		List<Integer> ids = new ArrayList<Integer>();
 		for (Operation i : operations) {
@@ -317,6 +329,7 @@ public class DonorHelper {
 	}
 	/**
 	 * Формирует и возвращает список идентификаторов ЗХПД из списка Biomaterial-ов
+	 * Используется: MedicalOperationDAOImpl
 	 */
 	public List<Integer> listIdsSRPDFromBiomaterial(List<Biomaterial> biomaterials) {
 		List<Integer> ids = new ArrayList<Integer>();
