@@ -420,9 +420,7 @@
 												<f:selectItems value="#{dictionaryManagement.anticoagulants}" />
 											</h:selectOneMenu>
 											<span style="margin:0 5px;">Объем, мл:</span>
-											<h:inputText value="#{biomaterial.document.anticoagulantVolume}">
-												<f:ajax event="valueChange" listener="#{biomaterial.recalcVolume}" execute="@form" render=":main_content_form:final_volume" />
-											</h:inputText>
+											<h:inputText value="#{biomaterial.document.anticoagulantVolume}"/>
 										</td>
 									</tr>
 									<tr class="row">

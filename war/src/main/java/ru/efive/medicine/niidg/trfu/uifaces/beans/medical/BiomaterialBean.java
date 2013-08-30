@@ -105,6 +105,8 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
 		Set<HistoryEntry> history = new HashSet<HistoryEntry>();
 		history.add(historyEntry);
 		biomaterial.setHistory(history);
+		biomaterial.setInitialVolume(biomaterial.getOperation().getVolume());
+		biomaterial.setVolume(biomaterial.getOperation().getVolume());
 		
 		setDocument(biomaterial);
 	}
@@ -266,9 +268,6 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
     	if (getDocument().getInitialVolume() > 0) {
     		volume = getDocument().getInitialVolume();
     	}
-    	if (getDocument().getAnticoagulantVolume() > 0) {
-    		volume += getDocument().getAnticoagulantVolume();
-    	}
     	if (getDocument().getAdditionalSubstances() != null && getDocument().getAdditionalSubstances().size() > 0) {
     		for (BiomaterialAdditionalSubstance substance: getDocument().getAdditionalSubstances()) {
     			if (substance != null && substance.getVolume() > 0) {
@@ -407,13 +406,14 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
 	    				biomaterial.setCd3x8PerKg(v);
     				}
     				biomaterial.setVolume(volume.getVolume());
+    				biomaterial.setInitialVolume(volume.getVolume());
     				biomaterial.setSplit(true);
     				biomaterial.setParentBiomaterial(getDocument());
     				biomaterial.setSplitDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
     				
     				if (biomaterial.getOperation() != null) {
-    					int count = new Long(dao.countBiomaterialsByOperation(biomaterial.getOperation(), "", false)).intValue() + 1;
-    					biomaterial.setNumber(StringUtils.right("00" + count, 3));
+    					int count = new Long(dao.countBiomaterialsByOperation(biomaterial.getOperation(), "", false)).intValue();
+    					biomaterial.setNumber(getDocument().getNumber() + "-" + StringUtils.right("00" + count, 3));
     				}
     				
     				dao.save(biomaterial);
