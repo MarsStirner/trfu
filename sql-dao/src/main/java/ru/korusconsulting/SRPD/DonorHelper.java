@@ -244,6 +244,16 @@ public class DonorHelper {
 		return list;
 	}
 	/**
+	 * Используется для мержа данных из ЗХПД и списка объектов типа BloodComponent.
+	 * Место использования: BloodComponentDAOImpl
+	 */
+	public List<BloodComponent> mergeListBloodComponentAndMap(List<BloodComponent> list, Map<Integer, Map<FieldsInMap, Object>> map) {
+		for(BloodComponent i : list) {
+			i.getDonation().setDonor(mergeDonorAndMap(i.getDonation().getDonor(), map.get(i.getDonation().getDonor().getTempStorageId())));
+		}
+		return list;
+	}
+	/**
 	 * Используется для создания Map, для дальнейшей передачи в Обработчик ЗХПД-клиента
 	 * Место использования: BloodDonationRequestDAOImpl, MedicalOperationDAOImpl
 	 */

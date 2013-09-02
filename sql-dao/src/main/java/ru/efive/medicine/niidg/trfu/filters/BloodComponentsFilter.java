@@ -1,13 +1,14 @@
 package ru.efive.medicine.niidg.trfu.filters;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Фильтр для представления "Компоненты крови".
  * 
  * @author Siarhei Ushanau
  */
-public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter> {
+public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilter> {
 	private static final long serialVersionUID = -7622975649986835130L;
 
 	/**
@@ -18,6 +19,18 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 	 * "Нулевое" значение для изготовителя.
 	 */
 	public static final int MAKER_NULL_VALUE = 0;
+	/**
+	 * Тип параметра для поиска satus_id: искать на "равно"
+	 */
+	public static final int STATUS_ID_EQ = 0;
+	/**
+	 * Тип параметра для поиска satus_id: искать на "не равно"
+	 */
+	public static final int STATUS_ID_NE = -1;
+	/**
+	 * Тип параметра для поиска satus_id: null-значение
+	 */
+	public static final int STATUS_ID_NULL = -10;
 
 	/**
 	 * Номер компонента крови.
@@ -63,7 +76,26 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 	/**
 	 * ФИО донора.
 	 */
-	private String fio;
+	//private String fio;
+	/**
+	 * Тип поиска:
+	 * STATUS_ID_EQ - поиск по соответствию
+	 * STATUS_ID_NE - поиск на несоответствие
+	 * 
+	 */
+	private int statusIdCompareFlag;
+	
+	private Integer donationId;
+	
+	private Integer orderId;
+	
+	private boolean purchased;
+	
+	private String parentNumber;
+	
+	private Date quarantineFinishDate;
+	
+	private List<Integer> listIds;
 	
     public String getNumber() {
 		return number;
@@ -142,11 +174,83 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 	}
 
 	public String getFio() {
-		return fio;
+		return getFirstName();
 	}
 
 	public void setFio(String fio) {
-		this.fio = fio;
+		setFirstName(fio);
+		setLastName(fio);
+		setMiddleName(fio);
+	}
+
+	/**
+	 * @return the statusIdCompareFlag
+	 */
+	public int getStatusIdCompareFlag() {
+		return statusIdCompareFlag;
+	}
+
+	/**
+	 * @param statusIdCompareFlag the statusIdCompareFlag to set
+	 */
+	public void setStatusIdCompareFlag(int statusIdCompareFlag) {
+		this.statusIdCompareFlag = statusIdCompareFlag;
+	}
+
+	/**
+	 * @return the donationId
+	 */
+	public Integer getDonationId() {
+		return donationId;
+	}
+
+	/**
+	 * @param donationId the donationId to set
+	 */
+	public void setDonationId(Integer donationId) {
+		this.donationId = donationId;
+	}
+
+	/**
+	 * @return the orderId
+	 */
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	/**
+	 * @param orderId the orderId to set
+	 */
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
+	}
+
+	/**
+	 * @return the purchased
+	 */
+	public boolean isPurchased() {
+		return purchased;
+	}
+
+	/**
+	 * @param purchased the purchased to set
+	 */
+	public void setPurchased(boolean purchased) {
+		this.purchased = purchased;
+	}
+
+	/**
+	 * @return the quarantineFinishDate
+	 */
+	public Date getQuarantineFinishDate() {
+		return quarantineFinishDate;
+	}
+
+	/**
+	 * @param quarantineFinishDate the quarantineFinishDate to set
+	 */
+	public void setQuarantineFinishDate(Date quarantineFinishDate) {
+		this.quarantineFinishDate = quarantineFinishDate;
 	}
 
 	/**
@@ -161,12 +265,41 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 		return BLOOD_COMPONENT_STATUS_NULL_VALUE;
 	}
 	
+	/**
+	 * @return the listIds
+	 */
+	public List<Integer> getListIds() {
+		return listIds;
+	}
+
+	/**
+	 * @param listIds the listIds to set
+	 */
+	public void setListIds(List<Integer> listIds) {
+		this.listIds = listIds;
+	}
+
+	/**
+	 * @return the parentNumber
+	 */
+	public String getParentNumber() {
+		return parentNumber;
+	}
+
+	/**
+	 * @param parentNumber the parentNumber to set
+	 */
+	public void setParentNumber(String parentNumber) {
+		this.parentNumber = parentNumber;
+	}
+
 	@Override
 	public void clear() {
 		setDefaultValues();
 	}
 
 	protected void setDefaultValues() {
+		super.setDefaultValues();
 		number = null;
 		donationDate = null;
 		expirationDate = null;
@@ -176,11 +309,19 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 		statusId = BLOOD_COMPONENT_STATUS_NULL_VALUE;
 		bloodGroupId = BLOOD_GROUP_NULL_VALUE;
 		rhesusFactorId = RHESUS_FACTOR_NULL_VALUE;
-		fio = null;
+		//fio = null;
+		statusIdCompareFlag = STATUS_ID_NULL;
+		donationId = null;
+		orderId = null;
+		purchased = false;
+		quarantineFinishDate = null;
+		listIds = null;
+		parentNumber = null;
 	}
 
 	@Override
 	public void fillFrom(BloodComponentsFilter source) {
+		super.fillFrom(source);
 		setNumber(source.getNumber());
 		setDonationDate(source.getDonationDate());
 		setExpirationDate(source.getExpirationDate());
@@ -191,5 +332,12 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 		setBloodGroupId(source.getBloodGroupId());
 		setRhesusFactorId(source.getRhesusFactorId());
 		setFio(source.getFio());
+		setStatusIdCompareFlag(source.getStatusIdCompareFlag());
+		setDonationId(source.getDonationId());
+		setOrderId(source.getOrderId());
+		setPurchased(source.isPurchased());
+		setQuarantineFinishDate(source.getQuarantineFinishDate());
+		setListIds(source.getListIds());
+		setParentNumber(source.getParentNumber());
 	}
 }
