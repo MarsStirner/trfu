@@ -9,19 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
-import org.hibernate.transform.AliasToBeanResultTransformer;
-import org.hibernate.transform.Transformers;
 import org.hibernate.type.StringType;
 
 import ru.efive.crm.data.Contragent;

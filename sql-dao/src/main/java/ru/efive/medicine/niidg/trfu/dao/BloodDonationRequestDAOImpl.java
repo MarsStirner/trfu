@@ -10,6 +10,7 @@ import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
@@ -367,10 +368,21 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 	public List<BloodDonationRequest> findDocuments(
 			BloodDonationsFilter filter, int offset, int count, String orderBy,
 			boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-		addNotDeletedCriteria(detachedCriteria);
-		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(
-				getSearchCriteria(detachedCriteria, filter), offset, count);
+		DetachedCriteria detachedCriteriaSub = createDetachedCriteriaSub();
+		addNotDeletedCriteria(detachedCriteriaSub);
+		detachedCriteriaSub = getSearchCriteria(detachedCriteriaSub, filter);
+		
+		DetachedCriteria criteria = createDetachedCriteria();
+		addOrderCriteria(orderBy, orderAsc, criteria);
+		criteria.add(Restrictions.in("id", getHibernateTemplate().findByCriteria(detachedCriteriaSub, offset, count)));
+		
+		return getHibernateTemplate().findByCriteria(criteria);
+	}
+	
+	protected DetachedCriteria createDetachedCriteriaSub() {
+		DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(BloodDonationRequest.class);
+		idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
+		
+		return idsOnlyCriteria;
 	}
 }
