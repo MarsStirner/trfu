@@ -760,7 +760,19 @@
 								<tr class="row">
 									<td class="first">Компонент:</td>
 									<td>
-										<h:selectOneMenu id="componentType" value="#{bloodComponent.document.componentType}" converter="BloodComponentTypeConverter" style="font-weight:bold;">
+										<h:outputScript>
+											function setComponentType() {
+												var listVal = $("[id*='componentTypeList']").val();
+												$("[id*='componentType']").val(listVal);
+											}
+
+											jQuery(function(){
+												var componentType = $("[id*='componentType']").val();
+												$("[id*='componentTypeList']").val(componentType);
+											});
+										</h:outputScript>
+										<h:inputHidden id="componentType" value="#{bloodComponent.document.componentType}" converter="BloodComponentTypeConverter" />
+										<h:selectOneMenu id="componentTypeList"  onchange="setComponentType()" converter="BloodComponentTypeConverter" style="font-weight:bold;">
 											<f:selectItems value="#{dictionaryManagement.usedBloodComponentTypesWithEmpty}" />
 											<f:ajax listener="#{bloodComponent.componentTypeListener}" execute="main_content_form" render="main_content_form" />
 										</h:selectOneMenu>
