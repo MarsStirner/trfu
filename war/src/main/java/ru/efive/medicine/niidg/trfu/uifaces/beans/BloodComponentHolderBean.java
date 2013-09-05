@@ -28,6 +28,7 @@ import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.PropertiesEditorBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
@@ -122,10 +123,11 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 				}
 			}
 			else {
-				List<Contragent> list = sessionManagement.getDAO(ContragentDAOHibernate.class, 
-						ApplicationHelper.CONTRAGENT_DAO).findDocuments("ФНКЦ", false, 0, 10, null, true);
-				if (list != null && list.size() > 0) {
-					bloodComponent.setMaker(list.get(0));
+				String fullNameContragent = (String) propertiesEditorBean.getSelectedProperties().getProperty("reports.institution.name");
+				Contragent currentContragent = sessionManagement.getDAO(ContragentDAOHibernate.class, 
+						ApplicationHelper.CONTRAGENT_DAO).getByFullName(fullNameContragent);
+				if (currentContragent != null ) {
+					bloodComponent.setMaker(currentContragent);
 				}
 				String donationId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("donationId");
 				if (donationId != null && !donationId.equals("")) {
@@ -741,6 +743,8 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 	
 	private int expirationDays;
     
+	@Inject @Named("propertiesRedactorBean")
+	private transient PropertiesEditorBean propertiesEditorBean;
 	@Inject @Named("sessionManagement")
 	private transient SessionManagementBean sessionManagement = new SessionManagementBean();
 	@Inject @Named("contragentList")

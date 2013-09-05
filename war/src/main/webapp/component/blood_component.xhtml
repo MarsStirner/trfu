@@ -54,21 +54,14 @@
 				}
 			}
 			
-			function setPurchasedComponent() {
-				var currentMaker = $("[id='main_content_form:contragentSelectModal:contragent_select_table']").find("tr[class*='grid_row_selected'] td").text();
-				var globalMaker = $("[id*='globalMaker']").val();
-				if (currentMaker == globalMaker) {
-					$("[id*='purchasedComponent']").removeAttr("checked").attr("disabled", "true");
-				} else {
-					$("[id*='purchasedComponent']").removeAttr("disabled");
-				}
-			}
-
 			jQuery(function(){
 				hideShowHistory();
 				actions = $("[id='main_content_form:showActions']");
 				oldtValOnClick = actions.attr("onclick");
 				actions.attr("onclick", "checkBloodComponent()");
+				if ($("[id*='purchasedComponent']").size() > 0) {
+					$("[id*='purchasedComponent']").attr("checked", "true");
+				}
 			});
 		</h:outputScript>
 	</ui:define>
@@ -332,14 +325,12 @@
 			<div class="#{bloodComponent.inControl? 'tileleft': ''}">
 				<fieldset>
 					<h:panelGroup rendered="#{not(bloodComponent.document.componentType.lite)}">
-						<div style="margin-top: 10px;">
-							<h:selectBooleanCheckbox value="#{bloodComponent.document.purchased}" id="purchasedComponent"
-							disabled="#{bloodComponent.viewState or not (bloodComponent.expeditionEditAvailable) 
-							or (propertiesRedactorBean.selectedProperties.extendedProperties['reports.institution.name'].objectValue eq bloodComponent.document.maker.fullName)}">
-								<f:ajax event="click" render="main_content_form" execute="main_content_form" />
-							</h:selectBooleanCheckbox>
-							<h:outputText value="Закупленный компонент" />
-						</div>
+						<h:panelGroup rendered="#{bloodComponent.donor eq null}">
+							<div style="margin-top: 10px;">
+								<h:selectBooleanCheckbox value="#{bloodComponent.document.purchased}" id="purchasedComponent" disabled="true" />
+								<h:outputText value="Закупленный компонент" />
+							</div>
+						</h:panelGroup>
 						<h:panelGroup rendered="#{bloodComponent.personificationAvailable}">
 							<div style="margin-top: 10px;">
 								<h:selectBooleanCheckbox value="#{bloodComponent.document.personal}" disabled="#{bloodComponent.viewState or not (bloodComponent.expeditionEditAvailable)}">
@@ -620,72 +611,94 @@
 										</td>
 									</tr>
 								</h:panelGroup>
-								<tr class="row">
-									<td class="first">
-										<h:outputLink onclick="contragentSelectVar.clickOpen('contragentSelectModal'); return false;">
-											Изготовитель:
-										</h:outputLink>
-									</td>
+								<h:panelGroup rendered="#{bloodComponent.donor ne null}">
+									<td class="first">Изготовитель:</td>
 									<td>
-										<h:panelGroup id="maker_info">
-											<h:inputHidden id="globalMaker" value="#{propertiesRedactorBean.selectedProperties.extendedProperties['reports.institution.name'].objectValue}"/>
-											<h:outputText id="maker" value="#{bloodComponent.document.maker.fullName}" 
-											 class="wide" />
-											<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="#{contextPath}/component/contragent.xhtml" target="_blank">
-												<h:graphicImage value="#{resource['images:link.png']}" />
-									            <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
-									        </h:outputLink>
-								        </h:panelGroup>
-										<e5ui-comp:modalWindow id="contragentSelectModal"
+										<h:outputText value="#{bloodComponent.document.maker.fullName}" class="wide" />
+										<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="#{contextPath}/component/contragent.xhtml" target="_blank">
+											<h:graphicImage value="#{resource['images:link.png']}" />
+								            <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
+								        </h:outputLink>
+									</td>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{bloodComponent.donor eq null}">
+									<tr class="row">
+										<td class="first">
+											<h:outputLink onclick="contragentSelectVar.clickOpen('contragentSelectModal'); return false;">
+												Изготовитель:
+											</h:outputLink>
+										</td>
+										<td>
+											<h:panelGroup id="maker_info">
+												<h:inputHidden id="globalMaker" value="#{propertiesRedactorBean.selectedProperties.extendedProperties['reports.institution.name'].objectValue}"/>
+												<h:outputText id="maker" value="#{bloodComponent.document.maker.fullName}" 
+											 	class="wide" />
+												<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="#{contextPath}/component/contragent.xhtml" target="_blank">
+													<h:graphicImage value="#{resource['images:link.png']}" />
+									            	<f:param name="docId" value="#{bloodComponent.document.maker.id}" />
+									        	</h:outputLink>
+								        	</h:panelGroup>
+											<e5ui-comp:modalWindow id="contragentSelectModal"
 													modalWindowHolder="#{bloodComponent.contragentSelectModal}"
 													render=":main_content_form:maker_info"
 													execute="contragent_select_table"
 													showButtons="false"
 													style="width:500px;"
 													widgetVar="contragentSelectVar">
-											<div id="title">Выбор изготовителя</div>
-												<div id="modal_container" style="margin-top: 0;">
-													<div class="searchbar">
-													<h:inputText id="filter_string" value="#{bloodComponent.contragentSelectModal.contragentList.filter}" 
+												<h:outputScript>
+													jQuery(function(){
+														var globalMaker = $("[id*='globalMaker']").val();
+														$("[id*='contragent_select_table'] tbody td").each(function() {
+															if ($(this).text() == globalMaker) {
+																$(this).parent().hide();
+															}
+														});
+													});
+												</h:outputScript>
+												<div id="title">Выбор изготовителя</div>
+													<div id="modal_container" style="margin-top: 0;">
+														<div class="searchbar">
+														<h:inputText id="filter_string" value="#{bloodComponent.contragentSelectModal.contragentList.filter}" 
 																style="display:block; float:left; margin-right:10px;" title="Поиск" />
-													<h:commandButton value=" " action="#{bloodComponent.contragentSelectModal.contragentList.changePageOffset(0)}"
+														<h:commandButton value=" " action="#{bloodComponent.contragentSelectModal.contragentList.changePageOffset(0)}"
 																styleClass="searchbutton">
-														<f:ajax execute=":main_content_form:contragentSelectModal:filter_string"
+															<f:ajax execute=":main_content_form:contragentSelectModal:filter_string"
 																	render=":main_content_form:contragentSelectModal:contragent_select_table :main_content_form:contragentSelectModal:contragent_paging" />
-													</h:commandButton>
-												</div>
-												<div class="wrap" style="height:300px;">
-													<div class="inner" style="height:300px;">
-														<e5ui:dataTable id="contragent_select_table" border="0" cellpadding="0" cellspacing="0"
+														</h:commandButton>
+													</div>
+													<div class="wrap" style="height:300px;">
+														<div class="inner" style="height:300px;">
+															<e5ui:dataTable id="contragent_select_table" border="0" cellpadding="0" cellspacing="0"
 																	value="#{bloodComponent.contragentSelectModal.contragentList.documents}"
 																	var="row" grouping="false" width="100%">
-															<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+																<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
 																		styleClass="#{bloodComponent.contragentSelectModal.selected(row)? 'grid_row_selected': ''}" />
-															<e5ui:column>
-																<f:facet name="header">
-				                        							<p>Контрагент</p>
-				                    							</f:facet>
-				                                                <h:outputText value="#{row.fullName}" />
-				                                                <h:commandLink id="selectLink" style="display: none;"
+																<e5ui:column>
+																	<f:facet name="header">
+				                        								<p>Контрагент</p>
+				                    								</f:facet>
+				                                                	<h:outputText value="#{row.fullName}" />
+				                                                	<h:commandLink id="selectLink" style="display: none;"
 				                                                			rendered="#{not bloodComponent.contragentSelectModal.selected(row)}"
 				                                                     		action="#{bloodComponent.contragentSelectModal.select(row)}"/>
-															</e5ui:column>
-														</e5ui:dataTable>
+																</e5ui:column>
+															</e5ui:dataTable>
+														</div>
 													</div>
+													<div style="clear:both;">
+														<h:panelGroup id="contragent_paging">
+															<e5ui-comp:tablePager id="pager" documentListHolder="#{bloodComponent.contragentSelectModal.contragentList}" />
+		                                            	</h:panelGroup>
+		                                       	 </div>
+		                                    	</div>
+		                                    	<div class="e5ui-modal-bottombuttons">
+													<h:button onclick="contragentSelectVar.clickSave(); return false;" value="Выбрать" />
+													<h:button onclick="contragentSelectVar.clickClose(); return false;" value="Отмена" />
 												</div>
-												<div style="clear:both;">
-													<h:panelGroup id="contragent_paging">
-														<e5ui-comp:tablePager id="pager" documentListHolder="#{bloodComponent.contragentSelectModal.contragentList}" />
-		                                            </h:panelGroup>
-		                                        </div>
-		                                    </div>
-		                                    <div class="e5ui-modal-bottombuttons">
-												<h:button onclick="contragentSelectVar.clickSave();  setPurchasedComponent(); return false;" value="Выбрать" />
-												<h:button onclick="contragentSelectVar.clickClose(); return false;" value="Отмена" />
-											</div>
-										</e5ui-comp:modalWindow>
-									</td>
-								</tr>
+											</e5ui-comp:modalWindow>
+										</td>
+									</tr>
+								</h:panelGroup>
 								<h:panelGroup rendered="#{bloodComponent.personificationAvailable and bloodComponent.document.personal}">
 									<tr class="row">
 										<td class="first">ФИО реципиента:</td>
