@@ -1,9 +1,16 @@
 package ru.korusconsulting.SRPD;
 
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.JAXBElement;
+
+import org.hibernate.dialect.FirebirdDialect;
 import org.hl7.v3.AD;
 import org.hl7.v3.ActClassControlAct;
 import org.hl7.v3.ActClassRegistration;
@@ -34,6 +41,9 @@ import org.hl7.v3.NullFlavor;
 import org.hl7.v3.ObjectFactory;
 import org.hl7.v3.PN;
 import org.hl7.v3.PRPAIN101305UV02;
+import org.hl7.v3.PRPAIN101307UV02;
+import org.hl7.v3.PRPAIN101307UV02QUQIMT021001UV01ControlActProcess;
+import org.hl7.v3.PRPAIN101308UV02;
 import org.hl7.v3.PRPAIN101311UV02;
 import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01ControlActProcess;
 import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest;
@@ -41,14 +51,20 @@ import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01Subject1;
 import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01Subject2;
 import org.hl7.v3.PRPAMT101301UV02IdentifiedPerson;
 import org.hl7.v3.PRPAMT101301UV02Person;
+import org.hl7.v3.PRPAMT101303UV02OtherIDs;
+import org.hl7.v3.PRPAMT101307UV02IdentifiedPersonIdentifier;
+import org.hl7.v3.PRPAMT101307UV02ParameterList;
+import org.hl7.v3.PRPAMT101307UV02QueryByParameter;
 import org.hl7.v3.ParticipationAuthorOriginator;
 import org.hl7.v3.ParticipationTargetSubject;
 import org.hl7.v3.PostalAddressUse;
 import org.hl7.v3.RoleClassAssignedEntity;
 import org.hl7.v3.TEL;
 import org.hl7.v3.TS;
+import org.hl7.v3.TelecommunicationAddressUse;
 import org.hl7.v3.XActMoodIntentEvent;
 
+import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
 import ru.korusconsulting.pdmanager.PDManager;
 import ru.korusconsulting.pdmanager.TmisPdm;
 
@@ -62,9 +78,116 @@ public class SRPDDao {
 	private static final String WORKING_PHONE = "working-office-tel:";
 	private static final String EMAIL = "mailto:";
 	
+	private static final String ROOT_PASSPORT_NUMBER = "3.0.0.2";
+	private static final String ROOT_INSURANCE_NUMBER = "3.0.0.5";
+	
 	private PDManager initPDManager() {
 		TmisPdm service = new TmisPdm();
 		return service.getPortPdm();
+	}
+	public  Map<FieldsInMap, Object> findDonor(String id) {
+		TmisPdm service = new TmisPdm();
+		PDManager pdm = service.getPortPdm();
+		ObjectFactory factory = new ObjectFactory();
+		PRPAIN101307UV02 prm = factory.createPRPAIN101307UV02();
+        final PRPAIN101307UV02QUQIMT021001UV01ControlActProcess controlActProcess = factory.createPRPAIN101307UV02QUQIMT021001UV01ControlActProcess();
+        prm.setControlActProcess(controlActProcess);
+        final PRPAMT101307UV02QueryByParameter query = factory.createPRPAMT101307UV02QueryByParameter();
+        controlActProcess.setQueryByParameter(query);
+        final PRPAMT101307UV02ParameterList prmList = factory.createPRPAMT101307UV02ParameterList();
+        query.setParameterList(prmList);
+        final PRPAMT101307UV02IdentifiedPersonIdentifier person = factory.createPRPAMT101307UV02IdentifiedPersonIdentifier();
+        prmList.getIdentifiedPersonIdentifier().add(person);
+        final II ii = factory.createII();
+        person.getValue().add(ii);
+        
+        ii.setRoot(id);
+
+        PRPAIN101308UV02 res = pdm.getDemographics(prm);
+        String addr = null;
+        String lastName = null;
+        String middleName = null;
+        String firstName = null;
+        String homePhone = null;
+        String mobilePhone = null;
+        String workPhone = null;
+        String email =  null;
+        String birthTime = null;
+        String passportNumber = null;
+        String passportSeries = null;
+        String insuranceNumber = null;
+        String insuranceSeries = null;
+        String gender = null;
+        String employment = null;
+        String idFromSRPD = res.getControlActProcess().getSubject().get(0).getRegistrationEvent().getSubject1().getIdentifiedPerson().getId().get(0).getExtension();
+        List<AD> adr =  res.getControlActProcess().getSubject().get(0).getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getAddr();
+        if(adr != null && adr.size() > 0) {
+        	for(Serializable i: adr.get(0).getContent()) {
+        		if(((JAXBElement)i).getDeclaredType() == AdxpStreetAddressLine.class) {
+        			addr =  ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent().get(0).toString();
+        		}
+        	}
+        	for(Serializable i: adr.get(1).getContent()) {
+        		if(((JAXBElement)i).getDeclaredType() == AdxpStreetAddressLine.class) {
+        			employment =  ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent().get(0).toString();
+        		}
+        	}
+        }
+        List<Serializable> name = res.getControlActProcess().getSubject().get(0).getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getName().get(0).getContent();
+        List<TEL> tels = res.getControlActProcess().getSubject().get(0).getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getTelecom();
+        for (TEL i : tels) {
+        	if (i.getUse() != null && i.getUse().size() > 0) {
+        		if(i.getUse().get(0).equals(TelecommunicationAddressUse.HP)) {
+        			// Home phone
+        			homePhone = reParseTelcom(i.getValue());
+        		} else if(i.getUse().get(0).equals(TelecommunicationAddressUse.MC)) {
+        			// Mobile phone
+        			mobilePhone = reParseTelcom(i.getValue());
+        		} else if (i.getUse().get(0).equals(TelecommunicationAddressUse.WP)) {
+        			// Work phone
+        			workPhone = reParseTelcom(i.getValue());
+        		} 
+        	} else {
+        		email = reParseTelcom(i.getValue());
+        	}
+        }
+        List<PRPAMT101303UV02OtherIDs> numbers = res.getControlActProcess().getSubject().get(0).getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getAsOtherIDs();
+        for (PRPAMT101303UV02OtherIDs i : numbers) {
+        	if (ROOT_PASSPORT_NUMBER.equals(i.getId().get(0).getRoot())) {
+        		passportNumber = reParseNumber(i.getId().get(0).getExtension())[0];
+        		passportSeries = reParseNumber(i.getId().get(0).getExtension())[1];
+        	} else if (ROOT_INSURANCE_NUMBER.equals(i.getId().get(0).getRoot())) {
+        		insuranceNumber = reParseNumber(i.getId().get(0).getExtension())[0];
+        		insuranceSeries = reParseNumber(i.getId().get(0).getExtension())[1];
+        	}
+        }
+        if (((JAXBElement<EnGiven>)name.get(0)).getValue().getContent().size() > 0) {
+        	lastName = ((JAXBElement<EnGiven>)name.get(0)).getValue().getContent().get(0).toString();
+        }
+        if (((JAXBElement<EnGiven>)name.get(1)).getValue().getContent().size() > 0) {
+        	middleName = ((JAXBElement<EnGiven>)name.get(1)).getValue().getContent().get(0).toString();
+        }
+        if (((JAXBElement<EnFamily>)name.get(2)).getValue().getContent().size() > 0) {
+        	firstName = ((JAXBElement<EnFamily>)name.get(2)).getValue().getContent().get(0).toString();
+        }
+        birthTime = res.getControlActProcess().getSubject().get(0).getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getBirthTime().getValue();
+        gender = res.getControlActProcess().getSubject().get(0).getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getAdministrativeGenderCode().getCode();
+        Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
+        map.put(FieldsInMap.ADRESS, addr);
+        map.put(FieldsInMap.FIRST_NAME, firstName);
+        map.put(FieldsInMap.LAST_NAME, lastName);
+        map.put(FieldsInMap.MIDDLE_NAME, middleName);
+        map.put(FieldsInMap.PHONE, homePhone);
+        map.put(FieldsInMap.MOBILE_PHONE, mobilePhone);
+        map.put(FieldsInMap.WORK_PHONE, workPhone);
+        map.put(FieldsInMap.PASSPORT_NUMBER, passportNumber + " " + passportSeries);
+        map.put(FieldsInMap.OMC_NUMBER, insuranceNumber + " " + insuranceSeries);
+        map.put(FieldsInMap.EMAIL, email);
+        map.put(FieldsInMap.BIRTH, parseDate(birthTime));
+        map.put(FieldsInMap.GENDER, gender);
+        map.put(FieldsInMap.EMPLOYMENT, employment);
+        map.put(FieldsInMap.TEMP_STORAGE_ID, idFromSRPD);
+        return map;
 	}
 	
 	/* search list of possible donors, which equals parameters for search*/
@@ -404,5 +527,24 @@ public class SRPDDao {
 		TS ts = factory.createTS();
 		ts.setValue(date);
 		return ts;
+	}
+	/* ----------- creation tel-format from URL-format ------------ */
+	private String reParseTelcom(String telcom) {
+		return telcom.split(":")[1];
+	}
+	
+	private String[] reParseNumber(String number) {
+		return number.split(" ");
+	}
+	
+	private Date parseDate(String date) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+		Date newDate = null;
+		try {
+			newDate = dateFormat.parse(date);
+		} catch (Exception e) {
+			return null;
+		}
+		return newDate;
 	}
 }

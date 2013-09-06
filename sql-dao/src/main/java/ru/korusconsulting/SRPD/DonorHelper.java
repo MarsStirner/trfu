@@ -37,6 +37,7 @@ public class DonorHelper {
 		PHONE,
 		ADRESS,
 		WORK_PHONE,
+		MOBILE_PHONE,
 		EMAIL,
 		EMPLOYMENT,
 		BIRTH ,
@@ -81,6 +82,7 @@ public class DonorHelper {
 		map.put(FieldsInMap.PHONE, donor.getPhone());
 		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
 		map.put(FieldsInMap.WORK_PHONE, donor.getWorkPhone());
+		//map.put(FieldsInMap.WORK_PHONE, donor.getMobilePhone());
 		map.put(FieldsInMap.EMAIL, donor.getMail());
 		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
 		map.put(FieldsInMap.BIRTH, donor.getBirth());
@@ -106,6 +108,7 @@ public class DonorHelper {
 		donor.setPhone(parseTelcom(mapWithValues.get(FieldsInMap.PHONE).toString()));
 		donor.setRegistrationAddress(mapWithValues.get(FieldsInMap.ADRESS).toString());
 		donor.setWorkPhone(parseTelcom(mapWithValues.get(FieldsInMap.WORK_PHONE).toString()));
+		//donor.setMobilePhone(parseTelcom(mapWithValues.get(FieldsInMap.MOBILE_PHONE).toString()));
 		donor.setMail(parseTelcom(mapWithValues.get(FieldsInMap.EMAIL).toString()));
 		donor.setEmployment(mapWithValues.get(FieldsInMap.EMPLOYMENT).toString());
 		donor.setBirth(createDate(mapWithValues.get(FieldsInMap.BIRTH).toString()));
@@ -149,17 +152,18 @@ public class DonorHelper {
 	public Map<FieldsInMap, Object> makeMapFromDonor(BiomaterialDonor donor) {
 		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
 		map.put(FieldsInMap.FIRST_NAME, donor.getFirstName());
-		map.put(FieldsInMap.FIRST_NAME, donor.getLastName());
-		map.put(FieldsInMap.FIRST_NAME, donor.getMiddleName());
+		map.put(FieldsInMap.LAST_NAME, donor.getLastName());
+		map.put(FieldsInMap.MIDDLE_NAME, donor.getMiddleName());
 		//map.put(FieldsInMap.FIRST_NAME, OMC_NUMBER);
 		//map.put(FieldsInMap.FIRST_NAME, passport_number);
-		map.put(FieldsInMap.FIRST_NAME, donor.getPhone());
-		map.put(FieldsInMap.FIRST_NAME, donor.getRegistrationAddress());
-		map.put(FieldsInMap.FIRST_NAME, donor.getWorkPhone());
-		map.put(FieldsInMap.FIRST_NAME, donor.getEmployment());
-		map.put(FieldsInMap.FIRST_NAME, donor.getBirth());
-		map.put(FieldsInMap.FIRST_NAME, donor.getGender());
-		map.put(FieldsInMap.FIRST_NAME, donor.getTempStorageId());
+		map.put(FieldsInMap.PHONE, donor.getPhone());
+		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
+		map.put(FieldsInMap.WORK_PHONE, donor.getWorkPhone());
+		//map.put(FieldsInMap.MOBILE_PHONE, donor.getmOBILEPhone());
+		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
+		map.put(FieldsInMap.BIRTH, donor.getBirth());
+		map.put(FieldsInMap.GENDER, donor.getGender());
+		map.put(FieldsInMap.TEMP_STORAGE_ID, donor.getTempStorageId());
 		return map;
 	}
 	
@@ -174,6 +178,7 @@ public class DonorHelper {
 		donor.setPhone(parseTelcom(mapWithValues.get(FieldsInMap.PHONE).toString()));
 		donor.setRegistrationAddress(mapWithValues.get(FieldsInMap.ADRESS).toString());
 		donor.setWorkPhone(parseTelcom(mapWithValues.get(FieldsInMap.WORK_PHONE).toString()));
+		//donor.setMobilePhone(parseTelcom(mapWithValues.get(FieldsInMap.MOBILE_PHONE).toString()));
 		donor.setEmployment(mapWithValues.get(FieldsInMap.EMPLOYMENT).toString());
 		donor.setBirth(createDate(mapWithValues.get(FieldsInMap.FIRST_NAME).toString()));
 		donor.setGender(createGender(mapWithValues.get(FieldsInMap.GENDER).toString()));
