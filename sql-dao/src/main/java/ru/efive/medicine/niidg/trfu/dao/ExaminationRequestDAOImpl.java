@@ -470,7 +470,6 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 			String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
 		addNotDeletedCriteria(detachedCriteria);
-		addNotPlannedCriteria(detachedCriteria);
 		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
 		return getHibernateTemplate().findByCriteria(
 				getSearchCriteria(detachedCriteria, filter), offset,
@@ -527,11 +526,6 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 	public long countDocument(ExaminationsFilter filter) {
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
         addNotDeletedCriteria(detachedCriteria);
-		addNotPlannedCriteria(detachedCriteria);
 		return getCountOf(getSearchCriteria(detachedCriteria, filter));
-	}
-
-	private void addNotPlannedCriteria(DetachedCriteria detachedCriteria) {
-        detachedCriteria.add(Restrictions.ne("statusId", 9));
 	}
 }
