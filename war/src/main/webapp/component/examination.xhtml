@@ -42,9 +42,22 @@
 				var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
 				$("[id*='history']").prev().find("a").attr("style", styleTitle);
 			}
+			
+			function setDefaultRadio() {
+				if ($("[type='radio']").size() != 0) {
+					var firstExam = $("[type='radio']:first");
+					var secondExam = $("[type='radio']:last");
+					if (!firstExam.is(":checked")) {
+						if (!secondExam.is(":checked")) {
+							firstExam.attr("checked", "true");
+						}
+					}
+				}
+			}
     
 			jQuery(function(){
 				hideShowHistory();
+				setDefaultRadio();
 			});
 		</h:outputScript>
 </ui:define>
