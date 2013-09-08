@@ -23,7 +23,7 @@ public class DAOImpl {
 	private final String MEDICAL_FIRST_DONOR = "mfirst";
 	private final String MEDICAL_LAST_DONOR = "mlast";
 	private final String MEDICAL_LIST_IDS_DONORS = "mlistIds";
-	private final String ID_FFROM_SRPD_NAME = "mtemp_stogate_id";
+	private final String ID_FFROM_SRPD_NAME = "temp_storage_id";
 	
 	private SessionFactory sessionFactory;
 	private final int maxResults = 200;
@@ -86,11 +86,11 @@ public class DAOImpl {
 			properties = new Properties();
 			properties.load(StartMigration.class.getClassLoader().getResourceAsStream(PROPERTIE_FILE));
 			if(currentClass == Donor.class) {
-				crit.add(Restrictions.between("id", Integer.parseInt(properties.getProperty(FIRST_DONOR)), 
-													Integer.parseInt(properties.getProperty(LAST_DONOR))));
+				crit.add(Restrictions.between("id", Integer.parseInt(properties.getProperty(FIRST_DONOR).trim()), 
+													Integer.parseInt(properties.getProperty(LAST_DONOR).trim())));
 			} else if(currentClass == MedicalDonor.class) {
-				crit.add(Restrictions.between("id", Integer.parseInt(properties.getProperty(MEDICAL_FIRST_DONOR)), 
-													Integer.parseInt(properties.getProperty(MEDICAL_LAST_DONOR))));
+				crit.add(Restrictions.between("id", Integer.parseInt(properties.getProperty(MEDICAL_FIRST_DONOR).trim()), 
+													Integer.parseInt(properties.getProperty(MEDICAL_LAST_DONOR).trim())));
 			}
 		} catch (Exception e) {
 			StartMigration.LOG.error(e);
@@ -113,7 +113,7 @@ public class DAOImpl {
 			for(String i : idsString) {
 				/* test for empty elements*/
 				if(!"".equals(i)) {
-					ids.add(Integer.parseInt(i));
+					ids.add(Integer.parseInt(i.trim()));
 				}
 			}
 			if(ids.size() > 0) {

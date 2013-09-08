@@ -27,9 +27,13 @@ public class TestMigration {
 			if (!"".equals(properties.get(IDS))) {
 				ids = properties.get(IDS).toString().split(",");
 			}
+			for(int i = 0; i < ids.length-1; i++) {
+				ids[i] = ids[i].trim();
+			}
 			SRPDDao srpdDao = new SRPDDao();
-			for(String i: ids) {
-				printMapOfResult(srpdDao.findDonor(i.trim()));
+			List<Map<FieldsInMap, Object>> result = srpdDao.get(ids);
+			for(Map<FieldsInMap, Object> i: result) {
+				printMapOfResult(i);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -51,8 +55,7 @@ public class TestMigration {
 						 + ", mobilePhone=" + map.get(FieldsInMap.MOBILE_PHONE)
 						 + ", registrationAddress=" + map.get(FieldsInMap.ADRESS) 
 						 + ", phone=" + map.get(FieldsInMap.PHONE) 
-						 + ", email=" + map.get(FieldsInMap.EMAIL) 
-						 + ", employment=" + map.get(FieldsInMap.EMPLOYMENT) 
+						 + ", email=" + map.get(FieldsInMap.EMAIL)  
 						 + ", temp_storage_id=" + map.get(FieldsInMap.TEMP_STORAGE_ID) + "\r\n";
 		 try {
 			 if (file == null) {

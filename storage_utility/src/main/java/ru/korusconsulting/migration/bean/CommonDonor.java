@@ -22,7 +22,6 @@ public class CommonDonor {
 	private String workPhone;
 	private String registrationAddress;
 	private String phone;
-	private String email;
 	/* id from Save Repository of personal data */
 	private String temp_storage_id;
 //----------------------------------------------------------------------------------------
@@ -147,20 +146,6 @@ public class CommonDonor {
 		this.temp_storage_id = temp_storage_id;
 	}
 
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	@Override
 	public String toString() {
 		return " id=" + id + ", lastName=" + lastName
@@ -171,6 +156,6 @@ public class CommonDonor {
 				+ ", insuranceNumber=" + insuranceNumber + ", employment="
 				+ employment + ", workPhone=" + workPhone
 				+ ", registrationAddress=" + registrationAddress + ", phone="
-				+ phone + ", email=" + email + ", temp_storage_id=" + temp_storage_id;
+				+ phone +", temp_storage_id=" + temp_storage_id;
 	}
 }
