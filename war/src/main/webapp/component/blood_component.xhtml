@@ -782,13 +782,21 @@
 											jQuery(function(){
 												var componentType = $("[id*='componentType']").val();
 												$("[id*='componentTypeList']").val(componentType);
+												if ($("[id*='componentTypeList']").val().length == 1) { 
+													if (componentType.length > 0) {
+														$("[id*='componentTypeList']").hide();
+														$("[id*='componentTypeNotUsed']").text(componentType);
+													} 
+												} 
 											});
 										</h:outputScript>
 										<h:inputHidden id="componentType" value="#{bloodComponent.document.componentType}" converter="BloodComponentTypeConverter" />
-										<h:selectOneMenu id="componentTypeList"  onchange="setComponentType()" converter="BloodComponentTypeConverter" style="font-weight:bold;">
+										<h:selectOneMenu id="componentTypeList"  onchange="setComponentType()"
+											converter="BloodComponentTypeConverter" style="font-weight:bold;">
 											<f:selectItems value="#{dictionaryManagement.usedBloodComponentTypesWithEmpty}" />
 											<f:ajax listener="#{bloodComponent.componentTypeListener}" execute="main_content_form" render="main_content_form" />
 										</h:selectOneMenu>
+										<h:outputText id="componentTypeNotUsed" class="wide" style="font-weight:bold;" />
 									</td>
 								</tr>
 								<h:panelGroup id="er_volume" rendered="#{bloodComponent.erComponent}">
