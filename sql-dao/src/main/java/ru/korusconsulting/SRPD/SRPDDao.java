@@ -103,13 +103,13 @@ public class SRPDDao {
 		 * value - map of PD from SRPD
 		 */
 		Map<Integer,Map<DonorHelper.FieldsInMap, Object>> fullListWithDonorsInformation = null;
-		fullListWithDonorsInformation = new DonorHelper().makeMapsFromAnswerAfterSearch(pdm.findCandidates(createFindToSRPD(parametersForSearch)));
+		fullListWithDonorsInformation = null;//new DonorHelper().makeMapsFromAnswerAfterSearch(pdm.findCandidates(createFindToSRPD(parametersForSearch)));
 		return fullListWithDonorsInformation;
 		
 	}
 	
 	/* Send information about current donor and wait for id from SRPD */
-	public Map<DonorHelper.FieldsInMap, Object> addPDToSRPD(Map<DonorHelper.FieldsInMap, Object> information) {
+	public Map<FieldsInMap, Object> addPDToSRPD(Map<FieldsInMap, Object> information) {
 		String firstName = null;
 		String lastName = null;
 		String middleName = null;
@@ -122,41 +122,41 @@ public class SRPDDao {
 		String employment = null;
 		Date birth = null;
 		Integer gender = null;
-		if (information.get(DonorHelper.FieldsInMap.LAST_NAME) != null) {
-			lastName = information.get(DonorHelper.FieldsInMap.LAST_NAME).toString();
+		if (information.get(FieldsInMap.LAST_NAME) != null) {
+			lastName = information.get(FieldsInMap.LAST_NAME).toString();
 		}
-		if (information.get(DonorHelper.FieldsInMap.FIRST_NAME) != null) {
-			firstName = information.get(DonorHelper.FieldsInMap.FIRST_NAME).toString();
+		if (information.get(FieldsInMap.FIRST_NAME) != null) {
+			firstName = information.get(FieldsInMap.FIRST_NAME).toString();
 		}
-		if (information.get(DonorHelper.FieldsInMap.MIDDLE_NAME) != null) {
-			middleName = information.get(DonorHelper.FieldsInMap.MIDDLE_NAME).toString();
+		if (information.get(FieldsInMap.MIDDLE_NAME) != null) {
+			middleName = information.get(FieldsInMap.MIDDLE_NAME).toString();
 		}
-		if (information.get(DonorHelper.FieldsInMap.OMC_NUMBER) != null) {
-			omcNumber = information.get(DonorHelper.FieldsInMap.OMC_NUMBER).toString();
+		if (information.get(FieldsInMap.OMC_NUMBER) != null) {
+			omcNumber = information.get(FieldsInMap.OMC_NUMBER).toString();
 		}
-		if (information.get(DonorHelper.FieldsInMap.PASSPORT_NUMBER) != null) {
-	 	   passportNumber = information.get(DonorHelper.FieldsInMap.PASSPORT_NUMBER).toString();
+		if (information.get(FieldsInMap.PASSPORT_NUMBER) != null) {
+	 	   passportNumber = information.get(FieldsInMap.PASSPORT_NUMBER).toString();
 		}
-		if (information.get(DonorHelper.FieldsInMap.PHONE) != null) {
-			phone = information.get(DonorHelper.FieldsInMap.PHONE).toString();
+		if (information.get(FieldsInMap.PHONE) != null) {
+			phone = information.get(FieldsInMap.PHONE).toString();
 		}
-		if (information.get(DonorHelper.FieldsInMap.ADRESS) != null) {
-			adress = information.get(DonorHelper.FieldsInMap.ADRESS).toString();
+		if (information.get(FieldsInMap.ADRESS) != null) {
+			adress = information.get(FieldsInMap.ADRESS).toString();
 		}
-		if (information.get(DonorHelper.FieldsInMap.WORK_PHONE) != null) {
-	 		workPhone = information.get(DonorHelper.FieldsInMap.WORK_PHONE).toString();
+		if (information.get(FieldsInMap.WORK_PHONE) != null) {
+	 		workPhone = information.get(FieldsInMap.WORK_PHONE).toString();
 		}
-		if (information.get(DonorHelper.FieldsInMap.EMAIL) != null) {
-			email = information.get(DonorHelper.FieldsInMap.EMAIL).toString();
+		if (information.get(FieldsInMap.EMAIL) != null) {
+			email = information.get(FieldsInMap.EMAIL).toString();
 		}
-		if (information.get(DonorHelper.FieldsInMap.EMPLOYMENT) != null) {
-			employment = information.get(DonorHelper.FieldsInMap.EMPLOYMENT).toString();
+		if (information.get(FieldsInMap.EMPLOYMENT) != null) {
+			employment = information.get(FieldsInMap.EMPLOYMENT).toString();
 		}
-		if (information.get(DonorHelper.FieldsInMap.BIRTH) != null) {
-			birth = (Date)information.get(DonorHelper.FieldsInMap.BIRTH);
+		if (information.get(FieldsInMap.BIRTH) != null) {
+			birth = (Date)information.get(FieldsInMap.BIRTH);
 		}
-		if (information.get(DonorHelper.FieldsInMap.GENDER) != null) {
-			gender = (Integer)information.get(DonorHelper.FieldsInMap.GENDER);
+		if (information.get(FieldsInMap.GENDER) != null) {
+			gender = (Integer)information.get(FieldsInMap.GENDER);
 		}
 		String result = addPDToSRPD(lastName, firstName, middleName, omcNumber, passportNumber, phone, adress, workPhone, email, employment, birth, gender);
 		information.put(FieldsInMap.TEMP_STORAGE_ID, result);

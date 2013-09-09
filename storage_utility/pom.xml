@@ -63,45 +63,19 @@
 	</dependency>
 	                    
   </dependencies>
-   <!--<build>
- 	 <plugins>
-  		<plugin>
-  			<groupId>org.apache.maven.plugins</groupId>
-  			<artifactId>maven-dependency-plugin</artifactId>
-  			<configuration>
-    			
-    			<executions>
-					<execution>
-						<id>unpack-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>unpack-dependencies</goal>
-						</goals>
-					</execution>
-				</executions>
-  			</configuration>
-  		</plugin>
-  		<plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-           <configuration>
-				<archive>
-					<manifest>
-						<mainClass>ru.korusconsulting.migration.StartMigration</mainClass>
-					</manifest>
-				</archive>
-			</configuration>
-        </plugin>
-  	</plugins>
-  	<resources>
-		<resource>
-			<directory>${basedir}/target/dependency</directory>
-		</resource>
-	</resources>
-  </build>-->
  <build>
+   <outputDirectory>target/${artifactId}-${version}</outputDirectory>
 <defaultGoal>install</defaultGoal>
 <plugins>
+      <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+      	<artifactId>maven-jar-plugin</artifactId>
+      	<version>2.3.1</version>
+      	<configuration>
+        	<classesDirectory>${project.build.outputDirectory}</classesDirectory>
+        	<outputDirectory>target</outputDirectory>
+      	</configuration>
+    </plugin>
   <plugin>
     <artifactId>maven-compiler-plugin</artifactId>
     <version>2.3.2</version>
@@ -118,7 +92,7 @@
       <archive>
         <manifest>
           <addClasspath>true</addClasspath>
-          <mainClass>ru.korusconsulting.migration.StartMigration</mainClass>
+          <mainClass>ru.korusconsulting.migration.TestMigration</mainClass>
         </manifest>
       </archive>
     </configuration>
@@ -146,5 +120,11 @@
     </executions>
   </plugin>
 </plugins>
+ <resources>
+    <resource>
+      <directory>src/main/resources</directory>
+      <targetPath>../</targetPath>
+    </resource>
+  </resources>
 </build>
 </project>
