@@ -61,11 +61,6 @@ public class SRPDDao {
 		TmisPdm service = new TmisPdm();
 		return service.getPortPdm();
 	}
-	public  List<Map<FieldsInMap, Object>> get(String[] id) {
-		Map<FieldsInMap, Object> params = new HashMap<DonorHelper.FieldsInMap, Object>();
-		params.put(FieldsInMap.LIST_STORAGE_IDS, id);
-		return get(params);
-	}
 	/* Search possible information for donors with current id */
 	public  List<Map<FieldsInMap, Object>> get(Map<DonorHelper.FieldsInMap, Object> params) {
 		PDManager pdm = initPDManager();
@@ -79,7 +74,7 @@ public class SRPDDao {
         final PRPAMT101307UV02ParameterList prmList = factory.createPRPAMT101307UV02ParameterList();
         query.setParameterList(prmList);
         // ---------- for search List of personal data from list of SRPD ids
-        String[] ids = (String[])params.get(FieldsInMap.LIST_STORAGE_IDS);
+        List<String> ids = (List<String>)params.get(FieldsInMap.LIST_STORAGE_IDS);
         for (Object i : ids) {
         	final PRPAMT101307UV02IdentifiedPersonIdentifier person = factory.createPRPAMT101307UV02IdentifiedPersonIdentifier();
         	prmList.getIdentifiedPersonIdentifier().add(person);
@@ -96,17 +91,17 @@ public class SRPDDao {
 	}
 
 	/* search list of possible donors, which equals parameters for search*/
-	public Map<Integer,Map<DonorHelper.FieldsInMap, Object>> getDonors(Map<DonorHelper.FieldsInMap, Object> parametersForSearch) {
+	/*public Map<Integer,Map<DonorHelper.FieldsInMap, Object>> getDonors(Map<DonorHelper.FieldsInMap, Object> parametersForSearch) {
 		PDManager pdm = initPDManager();
 		/* full list, which contain:
 		 * key - id from SRPD
 		 * value - map of PD from SRPD
 		 */
-		Map<Integer,Map<DonorHelper.FieldsInMap, Object>> fullListWithDonorsInformation = null;
+		/*Map<Integer,Map<DonorHelper.FieldsInMap, Object>> fullListWithDonorsInformation = null;
 		fullListWithDonorsInformation = null;//new DonorHelper().makeMapsFromAnswerAfterSearch(pdm.findCandidates(createFindToSRPD(parametersForSearch)));
 		return fullListWithDonorsInformation;
 		
-	}
+	}*/
 	
 	/* Send information about current donor and wait for id from SRPD */
 	public Map<FieldsInMap, Object> addPDToSRPD(Map<FieldsInMap, Object> information) {
@@ -158,7 +153,7 @@ public class SRPDDao {
 		if (information.get(FieldsInMap.GENDER) != null) {
 			gender = (Integer)information.get(FieldsInMap.GENDER);
 		}
-		String result = addPDToSRPD(lastName, firstName, middleName, omcNumber, passportNumber, phone, adress, workPhone, email, employment, birth, gender);
+		String result = addPDToSRPDData(lastName, firstName, middleName, omcNumber, passportNumber, phone, adress, workPhone, email, employment, birth, gender);
 		information.put(FieldsInMap.TEMP_STORAGE_ID, result);
 		return information;
 	}
@@ -175,7 +170,7 @@ public class SRPDDao {
 		return parameters;
 	}
 	
-	public String addPDToSRPD(String family, String givven, String suffix, 
+	public String addPDToSRPDData(String family, String givven, String suffix, 
 			   				  String numberOMC, String numberPassport, String homePhone,
 			   				  String address, String workPhone, String email, 
 			   				  String employmentId, Date birthDate, Integer genderId) {
@@ -434,7 +429,7 @@ public class SRPDDao {
 	        map.put(FieldsInMap.LAST_NAME, lastName);
 	        map.put(FieldsInMap.MIDDLE_NAME, middleName);
 	        map.put(FieldsInMap.PHONE, homePhone);
-	        map.put(FieldsInMap.MOBILE_PHONE, mobilePhone);
+	        //map.put(FieldsInMap.MOBILE_PHONE, mobilePhone);
 	        map.put(FieldsInMap.WORK_PHONE, workPhone);
 	        map.put(FieldsInMap.PASSPORT_NUMBER, passportNumber + " " + passportSeries);
 	        map.put(FieldsInMap.OMC_NUMBER, insuranceNumber + " " + insuranceSeries);

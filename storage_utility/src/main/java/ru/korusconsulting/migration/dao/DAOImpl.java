@@ -31,9 +31,10 @@ public class DAOImpl {
 	public DAOImpl() {
 		try {
 			sessionFactory = new AnnotationConfiguration()
-			.addAnnotatedClass(Donor.class)
-			.addAnnotatedClass(MedicalDonor.class)
-			.buildSessionFactory();
+					.setProperties(MigrationDonorHelper.createPropertiesForURL("hibernate.properties"))
+					.addAnnotatedClass(Donor.class)
+					.addAnnotatedClass(MedicalDonor.class)
+					.buildSessionFactory();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
@@ -83,8 +84,7 @@ public class DAOImpl {
 	private Criteria getInRange(Criteria crit, Class<?> currentClass) {
 		Properties properties = null;
 		try {
-			properties = new Properties();
-			properties.load(StartMigration.class.getClassLoader().getResourceAsStream(PROPERTIE_FILE));
+			properties = MigrationDonorHelper.createPropertiesForURL(PROPERTIE_FILE);
 			if(currentClass == Donor.class) {
 				crit.add(Restrictions.between("id", Integer.parseInt(properties.getProperty(FIRST_DONOR).trim()), 
 													Integer.parseInt(properties.getProperty(LAST_DONOR).trim())));
@@ -100,8 +100,7 @@ public class DAOImpl {
 	private Criteria getInListIds(Criteria criteria, Class<?> currentClass) {
 		Properties properties = null;
 		try {
-			properties = new Properties();
-			properties.load(StartMigration.class.getClassLoader().getResourceAsStream(PROPERTIE_FILE));
+			properties = MigrationDonorHelper.createPropertiesForURL(PROPERTIE_FILE);
 			String [] idsString = null;
 			if(currentClass == Donor.class) {
 				idsString = properties.getProperty(LIST_IDS_DONORS).split(" ");

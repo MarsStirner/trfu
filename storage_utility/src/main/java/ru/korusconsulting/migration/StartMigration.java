@@ -2,12 +2,12 @@ package ru.korusconsulting.migration;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import ru.korusconsulting.SRPD.DonorHelper;
 import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
 import ru.korusconsulting.SRPD.SRPDDao;
 import ru.korusconsulting.migration.bean.CommonDonor;
@@ -43,17 +43,15 @@ public class StartMigration {
 		/* inserting returned id of SRPD to base TRFU*/
 		impl.updateTRFUData(donors);
 		impl.updateTRFUData(medicalDonors);
-		
 	}
-	private static List<CommonDonor> addListToSRPD(List<CommonDonor> donors) {
+	private static List<CommonDonor> addListToSRPD(List<CommonDonor> donors) throws UnsupportedEncodingException {
 		SRPDDao srpdDao = new SRPDDao();
 		MigrationDonorHelper migrationHelper = new MigrationDonorHelper();
 		Map<FieldsInMap, Object> resMap = null;
 		for(CommonDonor i : donors) {
-			 resMap = srpdDao.addPDToSRPD(migrationHelper.mapFromDonor(i)); 
+			 resMap=srpdDao.addPDToSRPD(migrationHelper.mapFromDonor(i)); 
 			 i.setTemp_storage_id(resMap.get(FieldsInMap.TEMP_STORAGE_ID).toString());
 			 printIdToFile(resMap.get(FieldsInMap.TEMP_STORAGE_ID).toString());
-			 System.out.println(resMap.get(FieldsInMap.TEMP_STORAGE_ID));
 		}
 		return donors;
 	}

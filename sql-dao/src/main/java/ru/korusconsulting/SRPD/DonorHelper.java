@@ -37,7 +37,6 @@ public class DonorHelper {
 		PHONE,
 		ADRESS,
 		WORK_PHONE,
-		MOBILE_PHONE,
 		EMAIL,
 		EMPLOYMENT,
 		BIRTH ,
@@ -50,14 +49,9 @@ public class DonorHelper {
 	/* flag for using or unusing SRPD */
 	public final static Boolean USE_SRPD = false;
 	
-	/** create {@link Map} of {@link Map}s from result of search in SRPD */
-	public Map<Integer,Map<DonorHelper.FieldsInMap, Object>> makeMapsFromAnswerAfterSearch(PRPAIN101306UV02 answer) {
-		Map<Integer,Map<DonorHelper.FieldsInMap, Object>> map = null;
-		return map;
-	}
 	/** creation Map from {@link DonorsFilter}, which will be contain {@link List}s of parameters for search */
-	public Map<DonorHelper.FieldsInMap, Object> makeMapFromDonorsFilter(DonorsFilter donorsFilter, List<Donor> donors) {
-		Map<DonorHelper.FieldsInMap, Object> map = new HashMap<FieldsInMap,Object>();
+	public Map<FieldsInMap, Object> makeMapFromDonorsFilter(DonorsFilter donorsFilter, List<Donor> donors) {
+		Map<FieldsInMap, Object> map = new HashMap<FieldsInMap,Object>();
 		List<Integer> listIds = new ArrayList<Integer>();
 		for (Donor i: donors) {
 			listIds.add(i.getTempStorageId());
@@ -66,23 +60,22 @@ public class DonorHelper {
 		map.put(FieldsInMap.FIRST_NAME, donorsFilter.getFirstName());
 		map.put(FieldsInMap.LAST_NAME, donorsFilter.getLastName());
 		map.put(FieldsInMap.MIDDLE_NAME, donorsFilter.getMiddleName());
-		//map.put(FieldsInMap.FIRST_NAME, OMC_NUMBER);
-		//map.put(FieldsInMap.FIRST_NAME, passport_number);
-		//map.put(FieldsInMap.ADRESS, donorsFilter.getRegistrationAddress());
+		/*map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber() + " " + donor.getInsuranceSeries());
+		map.put(FieldsInMap.PASSPORT_NUMBER, donor.getPassportNumber() + " " + donor.getPassportSeries());
+		map.put(FieldsInMap.ADRESS, donorsFilter.getRegistrationAdress());*/
 		return map;
 	}
 	
 	public Map<FieldsInMap, Object> makeMapFromDonor(Donor donor) {
-		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
+		Map<FieldsInMap, Object> map = new HashMap<FieldsInMap, Object>();
 		map.put(FieldsInMap.FIRST_NAME, donor.getFirstName());
 		map.put(FieldsInMap.LAST_NAME, donor.getLastName());
 		map.put(FieldsInMap.MIDDLE_NAME, donor.getMiddleName());
-		//map.put(FieldsInMap.FIRST_NAME, OMC_NUMBER);
-		//map.put(FieldsInMap.FIRST_NAME, passport_number);
+		map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber() + " " + donor.getInsuranceSeries());
+		map.put(FieldsInMap.PASSPORT_NUMBER, donor.getPassportNumber() + " " + donor.getPassportSeries());
 		map.put(FieldsInMap.PHONE, donor.getPhone());
 		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
 		map.put(FieldsInMap.WORK_PHONE, donor.getWorkPhone());
-		//map.put(FieldsInMap.WORK_PHONE, donor.getMobilePhone());
 		map.put(FieldsInMap.EMAIL, donor.getMail());
 		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
 		map.put(FieldsInMap.BIRTH, donor.getBirth());
@@ -92,7 +85,7 @@ public class DonorHelper {
 	}
 	
 	public Map<FieldsInMap, Object> makeMapForGet(Integer idDonorFromSRPD) {
-		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
+		Map<FieldsInMap, Object> map = new HashMap<FieldsInMap, Object>();
 		map.put(FieldsInMap.TEMP_STORAGE_ID, idDonorFromSRPD);
 		return map;
 	}
@@ -101,14 +94,13 @@ public class DonorHelper {
 		donor.setFirstName(mapWithValues.get(FieldsInMap.FIRST_NAME).toString());
 		donor.setLastName(mapWithValues.get(FieldsInMap.LAST_NAME).toString());
 		donor.setMiddleName(mapWithValues.get(FieldsInMap.MIDDLE_NAME).toString());
-		//donor.setInsuranceNumber(insuranceNumber);
-		//donor.setInsuranceSeries(insuranceSeries);
-		//donor.setPassportNumber(passportNumber);
-		//donor.setPassportSeries(passportSeries);
+		donor.setInsuranceNumber(mapWithValues.get(FieldsInMap.OMC_NUMBER).toString().split(" ")[0]);
+		donor.setInsuranceSeries(mapWithValues.get(FieldsInMap.OMC_NUMBER).toString().split(" ")[1]);
+		donor.setPassportNumber(mapWithValues.get(FieldsInMap.PASSPORT_NUMBER).toString().split(" ")[0]);
+		donor.setPassportSeries(mapWithValues.get(FieldsInMap.PASSPORT_NUMBER).toString().split(" ")[1]);
 		donor.setPhone(parseTelcom(mapWithValues.get(FieldsInMap.PHONE).toString()));
 		donor.setRegistrationAddress(mapWithValues.get(FieldsInMap.ADRESS).toString());
 		donor.setWorkPhone(parseTelcom(mapWithValues.get(FieldsInMap.WORK_PHONE).toString()));
-		//donor.setMobilePhone(parseTelcom(mapWithValues.get(FieldsInMap.MOBILE_PHONE).toString()));
 		donor.setMail(parseTelcom(mapWithValues.get(FieldsInMap.EMAIL).toString()));
 		donor.setEmployment(mapWithValues.get(FieldsInMap.EMPLOYMENT).toString());
 		donor.setBirth(createDate(mapWithValues.get(FieldsInMap.BIRTH).toString()));
@@ -150,16 +142,15 @@ public class DonorHelper {
 		return biomaterials;
 	}
 	public Map<FieldsInMap, Object> makeMapFromDonor(BiomaterialDonor donor) {
-		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
+		Map<FieldsInMap, Object> map = new HashMap<FieldsInMap, Object>();
 		map.put(FieldsInMap.FIRST_NAME, donor.getFirstName());
 		map.put(FieldsInMap.LAST_NAME, donor.getLastName());
 		map.put(FieldsInMap.MIDDLE_NAME, donor.getMiddleName());
-		//map.put(FieldsInMap.FIRST_NAME, OMC_NUMBER);
-		//map.put(FieldsInMap.FIRST_NAME, passport_number);
+		map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber() + " " + donor.getInsuranceSeries());
+		map.put(FieldsInMap.PASSPORT_NUMBER, donor.getPassportNumber() + " " + donor.getPassportSeries());
 		map.put(FieldsInMap.PHONE, donor.getPhone());
 		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
 		map.put(FieldsInMap.WORK_PHONE, donor.getWorkPhone());
-		//map.put(FieldsInMap.MOBILE_PHONE, donor.getmOBILEPhone());
 		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
 		map.put(FieldsInMap.BIRTH, donor.getBirth());
 		map.put(FieldsInMap.GENDER, donor.getGender());
@@ -171,14 +162,13 @@ public class DonorHelper {
 		donor.setFirstName(mapWithValues.get(FieldsInMap.FIRST_NAME).toString());
 		donor.setLastName(mapWithValues.get(FieldsInMap.LAST_NAME).toString());
 		donor.setMiddleName(mapWithValues.get(FieldsInMap.MIDDLE_NAME).toString());
-		//donor.setInsuranceNumber(insuranceNumber);
-		//donor.setInsuranceSeries(insuranceSeries);
-		//donor.setPassportNumber(passportNumber);
-		//donor.setPassportSeries(passportSeries);
+		donor.setInsuranceNumber(mapWithValues.get(FieldsInMap.OMC_NUMBER).toString().split(" ")[0]);
+		donor.setInsuranceSeries(mapWithValues.get(FieldsInMap.OMC_NUMBER).toString().split(" ")[1]);
+		donor.setPassportNumber(mapWithValues.get(FieldsInMap.PASSPORT_NUMBER).toString().split(" ")[0]);
+		donor.setPassportSeries(mapWithValues.get(FieldsInMap.PASSPORT_NUMBER).toString().split(" ")[1]);
 		donor.setPhone(parseTelcom(mapWithValues.get(FieldsInMap.PHONE).toString()));
 		donor.setRegistrationAddress(mapWithValues.get(FieldsInMap.ADRESS).toString());
 		donor.setWorkPhone(parseTelcom(mapWithValues.get(FieldsInMap.WORK_PHONE).toString()));
-		//donor.setMobilePhone(parseTelcom(mapWithValues.get(FieldsInMap.MOBILE_PHONE).toString()));
 		donor.setEmployment(mapWithValues.get(FieldsInMap.EMPLOYMENT).toString());
 		donor.setBirth(createDate(mapWithValues.get(FieldsInMap.FIRST_NAME).toString()));
 		donor.setGender(createGender(mapWithValues.get(FieldsInMap.GENDER).toString()));
@@ -222,7 +212,7 @@ public class DonorHelper {
 	}
 	
 	public Map<FieldsInMap, Object> makeParametersforSearchMails(List<Integer> donorsSRPDids) {
-		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
+		Map<FieldsInMap, Object> map = new HashMap<FieldsInMap, Object>();
 		map.put(FieldsInMap.LIST_STORAGE_IDS, donorsSRPDids);
 		return map;
 	}
@@ -262,8 +252,8 @@ public class DonorHelper {
 	 * Используется для создания Map, для дальнейшей передачи в Обработчик ЗХПД-клиента
 	 * Место использования: BloodDonationRequestDAOImpl, MedicalOperationDAOImpl
 	 */
-	public Map<Integer, Map<DonorHelper.FieldsInMap,Object>> listIdsDonorsForFilter(AppendSRPDFilter filter) {
-		Map<DonorHelper.FieldsInMap, Object> mapForSearch = new HashMap<DonorHelper.FieldsInMap, Object>();
+	public Map<Integer, Map<FieldsInMap,Object>> listIdsDonorsForFilter(AppendSRPDFilter filter) {
+		Map<FieldsInMap, Object> mapForSearch = new HashMap<FieldsInMap, Object>();
 		String firstName = filter.getFirstName();
 		String lastName = filter.getLastName();
 		String middleName = filter.getMiddleName();
@@ -306,7 +296,7 @@ public class DonorHelper {
 		if (listIds != null) {
 			mapForSearch.put(FieldsInMap.LIST_STORAGE_IDS, listIds);
 		}
- 		Map<Integer, Map<DonorHelper.FieldsInMap,Object>> resMap = new SRPDDao().getDonors(mapForSearch);
+ 		Map<Integer, Map<FieldsInMap,Object>> resMap = null;//new SRPDDao().getDonors(mapForSearch);
 		return resMap;
 	}
 	/**

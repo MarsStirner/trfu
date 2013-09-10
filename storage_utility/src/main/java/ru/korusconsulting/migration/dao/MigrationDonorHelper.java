@@ -1,8 +1,14 @@
 package ru.korusconsulting.migration.dao;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import ru.korusconsulting.SRPD.DonorHelper;
 import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
 import ru.korusconsulting.migration.bean.CommonDonor;
 import ru.korusconsulting.migration.bean.Donor;
@@ -27,6 +33,29 @@ public class MigrationDonorHelper {
 			map.put(FieldsInMap.EMAIL, ((Donor)donor).getMail());
 		}
 		return map;
+	}
+	
+	public static Properties createPropertiesForURL(String url) {
+		Properties prop = null;
+		try {
+			File file = null;
+			prop = new Properties();
+			try {
+				file = new File(url);
+				prop.load(new FileInputStream(file));
+			} catch (FileNotFoundException e) {
+				file = new File("src/main/resources/" + url);
+				prop.load(new FileInputStream(file));
+			}
+		} catch (Exception e) {
+			System.out.println(e.getLocalizedMessage());
+		}
+			return prop;
+	}
+	public static Map<FieldsInMap, Object> createMapForListIds(List<String> ids) {
+		Map<FieldsInMap, Object> params = new HashMap<DonorHelper.FieldsInMap, Object>();
+		params.put(FieldsInMap.LIST_STORAGE_IDS, ids);
+		return params;
 	}
 
 }

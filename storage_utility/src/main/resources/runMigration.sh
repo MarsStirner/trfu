@@ -1,0 +1,1 @@
+java -cp storage_utility-0.0.1-SNAPSHOT-jar-with-dependencies.jar  ru.korusconsulting.migration.StartMigration

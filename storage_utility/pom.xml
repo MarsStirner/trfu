@@ -64,18 +64,8 @@
 	                    
   </dependencies>
  <build>
-   <outputDirectory>target/${artifactId}-${version}</outputDirectory>
 <defaultGoal>install</defaultGoal>
 <plugins>
-      <plugin>
-      	<groupId>org.apache.maven.plugins</groupId>
-      	<artifactId>maven-jar-plugin</artifactId>
-      	<version>2.3.1</version>
-      	<configuration>
-        	<classesDirectory>${project.build.outputDirectory}</classesDirectory>
-        	<outputDirectory>target</outputDirectory>
-      	</configuration>
-    </plugin>
   <plugin>
     <artifactId>maven-compiler-plugin</artifactId>
     <version>2.3.2</version>
@@ -92,7 +82,7 @@
       <archive>
         <manifest>
           <addClasspath>true</addClasspath>
-          <mainClass>ru.korusconsulting.migration.TestMigration</mainClass>
+          <mainClass>ru.korusconsulting.migration.StartMigration</mainClass>
         </manifest>
       </archive>
     </configuration>
@@ -120,11 +110,11 @@
     </executions>
   </plugin>
 </plugins>
- <resources>
+  <resources>
     <resource>
       <directory>src/main/resources</directory>
       <targetPath>../</targetPath>
     </resource>
   </resources>
-</build>
+ </build>
 </project>
