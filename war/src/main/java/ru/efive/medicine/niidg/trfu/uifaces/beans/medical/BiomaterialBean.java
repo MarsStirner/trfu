@@ -413,7 +413,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
     				
     				if (biomaterial.getOperation() != null) {
     					int count = new Long(dao.countBiomaterialsByOperation(biomaterial.getOperation(), "", false)).intValue();
-    					biomaterial.setNumber(getDocument().getNumber() + "-" + StringUtils.right("00" + count, 3));
+    					biomaterial.setNumber(getDocument().getNumber() + "." + StringUtils.right("00" + count, 3));
     				}
     				
     				dao.save(biomaterial);
