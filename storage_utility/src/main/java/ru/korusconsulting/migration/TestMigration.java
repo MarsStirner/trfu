@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import ru.korusconsulting.SRPD.DonorHelper;
 import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
 import ru.korusconsulting.SRPD.SRPDDao;
 import ru.korusconsulting.migration.dao.MigrationDonorHelper;
@@ -28,7 +29,7 @@ public class TestMigration {
 		String[] ids = null;
 		List<String> listIds = new ArrayList<String>();
 		try {
-			properties = MigrationDonorHelper.createPropertiesForURL(PROPERTIE_FILE);
+			properties = DonorHelper.createPropertiesForURL(PROPERTIE_FILE);
 			if (!"".equals(properties.get(IDS))) {
 				ids = properties.get(IDS).toString().split(",");
 			}

@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
+import ru.korusconsulting.SRPD.DonorHelper;
 import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
 import ru.korusconsulting.SRPD.SRPDDao;
 import ru.korusconsulting.migration.bean.CommonDonor;
@@ -33,6 +35,7 @@ public class StartMigration {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
+		PropertyConfigurator.configure(DonorHelper.createPropertiesForURL("log4j.properties"));
 		DAOImpl impl = new DAOImpl();
 		/* getting full list of donors and medical donors */
 		List<CommonDonor> donors = impl.getAll(Donor.class);
@@ -52,6 +55,7 @@ public class StartMigration {
 			 resMap=srpdDao.addPDToSRPD(migrationHelper.mapFromDonor(i)); 
 			 i.setTemp_storage_id(resMap.get(FieldsInMap.TEMP_STORAGE_ID).toString());
 			 printIdToFile(resMap.get(FieldsInMap.TEMP_STORAGE_ID).toString());
+			 LOG.info("Migrated donor: " + i);
 		}
 		return donors;
 	}

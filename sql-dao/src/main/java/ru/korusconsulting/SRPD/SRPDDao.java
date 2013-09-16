@@ -57,7 +57,10 @@ public class SRPDDao {
 	private static final String ROOT_INSURANCE_NUMBER = "3.0.0.5";
 	private static final String DATE_FORMAT_FOR_SRPD = "yyyyMMdd";
 	
+	private static final String SRPD_ADRESS_PROPERTIE = "srpdAdress";
+	
 	private PDManager initPDManager() {
+		TmisPdm.initWsdl(DonorHelper.createPropertiesForURL("storage_utility.properties").get(SRPD_ADRESS_PROPERTIE).toString());
 		TmisPdm service = new TmisPdm();
 		return service.getPortPdm();
 	}
@@ -406,30 +409,38 @@ public class SRPDDao {
 	        List<PRPAMT101303UV02OtherIDs> numbers = pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getAsOtherIDs();
 	        for (PRPAMT101303UV02OtherIDs i : numbers) {
 	        	if (ROOT_PASSPORT_NUMBER.equals(i.getId().get(0).getRoot())) {
-	        		passportNumber = reParseNumber(i.getId().get(0).getExtension())[0];
-	        		passportSeries = reParseNumber(i.getId().get(0).getExtension())[1];
+	        		if (StringUtils.isNotEmpty(i.getId().get(0).getExtension().trim())) {
+	        			passportNumber = reParseNumber(i.getId().get(0).getExtension())[0];
+	        			passportSeries = reParseNumber(i.getId().get(0).getExtension())[1];
+	        		}
 	        	} else if (ROOT_INSURANCE_NUMBER.equals(i.getId().get(0).getRoot())) {
-	        		insuranceNumber = reParseNumber(i.getId().get(0).getExtension())[0];
-	        		insuranceSeries = reParseNumber(i.getId().get(0).getExtension())[1];
+	        		if (StringUtils.isNotEmpty(i.getId().get(0).getExtension().trim())) {
+	        			insuranceNumber = reParseNumber(i.getId().get(0).getExtension())[0];
+	        			insuranceSeries = reParseNumber(i.getId().get(0).getExtension())[1];
+	        		}
 	        	}
 	        }
-	        if (((JAXBElement<EnGiven>)name.get(0)).getValue().getContent().size() > 0) {
+	        if (((JAXBElement<EnGiven>)name.get(0)).getValue().getContent() != null && 
+	        		((JAXBElement<EnGiven>)name.get(0)).getValue().getContent().size() > 0) {
 	        	lastName = ((JAXBElement<EnGiven>)name.get(0)).getValue().getContent().get(0).toString();
 	        }
-	        if (((JAXBElement<EnGiven>)name.get(1)).getValue().getContent().size() > 0) {
+	        if (((JAXBElement<EnGiven>)name.get(1)).getValue().getContent() != null &&
+	        		((JAXBElement<EnGiven>)name.get(1)).getValue().getContent().size() > 0) {
 	        	middleName = ((JAXBElement<EnGiven>)name.get(1)).getValue().getContent().get(0).toString();
 	        }
-	        if (((JAXBElement<EnFamily>)name.get(2)).getValue().getContent().size() > 0) {
+	        if (((JAXBElement<EnFamily>)name.get(2)).getValue().getContent() != null &&
+	        		((JAXBElement<EnFamily>)name.get(2)).getValue().getContent().size() > 0) {
 	        	firstName = ((JAXBElement<EnFamily>)name.get(2)).getValue().getContent().get(0).toString();
 	        }
-	        birthTime = parseDate(pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getBirthTime().getValue());
+	        if (pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getBirthTime() != null) {
+	        	birthTime = parseDate(pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getBirthTime().getValue());
+	        }
 	        gender = pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getAdministrativeGenderCode().getCode();
 	        map.put(FieldsInMap.ADRESS, addr);
 	        map.put(FieldsInMap.FIRST_NAME, firstName);
 	        map.put(FieldsInMap.LAST_NAME, lastName);
 	        map.put(FieldsInMap.MIDDLE_NAME, middleName);
 	        map.put(FieldsInMap.PHONE, homePhone);
-	        //map.put(FieldsInMap.MOBILE_PHONE, mobilePhone);
 	        map.put(FieldsInMap.WORK_PHONE, workPhone);
 	        map.put(FieldsInMap.PASSPORT_NUMBER, passportNumber + " " + passportSeries);
 	        map.put(FieldsInMap.OMC_NUMBER, insuranceNumber + " " + insuranceSeries);

@@ -1,9 +1,15 @@
 
 package ru.korusconsulting.pdmanager;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.logging.Logger;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -17,22 +23,21 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.1
  * 
  */
-@WebServiceClient(name = "tmis-pdm", targetNamespace = "http://www.korusconsulting.ru/PDManager/", wsdlLocation = "http://84.204.44.36:7009/pdm-war/tmis-pdm?wsdl")
+@WebServiceClient(name = "tmis-pdm", targetNamespace = "http://www.korusconsulting.ru/PDManager/")
 public class TmisPdm
     extends Service
 {
-
-    private final static URL TMISPDM_WSDL_LOCATION;
+    private static URL TMISPDM_WSDL_LOCATION;
     private final static Logger logger = Logger.getLogger(ru.korusconsulting.pdmanager.TmisPdm.class.getName());
 
-    static {
+    public static void initWsdl(String URL) {    	
         URL url = null;
         try {
             URL baseUrl;
             baseUrl = ru.korusconsulting.pdmanager.TmisPdm.class.getResource(".");
-            url = new URL(baseUrl, "http://84.204.44.36:7009/pdm-war/tmis-pdm?wsdl");
+            url = new URL(baseUrl, URL);
         } catch (MalformedURLException e) {
-            logger.warning("Failed to create URL for the wsdl Location: 'http://84.204.44.36:7009/pdm-war/tmis-pdm?wsdl', retrying as a local file");
+            logger.warning("Failed to create URL for the wsdl Location: '"+ "" +"', retrying as a local file");
             logger.warning(e.getMessage());
         }
         TMISPDM_WSDL_LOCATION = url;

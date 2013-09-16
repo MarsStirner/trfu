@@ -1,5 +1,8 @@
 package ru.korusconsulting.SRPD;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -342,5 +346,23 @@ public class DonorHelper {
 			ids.add(i.getOperation().getDonor().getTempStorageId());
 		}
 		return ids;
+	}
+	/* for creation url to file*/
+	public static Properties createPropertiesForURL(String url) {
+		Properties prop = null;
+		try {
+			File file = null;
+			prop = new Properties();
+			try {
+				file = new File(url);
+				prop.load(new FileInputStream(file));
+			} catch (FileNotFoundException e) {
+				file = new File("src/main/resources/" + url);
+				prop.load(new FileInputStream(file));
+			}
+		} catch (Exception e) {
+			System.out.println(e.getLocalizedMessage());
+		}
+			return prop;
 	}
 }

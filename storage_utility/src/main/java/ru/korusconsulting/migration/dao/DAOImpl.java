@@ -16,7 +16,7 @@ import ru.korusconsulting.migration.bean.Donor;
 import ru.korusconsulting.migration.bean.MedicalDonor;
 
 public class DAOImpl {
-	private final String PROPERTIE_FILE = "storage_utitlity.properties";
+	private final String PROPERTIE_FILE = "storage_utility.properties";
 	private final String FIRST_DONOR = "first";
 	private final String LAST_DONOR = "last";
 	private final String LIST_IDS_DONORS = "listIds";
@@ -36,7 +36,7 @@ public class DAOImpl {
 					.addAnnotatedClass(MedicalDonor.class)
 					.buildSessionFactory();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			StartMigration.LOG.error(e.getMessage());
 		}
 	}
 	
