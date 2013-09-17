@@ -1,10 +1,13 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Hibernate;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
@@ -526,5 +529,71 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         addOrderCriteria(orderBy, orderAsc, detachedCriteria);
 		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, donorsFilter), offset, count);
 	}
-    
+	
+	/**
+	 * Подбор доноров по донациям в статусе "Паспортизация", у которых (т.е. донаций) есть хотя бы один компонент в статусе "Выдан"
+	 * @return - список доноров
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Donor> findDocumentsByDonationInCertificationWithBCInIssued(Date activationDate, int offset, int count, String orderBy, boolean orderAsc) {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+        detachedCriteria.add(Restrictions.eq("deleted", false));
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String date = formatter.format(activationDate);
+        
+        String query = "select donations.donor_id id from trfu_blood_donation_requests donations "
+        	+ "where donations.status_id = 4 and donations.deleted = 0 "
+        	+ "and donations.factDate >= date('" + date + "') "
+        	+ "and 0 != (select count(*) from trfu_blood_components components "
+        	+ "where donations.id = components.donationId and components.status_id = 10 and components.deleted = 0) ";
+        
+        List<Integer> list = getSession().createSQLQuery(query).addScalar("id", Hibernate.INTEGER).list();
+        
+        if (list != null && list.size() > 0) {
+        	detachedCriteria.add(Restrictions.in("id", list));
+        	detachedCriteria.add(Restrictions.ne("phone", ""));
+            
+    		String[] ords = orderBy == null ? null : orderBy.split(",");
+    		if (ords != null) {
+    			if (ords.length > 1) {
+    				addOrder(detachedCriteria, ords, orderAsc);
+    			} else {
+    				addOrder(detachedCriteria, orderBy, orderAsc);
+    			}
+    		}
+            return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        }
+        else {
+        	return Collections.emptyList();
+        }
+	}
+	
+	public long countDocumentByDonationInCertificationWithBCInIssued(Date activationDate) {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+        detachedCriteria.add(Restrictions.eq("deleted", false));
+        
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String date = formatter.format(activationDate);
+        
+        String query = "select donations.donor_id id from trfu_blood_donation_requests donations "
+        	+ "where donations.status_id = 4 and donations.deleted = 0 "
+        	+ "and donations.factDate >= date('" + date + "') "
+        	+ "and 0 != (select count(*) from trfu_blood_components components "
+        	+ "where donations.id = components.donationId and components.status_id = 10 and components.deleted = 0) ";
+        
+        List<Integer> list = getSession().createSQLQuery(query).addScalar("id", Hibernate.INTEGER).list();
+        
+        if (list != null && list.size() > 0) {
+        	detachedCriteria.add(Restrictions.in("id", list));
+        	detachedCriteria.add(Restrictions.ne("phone", ""));
+        	
+            return getCountOf(detachedCriteria);
+        } else {
+        	return 0;
+        }
+	}
+	
 }

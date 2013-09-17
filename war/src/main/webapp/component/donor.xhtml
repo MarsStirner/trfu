@@ -573,8 +573,31 @@
 									</td>
 								</tr>
 								<tr class="row">
+									<h:outputScript>
+										function validateContactPhone() {
+											var messageErrorPhone = $("[id*='messageErrorPhone']");
+											var contactPhone = $("[id*='contactPhone']");
+											var contactPhoneNumber = contactPhone.val();
+											var regExp = /\+7\s*[(][0-9]{3}[)]\s*[0-9]{3}\s*[0-9]{4}/;
+											if (contactPhoneNumber != '') {
+												if (contactPhoneNumber.search(regExp) != -1) {
+													messageErrorPhone.text('');
+												} else {
+													messageErrorPhone.text('Необходимо ввести номер телефона по маске +7 (ХХХ)ХХХ ХХХХ');
+													contactPhone.val('');
+													contactPhone.focus();
+												}
+											} else {
+												messageErrorPhone.text('');
+											}	
+										}
+									</h:outputScript>
 									<td class="first">Контактный телефон:</td>
-									<td><h:inputText value="#{donor.document.phone}" class="wide" /></td>
+									<td><h:inputText id="contactPhone" value="#{donor.document.phone}" class="wide" onblur="validateContactPhone()" /></td>
+								</tr>
+								<tr class="row">
+									<td class="first"></td>
+									<td><h:outputText id="messageErrorPhone" style="color: red"/></td>
 								</tr>
 								<tr class="row">
 									<td class="first">Электронная почта:</td>

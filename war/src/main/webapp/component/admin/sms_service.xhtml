@@ -43,7 +43,7 @@
                 <div class="menu">
                     <div class="defbutton">
                         <h:commandLink action="#{smsService.send}">
-                            <h:graphicImage value="#{resource['images:blank.png']}"/>
+                            <h:graphicImage value="#{resource['images:button-do.png']}"/>
                             Отправить
                         </h:commandLink>
                     </div>
@@ -123,8 +123,7 @@
                                     </div>
                                 </div>
                                 <div class="e5ui-modal-bottombuttons">
-                                    <h:button onclick="usersSelectVar.clickSave(); return false;" value="Выбрать"/>
-                                    <h:button onclick="usersSelectVar.clickClose(); return false;" value="Отмена"/>
+                                    <h:button onclick="usersSelectVar.clickClose(); return false;" value="Закрыть"/>
                                 </div>
                             </e5ui-comp:modalWindow>
                         </td>
@@ -138,14 +137,6 @@
                             </h:outputLink>
                         </td>
                         <td>
-                            <h:panelGroup id="donors_list">
-                                <div>
-                                    <ui:repeat value="#{smsService.donors}" var="element">
-                                        <h:outputText value="#{element.descriptionShort}" class="width"/>
-                                        <br/>
-                                    </ui:repeat>
-                                </div>
-                            </h:panelGroup>
                             <e5ui-comp:modalWindow id="donorsSelectModal"
                                                    modalWindowHolder="#{smsService.donorsSelectModal}"
                                                    render=":main_content_form:donors_list"
@@ -196,8 +187,7 @@
                                     </div>
                                 </div>
                                 <div class="e5ui-modal-bottombuttons">
-                                    <h:button onclick="donorsSelectVar.clickSave(); return false;" value="Выбрать"/>
-                                    <h:button onclick="donorsSelectVar.clickClose(); return false;" value="Отмена"/>
+                                    <h:button onclick="donorsSelectVar.clickClose(); return false;" value="Закрыть"/>
                                 </div>
                             </e5ui-comp:modalWindow>
                         </td>
@@ -209,6 +199,16 @@
                         <td>
                             <p:inputTextarea value="#{smsService.message}" styleClass="wide" label="Текст СМС-сообщения"
                                              rows="6"/>
+                        </td>
+                    </tr>
+                    <tr class="row">
+                    	<td>
+                    		<div class="defbutton">
+                        		<h:commandLink action="#{smsService.saveMessage}">
+                            		<h:graphicImage value="#{resource['images:save_buttn.png']}"/>
+                           			Сохранить
+                        		</h:commandLink>
+                   			</div>
                         </td>
                     </tr>
                 </table>
