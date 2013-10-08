@@ -1166,14 +1166,14 @@ group by comp_type]]>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="Left">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<text><![CDATA[единицы измерения]]></text>
+				<text><![CDATA[Единицы измерения]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="table_TD" x="152" y="0" width="62" height="83"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<text><![CDATA[остаток на
+				<text><![CDATA[Остаток на
 дату]]></text>
 			</staticText>
 			<staticText>
@@ -1181,7 +1181,7 @@ group by comp_type]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<text><![CDATA[приход]]></text>
+				<text><![CDATA[Приход]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="table_TD" x="266" y="17" width="118" height="17"/>
@@ -1227,7 +1227,7 @@ group by comp_type]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<text><![CDATA[расход]]></text>
+				<text><![CDATA[Расход]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="table_TD" x="468" y="17" width="72" height="66"/>
@@ -1260,14 +1260,14 @@ group by comp_type]]>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="Left">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<text><![CDATA[остаток на дату]]></text>
+				<text><![CDATA[Остаток на дату]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="table_TD" x="0" y="0" width="126" height="83"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<text><![CDATA[наименование сред]]></text>
+				<text><![CDATA[Наименование сред]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
 				<reportElement x="152" y="58" width="62" height="20"/>
