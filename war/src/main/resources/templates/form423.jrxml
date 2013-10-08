@@ -97,6 +97,62 @@ where wf.to_status_id = 10
 JOIN
 
 (select
+	sum(comp.volume) as trfu_blood_components_pl_m_11
+from trfu_blood_components comp
+	inner join trfu_blood_component_types comp_types
+	on comp.componentType_id = comp_types.id
+	inner join trfu_blood_component_history hist
+	on comp.id = hist.component_id
+	inner join wf_history wf
+	on hist.history_entry_id = wf.id
+where wf.to_status_id = 10
+	and wf.startDate between DATE($P{StartDate}) and  ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+	and comp.deleted = 0
+	and comp.maker_id = '11'
+	and comp_types.value LIKE '%плазма%'
+	and comp.id not in (select
+							sub_comp.id
+						from trfu_blood_components sub_comp
+							inner join trfu_blood_component_history sub_hist
+							on sub_comp.id = sub_hist.component_id
+							inner join wf_history sub_wf
+							on sub_hist.history_entry_id = sub_wf.id
+						where sub_wf.to_status_id <> 10
+							and sub_wf.startDate between wf.startDate and  ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+							and sub_comp.id = comp.id)
+) as table4
+
+JOIN
+
+(select
+	sum(comp.volume) as trfu_blood_components_pl_m_not_11
+from trfu_blood_components comp
+	inner join trfu_blood_component_types comp_types
+	on comp.componentType_id = comp_types.id
+	inner join trfu_blood_component_history hist
+	on comp.id = hist.component_id
+	inner join wf_history wf
+	on hist.history_entry_id = wf.id
+where wf.to_status_id = 10
+	and wf.startDate between DATE($P{StartDate}) and  ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+	and comp.deleted = 0
+	and comp.maker_id != '11'
+	and comp_types.value LIKE '%плазма%'
+	and comp.id not in (select
+							sub_comp.id
+						from trfu_blood_components sub_comp
+							inner join trfu_blood_component_history sub_hist
+							on sub_comp.id = sub_hist.component_id
+							inner join wf_history sub_wf
+							on sub_hist.history_entry_id = sub_wf.id
+						where sub_wf.to_status_id <> 10
+							and sub_wf.startDate between wf.startDate and  ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+							and sub_comp.id = comp.id)
+) as table5
+
+JOIN
+
+(select
 sum(trfu_blood_components.`volume`) as plasm_brak
 FROM
      `trfu_blood_component_types` trfu_blood_component_types INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
@@ -197,37 +253,56 @@ WHERE
 
 JOIN
 
-(select sum(trfu_blood_components.`volume`)  as plasm_eksped_volume
-FROM
-     `trfu_blood_components` trfu_blood_components INNER JOIN `trfu_blood_donation_requests` trfu_blood_donation_requests ON trfu_blood_components.`donationId` = trfu_blood_donation_requests.`id`
-     INNER JOIN `trfu_blood_donation_request_fact_entries` trfu_blood_donation_request_fact_entries ON trfu_blood_donation_requests.`id` = trfu_blood_donation_request_fact_entries.`donation_id`
-     INNER JOIN `trfu_blood_donation_entries` trfu_blood_donation_entries ON trfu_blood_donation_request_fact_entries.`entry_id` = trfu_blood_donation_entries.`id`
-     INNER JOIN `trfu_blood_component_types` trfu_blood_component_types ON trfu_blood_components.`componentType_id` = trfu_blood_component_types.`id`
-     inner join `trfu_blood_component_history` trfu_blood_component_history on trfu_blood_components.`id` = trfu_blood_component_history.`component_id`
-inner join `wf_history` wf_history on wf_history.`id`=trfu_blood_component_history.`history_entry_id`
-     where
-trfu_blood_components.deleted=0
-and trfu_blood_components.maker_id='11'
-and trfu_blood_component_types.value like '%плазма%' and trfu_blood_components.status_id!='-1'
-and (trfu_blood_components.status_id='100' or (trfu_blood_components.status_id='10' and trfu_blood_components.split=0) or trfu_blood_components.status_id='-2' or trfu_blood_components.status_id='3' )
-and wf_history.`to_status_id`='3' and date(startDate)>=date($P{StartDate}) and date(startDate)<=date($P{EndDate})) as table2
+(select
+	sum(comp.volume) as plasm_eksped_volume
+from trfu_blood_components comp
+	inner join trfu_blood_component_types comp_types on comp.componentType_id = comp_types.id
+	inner join trfu_blood_component_history hist on comp.id = hist.component_id
+	inner join wf_history wf on hist.history_entry_id = wf.id
+where wf.to_status_id = 3
+	and wf.startDate between DATE($P{StartDate}) and ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+	and comp.deleted = 0
+	and comp_types.value like '%плазма%'
+	and comp.maker_id = '11'
+	and comp.split = false
+	and 1 = (select
+				count(sub_comp.id)
+			from trfu_blood_components sub_comp
+				inner join trfu_blood_component_history sub_hist on sub_comp.id = sub_hist.component_id
+				inner join wf_history sub_wf on sub_hist.history_entry_id = sub_wf.id
+			where sub_wf.to_status_id = 3
+				and sub_wf.startDate <= wf.startDate
+				and sub_comp.id = comp.id)) as table2
 
 JOIN
 
-(select sum(trfu_blood_components.`volume`) as plasm_eksped_volume_dr
-FROM
-     `trfu_blood_components` trfu_blood_components
-      INNER JOIN `trfu_blood_component_types` trfu_blood_component_types ON trfu_blood_components.`componentType_id` = trfu_blood_component_types.`id`
-     where
- trfu_blood_components.maker_id!='11'
- and trfu_blood_components.deleted=0
-and trfu_blood_component_types.value like '%плазма%' and trfu_blood_components.status_id!='-1' and trfu_blood_components.split=false
-and date(receivedDate)>=date($P{StartDate}) and date(receivedDate)<=date($P{EndDate})) as table3]]>
+(select
+	sum(comp.volume) as plasm_eksped_volume_dr
+from trfu_blood_components comp
+	inner join trfu_blood_component_types comp_types on comp.componentType_id = comp_types.id
+	inner join trfu_blood_component_history hist on comp.id = hist.component_id
+	inner join wf_history wf on hist.history_entry_id = wf.id
+where wf.to_status_id = 3
+	and wf.startDate between DATE($P{StartDate}) and ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+	and comp.deleted = 0
+	and comp_types.value like '%плазма%'
+	and comp.maker_id != '11'
+	and comp.split = false
+	and 1 = (select
+				count(sub_comp.id)
+			from trfu_blood_components sub_comp
+				inner join trfu_blood_component_history sub_hist on sub_comp.id = sub_hist.component_id
+				inner join wf_history sub_wf on sub_hist.history_entry_id = sub_wf.id
+			where sub_wf.to_status_id = 3
+				and sub_wf.startDate <= wf.startDate
+				and sub_comp.id = comp.id)) as table3]]>
 		</queryString>
 		<field name="plasm_ostatok" class="java.math.BigDecimal"/>
 		<field name="plasm_eksped_volume" class="java.math.BigDecimal"/>
 		<field name="plasm_eksped_volume_dr" class="java.math.BigDecimal"/>
 		<field name="trfu_blood_components_pl" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_pl_m_11" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_pl_m_not_11" class="java.math.BigDecimal"/>
 		<field name="plasm_brak" class="java.math.BigDecimal"/>
 		<field name="plasm_ostatok_2" class="java.math.BigDecimal"/>
 		<variable name="plasm_eksped_volume" class="java.math.BigDecimal">
@@ -241,6 +316,12 @@ and date(receivedDate)>=date($P{StartDate}) and date(receivedDate)<=date($P{EndD
 		</variable>
 		<variable name="plasm_rashod_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{trfu_blood_components_pl}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_pl}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="plasm_rashod_volume_m_11" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_pl_m_11}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_pl_m_11}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="plasm_rashod_volume_m_not_11" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_pl_m_not_11}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_pl_m_not_11}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
 		</variable>
 		<variable name="plasm_brak_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{plasm_brak}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_brak}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
@@ -355,6 +436,36 @@ and (trfu_blood_component_types.`value` LIKE '%эритроцит%взвесь%'
 JOIN
 
 (select
+	sum(trfu_blood_components.`volume`) as trfu_blood_components_er_v_m_11
+FROM `trfu_blood_component_types` trfu_blood_component_types
+	INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
+	left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` = trfu_blood_component_order_requests.`id`
+WHERE trfu_blood_components.`deleted` = 0
+	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE($P{StartDate})
+	AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE($P{EndDate})
+	AND trfu_blood_component_order_requests.`status_id` = 3
+	and trfu_blood_components.maker_id = '11'
+	and (trfu_blood_component_types.`value` LIKE '%эритроцит%взвесь%' and (trfu_blood_component_types.`value` not like '%аферез%'))
+) as table7
+
+JOIN
+
+(select
+	sum(trfu_blood_components.`volume`) as trfu_blood_components_er_v_m_not_11
+FROM `trfu_blood_component_types` trfu_blood_component_types
+	INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
+	left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` = trfu_blood_component_order_requests.`id`
+WHERE trfu_blood_components.`deleted` = 0
+	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE($P{StartDate})
+	AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE($P{EndDate})
+	AND trfu_blood_component_order_requests.`status_id` = 3
+	and trfu_blood_components.maker_id != '11'
+	and (trfu_blood_component_types.`value` LIKE '%эритроцит%взвесь%' and (trfu_blood_component_types.`value` not like '%аферез%'))
+) as table8
+
+JOIN
+
+(select
 sum(trfu_blood_components.`volume`) as ervzvz_brak
 FROM
      `trfu_blood_component_types` trfu_blood_component_types INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
@@ -373,6 +484,8 @@ and trfu_blood_components.`status_id` = -2
 		<field name="ervzv_eksped_volume" class="java.math.BigDecimal"/>
 		<field name="ervzv_eksped_volume_dr" class="java.math.BigDecimal"/>
 		<field name="trfu_blood_components_er_v" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_er_v_m_11" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_er_v_m_not_11" class="java.math.BigDecimal"/>
 		<field name="ervzvz_brak" class="java.math.BigDecimal"/>
 		<variable name="ervzv_eksped_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{ervzv_eksped_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{ervzv_eksped_volume}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
@@ -385,6 +498,12 @@ and trfu_blood_components.`status_id` = -2
 		</variable>
 		<variable name="ervzv_rashod_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{trfu_blood_components_er_v}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_er_v}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="ervzv_rashod_volume_m_11" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_er_v_m_11}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_er_v_m_11}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="ervzv_rashod_volume_m_not_11" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_er_v_m_not_11}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_er_v_m_not_11}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
 		</variable>
 		<variable name="ervzv_brak_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{ervzvz_brak}==null?(java.math.BigDecimal.valueOf(0)):$F{ervzvz_brak}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
@@ -486,6 +605,39 @@ and (trfu_blood_component_types.`value` LIKE '%эритроцитная масс
 
 JOIN
 
+(select
+	sum(trfu_blood_components.`volume`) as trfu_blood_components_er_m_m_11
+FROM `trfu_blood_component_types` trfu_blood_component_types
+	INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
+	left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` = trfu_blood_component_order_requests.`id`
+WHERE trfu_blood_components.`deleted` = 0
+	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE($P{StartDate})
+	AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE($P{EndDate})
+	AND trfu_blood_component_order_requests.`status_id` = 3
+	and (trfu_blood_component_types.`value` LIKE '%эритроцитная масса%')
+	and trfu_blood_components.maker_id = '11'
+) as table7
+
+JOIN
+
+(select
+	sum(trfu_blood_components.`volume`) as trfu_blood_components_er_m_m_not_11
+FROM `trfu_blood_component_types` trfu_blood_component_types
+	INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
+	left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` = trfu_blood_component_order_requests.`id`
+WHERE trfu_blood_components.`deleted` = 0
+	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE($P{StartDate})
+	AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE($P{EndDate})
+	AND trfu_blood_component_order_requests.`status_id` = 3
+	and (trfu_blood_component_types.`value` LIKE '%эритроцитная масса%')
+	and trfu_blood_components.maker_id != '11'
+) as table8
+
+
+
+
+JOIN
+
 
 (select
 sum(trfu_blood_components.`volume`) as er_m_brak
@@ -506,6 +658,8 @@ and trfu_blood_components.`status_id` = -2
 		<field name="erm_eksped_volume" class="java.math.BigDecimal"/>
 		<field name="erm_eksped_volume_dr" class="java.math.BigDecimal"/>
 		<field name="trfu_blood_components_er_m" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_er_m_m_11" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_er_m_m_not_11" class="java.math.BigDecimal"/>
 		<field name="er_m_brak" class="java.math.BigDecimal"/>
 		<variable name="erm_eksped_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{erm_eksped_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{erm_eksped_volume}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
@@ -518,6 +672,12 @@ and trfu_blood_components.`status_id` = -2
 		</variable>
 		<variable name="erm_rashod_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{trfu_blood_components_er_m}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_er_m}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="erm_rashod_volume_m_11" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_er_m_m_11}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_er_m_m_11}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="erm_rashod_volume_m_not_11" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_er_m_m_not_11}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_er_m_m_not_11}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
 		</variable>
 		<variable name="erm_brak_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{er_m_brak}==null?(java.math.BigDecimal.valueOf(0)):$F{er_m_brak}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
@@ -624,6 +784,36 @@ and (trfu_blood_component_types.`value` LIKE '%эритроцит%взвесь%�
 JOIN
 
 (select
+	sum(trfu_blood_components.`volume`) as trfu_blood_components_er_v_aferez_m_11
+FROM `trfu_blood_component_types` trfu_blood_component_types
+	INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
+	left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` = trfu_blood_component_order_requests.`id`
+WHERE trfu_blood_components.`deleted` = 0
+	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE('2013-06-01')
+	AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE('2013-06-30')
+	AND trfu_blood_component_order_requests.`status_id` = 3
+	and (trfu_blood_component_types.`value` LIKE '%эритроцит%взвесь%аферез%')
+	and trfu_blood_components.maker_id = '11'
+) as table6
+
+JOIN
+
+(select
+	sum(trfu_blood_components.`volume`) as trfu_blood_components_er_v_aferez_m_not_11
+FROM `trfu_blood_component_types` trfu_blood_component_types
+	INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
+	left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` = trfu_blood_component_order_requests.`id`
+WHERE trfu_blood_components.`deleted` = 0
+	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE('2013-06-01')
+	AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE('2013-06-30')
+	AND trfu_blood_component_order_requests.`status_id` = 3
+	and (trfu_blood_component_types.`value` LIKE '%эритроцит%взвесь%аферез%')
+	and trfu_blood_components.maker_id != '11'
+) as table7
+
+JOIN
+
+(select
 sum(trfu_blood_components.`volume`) as ervzv_aferez_brak
 FROM
      `trfu_blood_component_types` trfu_blood_component_types INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
@@ -642,6 +832,8 @@ and trfu_blood_components.`status_id` = -2
 		<field name="ervzv_aferez_eksped_volume" class="java.math.BigDecimal"/>
 		<field name="ervzv_aferez_eksped_volume_dr" class="java.math.BigDecimal"/>
 		<field name="trfu_blood_components_er_v_aferez" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_er_v_aferez_m_11" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_er_v_aferez_m_not_11" class="java.math.BigDecimal"/>
 		<field name="ervzv_aferez_brak" class="java.math.BigDecimal"/>
 		<variable name="ervzv_aferez_eksped_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{ervzv_aferez_eksped_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{ervzv_aferez_eksped_volume}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
@@ -654,6 +846,12 @@ and trfu_blood_components.`status_id` = -2
 		</variable>
 		<variable name="ervzv_aferez_rashod_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{trfu_blood_components_er_v_aferez}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_er_v_aferez}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="ervzv_aferez_rashod_volume_m_11" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_er_v_aferez_m_11}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_er_v_aferez_m_11}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="ervzv_aferez_rashod_volume_m_not_11" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_er_v_aferez_m_not_11}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_er_v_aferez_m_not_11}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
 		</variable>
 		<variable name="ervzv_aferez_brak_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{ervzv_aferez_brak}==null?(java.math.BigDecimal.valueOf(0)):$F{ervzv_aferez_brak}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
@@ -759,6 +957,39 @@ and (trfu_blood_component_types.`value` LIKE 'Тромбоцитный конц�
 JOIN
 
 (select
+	sum(trfu_blood_components.`volume`) as trfu_blood_components_TK_m_11
+FROM `trfu_blood_component_types` trfu_blood_component_types
+	INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
+    left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` = trfu_blood_component_order_requests.`id`
+WHERE trfu_blood_components.`deleted` = 0
+	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE($P{StartDate})
+	AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE($P{EndDate})
+	AND trfu_blood_component_order_requests.`status_id` = 3
+	and (trfu_blood_component_types.`value` LIKE 'Тромбоцитный концентрат%')
+	and trfu_blood_components.maker_id = '11'
+) as table6
+
+JOIN
+
+(select
+	sum(trfu_blood_components.`volume`) as trfu_blood_components_TK_m_not_11
+FROM `trfu_blood_component_types` trfu_blood_component_types
+	INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
+    left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` = trfu_blood_component_order_requests.`id`
+WHERE trfu_blood_components.`deleted` = 0
+	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE($P{StartDate})
+	AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE($P{EndDate})
+	AND trfu_blood_component_order_requests.`status_id` = 3
+	and (trfu_blood_component_types.`value` LIKE 'Тромбоцитный концентрат%')
+	and trfu_blood_components.maker_id != '11'
+) as table7
+
+
+
+
+JOIN
+
+(select
 sum(trfu_blood_components.`volume`) as tromb_brak
 FROM
      `trfu_blood_component_types` trfu_blood_component_types INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
@@ -777,6 +1008,8 @@ and trfu_blood_components.`status_id` = -2
 		<field name="tromb_eksped_volume" class="java.math.BigDecimal"/>
 		<field name="tromb_eksped_volume_dr" class="java.math.BigDecimal"/>
 		<field name="trfu_blood_components_TK" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_TK_m_11" class="java.math.BigDecimal"/>
+		<field name="trfu_blood_components_TK_m_not_11" class="java.math.BigDecimal"/>
 		<field name="tromb_brak" class="java.math.BigDecimal"/>
 		<variable name="tromb_eksped_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{tromb_eksped_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{tromb_eksped_volume}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
@@ -789,6 +1022,12 @@ and trfu_blood_components.`status_id` = -2
 		</variable>
 		<variable name="tromb_rashod_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{trfu_blood_components_TK}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_TK}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="tromb_rashod_volume_m_11" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_TK_m_11}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_TK_m_11}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
+		</variable>
+		<variable name="tromb_rashod_volume_m_not_11" class="java.math.BigDecimal">
+			<variableExpression><![CDATA[$F{trfu_blood_components_TK_m_not_11}==null?(java.math.BigDecimal.valueOf(0)):$F{trfu_blood_components_TK_m_not_11}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
 		</variable>
 		<variable name="tromb_brak_volume" class="java.math.BigDecimal">
 			<variableExpression><![CDATA[$F{tromb_brak}==null?(java.math.BigDecimal.valueOf(0)):$F{tromb_brak}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
@@ -977,7 +1216,21 @@ group by comp_type]]>
 учреждений]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="442" y="0" width="42" height="83"/>
+				<reportElement style="table_TD" x="540" y="17" width="164" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[в том числе]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="468" y="0" width="236" height="17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="9"/>
+				</textElement>
+				<text><![CDATA[расход]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="468" y="17" width="72" height="66"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
@@ -985,46 +1238,11 @@ group by comp_type]]>
 выдано]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="484" y="17" width="220" height="17"/>
+				<reportElement style="table_TD" x="540" y="34" width="82" height="49"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<text><![CDATA[в том числе]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="484" y="0" width="220" height="17"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[расход]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="484" y="34" width="64" height="49"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[отд]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="548" y="34" width="43" height="49"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[серол.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="591" y="34" width="31" height="49"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[бак.]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="668" y="34" width="36" height="49"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[карант.]]></text>
+				<text><![CDATA[из отделов ОПК]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="table_TD" x="704" y="0" width="58" height="83"/>
@@ -1059,11 +1277,11 @@ group by comp_type]]>
 				<textFieldExpression><![CDATA[$P{StartDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="table_TD" x="622" y="34" width="46" height="49"/>
+				<reportElement style="table_TD" x="622" y="34" width="82" height="49"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<text><![CDATA[гем.]]></text>
+				<text><![CDATA[из др. учреждений]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
 				<reportElement x="778" y="0" width="24" height="83"/>
@@ -1073,7 +1291,7 @@ group by comp_type]]>
 				<textFieldExpression><![CDATA[$P{EndDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="table_TD" x="384" y="0" width="58" height="83"/>
+				<reportElement style="table_TD" x="384" y="0" width="84" height="83"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10" isBold="false"/>
 				</textElement>
@@ -1163,7 +1381,7 @@ group by comp_type]]>
 				<text><![CDATA[СЗП]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement key="table 1" x="152" y="0" width="290" height="31"/>
+				<reportElement key="table 1" x="152" y="0" width="316" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Vsego_ost_rashod_ervzv">
 						<datasetParameter name="StartDate">
@@ -1222,10 +1440,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="58">
+					<jr:column width="84">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="84" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
@@ -1236,146 +1454,6 @@ group by comp_type]]>
 					</jr:column>
 				</jr:table>
 			</componentElement>
-			<staticText>
-				<reportElement style="table_TD" x="548" y="0" width="43" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="548" y="124" width="43" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="548" y="93" width="43" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="548" y="31" width="43" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="548" y="62" width="43" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="591" y="31" width="31" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="591" y="124" width="31" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="591" y="93" width="31" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="591" y="62" width="31" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="591" y="0" width="31" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="622" y="31" width="46" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="622" y="124" width="46" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="622" y="93" width="46" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="622" y="62" width="46" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="622" y="0" width="46" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="668" y="31" width="36" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="668" y="124" width="36" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="668" y="93" width="36" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="668" y="62" width="36" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="668" y="0" width="36" height="31"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="9"/>
-				</textElement>
-				<text><![CDATA[0]]></text>
-			</staticText>
 			<componentElement>
 				<reportElement key="table 4" x="704" y="124" width="98" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
@@ -1427,7 +1505,7 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 5" x="442" y="0" width="106" height="31"/>
+				<reportElement key="table 5" x="468" y="0" width="236" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Vsego_ost_rashod_ervzv">
 						<datasetParameter name="StartDate">
@@ -1438,14 +1516,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="42">
+					<jr:column width="72">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="42" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="72" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1454,24 +1528,28 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="64">
+					<jr:column width="82">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{ervzv_rashod_volume}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{ervzv_rashod_volume_m_11}]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
+					<jr:column width="82">
+						<jr:tableFooter height="31" rowSpan="1">
+							<textField pattern="###0.000">
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<textElement textAlignment="Center">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{ervzv_rashod_volume_m_not_11}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
 				</jr:table>
@@ -1527,7 +1605,7 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 7" x="442" y="31" width="106" height="31"/>
+				<reportElement key="table 7" x="468" y="31" width="236" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Vsego_ost_rashod_ermassa">
 						<datasetParameter name="StartDate">
@@ -1538,14 +1616,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="42">
+					<jr:column width="72">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="42" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="72" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1554,24 +1628,28 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="64">
+					<jr:column width="82">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{erm_rashod_volume}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{erm_rashod_volume_m_11}]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
+					<jr:column width="82">
+						<jr:tableFooter height="31" rowSpan="1">
+							<textField pattern="###0.000">
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<textElement textAlignment="Center">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{erm_rashod_volume_m_not_11}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
 				</jr:table>
@@ -1627,7 +1705,7 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 9" x="442" y="62" width="106" height="31"/>
+				<reportElement key="table 9" x="468" y="62" width="236" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Vsego_ost_rashod_erv_aferez">
 						<datasetParameter name="StartDate">
@@ -1638,14 +1716,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="42">
+					<jr:column width="72">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="42" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="72" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1654,30 +1728,34 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="64">
+					<jr:column width="82">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{ervzv_aferez_rashod_volume}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{ervzv_aferez_rashod_volume_m_11}]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
+					<jr:column width="82">
+						<jr:tableFooter height="31" rowSpan="1">
+							<textField pattern="###0.000">
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<textElement textAlignment="Center">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{ervzv_aferez_rashod_volume_m_not_11}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 9" x="442" y="93" width="106" height="31"/>
+				<reportElement key="table 9" x="468" y="93" width="236" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Vsego_ost_rashod_tromb">
 						<datasetParameter name="StartDate">
@@ -1688,14 +1766,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="42">
+					<jr:column width="72">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="42" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="72" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1704,24 +1778,28 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="64">
+					<jr:column width="82">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{tromb_rashod_volume}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{tromb_rashod_volume_m_11}]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
-						<jr:detailCell height="0" rowSpan="1"/>
-					</jr:column>
-					<jr:column width="0">
-						<jr:tableFooter height="31" rowSpan="1"/>
+					<jr:column width="82">
+						<jr:tableFooter height="31" rowSpan="1">
+							<textField pattern="###0.000">
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<textElement textAlignment="Center">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{tromb_rashod_volume_m_not_11}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
 				</jr:table>
@@ -1827,7 +1905,7 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 12" x="152" y="31" width="290" height="31"/>
+				<reportElement key="table 12" x="152" y="31" width="316" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Vsego_ost_rashod_ermassa">
 						<datasetParameter name="StartDate">
@@ -1886,10 +1964,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="58">
+					<jr:column width="84">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="84" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
@@ -1901,7 +1979,7 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 13" x="152" y="62" width="290" height="31"/>
+				<reportElement key="table 13" x="152" y="62" width="316" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Vsego_ost_rashod_erv_aferez">
 						<datasetParameter name="StartDate">
@@ -1960,10 +2038,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="58">
+					<jr:column width="84">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="84" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
@@ -1975,7 +2053,7 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 14" x="152" y="93" width="290" height="31"/>
+				<reportElement key="table 14" x="152" y="93" width="316" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Vsego_ost_rashod_tromb">
 						<datasetParameter name="StartDate">
@@ -2034,10 +2112,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="58">
+					<jr:column width="84">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="84" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
@@ -2049,7 +2127,7 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 15" x="152" y="124" width="396" height="31"/>
+				<reportElement key="table 15" x="152" y="124" width="552" height="31"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
 					<datasetRun subDataset="Vsego_ost_plasm_rashod_plasm">
 						<datasetParameter name="StartDate">
@@ -2108,10 +2186,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="58">
+					<jr:column width="84">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="84" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
@@ -2120,10 +2198,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="42">
+					<jr:column width="72">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="42" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="72" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2132,14 +2210,26 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="64">
+					<jr:column width="82">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$V{plasm_rashod_volume}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{plasm_rashod_volume_m_11}]]></textFieldExpression>
+							</textField>
+						</jr:tableFooter>
+						<jr:detailCell height="0" rowSpan="1"/>
+					</jr:column>
+					<jr:column width="82">
+						<jr:tableFooter height="31" rowSpan="1">
+							<textField pattern="###0.000">
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<textElement textAlignment="Center">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{plasm_rashod_volume_m_not_11}]]></textFieldExpression>
 							</textField>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
