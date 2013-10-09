@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -37,6 +38,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TEL", propOrder = {
     "useablePeriod"
+})
+@XmlSeeAlso({
+    PRPAMT101302UV02EmployeeTelecom.class,
+    PRPAMT101302UV02ContactPartyTelecom.class,
+    PRPAMT101302UV02PersonTelecom.class,
+    PRPAMT101302UV02PersonalRelationshipTelecom.class,
+    PRPAMT101302UV02GuardianTelecom.class,
+    PRPAMT101302UV02StudentTelecom.class,
+    PRPAMT101302UV02IdentifiedPersonTelecom.class
 })
 public class TEL
     extends URL

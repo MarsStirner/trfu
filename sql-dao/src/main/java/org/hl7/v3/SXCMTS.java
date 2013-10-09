@@ -31,9 +31,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "SXCM_TS")
 @XmlSeeAlso({
     EIVLTS.class,
-    IVLTS.class,
     SXPRTS.class,
-    PIVLTS.class
+    PIVLTS.class,
+    IVLTS.class
 })
 public class SXCMTS
     extends TS

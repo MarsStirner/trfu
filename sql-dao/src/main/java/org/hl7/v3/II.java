@@ -4,6 +4,7 @@ package org.hl7.v3;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -31,6 +32,19 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "II")
+@XmlSeeAlso({
+    PRPAMT101302UV02PersonId.class,
+    PRPAMT101302UV02AdministrativeObservationId.class,
+    PRPAMT101302UV02IdentifiedPersonId.class,
+    PRPAMT101302UV02OtherIDsId.class,
+    PRPAMT101302UV02StudentId.class,
+    PRPAMT101302UV02GuardianId.class,
+    PRPAMT101302UV02PersonalRelationshipId.class,
+    PRPAMT101302UV02CitizenId.class,
+    PRPAMT101302UV02ContactPartyId.class,
+    PRPAMT101302UV02MemberId.class,
+    PRPAMT101302UV02EmployeeId.class
+})
 public class II
     extends ANY
 {

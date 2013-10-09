@@ -29,13 +29,13 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "QTY")
 @XmlSeeAlso({
     RTOPQPQ.class,
-    TS.class,
     MO.class,
     RTOMOPQ.class,
     PQ.class,
     REAL.class,
     INT.class,
-    RTOQTYQTY.class
+    RTOQTYQTY.class,
+    TS.class
 })
 public abstract class QTY
     extends ANY

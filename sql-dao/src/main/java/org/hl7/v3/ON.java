@@ -3,6 +3,7 @@ package org.hl7.v3;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -26,6 +27,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ON")
+@XmlSeeAlso({
+    PRPAMT101302UV02NationName.class
+})
 public class ON
     extends EN
 {

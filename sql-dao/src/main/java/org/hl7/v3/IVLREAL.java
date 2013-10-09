@@ -22,10 +22,10 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;extension base="{urn:hl7-org:v3}SXCM_REAL">
  *       &lt;sequence>
  *         &lt;choice maxOccurs="unbounded" minOccurs="0">
- *           &lt;element name="low" type="{urn:hl7-org:v3}IVXB_REAL"/>
  *           &lt;element name="center" type="{urn:hl7-org:v3}REAL"/>
  *           &lt;element name="width" type="{urn:hl7-org:v3}REAL"/>
  *           &lt;element name="high" type="{urn:hl7-org:v3}IVXB_REAL"/>
+ *           &lt;element name="low" type="{urn:hl7-org:v3}IVXB_REAL"/>
  *         &lt;/choice>
  *       &lt;/sequence>
  *     &lt;/extension>
@@ -37,50 +37,50 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IVL_REAL", propOrder = {
-    "lowOrCenterOrWidth"
+    "centerOrWidthOrHigh"
 })
 public class IVLREAL
     extends SXCMREAL
 {
 
     @XmlElementRefs({
-        @XmlElementRef(name = "center", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
-        @XmlElementRef(name = "low", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
+        @XmlElementRef(name = "width", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
         @XmlElementRef(name = "high", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
-        @XmlElementRef(name = "width", namespace = "urn:hl7-org:v3", type = JAXBElement.class)
+        @XmlElementRef(name = "center", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
+        @XmlElementRef(name = "low", namespace = "urn:hl7-org:v3", type = JAXBElement.class)
     })
-    protected List<JAXBElement<? extends REAL>> lowOrCenterOrWidth;
+    protected List<JAXBElement<? extends REAL>> centerOrWidthOrHigh;
 
     /**
-     * Gets the value of the lowOrCenterOrWidth property.
+     * Gets the value of the centerOrWidthOrHigh property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the lowOrCenterOrWidth property.
+     * This is why there is not a <CODE>set</CODE> method for the centerOrWidthOrHigh property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getLowOrCenterOrWidth().add(newItem);
+     *    getCenterOrWidthOrHigh().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link REAL }{@code >}
      * {@link JAXBElement }{@code <}{@link IVXBREAL }{@code >}
      * {@link JAXBElement }{@code <}{@link REAL }{@code >}
      * {@link JAXBElement }{@code <}{@link IVXBREAL }{@code >}
+     * {@link JAXBElement }{@code <}{@link REAL }{@code >}
      * 
      * 
      */
-    public List<JAXBElement<? extends REAL>> getLowOrCenterOrWidth() {
-        if (lowOrCenterOrWidth == null) {
-            lowOrCenterOrWidth = new ArrayList<JAXBElement<? extends REAL>>();
+    public List<JAXBElement<? extends REAL>> getCenterOrWidthOrHigh() {
+        if (centerOrWidthOrHigh == null) {
+            centerOrWidthOrHigh = new ArrayList<JAXBElement<? extends REAL>>();
         }
-        return this.lowOrCenterOrWidth;
+        return this.centerOrWidthOrHigh;
     }
 
 }

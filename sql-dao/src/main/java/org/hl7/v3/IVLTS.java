@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -22,9 +23,9 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;extension base="{urn:hl7-org:v3}SXCM_TS">
  *       &lt;sequence>
  *         &lt;choice maxOccurs="unbounded" minOccurs="0">
- *           &lt;element name="width" type="{urn:hl7-org:v3}PQ"/>
- *           &lt;element name="high" type="{urn:hl7-org:v3}IVXB_TS"/>
  *           &lt;element name="center" type="{urn:hl7-org:v3}TS"/>
+ *           &lt;element name="high" type="{urn:hl7-org:v3}IVXB_TS"/>
+ *           &lt;element name="width" type="{urn:hl7-org:v3}PQ"/>
  *           &lt;element name="low" type="{urn:hl7-org:v3}IVXB_TS"/>
  *         &lt;/choice>
  *       &lt;/sequence>
@@ -37,50 +38,60 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IVL_TS", propOrder = {
-    "widthOrHighOrCenter"
+    "centerOrHighOrWidth"
+})
+@XmlSeeAlso({
+    PRPAMT101302UV02GuardianEffectiveTime.class,
+    PRPAMT101302UV02CitizenEffectiveTime.class,
+    PRPAMT101302UV02OtherIDsEffectiveTime.class,
+    PRPAMT101302UV02IdentifiedPersonEffectiveTime.class,
+    PRPAMT101302UV02EmployeeEffectiveTime.class,
+    PRPAMT101302UV02StudentEffectiveTime.class,
+    PRPAMT101302UV02ContactPartyEffectiveTime.class,
+    PRPAMT101302UV02PersonalRelationshipEffectiveTime.class
 })
 public class IVLTS
     extends SXCMTS
 {
 
     @XmlElementRefs({
-        @XmlElementRef(name = "high", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
         @XmlElementRef(name = "width", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
+        @XmlElementRef(name = "center", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
         @XmlElementRef(name = "low", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
-        @XmlElementRef(name = "center", namespace = "urn:hl7-org:v3", type = JAXBElement.class)
+        @XmlElementRef(name = "high", namespace = "urn:hl7-org:v3", type = JAXBElement.class)
     })
-    protected List<JAXBElement<? extends QTY>> widthOrHighOrCenter;
+    protected List<JAXBElement<? extends QTY>> centerOrHighOrWidth;
 
     /**
-     * Gets the value of the widthOrHighOrCenter property.
+     * Gets the value of the centerOrHighOrWidth property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the widthOrHighOrCenter property.
+     * This is why there is not a <CODE>set</CODE> method for the centerOrHighOrWidth property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getWidthOrHighOrCenter().add(newItem);
+     *    getCenterOrHighOrWidth().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link IVXBTS }{@code >}
-     * {@link JAXBElement }{@code <}{@link IVXBTS }{@code >}
      * {@link JAXBElement }{@code <}{@link TS }{@code >}
      * {@link JAXBElement }{@code <}{@link PQ }{@code >}
+     * {@link JAXBElement }{@code <}{@link IVXBTS }{@code >}
+     * {@link JAXBElement }{@code <}{@link IVXBTS }{@code >}
      * 
      * 
      */
-    public List<JAXBElement<? extends QTY>> getWidthOrHighOrCenter() {
-        if (widthOrHighOrCenter == null) {
-            widthOrHighOrCenter = new ArrayList<JAXBElement<? extends QTY>>();
+    public List<JAXBElement<? extends QTY>> getCenterOrHighOrWidth() {
+        if (centerOrHighOrWidth == null) {
+            centerOrHighOrWidth = new ArrayList<JAXBElement<? extends QTY>>();
         }
-        return this.widthOrHighOrCenter;
+        return this.centerOrHighOrWidth;
     }
 
 }

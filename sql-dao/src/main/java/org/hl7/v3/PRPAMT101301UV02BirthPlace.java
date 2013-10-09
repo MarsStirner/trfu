@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="realmCode" type="{urn:hl7-org:v3}CS" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="typeId" type="{urn:hl7-org:v3}II" minOccurs="0"/>
  *         &lt;element name="templateId" type="{urn:hl7-org:v3}II" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="addr" type="{urn:hl7-org:v3}AD" minOccurs="0"/>
+ *         &lt;element name="addr" type="{urn:hl7-org:v3}AD_explicit" minOccurs="0"/>
  *         &lt;element name="birthplace" type="{urn:hl7-org:v3}COCT_MT710007UV07.Place" minOccurs="0"/>
  *         &lt;element name="subjectOf" type="{urn:hl7-org:v3}PRPA_MT101301UV02.Subject2" minOccurs="0"/>
  *       &lt;/sequence>
@@ -52,7 +52,7 @@ public class PRPAMT101301UV02BirthPlace {
     protected II typeId;
     @XmlElement(nillable = true)
     protected List<II> templateId;
-    protected AD addr;
+    protected ADExplicit addr;
     protected COCTMT710007UV07Place birthplace;
     protected PRPAMT101301UV02Subject2 subjectOf;
     @XmlAttribute
@@ -147,10 +147,10 @@ public class PRPAMT101301UV02BirthPlace {
      * 
      * @return
      *     possible object is
-     *     {@link AD }
+     *     {@link ADExplicit }
      *     
      */
-    public AD getAddr() {
+    public ADExplicit getAddr() {
         return addr;
     }
 
@@ -159,10 +159,10 @@ public class PRPAMT101301UV02BirthPlace {
      * 
      * @param value
      *     allowed object is
-     *     {@link AD }
+     *     {@link ADExplicit }
      *     
      */
-    public void setAddr(AD value) {
+    public void setAddr(ADExplicit value) {
         this.addr = value;
     }
 

@@ -1,4 +1,3 @@
-
 package org.hl7.v3;
 
 import java.util.ArrayList;

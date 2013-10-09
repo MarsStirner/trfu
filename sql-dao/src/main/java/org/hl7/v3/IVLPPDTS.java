@@ -22,10 +22,10 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;extension base="{urn:hl7-org:v3}SXCM_PPD_TS">
  *       &lt;sequence>
  *         &lt;choice maxOccurs="unbounded" minOccurs="0">
- *           &lt;element name="center" type="{urn:hl7-org:v3}PPD_TS"/>
  *           &lt;element name="low" type="{urn:hl7-org:v3}IVXB_PPD_TS"/>
  *           &lt;element name="high" type="{urn:hl7-org:v3}IVXB_PPD_TS"/>
  *           &lt;element name="width" type="{urn:hl7-org:v3}PPD_PQ"/>
+ *           &lt;element name="center" type="{urn:hl7-org:v3}PPD_TS"/>
  *         &lt;/choice>
  *       &lt;/sequence>
  *     &lt;/extension>
@@ -37,50 +37,50 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IVL_PPD_TS", propOrder = {
-    "centerOrLowOrHigh"
+    "lowOrHighOrWidth"
 })
 public class IVLPPDTS
     extends SXCMPPDTS
 {
 
     @XmlElementRefs({
+        @XmlElementRef(name = "width", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
         @XmlElementRef(name = "high", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
         @XmlElementRef(name = "low", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
-        @XmlElementRef(name = "width", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
         @XmlElementRef(name = "center", namespace = "urn:hl7-org:v3", type = JAXBElement.class)
     })
-    protected List<JAXBElement<? extends QTY>> centerOrLowOrHigh;
+    protected List<JAXBElement<? extends QTY>> lowOrHighOrWidth;
 
     /**
-     * Gets the value of the centerOrLowOrHigh property.
+     * Gets the value of the lowOrHighOrWidth property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the centerOrLowOrHigh property.
+     * This is why there is not a <CODE>set</CODE> method for the lowOrHighOrWidth property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCenterOrLowOrHigh().add(newItem);
+     *    getLowOrHighOrWidth().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link IVXBPPDTS }{@code >}
-     * {@link JAXBElement }{@code <}{@link IVXBPPDTS }{@code >}
      * {@link JAXBElement }{@code <}{@link PPDPQ }{@code >}
+     * {@link JAXBElement }{@code <}{@link IVXBPPDTS }{@code >}
+     * {@link JAXBElement }{@code <}{@link IVXBPPDTS }{@code >}
      * {@link JAXBElement }{@code <}{@link PPDTS }{@code >}
      * 
      * 
      */
-    public List<JAXBElement<? extends QTY>> getCenterOrLowOrHigh() {
-        if (centerOrLowOrHigh == null) {
-            centerOrLowOrHigh = new ArrayList<JAXBElement<? extends QTY>>();
+    public List<JAXBElement<? extends QTY>> getLowOrHighOrWidth() {
+        if (lowOrHighOrWidth == null) {
+            lowOrHighOrWidth = new ArrayList<JAXBElement<? extends QTY>>();
         }
-        return this.centerOrLowOrHigh;
+        return this.lowOrHighOrWidth;
     }
 
 }

@@ -28,8 +28,18 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CE")
 @XmlSeeAlso({
-    CV.class,
+    PRPAMT101302UV02GuardianCode.class,
+    PRPAMT101302UV02EmployeeOccupationCode.class,
+    PRPAMT101302UV02PersonAdministrativeGenderCode.class,
+    PRPAMT101302UV02EmployeeJobClassCode.class,
+    PRPAMT101302UV02IdentifiedPersonConfidentialityCode.class,
+    PRPAMT101302UV02ContactPartyCode.class,
+    PRPAMT101302UV02PersonalRelationshipCode.class,
+    PRPAMT101302UV02EmployeeCode.class,
+    PRPAMT101302UV02CitizenCode.class,
     EIVLEvent.class,
+    CV.class,
+    PRPAMT101302UV02PersonMaritalStatusCode.class,
     HXITCE.class
 })
 public class CE

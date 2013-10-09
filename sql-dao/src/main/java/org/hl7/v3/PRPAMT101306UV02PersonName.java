@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="realmCode" type="{urn:hl7-org:v3}CS" maxOccurs="unbounded" minOccurs="0"/>
  *         &lt;element name="typeId" type="{urn:hl7-org:v3}II" minOccurs="0"/>
  *         &lt;element name="templateId" type="{urn:hl7-org:v3}II" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="value" type="{urn:hl7-org:v3}PN" maxOccurs="unbounded"/>
+ *         &lt;element name="value" type="{urn:hl7-org:v3}PN_explicit" maxOccurs="unbounded"/>
  *         &lt;element name="semanticsText" type="{urn:hl7-org:v3}ST"/>
  *       &lt;/sequence>
  *       &lt;attribute name="nullFlavor" type="{urn:hl7-org:v3}NullFlavor" />
@@ -50,7 +50,7 @@ public class PRPAMT101306UV02PersonName {
     @XmlElement(nillable = true)
     protected List<II> templateId;
     @XmlElement(required = true)
-    protected List<PN> value;
+    protected List<PNExplicit> value;
     @XmlElement(required = true)
     protected ST semanticsText;
     @XmlAttribute
@@ -156,13 +156,13 @@ public class PRPAMT101306UV02PersonName {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link PN }
+     * {@link PNExplicit }
      * 
      * 
      */
-    public List<PN> getValue() {
+    public List<PNExplicit> getValue() {
         if (value == null) {
-            value = new ArrayList<PN>();
+            value = new ArrayList<PNExplicit>();
         }
         return this.value;
     }

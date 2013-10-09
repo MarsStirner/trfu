@@ -14,6 +14,8 @@ import org.hl7.v3.PRPAIN101307UV02;
 import org.hl7.v3.PRPAIN101308UV02;
 import org.hl7.v3.PRPAIN101311UV02;
 import org.hl7.v3.PRPAIN101312UV02;
+import org.hl7.v3.PRPAIN101314UV02;
+import org.hl7.v3.PRPAIN101315UV02;
 
 
 /**
@@ -34,13 +36,13 @@ public interface PDManager {
      * 
      * @param parameters
      * @return
-     *     returns org.hl7.v3.PRPAIN101312UV02
+     *     returns org.hl7.v3.PRPAIN101308UV02
      */
-    @WebMethod(action = "http://www.korusconsulting.ru/PDManager/new")
-    @WebResult(name = "PRPA_IN101312UV02", targetNamespace = "urn:hl7-org:v3", partName = "result")
-    public PRPAIN101312UV02 add(
-        @WebParam(name = "PRPA_IN101311UV02", targetNamespace = "urn:hl7-org:v3", partName = "parameters")
-        PRPAIN101311UV02 parameters);
+    @WebMethod(action = "http://www.korusconsulting.ru/PDManager/getDemographics")
+    @WebResult(name = "PRPA_IN101308UV02", targetNamespace = "urn:hl7-org:v3", partName = "result")
+    public PRPAIN101308UV02 getDemographics(
+        @WebParam(name = "PRPA_IN101307UV02", targetNamespace = "urn:hl7-org:v3", partName = "parameters")
+        PRPAIN101307UV02 parameters);
 
     /**
      * 
@@ -58,12 +60,24 @@ public interface PDManager {
      * 
      * @param parameters
      * @return
-     *     returns org.hl7.v3.PRPAIN101308UV02
+     *     returns org.hl7.v3.PRPAIN101312UV02
      */
-    @WebMethod(action = "http://www.korusconsulting.ru/PDManager/getDemographics")
-    @WebResult(name = "PRPA_IN101308UV02", targetNamespace = "urn:hl7-org:v3", partName = "result")
-    public PRPAIN101308UV02 getDemographics(
-        @WebParam(name = "PRPA_IN101307UV02", targetNamespace = "urn:hl7-org:v3", partName = "parameters")
-        PRPAIN101307UV02 parameters);
+    @WebMethod(action = "http://www.korusconsulting.ru/PDManager/new")
+    @WebResult(name = "PRPA_IN101312UV02", targetNamespace = "urn:hl7-org:v3", partName = "result")
+    public PRPAIN101312UV02 add(
+        @WebParam(name = "PRPA_IN101311UV02", targetNamespace = "urn:hl7-org:v3", partName = "parameters")
+        PRPAIN101311UV02 parameters);
+
+    /**
+     * 
+     * @param parameters
+     * @return
+     *     returns org.hl7.v3.PRPAIN101315UV02
+     */
+    @WebMethod(action = "http://www.korusconsulting.ru/PDManager/new")
+    @WebResult(name = "PRPA_IN101315UV02", targetNamespace = "urn:hl7-org:v3", partName = "result")
+    public PRPAIN101315UV02 update(
+        @WebParam(name = "PRPA_IN101314UV02", targetNamespace = "urn:hl7-org:v3", partName = "parameters")
+        PRPAIN101314UV02 parameters);
 
 }

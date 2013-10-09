@@ -27,11 +27,11 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;choice maxOccurs="unbounded" minOccurs="0">
  *           &lt;element name="prefix" type="{urn:hl7-org:v3}en.prefix"/>
- *           &lt;element name="given" type="{urn:hl7-org:v3}en.given"/>
- *           &lt;element name="suffix" type="{urn:hl7-org:v3}en.suffix"/>
+ *           &lt;element name="delimiter" type="{urn:hl7-org:v3}en.delimiter"/>
  *           &lt;element name="validTime" type="{urn:hl7-org:v3}IVL_TS"/>
  *           &lt;element name="family" type="{urn:hl7-org:v3}en.family"/>
- *           &lt;element name="delimiter" type="{urn:hl7-org:v3}en.delimiter"/>
+ *           &lt;element name="given" type="{urn:hl7-org:v3}en.given"/>
+ *           &lt;element name="suffix" type="{urn:hl7-org:v3}en.suffix"/>
  *         &lt;/choice>
  *       &lt;/sequence>
  *       &lt;attribute name="use">
@@ -51,19 +51,19 @@ import javax.xml.bind.annotation.XmlType;
     "content"
 })
 @XmlSeeAlso({
-    ON.class,
     PN.class,
+    ON.class,
     TN.class
 })
 public class EN {
 
     @XmlElementRefs({
         @XmlElementRef(name = "suffix", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
-        @XmlElementRef(name = "family", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
-        @XmlElementRef(name = "given", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
+        @XmlElementRef(name = "validTime", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
         @XmlElementRef(name = "prefix", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
+        @XmlElementRef(name = "family", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
         @XmlElementRef(name = "delimiter", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
-        @XmlElementRef(name = "validTime", namespace = "urn:hl7-org:v3", type = JAXBElement.class)
+        @XmlElementRef(name = "given", namespace = "urn:hl7-org:v3", type = JAXBElement.class)
     })
     @XmlMixed
     protected List<Serializable> content;
@@ -89,12 +89,12 @@ public class EN {
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link JAXBElement }{@code <}{@link EnSuffix }{@code >}
-     * {@link JAXBElement }{@code <}{@link EnFamily }{@code >}
-     * {@link JAXBElement }{@code <}{@link EnGiven }{@code >}
-     * {@link JAXBElement }{@code <}{@link EnPrefix }{@code >}
-     * {@link JAXBElement }{@code <}{@link EnDelimiter }{@code >}
      * {@link JAXBElement }{@code <}{@link IVLTS }{@code >}
+     * {@link JAXBElement }{@code <}{@link EnPrefix }{@code >}
+     * {@link JAXBElement }{@code <}{@link EnFamily }{@code >}
+     * {@link JAXBElement }{@code <}{@link EnDelimiter }{@code >}
      * {@link String }
+     * {@link JAXBElement }{@code <}{@link EnGiven }{@code >}
      * 
      * 
      */

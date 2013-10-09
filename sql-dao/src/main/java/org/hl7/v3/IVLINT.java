@@ -23,9 +23,9 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;choice maxOccurs="unbounded" minOccurs="0">
  *           &lt;element name="width" type="{urn:hl7-org:v3}INT"/>
+ *           &lt;element name="high" type="{urn:hl7-org:v3}IVXB_INT"/>
  *           &lt;element name="center" type="{urn:hl7-org:v3}INT"/>
  *           &lt;element name="low" type="{urn:hl7-org:v3}IVXB_INT"/>
- *           &lt;element name="high" type="{urn:hl7-org:v3}IVXB_INT"/>
  *         &lt;/choice>
  *       &lt;/sequence>
  *     &lt;/extension>
@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IVL_INT", propOrder = {
-    "widthOrCenterOrLow"
+    "widthOrHighOrCenter"
 })
 public class IVLINT
     extends SXCMINT
@@ -45,42 +45,42 @@ public class IVLINT
 
     @XmlElementRefs({
         @XmlElementRef(name = "center", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
-        @XmlElementRef(name = "high", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
+        @XmlElementRef(name = "low", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
         @XmlElementRef(name = "width", namespace = "urn:hl7-org:v3", type = JAXBElement.class),
-        @XmlElementRef(name = "low", namespace = "urn:hl7-org:v3", type = JAXBElement.class)
+        @XmlElementRef(name = "high", namespace = "urn:hl7-org:v3", type = JAXBElement.class)
     })
-    protected List<JAXBElement<? extends INT>> widthOrCenterOrLow;
+    protected List<JAXBElement<? extends INT>> widthOrHighOrCenter;
 
     /**
-     * Gets the value of the widthOrCenterOrLow property.
+     * Gets the value of the widthOrHighOrCenter property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the widthOrCenterOrLow property.
+     * This is why there is not a <CODE>set</CODE> method for the widthOrHighOrCenter property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getWidthOrCenterOrLow().add(newItem);
+     *    getWidthOrHighOrCenter().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link INT }{@code >}
      * {@link JAXBElement }{@code <}{@link IVXBINT }{@code >}
+     * {@link JAXBElement }{@code <}{@link INT }{@code >}
      * {@link JAXBElement }{@code <}{@link INT }{@code >}
      * {@link JAXBElement }{@code <}{@link IVXBINT }{@code >}
      * 
      * 
      */
-    public List<JAXBElement<? extends INT>> getWidthOrCenterOrLow() {
-        if (widthOrCenterOrLow == null) {
-            widthOrCenterOrLow = new ArrayList<JAXBElement<? extends INT>>();
+    public List<JAXBElement<? extends INT>> getWidthOrHighOrCenter() {
+        if (widthOrHighOrCenter == null) {
+            widthOrHighOrCenter = new ArrayList<JAXBElement<? extends INT>>();
         }
-        return this.widthOrCenterOrLow;
+        return this.widthOrHighOrCenter;
     }
 
 }

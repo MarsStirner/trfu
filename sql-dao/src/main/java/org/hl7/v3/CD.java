@@ -44,6 +44,7 @@ import javax.xml.bind.annotation.XmlType;
     "translation"
 })
 @XmlSeeAlso({
+    PRPAMT101302UV02NationCode.class,
     BXITCD.class,
     SXCMCD.class,
     CE.class
