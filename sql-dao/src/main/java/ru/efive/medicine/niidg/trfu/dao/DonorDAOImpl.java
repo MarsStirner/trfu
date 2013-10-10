@@ -9,9 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
-import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Junction;
@@ -23,14 +21,18 @@ import org.springframework.dao.DataAccessException;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
-import ru.efive.medicine.niidg.trfu.util.DateHelper;
 import ru.korusconsulting.SRPD.DonorHelper;
 import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
 import ru.korusconsulting.SRPD.SRPDDao;
 
 public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
+	private static SRPDDao srpdDao;
+	static {
+		if (DonorHelper.USE_SRPD) {
+			srpdDao = new SRPDDao();
+		}
+	}
 	
 	@Override
 	protected Class<Donor> getPersistentClass() {
@@ -231,9 +233,8 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
     		String query = "select temp_storage_id FROM trfu_donors where deleted = false and send_news = true";
     		List listIds = getSession().createSQLQuery(query).list();
     		DonorHelper donorHelper = new DonorHelper();
-    		SRPDDao srpdDao = new SRPDDao();
-    		Map<DonorHelper.FieldsInMap, Object> paramsMap = donorHelper.makeParametersforSearchMails(listIds);
-    		Map<Integer, Map<DonorHelper.FieldsInMap,Object>> resMap = srpdDao.getDonors(paramsMap);
+    		Map<FieldsInMap, Object> paramsMap = donorHelper.makeParametersforSearchMails(listIds);
+    		Map<String, Map<FieldsInMap,Object>> resMap = srpdDao.get(paramsMap);
     		return  donorHelper.getMailsFromMap(resMap);
     	}
 	}
@@ -244,8 +245,13 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         donorsFilter.setConjunction(true);
         if (DonorHelper.USE_SRPD) {
         	DonorHelper donorHelper = new DonorHelper();
-        	Map<Integer, Map<FieldsInMap, Object>> resMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
-        	donorsFilter.setListSRPDIds(resMap.keySet());
+        	/* map with paramters for counting right donors */
+        	Map<FieldsInMap, Object> paramMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
+        	/* map with result from SRPD */
+        	Map<String, Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
+        	if (resMap != null && resMap.size() > 0) {
+        		donorsFilter.setListSRPDIds(resMap.keySet());
+        	}
         }
 		return getCountOf(getSearchCriteria(detachedCriteria, donorsFilter));
 	}
@@ -274,7 +280,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 			String donorTypeValue = donorsFilter.getDonorTypeValue();
 			List<Integer> listIds = donorsFilter.getListIds();
 			List<Integer> listStatusesId = donorsFilter.getLisStatusId();
-			Collection<Integer> listSRPDIds = donorsFilter.getListSRPDIds();
+			Collection<String> listSRPDIds = donorsFilter.getListSRPDIds();
 			String mail = donorsFilter.getMail();
 			String password = donorsFilter.getPassword();
 			
@@ -400,19 +406,28 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	public List<Donor> findDocuments(DonorsFilter donorsFilter, int offset,
 			int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
-		Map<Integer, Map<FieldsInMap, Object>> resMap = null;
-		DonorHelper donorHelper = null;
+		Map<FieldsInMap, Object> paramMap = null;
+		Map<String, Map<FieldsInMap, Object>> resMap = null;
+		DonorHelper donorHelper = new DonorHelper();
         addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-        if (DonorHelper.USE_SRPD && donorsFilter.isQueryToSRPD()) {
+        /* Здесь должен быть функционал для поиска по ЗХПД по условию "или" */
+        /*if (DonorHelper.USE_SRPD && donorsFilter.isQueryToSRPD()) {
         	donorHelper = new DonorHelper();
-        	resMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
-        	donorsFilter.setListSRPDIds(resMap.keySet());
-        }
+        	/* карта для предварительного поиска по данным в ЗХПД */
+       /* 	paramMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
+        	/* карта с response от ЗХПД */
+       /* 	resMap = srpdDAO.get(paramMap);
+        	/* занесение в фильтр id-шников от ЗХПД, для дальнешего поиска в базе ТРФУ;
+        	 * доноры с данными id-шниками будут обязательно добавлены в результат выборки из базы */
+        /*	donorsFilter.setListSRPDIds(resMap.keySet());
+        }*/
         List<Donor> donors = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, donorsFilter), offset, count);
         if (DonorHelper.USE_SRPD) {
         	if (resMap == null) {
+        		/* новый запрос к ЗХПД, т.к. колличество доноров для которых понадобятся данные может увеличится */
         		donorsFilter.setListSRPDIds(donorHelper.listIdsSRPDFromDonors(donors));
-        		resMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
+        		paramMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
+        		resMap = srpdDao.get(paramMap);
         	}
         	donors = donorHelper.mergeDonorsAndMap(donors, resMap);
         }
@@ -426,8 +441,12 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	public Donor get(Serializable id) {
 		Donor donor = super.get(id);
 		if (DonorHelper.USE_SRPD) {
-			Map<DonorHelper.FieldsInMap, Object> map = new SRPDDao().get(new DonorHelper().makeMapForGet((Integer)id));
-			donor = new DonorHelper().mergeDonorAndMap(donor, map);
+			Map<String,Map<DonorHelper.FieldsInMap, Object>> map = new SRPDDao().get(new DonorHelper().makeMapForGet(donor.getTempStorageId()));
+			if (map != null && map.size() > 0) {
+				donor = new DonorHelper().mergeDonorAndMap(donor, (Map<FieldsInMap, Object>)map.values().toArray()[0]);
+			} else {
+				return null;
+			}
 		}
 		return donor;
 	}
@@ -439,7 +458,6 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	public Donor save(Donor entity) {
 		if (DonorHelper.USE_SRPD) {
 			Session session = null;
-			SRPDDao srpdDao = new SRPDDao();
 			DonorHelper helper = new DonorHelper();
 			try {
 				session = getSession();
@@ -447,13 +465,14 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 				session.save(entity);
 				Map<DonorHelper.FieldsInMap, Object> query = helper.makeMapFromDonor(entity);
 				/* commit for saving information to TRFU, without temp_stogate_id */
-				Map<DonorHelper.FieldsInMap, Object> answer = srpdDao.addToSRPD(query);
-				Donor newDonor = helper.mergeDonorAndMap(entity, answer);
+				Map<DonorHelper.FieldsInMap, Object> answer = srpdDao.addPDToSRPD(query);
+				entity = helper.mergeDonorAndMap(entity, answer);
 				/* update for writing temp_stogate_id to DB of TRFU */
-				session.update(newDonor);
+				session.update(entity);
 				session.getTransaction().commit();
-				return newDonor;
+				return entity;
 			} catch(Exception e) {
+				e.printStackTrace();
 				session.getTransaction().rollback();
 			} finally {
 				if (session != null) {
@@ -479,7 +498,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 				session = getSession();
 				session.beginTransaction();
 				session.update(entity);
-				srpdDao.addToSRPD(helper.makeMapFromDonor(entity));
+				srpdDao.updateToSRPD(helper.makeMapFromDonor(entity));
 				session.getTransaction().commit();
 				return entity;
 			} catch(Exception e) {

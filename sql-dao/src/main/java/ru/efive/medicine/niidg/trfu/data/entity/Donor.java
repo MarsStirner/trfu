@@ -87,7 +87,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public String getExternalNumber() {
 		return externalNumber;
 	}
-
+	@Transient
 	public String getLastName() {
 		return lastName;
 	}
@@ -95,7 +95,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-
+	@Transient
 	public String getMiddleName() {
 		return middleName;
 	}
@@ -103,7 +103,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
 	}
-
+	@Transient
 	public String getFirstName() {
 		return firstName;
 	}
@@ -161,7 +161,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public void setRhesusFactor(Classifier rhesusFactor) {
 		this.rhesusFactor = rhesusFactor;
 	}
-
+	@Transient
 	public int getGender() {
 		return gender;
 	}
@@ -169,7 +169,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public void setGender(int gender) {
 		this.gender = gender;
 	}
-
+	@Transient
 	public Date getBirth() {
 		return birth;
 	}
@@ -215,15 +215,15 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 		buffer.append(age).append(" ").append(age%10==1 && age%100!=11 ? "год" : age%10>=2 && age%10<=4 && (age%100<10 || age%100>=20) ? "года" : "лет");
 		return buffer.toString();
 	}
-
+	@Transient
 	public String getPassportSeries() {
 		return passportSeries;
 	}
-
+	
 	public void setPassportSeries(String passportSeries) {
 		this.passportSeries = passportSeries;
 	}
-
+	@Transient
 	public String getPassportNumber() {
 		return passportNumber;
 	}
@@ -231,7 +231,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public void setPassportNumber(String passportNumber) {
 		this.passportNumber = passportNumber;
 	}
-
+	@Transient
 	public String getInsuranceSeries() {
 		return insuranceSeries;
 	}
@@ -239,7 +239,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public void setInsuranceSeries(String insuranceSeries) {
 		this.insuranceSeries = insuranceSeries;
 	}
-
+	@Transient
 	public String getInsuranceNumber() {
 		return insuranceNumber;
 	}
@@ -247,11 +247,11 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public void setInsuranceNumber(String insuranceNumber) {
 		this.insuranceNumber = insuranceNumber;
 	}
-
+	
 	public void setEmployment(String employment) {
 		this.employment = employment;
 	}
-
+	@Transient
 	public String getEmployment() {
 		return employment;
 	}
@@ -259,11 +259,11 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public void setWorkPhone(String workPhone) {
 		this.workPhone = workPhone;
 	}
-
+	@Transient
 	public String getWorkPhone() {
 		return workPhone;
 	}
-
+	@Transient
 	public String getRegistrationAddress() {
 		return registrationAddress;
 	}
@@ -279,7 +279,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public void setFactAddress(String factAddress) {
 		this.factAddress = factAddress;
 	}
-
+	@Transient
 	public String getPhone() {
 		return phone;
 	}
@@ -287,7 +287,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-
+	@Transient
 	public String getMail() {
 		return mail;
 	}
@@ -473,14 +473,14 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	/**
 	 * @return the tempStorageId
 	 */
-	public Integer getTempStorageId() {
+	public String getTempStorageId() {
 		return tempStorageId;
 	}
 
 	/**
 	 * @param tempStorageId the tempStorageId to set
 	 */
-	public void setTempStorageId(Integer tempStorageId) {
+	public void setTempStorageId(String tempStorageId) {
 		this.tempStorageId = tempStorageId;
 	}
 
@@ -552,7 +552,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	/**
 	 * дата рождения
 	*/
-    @Temporal(value = TemporalType.TIMESTAMP)
+    //@Temporal(value = TemporalType.TIMESTAMP)
 	private Date birth;
 	
 	/**
@@ -578,7 +578,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	/**
 	 * Место работы
 	 */
-	@Column(columnDefinition="text")
+	//@Column(columnDefinition="text")
 	private String employment;
 	
 	/**
@@ -669,11 +669,11 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 	@Column(name="extension_uuid")
 	private String extensionUuid;
 	
-	@Column(name="send_news")
+	@Column(name="send_news", nullable=true)
 	private boolean sendNews;
 	
 	@Column(name="temp_storage_id")
-	private Integer tempStorageId;
+	private String tempStorageId;
 	
 	private static final long serialVersionUID = 1L;
 }
