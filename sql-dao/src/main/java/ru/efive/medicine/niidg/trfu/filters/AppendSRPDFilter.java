@@ -59,7 +59,7 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 	/**
 	 * Список идентификаторов ЗХПД
 	 */
-	private Collection<Integer> listSRPDIds;
+	private Collection<String> listSRPDIds;
 	/**
 	 * Флаг, используемый для отображения или нет удалённых записей 
 	 */
@@ -248,14 +248,14 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 	/**
 	 * @return the listSRPDIds
 	 */
-	public Collection<Integer> getListSRPDIds() {
+	public Collection<String> getListSRPDIds() {
 		return listSRPDIds;
 	}
 
 	/**
 	 * @param listSRPDIds the listSRPDIds to set
 	 */
-	public void setListSRPDIds(Collection<Integer> listSRPDIds) {
+	public void setListSRPDIds(Collection<String> listSRPDIds) {
 		this.listSRPDIds = listSRPDIds;
 	}
 

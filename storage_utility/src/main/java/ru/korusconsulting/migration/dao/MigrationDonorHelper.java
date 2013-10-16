@@ -1,5 +1,8 @@
 package ru.korusconsulting.migration.dao;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +24,8 @@ public class MigrationDonorHelper extends DonorHelper {
 		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
 		map.put(FieldsInMap.WORK_PHONE, donor.getWorkPhone());
 		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
-		map.put(FieldsInMap.BIRTH, donor.getBirth());
-		map.put(FieldsInMap.GENDER, donor.getGender());
+		map.put(FieldsInMap.BIRTH, createStringFromDate(donor.getBirth()));
+		map.put(FieldsInMap.GENDER, ((Integer)donor.getGender()).toString());
 		map.put(FieldsInMap.TEMP_STORAGE_ID, donor.getTemp_storage_id());
 		if (donor instanceof Donor) {
 			map.put(FieldsInMap.EMAIL, ((Donor)donor).getMail());
@@ -34,5 +37,4 @@ public class MigrationDonorHelper extends DonorHelper {
 		params.put(FieldsInMap.LIST_STORAGE_IDS, ids);
 		return params;
 	}
-
 }

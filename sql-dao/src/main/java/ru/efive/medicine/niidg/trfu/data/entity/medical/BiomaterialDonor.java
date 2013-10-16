@@ -54,7 +54,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setNumber(String number) {
 		this.number = number;
 	}
-
+	@Transient
 	public String getLastName() {
 		return lastName;
 	}
@@ -62,7 +62,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-
+	@Transient
 	public String getMiddleName() {
 		return middleName;
 	}
@@ -70,7 +70,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
 	}
-
+	@Transient
 	public String getFirstName() {
 		return firstName;
 	}
@@ -112,7 +112,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setRhesusFactor(Classifier rhesusFactor) {
 		this.rhesusFactor = rhesusFactor;
 	}
-
+	@Transient
 	public int getGender() {
 		return gender;
 	}
@@ -120,7 +120,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setGender(int gender) {
 		this.gender = gender;
 	}
-
+	@Transient
 	public Date getBirth() {
 		return birth;
 	}
@@ -158,7 +158,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 		buffer.append(age).append(" ").append(age%10==1 && age%100!=11 ? "год" : age%10>=2 && age%10<=4 && (age%100<10 || age%100>=20) ? "года" : "лет");
 		return buffer.toString();
 	}
-
+	@Transient
 	public String getPassportSeries() {
 		return passportSeries;
 	}
@@ -166,7 +166,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setPassportSeries(String passportSeries) {
 		this.passportSeries = passportSeries;
 	}
-
+	@Transient
 	public String getPassportNumber() {
 		return passportNumber;
 	}
@@ -174,7 +174,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setPassportNumber(String passportNumber) {
 		this.passportNumber = passportNumber;
 	}
-
+	@Transient
 	public String getInsuranceSeries() {
 		return insuranceSeries;
 	}
@@ -182,7 +182,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setInsuranceSeries(String insuranceSeries) {
 		this.insuranceSeries = insuranceSeries;
 	}
-
+	@Transient
 	public String getInsuranceNumber() {
 		return insuranceNumber;
 	}
@@ -190,7 +190,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setInsuranceNumber(String insuranceNumber) {
 		this.insuranceNumber = insuranceNumber;
 	}
-
+	@Transient
 	public String getEmployment() {
 		return employment;
 	}
@@ -198,7 +198,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setEmployment(String employment) {
 		this.employment = employment;
 	}
-
+	@Transient
 	public String getWorkPhone() {
 		return workPhone;
 	}
@@ -206,7 +206,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setWorkPhone(String workPhone) {
 		this.workPhone = workPhone;
 	}
-
+	@Transient
 	public String getRegistrationAddress() {
 		return registrationAddress;
 	}
@@ -222,7 +222,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	public void setFactAddress(String factAddress) {
 		this.factAddress = factAddress;
 	}
-
+	@Transient
 	public String getPhone() {
 		return phone;
 	}
@@ -320,14 +320,14 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	/**
 	 * @return the tempStogateId
 	 */
-	public Integer getTempStorageId() {
+	public String getTempStorageId() {
 		return tempStorageId;
 	}
 
 	/**
 	 * @param tempStogateId the tempStogateId to set
 	 */
-	public void setTempStorageId(Integer tempStorageId) {
+	public void setTempStorageId(String tempStorageId) {
 		this.tempStorageId = tempStorageId;
 	}
 
@@ -345,17 +345,17 @@ public class BiomaterialDonor extends Document implements ProcessedData {
     /**
 	 * фамилия
 	 */
-	private String lastName;
+	private String lastName = "";
 
 	/**
 	 * отчество
 	 */
-	private String middleName;
+	private String middleName = "";
 
 	/**
 	 * имя
 	 */
-	private String firstName;
+	private String firstName = "";
 	
 	/**
 	 * Группа крови
@@ -372,49 +372,52 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	/**
 	 * Пол (0 - female, 1 - male)
 	 */
-    private int gender;
+    private int gender = 0;
 	
 	/**
 	 * дата рождения
 	*/
-    @Temporal(value = TemporalType.TIMESTAMP)
-	private Date birth;
+    //@Temporal(value = TemporalType.TIMESTAMP)
+	private Date birth = new Date();;
 	
 	/**
 	 * Серия паспорта
 	 */
-	private String passportSeries;
+	@Transient
+	private String passportSeries = "";
 	
 	/**
 	 * Номер паспорта
 	 */
-	private String passportNumber;
+	@Transient
+	private String passportNumber = "";
 	
 	/**
 	 * Серия страхового полиса ОМС
 	 */
-	private String insuranceSeries;
+	@Transient
+	private String insuranceSeries = "";
 	
 	/**
 	 * Номер страхового полиса ОМС
 	 */
-	private String insuranceNumber;
+	@Transient
+	private String insuranceNumber = "";
 	
 	/**
 	 * Место работы
 	 */
-	@Column(columnDefinition="text")
-	private String employment;
+	private String employment = "";
 	
 	/**
 	 * Рабочий телефон
 	 */
-	private String workPhone;
+	private String workPhone = "";
 	
 	/**
 	 * Адрес регистрации
 	 */
-	private String registrationAddress;
+	private String registrationAddress = "";
 	
 	/**
 	 * Фактический адрес
@@ -424,7 +427,7 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	/**
 	 * Телефон
 	 */
-	private String phone;
+	private String phone = "";
 	
 	/**
 	 * Комментарий
@@ -448,8 +451,8 @@ public class BiomaterialDonor extends Document implements ProcessedData {
 	@Column(name="status_id")
 	private int statusId;
 	
-	@Column(name="temp_stogate_id")
-	private Integer tempStorageId;
+	@Column(name="temp_storage_id")
+	private String tempStorageId;
     
 	/**
 	 * Для группировок в представлениях

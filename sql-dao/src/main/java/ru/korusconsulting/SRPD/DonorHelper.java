@@ -183,10 +183,10 @@ public class DonorHelper {
 		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
 		map.put(FieldsInMap.WORK_PHONE, cretateTelFromPhoneForSRPD(TELCOM.TEL, donor.getWorkPhone()));
 		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
-		map.put(FieldsInMap.BIRTH, donor.getBirth());
-		map.put(FieldsInMap.GENDER, donor.getGender());
-		//map.put(FieldsInMap.TEMP_STORAGE_ID, donor.getTempStorageId());
-		map.put(FieldsInMap.LIST_STORAGE_IDS, listIds);
+		map.put(FieldsInMap.BIRTH, createStringFromDate(donor.getBirth()));
+		map.put(FieldsInMap.GENDER, ((Integer)donor.getGender()).toString());
+		map.put(FieldsInMap.TEMP_STORAGE_ID, donor.getTempStorageId());
+		//map.put(FieldsInMap.LIST_STORAGE_IDS, listIds);
 		return map;
 	}
 	

@@ -16,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
 
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.dao.sql.entity.document.Document;
+import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
@@ -28,6 +29,15 @@ import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
 import ru.korusconsulting.SRPD.SRPDDao;
 
 public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
+	private static SRPDDao srpdDao;
+	private static DonorHelper helper;
+	
+	static {
+		if(DonorHelper.USE_SRPD) {
+			srpdDao = new SRPDDao();
+			helper = new DonorHelper();
+		}
+	}
 	
 	@Override
 	protected Class<Document> getPersistentClass() {
@@ -36,27 +46,25 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Document> T get(Class<T> clazz, Serializable id) {
-		if (DonorHelper.USE_SRPD && clazz.isInstance(BiomaterialDonor.class)) {
-			BiomaterialDonor donor = (BiomaterialDonor)super.get(id);
-			return (T) new DonorHelper().mergeDonorAndMap(donor, new SRPDDao().get(new DonorHelper().makeMapForGet((Integer)id)));
-		} else {
-			return (T) getHibernateTemplate().get(clazz, id);
-		}
+		T document = (T) getHibernateTemplate().get(clazz, id); 
+		if (DonorHelper.USE_SRPD && BiomaterialDonor.class.getName().equals(clazz.getName())) {
+			Map<FieldsInMap, Object> paramMap = helper.makeMapForGet(((BiomaterialDonor)document).getTempStorageId());
+			document = (T)helper.mergeDonorAndMap((BiomaterialDonor)document, (Map<FieldsInMap, Object>)srpdDao.get(paramMap).values().toArray()[0]);
+		} 
+		return document;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Document> T save(Class<T> clazz, T document) {
-		if (DonorHelper.USE_SRPD && clazz.isInstance(BiomaterialDonor.class)) {
+		if (DonorHelper.USE_SRPD && BiomaterialDonor.class.getName().equals(clazz.getName())) {
 			Session session = null;
-			SRPDDao srpdDao = new SRPDDao();
-			DonorHelper helper = new DonorHelper();
 			try {
 				session = getSession();
 				session.beginTransaction();
 				session.save(document);
-				Map<DonorHelper.FieldsInMap, Object> query = helper.makeMapFromDonor((BiomaterialDonor)document);
+				Map<FieldsInMap, Object> query = helper.makeMapFromDonor((BiomaterialDonor)document);
 				/* commit for saving information to TRFU, without temp_stogate_id */
-				Map<DonorHelper.FieldsInMap, Object> answer = srpdDao.addToSRPD(query);
+				Map<DonorHelper.FieldsInMap, Object> answer = srpdDao.addPDToSRPD(query);
 				BiomaterialDonor newDonor = helper.mergeDonorAndMap((BiomaterialDonor)document, answer);
 				/* update for writing temp_stogate_id to DB of TRFU */
 				session.update(newDonor);
@@ -78,17 +86,15 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	
 	@SuppressWarnings("unchecked")
 	public <T extends Document> T update(Class<T> clazz, T document) {
-		if (DonorHelper.USE_SRPD && clazz.isInstance(BiomaterialDonor.class)) {
+		if (DonorHelper.USE_SRPD && BiomaterialDonor.class.getName().equals(clazz.getName())) {
 			Session session = null;
-			SRPDDao srpdDao = new SRPDDao();
-			DonorHelper helper = new DonorHelper();
 			try {
 				session = getSession();
 				session.beginTransaction();
 				session.update(document);
 				session.getTransaction().commit();
-				srpdDao.addToSRPD(helper.makeMapFromDonor((BiomaterialDonor)document));
-				return (T) get(((BiomaterialDonor)document).getId());
+				srpdDao.updateToSRPD(helper.makeMapFromDonor((BiomaterialDonor)document));
+				return (T) get(clazz,((BiomaterialDonor)document).getId());
 			} catch(Exception e) {
 				session.getTransaction().rollback();
 			} finally {
@@ -104,14 +110,13 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	
 	public BiomaterialDonor getDonorByExternalId(Serializable externalId, boolean showDeleted) {
 		BiomaterialDonorsFilter filter = createBiamaterialDonorsFilter(null, showDeleted);
+		BiomaterialDonor donor = null;
 		filter.setExternalId(externalId);
 		List<BiomaterialDonor> list = findDonors(filter, -1, -1, null, true);
         if (list != null && !list.isEmpty()) {
         	return list.get(0);
         }
-        else {
-        	return null;
-        }
+        return null;
 	}
 	
 	/*
@@ -133,50 +138,21 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Operation> findOperations(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		OperationsFilter operationFilter= createOperationsFilter(filter, showDeleted);
-		Map<Integer, Map<FieldsInMap, Object>> resMap = null;
-		DonorHelper donorHelper= null;
-		DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
-        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-        if (DonorHelper.USE_SRPD) {
-        	donorHelper = new DonorHelper();
-        	resMap = donorHelper.listIdsDonorsForFilter(operationFilter);
-        	operationFilter.setListSRPDIds(resMap.keySet());
-        }
-        List<Operation> operations = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, operationFilter), offset, count);
-        if (DonorHelper.USE_SRPD) {
-        	operations = donorHelper.mergeOperationsAndMap(operations, resMap);
-        }
-		return operations;
+		OperationsFilter operationFilter = createOperationsFilter(filter, showDeleted);
+		return findOperations(operationFilter, offset, count, orderBy, orderAsc);	
 	}
 	
 	public long countOperations(String filter, boolean showDeleted) {
-        DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
         OperationsFilter operationFilter = createOperationsFilter(filter, showDeleted);
-        if (DonorHelper.USE_SRPD) {
-        	DonorHelper donorHelper = new DonorHelper();
-        	Map<Integer, Map<FieldsInMap, Object>> resMap = donorHelper.listIdsDonorsForFilter(operationFilter);
-        	operationFilter.setListSRPDIds(resMap.keySet());
-        }
-		return getCountOf(getSearchCriteria(detachedCriteria, operationFilter));
+        return countOperations(operationFilter);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Operation> findOperationsByDonor(BiomaterialDonor donor, String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
-		OperationsFilter operationFilter = new OperationsFilter();
         if (donor != null && donor.getId() > 0) {
-        	operationFilter.setDonorId(donor.getId());
-        	operationFilter.setShowDeleted(showDeleted);
-        	addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-        	List<Operation> operations = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, operationFilter), offset, count);
-        	if (DonorHelper.USE_SRPD) {
-            	DonorHelper donorHelper = new DonorHelper();
-            	operationFilter.setListSRPDIds(donorHelper.listIdsSRPDFromOperation(operations));
-            	Map<Integer, Map<FieldsInMap, Object>> resMap = donorHelper.listIdsDonorsForFilter(operationFilter);
-            	operations = donorHelper.mergeOperationsAndMap(operations, resMap);
-            }
-    		return operations;
+        	OperationsFilter operationfilterFilter = createOperationsFilter(filter, showDeleted);
+    		operationfilterFilter.setDonorId(donor.getId());
+    		return findOperations(operationfilterFilter, offset, count, orderBy, orderAsc);
         }
         else {
         	return Collections.emptyList();
@@ -300,23 +276,8 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 			return 0;
 		}
 	}
-	
-	
-	private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, String filter, String type, boolean showDeleted) {
-		if (!showDeleted) {
-            criteria.add(Restrictions.eq("deleted", false));
-        }
-		if (StringUtils.isNotEmpty(filter)) {
-			Disjunction disjunction = Restrictions.disjunction();
-			if (type.equals("Processing")) {
-				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-			}
-	        criteria.add(disjunction);
-		}
-        return criteria;
-	}
 	/**
-	 * BiomaterialDonor -универсальный метод использующий фильтр
+	 * BiomaterialDonor - универсальный метод использующий фильтр
 	 */
 	
 	private List<BiomaterialDonor> findDonors(BiomaterialDonorsFilter filter,int offset, int count, String orderBy, boolean orderAsc) {
@@ -325,20 +286,25 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
 			addOrderCriteria(orderBy, orderAsc, detachedCriteria);
 			if (DonorHelper.USE_SRPD) {
-				DonorHelper donorHelper = new DonorHelper();
-				Map<Integer,Map<FieldsInMap, Object>> resMap = null;
+				Map<String,Map<FieldsInMap, Object>> resMap = null;
+				Map<FieldsInMap, Object> paramMap = null;
 				/*this logic will be executed, when some of 'parameters for search in SRPD' will be 'not Null'*/
-				if(filter.isQueryToSRPD()) {
-					resMap = donorHelper.listIdsDonorsForFilter(filter);
+				/*if(filter.isQueryToSRPD()) {
+					/* параметры для предварительного поиска данных в ЗХПД */
+					/*paramMap = helper.listIdsDonorsForFilter(filter);
+					resMap = srpdDao.get(paramMap);
 					filter.setListSRPDIds(resMap.keySet());
-				}
+				}*/
 				donors = getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 				/* logic used, when query to SRPD were not execute*/
 				if (resMap == null) {
-					filter.setListSRPDIds(donorHelper.listIdsSRPDFromBiomaterialDonors(donors));
-					resMap = donorHelper.listIdsDonorsForFilter(filter);
+					/* количество необходимых данных из ЗХПД могло увеличится на основе выборки из базы ТРФУ,
+					 *  поэтому переотправляем запрос к ЗХПД */
+					filter.setListSRPDIds(helper.listIdsSRPDFromBiomaterialDonors(donors));
+					paramMap = helper.listIdsDonorsForFilter(filter);
+					resMap = srpdDao.get(paramMap);
 				}
-				donors = donorHelper.mergeBiomaterialDonorsAndMap(donors, resMap);
+				donors = helper.mergeBiomaterialDonorsAndMap(donors, resMap);
 			} else {
 				donors = getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 			}
@@ -349,12 +315,28 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
 			if (DonorHelper.USE_SRPD) {
 				if(filter.isQueryToSRPD()) {
-					Map<Integer,Map<FieldsInMap, Object>> resMap = new DonorHelper().listIdsDonorsForFilter(filter);
+					Map<FieldsInMap, Object> paramMap = helper.listIdsDonorsForFilter(filter);
+					Map<String,Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
 					filter.setListSRPDIds(resMap.keySet());
 				}
-			}
+			} 
 			return getCountOf(getSearchCriteria(detachedCriteria, filter));
 			
+		}
+		/**
+		 * Operation - универсальный метод для поиска и подсчёта количества
+		 */
+		private List<Operation> findOperations(OperationsFilter filter, int offset, int count, String orderBy, boolean orderAsc) {
+			List<Operation> operations = null;
+			DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
+			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
+			operations =  getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+			return operations;
+		}
+		private long countOperations(OperationsFilter filter) {
+			DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
+			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
+			return getCountOf(detachedCriteria);
 		}
 		/**
 		 * Biomaterial - универсальные методы для нахождения и подсчётак количества
@@ -362,20 +344,21 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		private List<Biomaterial> findBiomaterials(BiomaterialsFilter filter,int offset, int count, String orderBy, boolean orderAsc) {
 			DetachedCriteria detachedCriteria = createDetachedCriteria(Biomaterial.class);
 			addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
 			@SuppressWarnings("unchecked")
 			List<Biomaterial> biomaterials = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 			if (DonorHelper.USE_SRPD) {
-				DonorHelper donorHelper = new DonorHelper();
-				filter.setListSRPDIds(donorHelper.listIdsSRPDFromBiomaterial(biomaterials));
-				Map<Integer, Map<FieldsInMap, Object>> map = donorHelper.listIdsDonorsForFilter(filter);
-				biomaterials = donorHelper.mergeBiomaterialsAndMap(biomaterials, map);
+				filter.setListSRPDIds(helper.listIdsSRPDFromBiomaterial(biomaterials));
+				Map<FieldsInMap, Object> map = helper.listIdsDonorsForFilter(filter);
+				Map<String,Map<FieldsInMap, Object>> resMap = srpdDao.get(map);
+				biomaterials = helper.mergeBiomaterialsAndMap(biomaterials, resMap);
 			}
 			return biomaterials;
 		}
 		private long countBiomaterials(BiomaterialsFilter filter) {
 			DetachedCriteria detachedCriteria = createDetachedCriteria(Biomaterial.class);
+			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
 			return getCountOf(getSearchCriteria(detachedCriteria, filter));
-			
 		}
 		/**
 		 * Creation DetachedCriteria for BiomaterialDonorsFilter
@@ -389,7 +372,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				String pregnancy = filter.getPregnancy();
 				String commentary = filter.getCommentary();
 				String factAdress = filter.getFactAdress();
-				Collection<Integer> listIdsSRPD = filter.getListSRPDIds();
+				Collection<String> listIdsSRPD = filter.getListSRPDIds();
 				if (externalId != null) {
 					disjunction.add(Restrictions.eq("externalId", externalId));
 					
@@ -455,7 +438,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 						disjunction.add(Restrictions.ilike("registrationAddress", registrationAdress, MatchMode.ANYWHERE));
 					}
 				} else if (listIdsSRPD != null) {
-						disjunction.add(Restrictions.in("temp_storage_id", listIdsSRPD));
+						disjunction.add(Restrictions.in("tempStorageId", listIdsSRPD));
 				}
 				criteria.add(disjunction);	
 				if (!filter.isShowDeleted()) {
@@ -473,7 +456,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				String number = filter.getNumber();
 				String recepient = filter.getRecepient();
 				String idNumber = filter.getIdNumber();
-				Collection<Integer> listIdsSRPD = filter.getListSRPDIds();
+				Collection<String> listIdsSRPD = filter.getListSRPDIds();
 				Integer donorId = filter.getDonorId();
 				if (StringUtils.isNotEmpty(number)) {
 					disjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
@@ -499,7 +482,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 						disjunction.add(Restrictions.ilike("donor.firstName", firstName, MatchMode.ANYWHERE));
 					}
 				} else if (listIdsSRPD != null) {
-					disjunction.add(Restrictions.in("donor.temp_storage_id", listIdsSRPD));
+					disjunction.add(Restrictions.in("donor.tempStorageId", listIdsSRPD));
 				}
 				criteria.add(disjunction);
 				if (!filter.isShowDeleted()) {
@@ -508,7 +491,6 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				if (donorId != null) {
 					criteria.add(Restrictions.eq("donor.id", donorId));
 				}
-				
 			}
 			return criteria;
 		}
@@ -543,6 +525,22 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				}
 			}
 			return criteria;
+		}
+		/**
+		 * Старая версия создания DetachedCriteria
+		 */
+		private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, String filter, String type, boolean showDeleted) {
+			if (!showDeleted) {
+	            criteria.add(Restrictions.eq("deleted", false));
+	        }
+			if (StringUtils.isNotEmpty(filter)) {
+				Disjunction disjunction = Restrictions.disjunction();
+				if (type.equals("Processing")) {
+					disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
+				}
+		        criteria.add(disjunction);
+			}
+	        return criteria;
 		}
 		/**
 		 * Create filter for creation DetachedCriteria for BiomaterialDonor

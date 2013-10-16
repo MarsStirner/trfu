@@ -35,9 +35,24 @@ import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01RegistrationRequest;
 import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01Subject1;
 import org.hl7.v3.PRPAIN101311UV02MFMIMT700721UV01Subject2;
 import org.hl7.v3.PRPAIN101312UV02;
+import org.hl7.v3.PRPAIN101314UV02;
+import org.hl7.v3.PRPAIN101314UV02MFMIMT700721UV01ControlActProcess;
+import org.hl7.v3.PRPAIN101314UV02MFMIMT700721UV01RegistrationRequest;
+import org.hl7.v3.PRPAIN101314UV02MFMIMT700721UV01Subject1;
+import org.hl7.v3.PRPAIN101314UV02MFMIMT700721UV01Subject2;
+import org.hl7.v3.PRPAIN101315UV02;
 import org.hl7.v3.PRPAMT101301UV02IdentifiedPerson;
 import org.hl7.v3.PRPAMT101301UV02OtherIDs;
 import org.hl7.v3.PRPAMT101301UV02Person;
+import org.hl7.v3.PRPAMT101302UV02IdentifiedPerson;
+import org.hl7.v3.PRPAMT101302UV02IdentifiedPersonIdentifiedPerson;
+import org.hl7.v3.PRPAMT101302UV02OtherIDsId;
+import org.hl7.v3.PRPAMT101302UV02PersonAddr;
+import org.hl7.v3.PRPAMT101302UV02PersonAdministrativeGenderCode;
+import org.hl7.v3.PRPAMT101302UV02PersonAsOtherIDs;
+import org.hl7.v3.PRPAMT101302UV02PersonBirthTime;
+import org.hl7.v3.PRPAMT101302UV02PersonName;
+import org.hl7.v3.PRPAMT101302UV02PersonTelecom;
 import org.hl7.v3.PRPAMT101303UV02OtherIDs;
 import org.hl7.v3.PRPAMT101307UV02IdentifiedPersonIdentifier;
 import org.hl7.v3.PRPAMT101307UV02ParameterList;
@@ -53,11 +68,10 @@ import ru.korusconsulting.pdmanager.TmisPdm;
 
 
 public class SRPDDao {
-	private static final String HOME_PHONE = "tel:";
-	private static final String MOBILE_PHONE = "cell-tel:";
-	private static final String WORKING_PHONE = "working-office-tel:";
+	private static final String PHONE = "tel:";
 	private static final String EMAIL = "mailto:";
 	
+	private static final String ROOT_ID_FROM_SRPD_FOR_UPDATE ="3.0.0.0";
 	private static final String ROOT_PASSPORT_NUMBER = "3.0.0.2";
 	private static final String ROOT_INSURANCE_NUMBER = "3.0.0.5";
 	private static final String DATE_FORMAT_FOR_SRPD = "yyyyMMdd";
@@ -106,7 +120,7 @@ public class SRPDDao {
         PRPAIN101308UV02 res = pdm.getDemographics(prm);
         for (PRPAIN101308UV02MFMIMT700711UV01Subject1 i: res.getControlActProcess().getSubject()) {
         	Map<FieldsInMap, Object> resMap = parseAnswerForOnePerson(i);
-        	result.put(resMap.get(FieldsInMap.TEMP_STORAGE_ID).toString(),resMap);
+        	result.put((String)resMap.get(FieldsInMap.TEMP_STORAGE_ID),resMap);
         }
         return result;   
 	}
@@ -143,39 +157,113 @@ public class SRPDDao {
 	
 	/* Send information about current donor and wait for id from SRPD */
 	public Map<FieldsInMap, Object> addPDToSRPD(Map<FieldsInMap, Object> information) {
-		String firstName = null;
-		String lastName = null;
-		String middleName = null;
-		String omcNumber = null;
-		String passportNumber = null;
-		String phone = null;
-		String adress = null;
-		String workPhone = null;
-		String email = null;
-		String employment = null;
-		String birth = null;
-		String gender = null;
-		lastName = (String)information.get(FieldsInMap.LAST_NAME);
-		firstName = (String)information.get(FieldsInMap.FIRST_NAME);
-		middleName = (String)information.get(FieldsInMap.MIDDLE_NAME);
-		omcNumber = (String)information.get(FieldsInMap.OMC_NUMBER);
-		passportNumber = (String)information.get(FieldsInMap.PASSPORT_NUMBER);
-		phone = (String)information.get(FieldsInMap.PHONE);
-		adress = (String)information.get(FieldsInMap.ADRESS);
-		workPhone = (String)information.get(FieldsInMap.WORK_PHONE);
-		email = (String)information.get(FieldsInMap.EMAIL);
-		employment = (String)information.get(FieldsInMap.EMPLOYMENT);
-		birth = (String)information.get(FieldsInMap.BIRTH);
-		if (information.get(FieldsInMap.GENDER) != null) {
-			gender = (String)information.get(FieldsInMap.GENDER);
-		}
-		String result = addPDToSRPDData(lastName, firstName, middleName, omcNumber, passportNumber, phone, adress, workPhone, email, employment, birth, gender);
+		String result = addPDToSRPDData((String)information.get(FieldsInMap.FIRST_NAME), 
+										(String)information.get(FieldsInMap.LAST_NAME),
+										(String)information.get(FieldsInMap.MIDDLE_NAME), 
+										(String)information.get(FieldsInMap.OMC_NUMBER), 
+										(String)information.get(FieldsInMap.PASSPORT_NUMBER),
+										(String)information.get(FieldsInMap.PHONE), 
+										(String)information.get(FieldsInMap.ADRESS),
+										(String)information.get(FieldsInMap.WORK_PHONE), 
+										(String)information.get(FieldsInMap.EMAIL),
+										(String)information.get(FieldsInMap.EMPLOYMENT), 
+										(String)information.get(FieldsInMap.BIRTH), 
+										(String)information.get(FieldsInMap.GENDER));
 		information.put(FieldsInMap.TEMP_STORAGE_ID, result);
 		return information;
 	}
 	
-	public Map<String, Map<FieldsInMap, Object>> updateToSRPD(Map<FieldsInMap, Object> params) {
-		return null;
+	public Map<FieldsInMap, Object> updateToSRPD(Map<FieldsInMap, Object> params) {
+		String tempStorageId = (String)params.get(FieldsInMap.TEMP_STORAGE_ID);
+		String lastName = (String)params.get(FieldsInMap.LAST_NAME); 
+		String firstName = (String)params.get(FieldsInMap.FIRST_NAME);
+		String middleName = (String)params.get(FieldsInMap.MIDDLE_NAME); 
+		String insurance = (String)params.get(FieldsInMap.OMC_NUMBER); 
+		String passport = (String)params.get(FieldsInMap.PASSPORT_NUMBER);
+		String phone = (String)params.get(FieldsInMap.PHONE); 
+		String adress = (String)params.get(FieldsInMap.ADRESS);
+		String workPhone = (String)params.get(FieldsInMap.WORK_PHONE); 
+		String email = (String)params.get(FieldsInMap.EMAIL);
+		String employment = (String)params.get(FieldsInMap.EMPLOYMENT); 
+		String birth = (String)params.get(FieldsInMap.BIRTH); 
+		String gender = (String)params.get(FieldsInMap.BIRTH);
+		if(StringUtils.isEmpty(tempStorageId)) {
+			return null;
+		}
+		ObjectFactory factory = new ObjectFactory();
+		final PRPAIN101314UV02 prm = factory.createPRPAIN101314UV02();
+	    final PRPAIN101314UV02MFMIMT700721UV01ControlActProcess controlActProcess = factory.createPRPAIN101314UV02MFMIMT700721UV01ControlActProcess();
+	    prm.setControlActProcess(controlActProcess);
+	    final PRPAIN101314UV02MFMIMT700721UV01Subject1 subject1 = factory.createPRPAIN101314UV02MFMIMT700721UV01Subject1();
+	    controlActProcess.setSubject(subject1);
+	    final PRPAIN101314UV02MFMIMT700721UV01RegistrationRequest regRequest = factory.createPRPAIN101314UV02MFMIMT700721UV01RegistrationRequest();
+	    subject1.setRegistrationRequest(regRequest);
+	    final PRPAIN101314UV02MFMIMT700721UV01Subject2 subject2 = factory.createPRPAIN101314UV02MFMIMT700721UV01Subject2();
+	    regRequest.setSubject1(subject2);
+	    final PRPAMT101302UV02IdentifiedPerson identifiedPerson = factory.createPRPAMT101302UV02IdentifiedPerson();
+	    subject2.setIdentifiedPerson(identifiedPerson);
+	    final PRPAMT101302UV02IdentifiedPersonIdentifiedPerson person = factory.createPRPAMT101302UV02IdentifiedPersonIdentifiedPerson();
+	    identifiedPerson.setIdentifiedPerson(person);
+	    final PRPAMT101302UV02PersonAsOtherIDs otherId = factory.createPRPAMT101302UV02PersonAsOtherIDs();
+	    person.getAsOtherIDs().add(otherId);
+	    final PRPAMT101302UV02OtherIDsId id = factory.createPRPAMT101302UV02OtherIDsId();
+	    otherId.getId().add(id);
+	    id.setRoot(ROOT_ID_FROM_SRPD_FOR_UPDATE);
+	    id.setExtension(tempStorageId);
+
+	    final PRPAMT101302UV02PersonName pn = factory.createPRPAMT101302UV02PersonName();
+	    person.getName().add(pn);
+	    
+	    if (StringUtils.isNotEmpty(lastName)) {
+	    	EnGiven name = factory.createEnGiven();
+	    	name.getContent().add(lastName);
+	    	pn.getContent().add(factory.createENGiven(name));
+	    }
+	    if (StringUtils.isNotEmpty(middleName)) {
+	    	EnGiven suffix = factory.createEnGiven(); 
+	    	suffix.getContent().add(middleName);
+	    	pn.getContent().add(factory.createENGiven(suffix));
+	    }
+	    if (StringUtils.isNotEmpty(firstName)){
+	    	EnFamily family = factory.createEnFamily();
+	    	family.getContent().add(firstName);
+	    	pn.getContent().add(factory.createENFamily(family));
+	    }
+	    
+	    if (StringUtils.isNotEmpty(phone)) {
+	    	person.getTelecom().add(createPersonTelecom(factory, phone, TelecommunicationAddressUse.HP));
+	    }
+	    if (StringUtils.isNotEmpty(workPhone)) {
+	    	person.getTelecom().add(createPersonTelecom(factory, workPhone, TelecommunicationAddressUse.WP));
+	    }
+	    if (StringUtils.isNotEmpty(email)) {
+	    	person.getTelecom().add(createPersonTelecom(factory, email, null));
+	    }
+	    
+	    if (StringUtils.isNotEmpty(employment)) {
+	    	person.getAddr().add(createPersonAddr(factory, employment, PostalAddressUse.WP));
+	    }
+	    if (StringUtils.isNotEmpty(adress)) {
+	    	person.getAddr().add(createPersonAddr(factory, adress, PostalAddressUse.H));
+	    }
+	    
+	    if (StringUtils.isNotEmpty(birth)) {
+	    	person.setBirthTime(createBirthTime(factory, birth));
+	    }
+	    
+	    if (StringUtils.isNotEmpty(passport)) {
+	    	person.getAsOtherIDs().add(createPersonOtherIDs(factory, passport, ROOT_PASSPORT_NUMBER));
+	    }
+	    if (StringUtils.isNotEmpty(insurance)) {
+	    	person.getAsOtherIDs().add(createPersonOtherIDs(factory, insurance, ROOT_INSURANCE_NUMBER));
+	    }
+	    
+	    if (StringUtils.isNotEmpty(gender)) {
+	    	person.setAdministrativeGenderCode(createGender(factory, (String)params.get(FieldsInMap.GENDER)));
+	    }
+	    
+        final PRPAIN101315UV02 res = pdm.update(prm);
+		return params;
 	}
 	
 	public Map<String,Map<FieldsInMap, Object>> findToSRPD(Map<FieldsInMap, Object> params) {
@@ -210,11 +298,6 @@ public class SRPDDao {
         	result.put(resMap.get(FieldsInMap.TEMP_STORAGE_ID).toString(),resMap);
         }
         return result;
-	}
-	/* Creation parameters for findCandidates-method of Web-service */
-	private PRPAIN101305UV02 createFindToSRPD(Map<DonorHelper.FieldsInMap, Object> fieldsForSearch) {
-		PRPAIN101305UV02 parameters = new PRPAIN101305UV02();
-		return parameters;
 	}
 	
 	public String addPDToSRPDData(String family, String givven, String suffix, 
@@ -254,18 +337,18 @@ public class SRPDDao {
         person.getName().add(name);
         List<ADExplicit> adreses = person.getAddr();
         List<TEL> tels = person.getTelecom();
-        final ADExplicit adr = new ADExplicit();
+        final ADExplicit adr = factory.createADExplicit();
         adr.getUse().add(PostalAddressUse.H);
         AdxpStreetAddressLine strAdrLine = factory.createAdxpStreetAddressLine();
         strAdrLine.getContent().add(address);
         adr.getContent().add(factory.createADStreetAddressLine(strAdrLine));
         adreses.add(adr);
-        final AD adrEmp = new AD();
+        final ADExplicit adrEmp = factory.createADExplicit();
         adrEmp.getUse().add(PostalAddressUse.WP);
         strAdrLine = factory.createAdxpStreetAddressLine();
         strAdrLine.getContent().add(employmentId);
         adrEmp.getContent().add(factory.createADStreetAddressLine(strAdrLine));
-        adreses.add(adr);
+        adreses.add(adrEmp);
         person.getAsOtherIDs().add(new PRPAMT101301UV02OtherIDs() );
         person.getAsOtherIDs().get(0).getId().add(new II());
         person.getAsOtherIDs().get(0).getId().get(0).setRoot(ROOT_PASSPORT_NUMBER);
@@ -275,16 +358,16 @@ public class SRPDDao {
         person.getAsOtherIDs().get(0).getId().get(1).setExtension(numberOMC);
         
         if (StringUtils.isNotEmpty(homePhone)) {
-        	tels.add(createTEL(factory, homePhone, TelecommunicationAddressUse.HP));
+        	tels.add(createPersonTelecom(factory, homePhone, TelecommunicationAddressUse.HP));
         }
         if (StringUtils.isNotEmpty(workPhone)) {
-        	tels.add(createTEL(factory, workPhone, TelecommunicationAddressUse.WP));
+        	tels.add(createPersonTelecom(factory, workPhone, TelecommunicationAddressUse.WP));
         }
         if (StringUtils.isNotEmpty(email)) {
-        	tels.add(createTEL(factory, email, null));
+        	tels.add(createPersonTelecom(factory, email, null));
         }
         
-        TS birthTime = createTS(factory, birthDate);
+        TS birthTime = createBirthTime(factory, birthDate);
         person.setBirthTime(birthTime);
 
         CE ce = createGender(null, genderId);
@@ -296,26 +379,21 @@ public class SRPDDao {
 		return root;
 	}
 	/* ---------------------create TEL------------------------------ */
-	private TEL createTEL(ObjectFactory factory, String value, TelecommunicationAddressUse type) {
+	private PRPAMT101302UV02PersonTelecom createPersonTelecom(ObjectFactory factory, String value, TelecommunicationAddressUse type) {
 		if (StringUtils.isNotEmpty(value)) {
 			if (factory == null) {
 				factory = new ObjectFactory();
 			}
-			TEL tel = factory.createTEL();
+			PRPAMT101302UV02PersonTelecom tel = factory.createPRPAMT101302UV02PersonTelecom();
 			if (!"".equals(value) && value != null) {
 				if (type != null) {
 					switch (type) {
-					case HP:
-						value = HOME_PHONE + value;	
-						break;
-					case MC:
-						value = MOBILE_PHONE + value;	
-						break;
-					case WP:
-						value = WORKING_PHONE + value;	
-						break;
-					}
-					tel.getUse().add(type);
+						case HP: 
+						case WP:
+							value = PHONE + value;
+							tel.getUse().add(type);
+							break;
+						}
 				} else {
 					value = EMAIL + value;
 				}
@@ -324,14 +402,15 @@ public class SRPDDao {
 			return tel;
 		}
 		return null;
+		
 	}
 	/* -------------------- creation Gender ----------------------- */
-	private CE createGender(ObjectFactory factory, String genderId) {
+	private PRPAMT101302UV02PersonAdministrativeGenderCode createGender(ObjectFactory factory, String genderId) {
 		if (genderId != null) {
 			if (factory == null) {
 				factory = new ObjectFactory();
 			}
-			CE gender = factory.createCE();
+			PRPAMT101302UV02PersonAdministrativeGenderCode gender = factory.createPRPAMT101302UV02PersonAdministrativeGenderCode();
 			if ("0".equals(genderId)) {
 				gender.setCode("F");
 				gender.setCodeSystem("2.16.840.1.113883.5.1");
@@ -343,14 +422,48 @@ public class SRPDDao {
 		}
 		return null;
 	}
-	/* ------------------ creation TS ----------------------------- */
-	private TS createTS(ObjectFactory factory, String date) {
-		if (date != null) {
-			TS ts = factory.createTS();
-			ts.setValue(date);
-			return ts;
+	/* ------------------ создание даты рождения ----------------------------- */
+	private PRPAMT101302UV02PersonBirthTime createBirthTime(ObjectFactory factory, String date) {
+		if (StringUtils.isNotEmpty(date)) {
+			if (factory == null) {
+				factory = new ObjectFactory();
+			}
+			if (date != null) {
+				PRPAMT101302UV02PersonBirthTime ts = factory.createPRPAMT101302UV02PersonBirthTime();
+				ts.setValue(date);
+				return ts;
+			}
 		}
 		return null;
+	}
+	/* ---------------- для хранения данных о паспорте и страховке ------------ */
+	private PRPAMT101302UV02PersonAsOtherIDs createPersonOtherIDs(ObjectFactory factory, String idValue, String rootType) {
+		if (StringUtils.isNotEmpty(idValue) && StringUtils.isNotEmpty(rootType)) {
+			if (factory == null) {
+				factory = new ObjectFactory();
+			}
+			PRPAMT101302UV02PersonAsOtherIDs id = factory.createPRPAMT101302UV02PersonAsOtherIDs();
+		    id.getId().add(new PRPAMT101302UV02OtherIDsId());
+		    id.getId().get(0).setRoot(rootType);
+		    id.getId().get(0).setExtension(idValue);
+			return id;
+		}
+		return null;
+	}
+	/* ----------------- создание Адреса для update ---------------- */
+	private PRPAMT101302UV02PersonAddr createPersonAddr(ObjectFactory factory, String value, PostalAddressUse type ) {
+		if (StringUtils.isNotEmpty(value)) {
+			if (factory == null) {
+				factory = new ObjectFactory();
+			}
+			PRPAMT101302UV02PersonAddr adress = factory.createPRPAMT101302UV02PersonAddr();
+			AdxpStreetAddressLine strAdrLine = factory.createAdxpStreetAddressLine();
+	        strAdrLine.getContent().add(value);
+	        adress.getContent().add(factory.createADStreetAddressLine(strAdrLine));
+			adress.getUse().add(type);
+			return adress;
+		}
+		return null; 
 	}
 	/* ----------- creation tel-format from URL-format ------------ */
 	private String reParseTelcom(String telcom) {
@@ -378,12 +491,16 @@ public class SRPDDao {
 		return newDate;
 	}
 	
-	private void createAdressFromAD(String adr, AD ad) {
+	private String createAdressFromAD(AD ad) {
+		String adr = null;
 		for(Serializable i: ad.getContent()) {
-    		if(((JAXBElement)i).getDeclaredType() == AdxpStreetAddressLine.class) {
-    			adr =  ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent().get(0).toString();
+    		if(((JAXBElement)i).getDeclaredType() == AdxpStreetAddressLine.class
+    				&& ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent() != null
+    				&& ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent().size() > 0 ) {
+    			adr =  (String)(((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent().get(0));
     		}
     	}
+		return adr;
 	}
 	private Map<FieldsInMap, Object> parseAnswerForOnePerson(PRPAIN101308UV02MFMIMT700711UV01Subject1 pd ) {
 		Map<FieldsInMap, Object> map = new HashMap<DonorHelper.FieldsInMap, Object>();
@@ -404,29 +521,15 @@ public class SRPDDao {
 	        String idFromSRPD = pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getId().get(0).getExtension();
 	        List<AD> adr =  pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getAddr();
 	        if(adr != null && adr.size() > 0) {
-	        	for (Serializable i : adr.get(0).getContent()) {
-	        		if (((JAXBElement)i).getDeclaredType().equals(AdxpStreetAddressLine.class) 
-	        				&& ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent() != null
-	        				&& ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent().size() > 0) {
-	        			addr = ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent().get(0).toString();
-	        			break;
+	        	for (AD i : adr) {
+	        		if (i.getUse() != null && i.getUse().size() > 0) {
+	        			if (PostalAddressUse.H.equals(i.getUse().get(0))) {
+	        				addr = createAdressFromAD(i);
+	        			} else if (PostalAddressUse.WP.equals(i.getUse().get(0))) {
+	        				employment = createAdressFromAD(i);
+	        			}
 	        		}
 	        	}
-	        	for (Serializable i : adr.get(1).getContent()) {
-	        		if (i != null && ((JAXBElement)i).getDeclaredType().equals(AdxpStreetAddressLine.class)
-	        				&& ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent() != null
-	        				&& ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent().size() > 0) {
-	        			employment = ((AdxpStreetAddressLine)((JAXBElement) i).getValue()).getContent().get(0).toString();
-	        			break;
-	        		}
-	        	}
-	        	/*for (AD i : adr) {
-	        		if (PostalAddressUse.H.equals(i.getUse().get(0))) {
-	        			createAdressFromAD(addr, i);
-	        		} else if (PostalAddressUse.WP.equals(i.getUse().get(0))) {
-	        			createAdressFromAD(employment, i);
-	        		}
-	        	}*/
 	        	
 	        }
 	        List<Serializable> name = pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getName().get(0).getContent();
@@ -436,10 +539,7 @@ public class SRPDDao {
 	        		if(i.getUse().get(0).equals(TelecommunicationAddressUse.HP)) {
 	        			// Home phone
 	        			homePhone = reParseTelcom(i.getValue());
-	        		} /*else if(i.getUse().get(0).equals(TelecommunicationAddressUse.MC)) {
-	        			// Mobile phone
-	        			mobilePhone = reParseTelcom(i.getValue());
-	        		}*/ else if (i.getUse().get(0).equals(TelecommunicationAddressUse.WP)) {
+	        		} else if (i.getUse().get(0).equals(TelecommunicationAddressUse.WP)) {
 	        			// Work phone
 	        			workPhone = reParseTelcom(i.getValue());
 	        		} 
@@ -482,7 +582,9 @@ public class SRPDDao {
 	        if (pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getBirthTime() != null) {
 	        	birthTime = pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getBirthTime().getValue();
 	        }
-	        gender = pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getAdministrativeGenderCode().getCode();
+	        if (pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getAdministrativeGenderCode() != null) {
+	        	gender = pd.getRegistrationEvent().getSubject1().getIdentifiedPerson().getIdentifiedPerson().getAdministrativeGenderCode().getCode();
+	        }
 	        map.put(FieldsInMap.ADRESS, addr);
 	        map.put(FieldsInMap.FIRST_NAME, firstName);
 	        map.put(FieldsInMap.LAST_NAME, lastName);
