@@ -371,7 +371,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 		        }
 	        } 
 	        if (listSRPDIds != null && listSRPDIds.size() > 0) {
-	        	junction.add(Restrictions.in("temp_storage_id", listSRPDIds));
+	        	junction.add(Restrictions.in("tempStorageId", listSRPDIds));
 	        }
 	        //////////////////////////// refactoring /////////////////////////////////////////////
 	        if (!donorsFilter.isConjunction()) {
