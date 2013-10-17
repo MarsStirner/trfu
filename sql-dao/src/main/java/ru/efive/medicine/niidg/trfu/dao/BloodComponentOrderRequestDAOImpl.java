@@ -200,9 +200,12 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 		if (filter != null) {
 			Conjunction conjunction = Restrictions.conjunction();
 			String number = filter.getNumber();
-			Date created = filter.getCreated();
-			Date factDate = filter.getFactDate();
-			Date recipientBirth = filter.getRecipientBirth();
+			Date createdFrom = filter.getCreatedFrom();
+			Date createdTo = filter.getCreatedTo();
+			Date factDateFrom = filter.getFactDateFrom();
+			Date factDateTo = filter.getFactDateTo();
+			Date recipientBirthFrom = filter.getRecipientBirthFrom();
+			Date recipientBirthTo = filter.getRecipientBirthTo();
 			String recipientFirstName = filter.getRecipientFirstName();
 			String recipient = filter.getRecipient();
 			String recipientMiddleName = filter.getRecipientMiddleName();
@@ -215,14 +218,14 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 			if (StringUtils.isNotEmpty(number)) {
 				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
 			}
-			if (created != null) {
-				addDateSearchCriteria(conjunction, created, "created");
+			if (createdFrom != null && createdTo != null) {
+				addDateSearchCriteria(conjunction, createdFrom, createdTo, "created");
 			}
-			if (factDate != null) {
-				addDateSearchCriteria(conjunction, factDate, "factDate");
+			if (factDateFrom != null && factDateTo != null) {
+				addDateSearchCriteria(conjunction, factDateFrom, factDateTo, "factDate");
 			}
-			if (recipientBirth != null) {
-				addDateSearchCriteria(conjunction, recipientBirth, "recipientBirth");
+			if (recipientBirthFrom != null && recipientBirthTo != null) {
+				addDateSearchCriteria(conjunction, recipientBirthFrom, recipientBirthTo, "recipientBirth");
 			}
 			if (StringUtils.isNotEmpty(recipient)) {
 				conjunction.add(Restrictions.ilike("recipient", recipient, MatchMode.ANYWHERE));

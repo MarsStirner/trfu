@@ -60,10 +60,15 @@ public class BloodComponentFilterableListHolderBean extends
 		int makerId = storedFilter.getMakerId();
 		int bloodGroupId = storedFilter.getBloodGroupId();
 		int rhesusFactorId = storedFilter.getRhesusFactorId();
-		Date donationDate = storedFilter.getDonationDate();
-		Date expirationDate = storedFilter.getExpirationDate();
+		Date donationDateFrom = storedFilter.getDonationDateFrom();
+		Date donationDateTo = storedFilter.getDonationDateTo();
+		Date expirationDateFrom = storedFilter.getExpirationDateFrom();
+		Date expirationDateTo = storedFilter.getExpirationDateTo();
 		int statusId = storedFilter.getStatusId();
 		String fio = storedFilter.getFio();
+		String purchased = storedFilter.isPurchased() ? "true" : "false";
+		Date historyCreatedDateFrom = storedFilter.getHistoryCreatedDateFrom();
+		Date historyCreatedDateTo = storedFilter.getHistoryCreatedDateTo();
 
 		if (StringUtils.isNotEmpty(number)) {
 			parameters.add(new FilterParameter(
@@ -96,16 +101,28 @@ public class BloodComponentFilterableListHolderBean extends
 								.getValue()));
 			}
 		}
-		if (donationDate != null) {
+		if (donationDateFrom != null) {
 			parameters.add(new FilterParameter(
-					AbstractFilter.DONATION_DATE_TITLE, DateHelper
-							.formatDateByPattern(donationDate,
+					AbstractFilter.DATE_FROM_TITLE, DateHelper
+							.formatDateByPattern(donationDateFrom,
 									DateHelper.DATE_WITHOUT_TIME_PATTERN)));
 		}
-		if (expirationDate != null) {
+		if (donationDateTo != null) {
 			parameters.add(new FilterParameter(
-					AbstractFilter.EXPIRATION_DATE_TITLE, DateHelper
-							.formatDateByPattern(expirationDate,
+					AbstractFilter.DATE_TO_TITLE, DateHelper
+							.formatDateByPattern(donationDateTo,
+									DateHelper.DATE_WITHOUT_TIME_PATTERN)));
+		}
+		if (expirationDateFrom != null) {
+			parameters.add(new FilterParameter(
+					AbstractFilter.DATE_FROM_TITLE, DateHelper
+							.formatDateByPattern(expirationDateFrom,
+									DateHelper.DATE_WITHOUT_TIME_PATTERN)));
+		}
+		if (expirationDateTo != null) {
+			parameters.add(new FilterParameter(
+					AbstractFilter.DATE_TO_TITLE, DateHelper
+							.formatDateByPattern(expirationDateTo,
 									DateHelper.DATE_WITHOUT_TIME_PATTERN)));
 		}
 		if (statusId != BloodComponentsFilter.BLOOD_COMPONENT_STATUS_NULL_VALUE) {
@@ -130,6 +147,20 @@ public class BloodComponentFilterableListHolderBean extends
 				parameters.add(new FilterParameter(AbstractFilter.MAKER_TITLE,
 						contragent.getFullName()));
 			}
+		}
+		parameters.add(new FilterParameter(
+				BloodComponentsFilter.PURCHASED_TITLE, purchased));
+		if (historyCreatedDateFrom != null) {
+			parameters.add(new FilterParameter(
+					AbstractFilter.DATE_FROM_TITLE, DateHelper
+							.formatDateByPattern(historyCreatedDateFrom,
+									DateHelper.DATE_WITHOUT_TIME_PATTERN)));
+		}
+		if (historyCreatedDateTo != null) {
+			parameters.add(new FilterParameter(
+					AbstractFilter.DATE_TO_TITLE, DateHelper
+							.formatDateByPattern(historyCreatedDateTo,
+									DateHelper.DATE_WITHOUT_TIME_PATTERN)));
 		}
 
 		return parameters;

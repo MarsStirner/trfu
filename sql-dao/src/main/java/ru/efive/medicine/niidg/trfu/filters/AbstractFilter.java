@@ -102,6 +102,14 @@ public abstract class AbstractFilter<T> implements Serializable {
 	 */
 	public static final String DONATION_DATE_TITLE = "Дата донации";
 	/**
+	 * Подпись для параметра "С".
+	 */
+	public static final String DATE_FROM_TITLE = "С";
+	/**
+	 * Подпись для параметра "По".
+	 */
+	public static final String DATE_TO_TITLE = "По";
+	/**
 	 * Подпись для параметра "Дата окончания срока хранения".
 	 */
 	public static final String EXPIRATION_DATE_TITLE = "Дата окончания <br/>срока хранения";
@@ -157,6 +165,10 @@ public abstract class AbstractFilter<T> implements Serializable {
 	 * Подпись для параметра "ФИО".
 	 */
 	public static final String FIO_TITLE = "ФИО";
+	/**
+	 * Подпись для параметра "Закупленный".
+	 */
+	public static final String PURCHASED_TITLE = "Закупленный";
 	
 	/**
 	 * "Нулевое" значение для группы крови.
@@ -261,6 +273,18 @@ public abstract class AbstractFilter<T> implements Serializable {
 
 	public String getDonationDateTitle() {
 		return DONATION_DATE_TITLE;
+	}
+	
+	public String getDateFromTitle() {
+		return DATE_FROM_TITLE;
+	}
+	
+	public String getDateToTitle() {
+		return DATE_TO_TITLE;
+	}
+	
+	public String getPurchasedTitle() {
+		return PURCHASED_TITLE;
 	}
 
 	public String getExpirationDateTitle() {

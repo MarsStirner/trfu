@@ -20,9 +20,13 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 	 */
 	private String number;
 	/**
-	 * Дата создания записи об обращении.
+	 * Дата создания записи об обращении с.
 	 */
-	private Date created;
+	private Date createdFrom;
+	/**
+	 * Дата создания записи об обращении по.
+	 */
+	private Date createdTo;
 	/**
 	 * Отделение.
 	 */
@@ -40,9 +44,13 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 	 */
 	private String recipientMiddleName;
 	/**
-	 * Дата рождения реципиента.
+	 * Дата рождения реципиента с.
 	 */
-	private Date recipientBirth;
+	private Date recipientBirthFrom;
+	/**
+	 * Дата рождения реципиента по.
+	 */
+	private Date recipientBirthTo;
     /**
      * Группа крови. Используются значения из таблицы trfu_blood_groups (BloodGroup тип),
      * к которым добавляется значение 0 - любой, значение по умолчанию, прописано в константе BLOOD_GROUP_NULL_VALUE).
@@ -62,10 +70,16 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 	 * 2 - любая, значение по умолчанию, прописано в константе TRANSFUSION_TYPE_NULL_VALUE).
 	 */
 	private int transfusionTypeId;
+	
+
 	/**
-	 * Дата выдачи компонента крови.
+	 * Дата выдачи компонента крови с.
 	 */
-	private Date factDate;
+	private Date factDateFrom;
+	/**
+	 * Дата выдачи компонента крови по.
+	 */
+	private Date factDateTo;
 	
 	/**
      * Конструктор по умолчанию.
@@ -83,12 +97,52 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 		this.number = number;
 	}
 
-	public Date getCreated() {
-		return created;
+	public Date getCreatedFrom() {
+		return createdFrom;
 	}
 
-	public void setCreated(Date created) {
-		this.created = created;
+	public void setCreatedFrom(Date createdFrom) {
+		this.createdFrom = createdFrom;
+	}
+
+	public Date getCreatedTo() {
+		return createdTo;
+	}
+
+	public void setCreatedTo(Date createdTo) {
+		this.createdTo = createdTo;
+	}
+
+	public Date getRecipientBirthFrom() {
+		return recipientBirthFrom;
+	}
+
+	public void setRecipientBirthFrom(Date recipientBirthFrom) {
+		this.recipientBirthFrom = recipientBirthFrom;
+	}
+
+	public Date getRecipientBirthTo() {
+		return recipientBirthTo;
+	}
+
+	public void setRecipientBirthTo(Date recipientBirthTo) {
+		this.recipientBirthTo = recipientBirthTo;
+	}
+
+	public Date getFactDateFrom() {
+		return factDateFrom;
+	}
+
+	public void setFactDateFrom(Date factDateFrom) {
+		this.factDateFrom = factDateFrom;
+	}
+
+	public Date getFactDateTo() {
+		return factDateTo;
+	}
+
+	public void setFactDateTo(Date factDateTo) {
+		this.factDateTo = factDateTo;
 	}
 
 	public String getDivision() {
@@ -123,14 +177,6 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 		this.recipientMiddleName = recipientMiddleName;
 	}
 
-	public Date getRecipientBirth() {
-		return recipientBirth;
-	}
-
-	public void setRecipientBirth(Date recipientBirth) {
-		this.recipientBirth = recipientBirth;
-	}
-
 	public int getBloodGroupId() {
 		return bloodGroupId;
 	}
@@ -163,31 +209,26 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 		this.transfusionTypeId = transfusionTypeId;
 	}
 
-	public Date getFactDate() {
-		return factDate;
-	}
-
-	public void setFactDate(Date factDate) {
-		this.factDate = factDate;
-	}
-
 	public int getTransfusionTypeNullValue() {
 		return TRANSFUSION_TYPE_NULL_VALUE;
 	}
 
 	protected void setDefaultValues() {
 		number = null;
-		created = null;
+		createdFrom = null;
+		createdTo = null;
 		division = null;
 		recipient = null;
 		recipientFirstName = null;
 		recipientMiddleName = null;
-		recipientBirth = null;
+		recipientBirthFrom = null;
+		recipientBirthTo = null;
 		bloodGroupId = BLOOD_GROUP_NULL_VALUE;
 		rhesusFactorId = RHESUS_FACTOR_NULL_VALUE;
 		bloodComponentTypeId = BLOOD_COMPONENT_TYPE_NULL_VALUE;
 		transfusionTypeId = TRANSFUSION_TYPE_NULL_VALUE;
-		factDate = null;
+		factDateFrom = null;
+		factDateTo = null;
 	}
 
 	@Override
@@ -198,16 +239,19 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 	@Override
 	public void fillFrom(BloodComponentOrdersFilter source) {
 		setNumber(source.getNumber());
-		setCreated(source.getCreated());
+		setCreatedFrom(source.getCreatedFrom());
+		setCreatedTo(source.getCreatedTo());
 		setDivision(source.getDivision());
 		setRecipient(source.getRecipient());
 		setRecipientFirstName(source.getRecipientFirstName());
 		setRecipientMiddleName(source.getRecipientMiddleName());
-		setRecipientBirth(source.getRecipientBirth());
+		setRecipientBirthFrom(source.getRecipientBirthFrom());
+		setRecipientBirthTo(source.getRecipientBirthTo());
 		setBloodGroupId(source.getBloodGroupId());
 		setRhesusFactorId(source.getRhesusFactorId());
 		setBloodComponentTypeId(source.getBloodComponentTypeId());
 		setTransfusionTypeId(source.getTransfusionTypeId());
-		setFactDate(source.getFactDate());
+		setFactDateFrom(source.getFactDateFrom());
+		setFactDateTo(source.getFactDateTo());
 	}
 }

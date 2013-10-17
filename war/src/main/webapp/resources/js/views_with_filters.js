@@ -27,7 +27,7 @@ function update_content() {
 
 function resizeTableWrapDiv() {
 	var tablewidth = $("#main_table").width();
-    jQuery("#table_wrap").width(tablewidth-326);
+    jQuery("#table_wrap").width(tablewidth-346);
 };
 
 function hideFilter() {

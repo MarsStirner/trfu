@@ -46,13 +46,34 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
      */
 	private int rhesusFactorId;
 	/**
-	 * Дата донации.
+	 * Дата донации с.
 	 */
-	private Date donationDate;
+	private Date donationDateFrom;
 	/**
-	 * Дата окончания срока хранения.
+	 * Дата донации по.
 	 */
-	private Date expirationDate;
+	private Date donationDateTo;
+	/**
+	 * Дата окончания срока хранения с.
+	 */
+	private Date expirationDateFrom;
+	/**
+	 * Дата окончания срока хранения по.
+	 */
+	private Date expirationDateTo;
+	/**
+	 * Признак закупленный.
+	 */
+	private boolean purchased;
+	/**
+	 * Дата создания записи с.
+	 */
+	private Date historyCreatedDateFrom;
+	/**
+	 * Дата создания записи по.
+	 */
+	private Date historyCreatedDateTo;
+
 	/**
 	 * Статус компонента крови (1 - Зарегистрирован; 2 - В карантине; 3 - Готов к выдаче; 
 	 * 4 - Задержка; 5 - Готов к выдаче из карантина; 6 - Брак из карантина;
@@ -113,28 +134,28 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 		this.rhesusFactorId = rhesusFactorId;
 	}
 
-	public Date getDonationDate() {
-		return donationDate;
-	}
-
-	public void setDonationDate(Date donationDate) {
-		this.donationDate = donationDate;
-	}
-
-	public Date getExpirationDate() {
-		return expirationDate;
-	}
-
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
-	}
-
 	public int getStatusId() {
 		return statusId;
 	}
 
 	public void setStatusId(int statusId) {
 		this.statusId = statusId;
+	}
+	
+	public Date getHistoryCreatedDateFrom() {
+		return historyCreatedDateFrom;
+	}
+
+	public void setHistoryCreatedDateFrom(Date historyCreatedDateFrom) {
+		this.historyCreatedDateFrom = historyCreatedDateFrom;
+	}
+
+	public Date getHistoryCreatedDateTo() {
+		return historyCreatedDateTo;
+	}
+
+	public void setHistoryCreatedDateTo(Date historyCreatedDateTo) {
+		this.historyCreatedDateTo = historyCreatedDateTo;
 	}
 
 	public int getMakerNullValue() {
@@ -147,6 +168,46 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 
 	public void setFio(String fio) {
 		this.fio = fio;
+	}
+	
+	public Date getDonationDateFrom() {
+		return donationDateFrom;
+	}
+
+	public void setDonationDateFrom(Date donationDateFrom) {
+		this.donationDateFrom = donationDateFrom;
+	}
+
+	public Date getDonationDateTo() {
+		return donationDateTo;
+	}
+
+	public void setDonationDateTo(Date donationDateTo) {
+		this.donationDateTo = donationDateTo;
+	}
+
+	public Date getExpirationDateFrom() {
+		return expirationDateFrom;
+	}
+
+	public void setExpirationDateFrom(Date expirationDateFrom) {
+		this.expirationDateFrom = expirationDateFrom;
+	}
+
+	public Date getExpirationDateTo() {
+		return expirationDateTo;
+	}
+
+	public void setExpirationDateTo(Date expirationDateTo) {
+		this.expirationDateTo = expirationDateTo;
+	}
+
+	public boolean isPurchased() {
+		return purchased;
+	}
+
+	public void setPurchased(boolean purchased) {
+		this.purchased = purchased;
 	}
 
 	/**
@@ -168,8 +229,10 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 
 	protected void setDefaultValues() {
 		number = null;
-		donationDate = null;
-		expirationDate = null;
+		donationDateFrom = null;
+		donationDateTo = null;
+		expirationDateFrom = null;
+		expirationDateTo = null;
 		makerId = MAKER_NULL_VALUE;
 		bloodComponentTypeId = BLOOD_COMPONENT_TYPE_NULL_VALUE;
 		donorCode = null;
@@ -177,13 +240,18 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 		bloodGroupId = BLOOD_GROUP_NULL_VALUE;
 		rhesusFactorId = RHESUS_FACTOR_NULL_VALUE;
 		fio = null;
+		purchased = false;
+		historyCreatedDateFrom = null;
+		historyCreatedDateTo = null;
 	}
 
 	@Override
 	public void fillFrom(BloodComponentsFilter source) {
 		setNumber(source.getNumber());
-		setDonationDate(source.getDonationDate());
-		setExpirationDate(source.getExpirationDate());
+		setDonationDateFrom(source.getDonationDateFrom());
+		setDonationDateTo(source.getDonationDateTo());
+		setExpirationDateFrom(source.getExpirationDateFrom());
+		setExpirationDateTo(source.getExpirationDateTo());
 		setMakerId(source.getMakerId());
 		setBloodComponentTypeId(source.getBloodComponentTypeId());
 		setDonorCode(source.getDonorCode());
@@ -191,5 +259,8 @@ public class BloodComponentsFilter extends AbstractFilter<BloodComponentsFilter>
 		setBloodGroupId(source.getBloodGroupId());
 		setRhesusFactorId(source.getRhesusFactorId());
 		setFio(source.getFio());
+		setPurchased(source.isPurchased());
+		setHistoryCreatedDateFrom(source.getHistoryCreatedDateFrom());
+		setHistoryCreatedDateTo(source.getHistoryCreatedDateTo());
 	}
 }

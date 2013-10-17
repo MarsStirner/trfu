@@ -187,21 +187,49 @@
 								</td>
 							</tr>
 							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.registrationDateTitle}" />:
-								</td>
 								<td>
-									<e5ui-comp:inputDate id="blood_component_orders_filter_created_parameter" 
-											value="#{bloodComponentOrderFilterableList.currentFilter.created}" lang="ru" />
+									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.registrationDateTitle}" />
 								</td>
 							</tr>
 							<tr>
 								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.issueDateTitle}" />:
+									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.dateFromTitle}" />:
 								</td>
 								<td>
-									<e5ui-comp:inputDate id="blood_component_orders_filter_fact_date_parameter" 
-											value="#{bloodComponentOrderFilterableList.currentFilter.factDate}" lang="ru" />
+									<e5ui-comp:inputDate id="blood_component_orders_filter_created_from_parameter" 
+											value="#{bloodComponentOrderFilterableList.currentFilter.createdFrom}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.dateToTitle}" />:
+								</td>
+								<td>
+									<e5ui-comp:inputDate id="blood_component_orders_filter_created_to_parameter" 
+											value="#{bloodComponentOrderFilterableList.currentFilter.createdTo}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.issueDateTitle}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.dateFromTitle}" />:
+								</td>
+								<td>
+									<e5ui-comp:inputDate id="blood_component_orders_filter_fact_date_from_parameter" 
+											value="#{bloodComponentOrderFilterableList.currentFilter.factDateFrom}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.dateToTitle}" />:
+								</td>
+								<td>
+									<e5ui-comp:inputDate id="blood_component_orders_filter_fact_date_to_parameter" 
+											value="#{bloodComponentOrderFilterableList.currentFilter.factDateTo}" lang="ru" />
 								</td>
 							</tr>
 							<tr>
@@ -237,12 +265,26 @@
 								</td>
 							</tr>
 							<tr>
+								<td>
+									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.birthTitle}" />
+								</td>
+							</tr>
+							<tr>
 								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.birthTitle}" />:
+									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.dateFromTitle}" />:
 								</td>
 								<td>
-									<e5ui-comp:inputDate id="blood_component_orders_filter_recipient_birth_parameter" 
-											value="#{bloodComponentOrderFilterableList.currentFilter.recipientBirth}" lang="ru" />
+									<e5ui-comp:inputDate id="blood_component_orders_filter_recipient_birth_from_parameter" 
+											value="#{bloodComponentOrderFilterableList.currentFilter.recipientBirthFrom}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.dateToTitle}" />:
+								</td>
+								<td>
+									<e5ui-comp:inputDate id="blood_component_orders_filter_recipient_birth_to_parameter" 
+											value="#{bloodComponentOrderFilterableList.currentFilter.recipientBirthTo}" lang="ru" />
 								</td>
 							</tr>
 							<tr>

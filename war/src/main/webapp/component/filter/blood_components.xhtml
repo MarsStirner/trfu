@@ -243,20 +243,48 @@
 							</tr>
 							<tr>
 								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{bloodComponentFilterableList.currentFilter.donationDateTitle}" />:
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.donationDateTitle}" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.dateFromTitle}" />:
 								</td>
 								<td>
-									<e5ui-comp:inputDate id="blood_components_filter_donation_date_parameter" 
-											value="#{bloodComponentFilterableList.currentFilter.donationDate}" lang="ru" />
+									<e5ui-comp:inputDate id="blood_components_filter_donation_date_from_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.donationDateFrom}" lang="ru" />
 								</td>
 							</tr>
 							<tr>
 								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{bloodComponentFilterableList.currentFilter.expirationDateTitle}" escape="false" />:
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.dateToTitle}" />:
+								</td>
+								<td>
+									<e5ui-comp:inputDate id="blood_components_filter_donation_date_to_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.donationDateTo}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.expirationDateTitle}" escape="false" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.dateFromTitle}" escape="false" />:
 								</td>
 								<td style="vertical-align: middle;">
-									<e5ui-comp:inputDate id="blood_components_filter_expiration_date_parameter" 
-											value="#{bloodComponentFilterableList.currentFilter.expirationDate}" lang="ru" />
+									<e5ui-comp:inputDate id="blood_components_filter_expiration_date_from_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.expirationDateFrom}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.dateToTitle}" escape="false" />:
+								</td>
+								<td style="vertical-align: middle;">
+									<e5ui-comp:inputDate id="blood_components_filter_expiration_date_to_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.expirationDateTo}" lang="ru" />
 								</td>
 							</tr>
 							<tr>
@@ -274,6 +302,24 @@
 												itemLabel="#{bloodComponentStatus.value}" 
 												itemValue="#{bloodComponentStatus.id}" />
 									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.dateFromTitle}" escape="false" />:
+								</td>
+								<td style="vertical-align: middle;">
+									<e5ui-comp:inputDate id="blood_components_filter_history_date_created_from_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.historyCreatedDateFrom}" lang="ru" />
+								</td>
+							</tr>
+							<tr>
+								<td class="filterPanelParameterTitle">
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.dateToTitle}" escape="false" />:
+								</td>
+								<td style="vertical-align: middle;">
+									<e5ui-comp:inputDate id="blood_components_filter_history_date_created_to_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.historyCreatedDateTo}" lang="ru" />
 								</td>
 							</tr>
 							<tr>
@@ -308,6 +354,14 @@
 												itemLabel="#{listItem.fullName}" 
 												itemValue="#{listItem.id}" />
 									</h:selectOneMenu>
+								</td>
+							</tr>
+							<tr>
+								<td style="vertical-align: middle;">
+									<h:selectBooleanCheckbox id="blood_components_filter_purchased_parameter" 
+											value="#{bloodComponentFilterableList.currentFilter.purchased}" lang="ru" />
+									<span> </span>
+									<h:outputText value="#{bloodComponentFilterableList.currentFilter.purchasedTitle}" escape="false" />
 								</td>
 							</tr>
 						</table>

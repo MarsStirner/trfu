@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
@@ -1086,8 +1087,11 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		addOrderCriteria(orderBy, orderAsc, detachedCriteriaSub);
 		
 		DetachedCriteria criteria = createDetachedCriteria();
-		criteria.add(Restrictions.in("id", getHibernateTemplate().findByCriteria(detachedCriteriaSub)));
-		
+		List<?> ids = getHibernateTemplate().findByCriteria(detachedCriteriaSub);
+		if (ids.size() == 0) {
+			return new ArrayList<BloodComponent>();
+		} 
+		criteria.add(Restrictions.in("id", ids));
 		return getHibernateTemplate().findByCriteria(criteria, offset, count);
 	}
 
@@ -1105,10 +1109,15 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 			int makerId = filter.getMakerId();
 			int bloodGroupId = filter.getBloodGroupId();
 			int rhesusFactorId = filter.getRhesusFactorId();
-			Date donationDate = filter.getDonationDate();
-			Date expirationDate = filter.getExpirationDate();
+			Date donationDateFrom = filter.getDonationDateFrom();
+			Date donationDateTo = filter.getDonationDateTo();
+			Date expirationDateFrom = filter.getExpirationDateFrom();
+			Date expirationDateTo = filter.getExpirationDateTo();
 			int statusId = filter.getStatusId();
 			String fio = filter.getFio();
+			boolean purchased = filter.isPurchased();
+			Date historyCreatedDateFrom = filter.getHistoryCreatedDateFrom();
+			Date historyCreatedDateTo = filter.getHistoryCreatedDateTo();
 			
 			if (StringUtils.isNotEmpty(number)) {
 				String[] numbers = number.split("-");
@@ -1128,15 +1137,22 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	        if (rhesusFactorId != BloodComponentsFilter.RHESUS_FACTOR_NULL_VALUE) {
 	        	conjunction.add(Restrictions.eq("rhesusFactor.id", rhesusFactorId));
 	        }
-			if (donationDate != null) {
-				addDateSearchCriteria(conjunction, donationDate, "donationDate");
+			if (donationDateFrom != null && donationDateTo != null) {
+				addDateSearchCriteria(conjunction, donationDateFrom, donationDateTo, "donationDate");
 			}
-			if (expirationDate != null) {
-				addDateSearchCriteria(conjunction, expirationDate, "expirationDate");
+			if (expirationDateFrom != null && expirationDateTo != null) {
+				addDateSearchCriteria(conjunction, expirationDateFrom, expirationDateTo, "expirationDate");
 			}
-	        if (statusId != BloodComponentsFilter.BLOOD_COMPONENT_STATUS_NULL_VALUE) {
-	        	conjunction.add(Restrictions.eq("statusId", statusId));
-	        }
+			
+			conjunction.add(Restrictions.eq("purchased", purchased));
+			
+			if (statusId != BloodComponentsFilter.BLOOD_COMPONENT_STATUS_NULL_VALUE) {
+				criteria.createAlias("history", "history", Criteria.INNER_JOIN);
+				conjunction.add(Restrictions.eq("history.toStatusId", statusId));
+				if (historyCreatedDateFrom != null && historyCreatedDateTo != null) {
+					addDateSearchCriteria(conjunction, historyCreatedDateFrom, historyCreatedDateTo, "history.created");
+				} 
+		    }
 	        if (bloodComponentTypeId != BloodComponentsFilter.BLOOD_COMPONENT_TYPE_NULL_VALUE) {
 	        	conjunction.add(Restrictions.eq("componentType.id", bloodComponentTypeId));
 	        }

@@ -42,9 +42,12 @@ public class BloodComponentOrderFilterableListHolderBean
 	public List<FilterParameter> getNotNullFilterParameters() {
 		List<FilterParameter> parameters = new ArrayList<FilterParameter>();
 		String number = storedFilter.getNumber();
-		Date created = storedFilter.getCreated();
-		Date factDate = storedFilter.getFactDate();
-		Date recipientBirth = storedFilter.getRecipientBirth();
+		Date createdFrom = storedFilter.getCreatedFrom();
+		Date createdTo = storedFilter.getCreatedTo();
+		Date factDateFrom = storedFilter.getFactDateFrom();
+		Date factDateTo = storedFilter.getFactDateTo();
+		Date recipientBirthFrom = storedFilter.getRecipientBirthFrom();
+		Date recipientBirthTo = storedFilter.getRecipientBirthTo();
 		String recipientFirstName = storedFilter.getRecipientFirstName();
 		String recipient = storedFilter.getRecipient();
 		String recipientMiddleName = storedFilter.getRecipientMiddleName();
@@ -58,10 +61,16 @@ public class BloodComponentOrderFilterableListHolderBean
 			parameters.add(new FilterParameter(AbstractFilter.NUMBER_TITLE,
 					number));
 		}
-		if (created != null) {
+		if (createdFrom != null) {
 			parameters.add(new FilterParameter(
-					AbstractFilter.REGISTRATION_DATE_TITLE, DateHelper
-							.formatDateByPattern(created,
+					AbstractFilter.DATE_FROM_TITLE, DateHelper
+							.formatDateByPattern(createdFrom,
+									DateHelper.DATE_WITHOUT_TIME_PATTERN)));
+		}
+		if (createdTo != null) {
+			parameters.add(new FilterParameter(
+					AbstractFilter.DATE_TO_TITLE, DateHelper
+							.formatDateByPattern(createdTo,
 									DateHelper.DATE_WITHOUT_TIME_PATTERN)));
 		}
 		if (StringUtils.isNotEmpty(division)) {
@@ -82,9 +91,14 @@ public class BloodComponentOrderFilterableListHolderBean
 					AbstractFilter.RECIPIENT_MIDDLE_NAME_TITLE,
 					recipientMiddleName));
 		}
-		if (recipientBirth != null) {
-			parameters.add(new FilterParameter(AbstractFilter.BIRTH_TITLE,
-					DateHelper.formatDateByPattern(recipientBirth,
+		if (recipientBirthFrom != null) {
+			parameters.add(new FilterParameter(AbstractFilter.DATE_FROM_TITLE,
+					DateHelper.formatDateByPattern(recipientBirthFrom,
+							DateHelper.DATE_WITHOUT_TIME_PATTERN)));
+		}
+		if (recipientBirthTo != null) {
+			parameters.add(new FilterParameter(AbstractFilter.DATE_TO_TITLE,
+					DateHelper.formatDateByPattern(recipientBirthTo,
 							DateHelper.DATE_WITHOUT_TIME_PATTERN)));
 		}
 		if (bloodGroupId != AbstractFilter.BLOOD_GROUP_NULL_VALUE) {
@@ -123,9 +137,14 @@ public class BloodComponentOrderFilterableListHolderBean
 								.getValue()));
 			}
 		}
-		if (factDate != null) {
-			parameters.add(new FilterParameter(AbstractFilter.ISSUE_DATE_TITLE,
-					DateHelper.formatDateByPattern(factDate,
+		if (factDateFrom != null) {
+			parameters.add(new FilterParameter(AbstractFilter.DATE_FROM_TITLE,
+					DateHelper.formatDateByPattern(factDateFrom,
+							DateHelper.DATE_WITHOUT_TIME_PATTERN)));
+		}
+		if (factDateTo != null) {
+			parameters.add(new FilterParameter(AbstractFilter.DATE_TO_TITLE,
+					DateHelper.formatDateByPattern(factDateTo,
 							DateHelper.DATE_WITHOUT_TIME_PATTERN)));
 		}
 
