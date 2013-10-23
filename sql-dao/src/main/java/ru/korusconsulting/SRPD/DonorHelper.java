@@ -80,10 +80,10 @@ public class DonorHelper {
 		map.put(FieldsInMap.MIDDLE_NAME, donor.getMiddleName());
 		map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber() + " " + donor.getInsuranceSeries());
 		map.put(FieldsInMap.PASSPORT_NUMBER, donor.getPassportNumber() + " " + donor.getPassportSeries());
-		map.put(FieldsInMap.PHONE, cretateTelFromPhoneForSRPD(TELCOM.TEL, donor.getPhone()));
+		map.put(FieldsInMap.PHONE, donor.getPhone());
 		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
-		map.put(FieldsInMap.WORK_PHONE, cretateTelFromPhoneForSRPD(TELCOM.TEL, donor.getWorkPhone()));
-		map.put(FieldsInMap.EMAIL, cretateTelFromPhoneForSRPD(TELCOM.EMAIL,donor.getMail()));
+		map.put(FieldsInMap.WORK_PHONE, donor.getWorkPhone());
+		map.put(FieldsInMap.EMAIL, donor.getMail());
 		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
 		map.put(FieldsInMap.BIRTH, createStringFromDate(donor.getBirth()));
 		map.put(FieldsInMap.GENDER, ((Integer)donor.getGender()).toString());
@@ -98,7 +98,25 @@ public class DonorHelper {
 		map.put(FieldsInMap.LIST_STORAGE_IDS, listIds);
 		return map;
 	}
-	
+	public Map<FieldsInMap, Object> makeMapFromDonor(BiomaterialDonor donor) {
+		Map<FieldsInMap, Object> map = new HashMap<FieldsInMap, Object>();
+		List<String> listIds = new ArrayList<String>();
+		listIds.add(donor.getTempStorageId());
+		map.put(FieldsInMap.FIRST_NAME, donor.getFirstName());
+		map.put(FieldsInMap.LAST_NAME, donor.getLastName());
+		map.put(FieldsInMap.MIDDLE_NAME, donor.getMiddleName());
+		map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber() + " " + donor.getInsuranceSeries());
+		map.put(FieldsInMap.PASSPORT_NUMBER, donor.getPassportNumber() + " " + donor.getPassportSeries());
+		map.put(FieldsInMap.PHONE, donor.getPhone());
+		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
+		map.put(FieldsInMap.WORK_PHONE, donor.getWorkPhone());
+		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
+		map.put(FieldsInMap.BIRTH, createStringFromDate(donor.getBirth()));
+		map.put(FieldsInMap.GENDER, ((Integer)donor.getGender()).toString());
+		map.put(FieldsInMap.TEMP_STORAGE_ID, donor.getTempStorageId());
+		//map.put(FieldsInMap.LIST_STORAGE_IDS, listIds);
+		return map;
+	}
 	public Donor mergeDonorAndMap(Donor donor, Map<FieldsInMap, Object> mapWithValues) {
 		donor.setFirstName((String)mapWithValues.get(FieldsInMap.FIRST_NAME));
 		donor.setLastName((String)mapWithValues.get(FieldsInMap.LAST_NAME));
@@ -170,26 +188,6 @@ public class DonorHelper {
 		}
 		return biomaterials;
 	}
-	public Map<FieldsInMap, Object> makeMapFromDonor(BiomaterialDonor donor) {
-		Map<FieldsInMap, Object> map = new HashMap<FieldsInMap, Object>();
-		List<String> listIds = new ArrayList<String>();
-		listIds.add(donor.getTempStorageId());
-		map.put(FieldsInMap.FIRST_NAME, donor.getFirstName());
-		map.put(FieldsInMap.LAST_NAME, donor.getLastName());
-		map.put(FieldsInMap.MIDDLE_NAME, donor.getMiddleName());
-		map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber() + " " + donor.getInsuranceSeries());
-		map.put(FieldsInMap.PASSPORT_NUMBER, donor.getPassportNumber() + " " + donor.getPassportSeries());
-		map.put(FieldsInMap.PHONE, cretateTelFromPhoneForSRPD(TELCOM.TEL, donor.getPhone()));
-		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
-		map.put(FieldsInMap.WORK_PHONE, cretateTelFromPhoneForSRPD(TELCOM.TEL, donor.getWorkPhone()));
-		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
-		map.put(FieldsInMap.BIRTH, createStringFromDate(donor.getBirth()));
-		map.put(FieldsInMap.GENDER, ((Integer)donor.getGender()).toString());
-		map.put(FieldsInMap.TEMP_STORAGE_ID, donor.getTempStorageId());
-		//map.put(FieldsInMap.LIST_STORAGE_IDS, listIds);
-		return map;
-	}
-	
 	public BiomaterialDonor mergeDonorAndMap(BiomaterialDonor donor, Map<FieldsInMap, Object> mapWithValues) {
 		donor.setFirstName((String)mapWithValues.get(FieldsInMap.FIRST_NAME));
 		donor.setLastName((String)mapWithValues.get(FieldsInMap.LAST_NAME));
@@ -387,6 +385,17 @@ public class DonorHelper {
 		}
 		return ids;
 	}
+	/**
+	 * Формирует и возвращает список идентификаторов ЗХПД из списка Bloodcomponet-ов
+	 * Используется: BloodComponentDAOImpl
+	 */
+	public List<String> listIdsSRPDFromBloodComponent(List<BloodComponent> bloodComponents) {
+		List<String> ids = new ArrayList<String>();
+		for (BloodComponent i : bloodComponents) {
+			ids.add(i.getDonation().getDonor().getTempStorageId());
+		}
+		return ids;
+	}
 	/* for creation url to file*/
 	public static Properties createPropertiesForURL(String url) {
 		Properties prop = null;
@@ -414,7 +423,7 @@ public class DonorHelper {
 		return null;
 	}
 	
-	public String cretateTelFromPhoneForSRPD(TELCOM type, String tel) {
+	/*public String cretateTelFromPhoneForSRPD(TELCOM type, String tel) {
 		switch (type) {
 		case TEL:
 			return "tel:" + tel;
@@ -423,5 +432,5 @@ public class DonorHelper {
 			return "mailto:" + tel;
 		}
 	return null;
-	}
+	}*/
 }

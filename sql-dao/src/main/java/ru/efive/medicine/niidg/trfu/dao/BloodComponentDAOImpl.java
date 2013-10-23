@@ -5,15 +5,18 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StringType;
@@ -27,11 +30,22 @@ import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.BloodComponentsFilter;
+import ru.efive.medicine.niidg.trfu.filters.BloodComponentsFilter.InControl;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.korusconsulting.SRPD.DonorHelper;
 import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
+import ru.korusconsulting.SRPD.SRPDDao;
 
 public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
+	private static SRPDDao srpdDao;
+	private static DonorHelper donorHelper;
+	
+	static {
+		if (DonorHelper.USE_SRPD) {
+			srpdDao = new SRPDDao();
+			donorHelper = new DonorHelper();
+		}
+	}
 	
 	@Override
 	protected Class<BloodComponent> getPersistentClass() {
@@ -51,16 +65,10 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocuments(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
 		BloodComponentsFilter bloodComponentFilter = createBloodComponentsFilter(filter, showDeleted);
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-        //detachedCriteria.add(Restrictions.ne("statusId", 100));
 		bloodComponentFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
 		bloodComponentFilter.setStatusId(100);
-        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+		return findDocuments(bloodComponentFilter, offset, count, orderBy, orderAsc);
 	}
 
 	/**
@@ -71,16 +79,10 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      * @return кол-во результатов
      */
 	public long countDocument(String filter, boolean showDeleted) {
-        DetachedCriteria detachedCriteria = createDetachedCriteria();
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
         BloodComponentsFilter bloodComponentsfilter = createBloodComponentsFilter(filter, showDeleted);
         bloodComponentsfilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
         bloodComponentsfilter.setStatusId(100);
-        //detachedCriteria.add(Restrictions.ne("statusId", 100));
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+        return countDocument(bloodComponentsfilter);
 	}
 	
 	/**
@@ -96,12 +98,9 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocuments(Map<String, Object> in_map, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(getConjunctionSearchCriteria(detachedCriteria, in_map), offset, count);
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, showDeleted);
+		bloodComponentsFilter.setMap(in_map);
+		return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 
 	/**
@@ -112,12 +111,9 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      * @return кол-во результатов
      */
 	public long countDocument(Map<String, Object> in_map, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        
-		return getCountOf(getConjunctionSearchCriteria(detachedCriteria, in_map));
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, showDeleted);
+		bloodComponentsFilter.setMap(in_map);
+		return countDocument(bloodComponentsFilter);
 	}
 	
 	
@@ -135,23 +131,16 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocuments(String filter, int statusId, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
         BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
         if (statusId != 0) {
-        	//detachedCriteria.add(Restrictions.eq("statusId", statusId));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         	bloodComponentsFilter.setStatusId(statusId);
         }
         else {
-        	//detachedCriteria.add(Restrictions.ne("statusId", 100));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
         	bloodComponentsFilter.setStatusId(100);
         }
-        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	/**
@@ -162,23 +151,16 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 * @return количество компонентов
 	 */
 	public long countDocument(String filter, int statusId, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
         BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
         if (statusId != 0) {
-        	//detachedCriteria.add(Restrictions.eq("statusId", statusId));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         	bloodComponentsFilter.setStatusId(statusId);
         }
         else {
-        	//detachedCriteria.add(Restrictions.ne("statusId", 100));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
         	bloodComponentsFilter.setStatusId(100);
         }
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+      return countDocument(bloodComponentsFilter);
 	}
 	
 	/**
@@ -196,35 +178,25 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocuments(String filter, int statusId, boolean showExpired, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
         if (!showExpired) {
-        	Disjunction disjunction = Restrictions.disjunction();
         	Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-        	disjunction.add(Restrictions.ge("expirationDate", calendar.getTime()));
-        	disjunction.add(Restrictions.isNull("expirationDate"));
-        	detachedCriteria.add(disjunction);
+        	bloodComponentsFilter.setExpirationDateGe(calendar	.getTime());
+        	bloodComponentsFilter.setExpirationDateNull(true);
         }
         if (statusId != 0) {
-        	//detachedCriteria.add(Restrictions.eq("statusId", statusId));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         	bloodComponentsFilter.setStatusId(statusId);
         }
         else {
-        	//detachedCriteria.add(Restrictions.ne("statusId", 100));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
         	bloodComponentsFilter.setStatusId(100);
         }
-        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	/**
@@ -236,34 +208,25 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 * @return количество компонентов
 	 */
 	public long countDocument(String filter, int statusId, boolean showExpired, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
         BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
         if (!showExpired) {
-        	Disjunction disjunction = Restrictions.disjunction();
         	Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-        	disjunction.add(Restrictions.ge("expirationDate", calendar.getTime()));
-        	disjunction.add(Restrictions.isNull("expirationDate"));
-        	detachedCriteria.add(disjunction);
+            bloodComponentsFilter.setExpirationDateGe(calendar.getTime());
+            bloodComponentsFilter.setExpirationDateNull(true);
         }
         if (statusId != 0) {
-        	//detachedCriteria.add(Restrictions.eq("statusId", statusId));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         	bloodComponentsFilter.setStatusId(statusId);
         }
         else {
-        	//detachedCriteria.add(Restrictions.ne("statusId", 100));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
         	bloodComponentsFilter.setStatusId(100);
         }
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+        return countDocument(bloodComponentsFilter);
 	}
 	
 	/**
@@ -271,65 +234,39 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findExpiredDocuments(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
+        BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, false);
+       
         Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        detachedCriteria.add(Restrictions.lt("expirationDate", calendar.getTime()));
+        bloodComponentsFilter.setExpirationDatelt(calendar.getTime());
         
         Disjunction disjunction = Restrictions.disjunction();
         disjunction.add(Restrictions.eq("statusId", 2));
         disjunction.add(Restrictions.eq("statusId", 3));
-        detachedCriteria.add(disjunction);
-
-        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        bloodComponentsFilter.getListJunctions().add(disjunction);
+        return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	public long countExpiredDocument(String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
+        BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
         Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        detachedCriteria.add(Restrictions.lt("expirationDate", calendar.getTime()));
+        bloodComponentsFilter.setExpirationDatelt(calendar.getTime());
         
         Disjunction disjunction = Restrictions.disjunction();
         disjunction.add(Restrictions.eq("statusId", 2));
         disjunction.add(Restrictions.eq("statusId", 3));
-        detachedCriteria.add(disjunction);
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
-	}
-	
-	
-	private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, String filter) {
-		if (StringUtils.isNotEmpty(filter)) {
-			criteria.createAlias("componentType", "componentType", CriteriaSpecification.LEFT_JOIN);
-			Disjunction disjunction = Restrictions.disjunction();
-	        disjunction.add(Restrictions.ilike("componentType.value", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.ilike("parentNumber", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.sqlRestriction("DATE_FORMAT(this_.donationDate, '%d.%m.%Y') like lower(?)", filter + "%", new StringType()));
-	        if (filter.length() > 8) {
-	        	disjunction.add(Restrictions.sqlRestriction("CONCAT(this_.parentNumber, this_.number) like RIGHT(?, 8)", filter + "%", new StringType()));
-	        }
-	        criteria.add(disjunction);
-		}
-        return criteria;
-	}
+        bloodComponentsFilter.getListJunctions().add(disjunction);
 
+        return countDocument(bloodComponentsFilter);
+	}
+	
 	protected DetachedCriteria getConjunctionSearchCriteria(DetachedCriteria criteria, Map<String, Object> in_map) {
 		if (in_map != null && in_map.size() > 0) {
 			Conjunction conjunction = Restrictions.conjunction();
@@ -401,19 +338,12 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findComponentsByDonation(int donationId) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, false);
         
         if (donationId > 0) {
-            //detachedCriteria.add(Restrictions.eq("donationId", donationId));
         	bloodComponentsFilter.setDonationId(donationId);
         }
-        //detachedCriteria.add(Restrictions.eq("deleted", false));
-	
-        //addOrder(detachedCriteria, "number", true);
-        addOrderCriteria("number", true, detachedCriteria);
-        
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return findDocument(bloodComponentsFilter, -1, -1, "number", true);
 	}
 	
 	/**
@@ -422,15 +352,11 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 * @return - количество компонентов
 	 */
 	public long countComponentsByDonation(int donationId) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
         BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, false);
         if (donationId > 0) {
-            //detachedCriteria.add(Restrictions.eq("donationId", donationId));
         	bloodComponentsFilter.setDonationId(donationId);
         }
-        //detachedCriteria.add(Restrictions.eq("deleted", false));
-		
-        return getCountOf(detachedCriteria);
+        return countDocument(bloodComponentsFilter);
 	}
 	
 	/**
@@ -443,15 +369,10 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, false);
         if (orderId > 0) {
-            //detachedCriteria.add(Restrictions.eq("orderId", orderId));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         	bloodComponentsFilter.setOrderId(orderId);
         }
-        //detachedCriteria.add(Restrictions.eq("deleted", false));
-
-        //addOrder(detachedCriteria, "parentNumber,number".split(","), true);
-        addOrderCriteria("parentNumber,number", true, detachedCriteria);
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return findDocument(bloodComponentsFilter, -1, -1, "parentNumber,number", true);
 	}
 	
 	/**
@@ -461,18 +382,12 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findComponentsByStatusId(boolean showDeleted, int statusId, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, showDeleted);
-        /*if (!showDeleted) {
-        	detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
         if (statusId > 0) {
-            //detachedCriteria.add(Restrictions.eq("statusId", statusId));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         	bloodComponentsFilter.setStatusId(statusId);
         }
-        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	/**
@@ -481,17 +396,12 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 * @return - количество компонентов
 	 */
 	public long countComponentsByStatusId(boolean showDeleted, int statusId) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        /*if (!showDeleted) {
-        	detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, showDeleted);
         if (statusId > 0) {
-            //detachedCriteria.add(Restrictions.eq("statusId", statusId));
         	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         	bloodComponentsFilter.setStatusId(statusId);
         }
-        return getCountOf(detachedCriteria);
+        return countDocument(bloodComponentsFilter);
 	}
 	
 	/**
@@ -507,20 +417,11 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findPurchasedDocuments(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, showDeleted);
-        //detachedCriteria.add(Restrictions.eq("purchased", true));
 		bloodComponentsFilter.setPurchased(true);
-        //detachedCriteria.add(Restrictions.ne("statusId", 100));
         bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         bloodComponentsFilter.setStatusId(100);
-
-        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	/**
@@ -530,19 +431,11 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 * @return количество компонентов
 	 */
 	public long countPurchasedDocument(String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-        //detachedCriteria.add(Restrictions.eq("purchased", true));
 		bloodComponentsFilter.setPurchased(true);
-        //detachedCriteria.add(Restrictions.ne("statusId", 100));
         bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         bloodComponentsFilter.setStatusId(100);
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+        return countDocument(bloodComponentsFilter);
 	}
 	
 	/**
@@ -558,19 +451,11 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findQuarantinedDocuments(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-        BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-        //detachedCriteria.add(Restrictions.eq("statusId", 2));
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
         bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         bloodComponentsFilter.setStatusId(2);
-        //detachedCriteria.add(Restrictions.le("quarantineFinishDate", Calendar.getInstance(ApplicationHelper.getLocale()).getTime()));
         bloodComponentsFilter.setQuarantineFinishDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
-
-        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	/**
@@ -581,19 +466,11 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 * @return количество компонентов
 	 */
 	public long countQuarantinedDocument(String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-        //detachedCriteria.add(Restrictions.eq("statusId", 2));
 		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
         bloodComponentsFilter.setStatusId(2);
-        //detachedCriteria.add(Restrictions.le("quarantineFinishDate", Calendar.getInstance(ApplicationHelper.getLocale()).getTime()));
         bloodComponentsFilter.setQuarantineFinishDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+        return countDocument(bloodComponentsFilter);
 	}
 	
 	/**
@@ -610,11 +487,6 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findQuarantinedDocumentsByDonor(Donor donor, String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
         
         String query = "select components.id from trfu_blood_components components "
@@ -624,11 +496,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	//detachedCriteria.add(Restrictions.in("id", list));
         	bloodComponentsFilter.setListIds(list);
-
-        	addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        	return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
         }
         else {
         	return Collections.emptyList();
@@ -643,12 +512,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 * @return количество компонентов
 	 */
 	public long countQuarantinedDocumentByDonor(Donor donor, String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
-        BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
         
         String query = "select components.id from trfu_blood_components components "
         	+ "inner join trfu_blood_donation_requests requests on components.donationId = requests.id "
@@ -657,10 +521,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	//detachedCriteria.add(Restrictions.in("id", list));
         	bloodComponentsFilter.setListIds(list);
-            
-    		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+            return countDocument(bloodComponentsFilter);
         }
         else {
         	return 0;
@@ -670,10 +532,6 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocumentsInQuarantineByDonor(Donor donor, String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
         
         String query = "select components.id from trfu_blood_components components "
@@ -683,11 +541,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	//detachedCriteria.add(Restrictions.in("id", list));
         	bloodComponentsFilter.setListIds(list);
-        
-        	addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        	return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
         }
         else {
         	return Collections.emptyList();
@@ -695,10 +550,6 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	}
 	
 	public long countDocumentsInQuarantineByDonor(Donor donor, String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
         
         String query = "select components.id from trfu_blood_components components "
@@ -708,10 +559,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	//detachedCriteria.add(Restrictions.in("id", list));
         	bloodComponentsFilter.setListIds(list);
-            
-    		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+            return countDocument(bloodComponentsFilter);
         }
         else {
         	return 0;
@@ -732,19 +581,11 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocumentsByFullNumber(String parentNumber, String number, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        /*if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }*/
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, showDeleted);
-        //detachedCriteria.add(Restrictions.eq("purchased", true));
 		bloodComponentsFilter.setPurchased(true);
-        //detachedCriteria.add(Restrictions.eq("parentNumber", parentNumber));
 		bloodComponentsFilter.setParentNumber(parentNumber);
-        //detachedCriteria.add(Restrictions.eq("number", number));
 		bloodComponentsFilter.setNumber(number);
-        
-		return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+		return findDocuments(bloodComponentsFilter, -1, -1, null, false);
 	}
 	
 	/**
@@ -753,8 +594,6 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findComponentsByPhenotypes(List<Analysis> phenotypes, boolean searchBloodGroup, String bloodGroup, boolean searchRhesus, String rhesusFactor, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        //detachedCriteria.add(Restrictions.eq("deleted", false));
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, false);
         
         StringBuilder concat = new StringBuilder();
@@ -783,11 +622,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).addScalar("id").list();
         
         if (list != null && list.size() > 0) {
-        	//detachedCriteria.add(Restrictions.in("id", list));
         	bloodComponentsFilter.setListIds(list);
-        
-        	addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-            return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+        	return findDocument(bloodComponentsFilter, -1, -1, null, false);
         }
         else {
         	return Collections.emptyList();
@@ -797,101 +633,82 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocumentsInControl(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        detachedCriteria.add(Restrictions.eq("statusId", 3));
-        detachedCriteria.add(Restrictions.eq("inControl", true));
-
-		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
+		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
+		bloodComponentsFilter.setStatusId(3);
+		bloodComponentsFilter.setInControlCompareFlag(InControl.IN_CONTROL_EQ);
+		bloodComponentsFilter.setInControl(true);
+		return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
+		
 	}
 	
 	public long countDocumentsInControl(String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        detachedCriteria.add(Restrictions.eq("statusId", 3));
-        detachedCriteria.add(Restrictions.eq("inControl", true));
-        
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
+		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
+		bloodComponentsFilter.setStatusId(3);
+		bloodComponentsFilter.setInControlCompareFlag(InControl.IN_CONTROL_EQ);
+		bloodComponentsFilter.setInControl(true);
+		return countDocument(bloodComponentsFilter);
 	}
 	
 	
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findControlledComponentsByStatusId(String filter, int statusId, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        if (!showDeleted) {
-        	detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        detachedCriteria.add(Restrictions.eq("statusId", statusId));
-        detachedCriteria.add(Restrictions.eq("inControl", false));
-		
-        addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
+		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
+		bloodComponentsFilter.setStatusId(statusId);
+		bloodComponentsFilter.setInControlCompareFlag(InControl.IN_CONTROL_EQ);
+		bloodComponentsFilter.setInControl(false);
+		return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	public long countControlledComponentsByStatusId(String filter, int statusId, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        if (!showDeleted) {
-        	detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        detachedCriteria.add(Restrictions.eq("statusId", statusId));
-        detachedCriteria.add(Restrictions.isNotEmpty("qualityControlList"));
-        detachedCriteria.add(Restrictions.eq("inControl", false));
-        return getCountOf(getSearchCriteria(detachedCriteria, filter));
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
+		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
+		bloodComponentsFilter.setStatusId(statusId);
+		bloodComponentsFilter.setInControlCompareFlag(InControl.IN_CONTROL_EQ);
+		bloodComponentsFilter.setInControl(false);
+		return countDocument(bloodComponentsFilter);
 	}
 	
 	
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findQuarantinedComponentsByStatusId(String filter, int statusId, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        if (!showDeleted) {
-        	detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        detachedCriteria.add(Restrictions.eq("statusId", statusId));
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, false);
+		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
+		bloodComponentsFilter.setStatusId(statusId);
         
-        detachedCriteria.createAlias("history", "history", CriteriaSpecification.LEFT_JOIN);
-        //detachedCriteria.add(Restrictions.eq("history.toStatusId", 2));
+		bloodComponentsFilter.getListAlias().add("history");
         Disjunction disjunction = Restrictions.disjunction();
         disjunction.add(Restrictions.eq("history.toStatusId", 2));
         disjunction.add(Restrictions.eq("history.fromStatusId", 2));
-        detachedCriteria.add(disjunction);
+        bloodComponentsFilter.getListJunctions().add(disjunction);
         
-		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		List<BloodComponent> result = new ArrayList<BloodComponent>(new LinkedHashSet<BloodComponent>(getHibernateTemplate().findByCriteria(
-				getSearchCriteria(detachedCriteria, filter), offset, count)));
+        List<BloodComponent> result = new ArrayList<BloodComponent>(
+        		new LinkedHashSet<BloodComponent>(findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc)));
         return result;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public long countQuarantinedComponentsByStatusId(String filter, int statusId, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        if (!showDeleted) {
-        	detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        detachedCriteria.add(Restrictions.eq("statusId", statusId));
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
+        bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
+        bloodComponentsFilter.setStatusId(statusId);
         
-        detachedCriteria.createAlias("history", "history", CriteriaSpecification.LEFT_JOIN);
-        //detachedCriteria.add(Restrictions.eq("history.toStatusId", 2));
+        bloodComponentsFilter.getListAlias().add("history");
         Disjunction disjunction = Restrictions.disjunction();
         disjunction.add(Restrictions.eq("history.toStatusId", 2));
         disjunction.add(Restrictions.eq("history.fromStatusId", 2));
-        detachedCriteria.add(disjunction);
-        
-        List<BloodComponent> result = new ArrayList<BloodComponent>(new LinkedHashSet<BloodComponent>(getHibernateTemplate().findByCriteria(
-				getSearchCriteria(detachedCriteria, filter), -1, -1)));
+        bloodComponentsFilter.getListJunctions().add(disjunction);
+        List<BloodComponent> result = new ArrayList<BloodComponent>(new LinkedHashSet<BloodComponent>(
+        		findDocument(bloodComponentsFilter, -1, -1, null, false)));
         
         return result.size() * 1l;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<BloodComponent> findComponentsWrongHistory() {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();        
+	public List<BloodComponent> findComponentsWrongHistory() {  
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, null);
         String query = "SELECT comp.id FROM trfu_blood_components comp INNER JOIN trfu_blood_component_types comp_types ON comp.componentType_id = comp_types.id " +
         		"INNER JOIN trfu_blood_component_history hist ON comp.id = hist.component_id INNER JOIN wf_history wf ON hist.history_entry_id = wf.id " +
         		"WHERE wf.to_status_id = 3 AND wf.startDate = (SELECT max(wf_in.startDate) FROM trfu_blood_component_history hist_in " +
@@ -900,9 +717,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	detachedCriteria.add(Restrictions.in("id", list));
-            
-    		return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+        	bloodComponentsFilter.setListIds(list);
+        	return findDocument(bloodComponentsFilter, -1, -1, null, false);
         }
         else {
         	return Collections.emptyList();
@@ -911,7 +727,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findComponentsWrongHistory2() {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, null);
         String query = "SELECT id from(SELECT sum(CASE WHEN wf.to_status_id = 3 THEN 1 ELSE 0 END) AS gotov, " +
         		"sum(CASE WHEN wf.to_status_id = 10 THEN 1 ELSE 0 END) AS vidan, comp.id, comp.volume FROM trfu_blood_components comp " +
         		"INNER JOIN trfu_blood_component_types comp_types ON comp.componentType_id = comp_types.id " +
@@ -920,9 +736,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	detachedCriteria.add(Restrictions.in("id", list));
-            
-    		return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+        	bloodComponentsFilter.setListIds(list);
+        	return findDocument(bloodComponentsFilter, -1, -1, null, false);
         }
         else {
         	return Collections.emptyList();
@@ -931,52 +746,33 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findSplitComponents() {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-		detachedCriteria.add(Restrictions.eq("deleted", false));
-		
-		detachedCriteria.add(Restrictions.eq("split", true));
-        
-		return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, false);
+		bloodComponentsFilter.setSplit(true);
+		return findDocument(bloodComponentsFilter, -1, -1, null, false);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findUniquieSplitComponents() {
-		//return getSession().createQuery("from BloodComponent c where c.split = 1 and c.donationId <> 0 group by c.donationId").list();
-//DetachedCriteria criteria = DetachedCriteria.forClass(getPersistentClass()).setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY).
-		DetachedCriteria criteria = createDetachedCriteria();
-		criteria.add(Restrictions.eq("deleted", false));
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, false);
 		
 		List list = getSession().createSQLQuery("select c.id from trfu_blood_components c where c.split = 1 and c.donationId <> 0 group by c.donationId").list();
 		
 		if (list.size() > 0) {
-			criteria.add(Restrictions.in("id", list));
-            
-    		return getHibernateTemplate().findByCriteria(criteria);
+			bloodComponentsFilter.setListIds(list);
+			return findDocument(bloodComponentsFilter, -1, -1, null, false);
 		}
 		else {
 			return Collections.emptyList();
 		}
-		/*return getHibernateTemplate().findByCriteria(DetachedCriteria.forClass(BloodComponent.class).setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY).
-				add(Restrictions.eq("deleted", false)).add(Restrictions.eq("split", true)).add(Restrictions.ne("donationId", 0)).
-				setProjection(Projections.groupProperty("donationId")));*/
 	}
 	
 	@SuppressWarnings("unchecked")
 	public BloodComponent findParentComponent(BloodComponent splitComponent) {
-		/*return (BloodComponent) getSession().
-				createQuery("from BloodComponent c where c.statusId = 100 and c.donationId = :donationId and c.parentNumber = :parentNumber and c.number = :number").
-				setParameter("donationId", splitComponent.getDonationId()).
-				setParameter("parentNumber", splitComponent.getParentNumber()).
-				setParameter("number", splitComponent.getNumber()).
-				uniqueResult();*/
-		
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-				detachedCriteria.add(Restrictions.eq("deleted", false));
-				detachedCriteria.add(Restrictions.eq("donationId", splitComponent.getDonationId()));
-				detachedCriteria.add(Restrictions.eq("parentNumber", splitComponent.getParentNumber()));
-				detachedCriteria.add(Restrictions.eq("number", splitComponent.getNumber()));
-        
-		List<BloodComponent> list = getHibernateTemplate().findByCriteria(detachedCriteria);
+		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, false);
+		bloodComponentsFilter.setParentNumber(splitComponent.getParentNumber());
+		bloodComponentsFilter.setNumber(splitComponent.getNumber());
+		bloodComponentsFilter.setDonationId(splitComponent.getDonationId());
+		List<BloodComponent> list = findDocument(bloodComponentsFilter, -1, -1, null, false);
 		if (list.isEmpty()) {
 			return null;
 		}
@@ -985,46 +781,54 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		}
 	}
 	
-	public long countDocument(BloodComponentsFilter filter) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-		addNotDeletedCriteria(detachedCriteria);
-		addNotSplittedCriteria(detachedCriteria);
-		if (!DonorHelper.USE_SRPD && filter.isQueryToSRPD()) {
-			DonorHelper donorHelper = new DonorHelper();
-			filter.setListSRPDIds(donorHelper.listIdsDonorsForFilter(filter).keySet());
-		}
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+	public long countDocuments(BloodComponentsFilter filter) {
+		filter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
+		filter.setStatusId(100);
+		return countDocument(filter);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocuments(BloodComponentsFilter filter, int offset, int count, String orderBy, boolean orderAsc) {
+		filter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
+		filter.setStatusId(100);
+		return findDocument(filter, offset, count, orderBy, orderAsc);
+	}
+	private long countDocument(BloodComponentsFilter filter){
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
-		Map<Integer, Map<FieldsInMap,Object>> resMap = null;
-		DonorHelper donorHelper = null;
-		List<BloodComponent> bloodComponents = null;
-		addNotDeletedCriteria(detachedCriteria);
-		addNotSplittedCriteria(detachedCriteria);
-		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		if (DonorHelper.USE_SRPD && filter.isQueryToSRPD()) {
-			donorHelper = new DonorHelper();
-			resMap = donorHelper.listIdsDonorsForFilter(filter);
-			filter.setListSRPDIds(resMap.keySet());
+		if (!DonorHelper.USE_SRPD && filter.isQueryToSRPD()) {
+			Map<FieldsInMap, Object> paramMap = donorHelper.listIdsDonorsForFilter(filter);
+			filter.setListSRPDIds(srpdDao.get(paramMap).keySet());
 		}
+		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+		
+	}
+	private List<BloodComponent> findDocument(BloodComponentsFilter filter, int offset, int count, String orderBy, boolean orderAsc ) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		Map<String, Map<FieldsInMap,Object>> resMap = null;
+		Map<FieldsInMap,Object> paramMap = null;
+		List<BloodComponent> bloodComponents = null;
+		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+		/*if (DonorHelper.USE_SRPD && filter.isQueryToSRPD()) {
+			donorHelper = new DonorHelper();
+			paramMap = donorHelper.listIdsDonorsForFilter(filter);
+			resMap = srpdDao.get(paramMap);
+			filter.setListSRPDIds(resMap.keySet());
+		}*/
+		String query = "Select id from trfu.trfu_blood_donation_requests";
+        List list = getSession().createSQLQuery(query).list();
+		detachedCriteria.setFetchMode("donation", FetchMode.EAGER);
+		detachedCriteria.add(Restrictions.in("donationId", list));
 		bloodComponents =  getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset,count);
 		if (DonorHelper.USE_SRPD && resMap == null) {
-			donorHelper = new DonorHelper();
-			resMap = donorHelper.listIdsDonorsForFilter(filter);
+			filter.setListSRPDIds(donorHelper.listIdsSRPDFromBloodComponent(bloodComponents));
+			paramMap = donorHelper.listIdsDonorsForFilter(filter);
+			resMap = srpdDao.get(paramMap);
 			bloodComponents = donorHelper.mergeListBloodComponentAndMap(bloodComponents, resMap);
 		}
 		return bloodComponents;
 	}
-
-	private void addNotSplittedCriteria(DetachedCriteria detachedCriteria) {
-		detachedCriteria.add(Restrictions.ne("statusId", 100));
-	}
 	
-	protected DetachedCriteria getSearchCriteria(DetachedCriteria criteria,
-			BloodComponentsFilter filter) {
+	protected DetachedCriteria getSearchCriteria(DetachedCriteria criteria, BloodComponentsFilter filter) {
 		if (filter != null) {
 			Conjunction conjunction = Restrictions.conjunction();
 			String number = filter.getNumber();
@@ -1040,8 +844,24 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 			String firstName = filter.getFirstName();
 			String lastName = filter.getLastName();
 			String middleName = filter.getMiddleName();
-			Collection<Integer>listSRPDIds = filter.getListSRPDIds();
-			
+			Boolean purchased = filter.getPurchased();
+			Date quarantineFinishDate = filter.getQuarantineFinishDate();
+			Collection<String> listSRPDIds = filter.getListSRPDIds();
+			List<Integer> listIds = filter.getListIds();
+			Boolean inControl = filter.getInControl();
+			Boolean split = filter.getSplit();
+			/* temporal */
+			List<Junction> listJunctions = filter.getListJunctions();
+			List<String> listAlias = filter.getListAlias();
+			for (String i: listAlias) {
+				criteria.createAlias(i, i, CriteriaSpecification.LEFT_JOIN);
+			}
+			for (Junction i: listJunctions) {
+				criteria.add(i);	
+			}
+			if (filter.getMap() != null) {
+				getConjunctionSearchCriteria(criteria, filter.getMap());
+			}
 			if (StringUtils.isNotEmpty(number)) {
 				String[] numbers = number.split("-");
 				if (numbers.length == 1) {
@@ -1066,8 +886,15 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 			if (expirationDate != null) {
 				addDateSearchCriteria(conjunction, expirationDate, "expirationDate");
 			}
+			/* Проверка статуса: 1. CompareFlag = null_value или  eq -  Resrtictions.eq 
+			 * 					 2. CompareFlag = ne - Restritions.ne */
 	        if (statusId != BloodComponentsFilter.BLOOD_COMPONENT_STATUS_NULL_VALUE) {
-	        	conjunction.add(Restrictions.eq("statusId", statusId));
+	        	if (filter.getStatusIdCompareFlag() == BloodComponentsFilter.STATUS_ID_NULL 
+	        			|| filter.getStatusIdCompareFlag() == BloodComponentsFilter.STATUS_ID_EQ) {
+	        		conjunction.add(Restrictions.eq("statusId", statusId));
+	        	} else if(filter.getStatusIdCompareFlag() == BloodComponentsFilter.STATUS_ID_NE) {
+	        		conjunction.add(Restrictions.ne("statusId", statusId));
+	        	}
 	        }
 	        if (bloodComponentTypeId != BloodComponentsFilter.BLOOD_COMPONENT_TYPE_NULL_VALUE) {
 	        	conjunction.add(Restrictions.eq("componentType.id", bloodComponentTypeId));
@@ -1094,20 +921,78 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	        	conjunction.add(disjunction);
 	        } 
 	        if (listSRPDIds != null) {
-	        		disjunction.add(Restrictions.in("donor.temp_storage_id", listSRPDIds));
+	        		disjunction.add(Restrictions.in("donor.tempStorageId", listSRPDIds));
 	        		conjunction.add(disjunction);
 	        }
-	        
+	        if (!filter.isShowDeleted()) {
+				criteria.add(Restrictions.eq("deleted", false));
+			}
+	        if(purchased != null) {
+	        	criteria.add(Restrictions.eq("purchased", purchased));
+	        }
+	        if (quarantineFinishDate != null) {
+	        	criteria.add(Restrictions.le("quarantineFinishDate", quarantineFinishDate));
+	        }
+	        if (listIds != null && listIds.size() > 0) {
+	        	criteria.add(Restrictions.in("id", listIds));
+	        }
+	        if (inControl != null) {
+	        	switch (filter.getInControlCompareFlag()) {
+					case IN_CONTROL_EQ:
+						criteria.add(Restrictions.eq("inControl", inControl));
+						break;
+					case IN_CONTROL_NE:
+						criteria.add(Restrictions.ne("inControl", inControl));
+						break;
+					case IN_CONTROL_NULL:
+						break;
+	        	}
+	        }
+	        if (split != null) {
+	        	criteria.add(Restrictions.eq("split", split));
+	        }
+	        if (filter.getExpirationDateGe() != null || filter.isExpirationDateNull()) {
+	        	Disjunction disj = Restrictions.disjunction();
+	        	if (filter.getExpirationDateGe() != null) {
+	        		disj.add(Restrictions.ge("expirationDate", filter.getExpirationDateGe()));
+	        	}
+	        	if (filter.isExpirationDateNull()) {
+	        		disj.add(Restrictions.isNull("expirationDate"));
+	        	}
+	        	criteria.add(disj);
+	        }
+	        if (filter.getExpirationDatelt() != null) {
+	        	criteria.add(Restrictions.lt("expirationDate", filter.getExpirationDatelt()));
+	        }
 			criteria.add(conjunction);
 		}
-        return criteria;
+		return criteria;
 	}
-	private BloodComponentsFilter createBloodComponentsFilter(String pattern, boolean showDeleted) {
+	private BloodComponentsFilter createBloodComponentsFilter(String pattern, Boolean showDeleted) {
 		BloodComponentsFilter filter = new BloodComponentsFilter();
 		if (StringUtils.isNotEmpty(pattern)) {
-			
+			filter.getListAlias().add("componentType");
+			Disjunction disjunction = Restrictions.disjunction();
+	        disjunction.add(Restrictions.ilike("componentType.value", pattern, MatchMode.ANYWHERE));
+	        disjunction.add(Restrictions.ilike("parentNumber", pattern, MatchMode.ANYWHERE));
+	        disjunction.add(Restrictions.ilike("number", pattern, MatchMode.ANYWHERE));
+	        disjunction.add(Restrictions.sqlRestriction("DATE_FORMAT(this_.donationDate, '%d.%m.%Y') like lower(?)", filter + "%", new StringType()));
+	        if (pattern.length() > 8) {
+	        	disjunction.add(Restrictions.sqlRestriction("CONCAT(this_.parentNumber, this_.number) like RIGHT(?, 8)", filter + "%", new StringType()));
+	        }
+	        filter.getListJunctions().add(disjunction);
 		}
-		filter.setShowDeleted(showDeleted);
+		if (showDeleted != null) {
+			filter.setShowDeleted(showDeleted);
+		}
 		return filter;
+	}
+	private List<BloodComponent> getDataFromSRPD(List<BloodComponent> components) {
+		Map<FieldsInMap, Object> paramMap = new HashMap<DonorHelper.FieldsInMap, Object>();
+		List<String> listStorageIds = donorHelper.listIdsSRPDFromBloodComponent(components);
+		paramMap.put(FieldsInMap.LIST_STORAGE_IDS, listStorageIds);
+		Map<String, Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
+		components = donorHelper.mergeListBloodComponentAndMap(components, resMap);
+		return components;
 	}
 }

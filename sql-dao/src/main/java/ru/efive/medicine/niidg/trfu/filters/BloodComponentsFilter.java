@@ -1,7 +1,12 @@
 package ru.efive.medicine.niidg.trfu.filters;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Junction;
 
 /**
  * Фильтр для представления "Компоненты крови".
@@ -31,7 +36,14 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 	 * Тип параметра для поиска satus_id: null-значение
 	 */
 	public static final int STATUS_ID_NULL = -10;
-
+	public enum InControl {
+		/* Тип параметра для поиска in_control: искать на "равно" */
+		IN_CONTROL_EQ,
+		/* Тип параметра для поиска in_control: искать на "не равно" */
+		IN_CONTROL_NE,
+		/* Тип параметра для поиска in_control: не искать */
+		IN_CONTROL_NULL
+	}
 	/**
 	 * Номер компонента крови.
 	 */
@@ -73,6 +85,8 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 	 * 0 - любой, значение по умолчанию, прописано в константе BLOOD_COMPONENT_STATUS_NULL_VALUE).
 	 */
 	private int statusId;
+	private Boolean inControl;
+	private Boolean split;
 	/**
 	 * ФИО донора.
 	 */
@@ -84,18 +98,35 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 	 * 
 	 */
 	private int statusIdCompareFlag;
+	/**
+	 * Тип поиска:
+	 * IN_CONTROL_EQ - поиск по соответствию
+	 * IN_CONTROL_NE - поиск на несоответствие
+	 * IN_CONTROL_NULL_VALUE - не осуществлять поиск; значение по умолчанию
+	 */
+	private InControl inControlCompareFlag;
 	
 	private Integer donationId;
 	
 	private Integer orderId;
 	
-	private boolean purchased;
+	private Boolean purchased;
 	
 	private String parentNumber;
 	
 	private Date quarantineFinishDate;
 	
 	private List<Integer> listIds;
+		
+	private boolean expirationDateNull;
+	
+	private Date expirationDateGe;
+	private Date expirationDatelt;
+	
+	/* temporal */
+	private List<Junction> listJunctions;
+	private List<String> listAlias;
+	private Map<String, Object> map;
 	
     public String getNumber() {
 		return number;
@@ -169,6 +200,23 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 		this.statusId = statusId;
 	}
 
+	public Boolean getInControl() {
+		return inControl;
+	}
+
+	public void setInControl(Boolean inControl) {
+		this.inControl = inControl;
+	}
+	
+
+	public Boolean getSplit() {
+		return split;
+	}
+
+	public void setSplit(Boolean split) {
+		this.split = split;
+	}
+
 	public int getMakerNullValue() {
 		return MAKER_NULL_VALUE;
 	}
@@ -195,6 +243,14 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 	 */
 	public void setStatusIdCompareFlag(int statusIdCompareFlag) {
 		this.statusIdCompareFlag = statusIdCompareFlag;
+	}
+
+	public InControl getInControlCompareFlag() {
+		return inControlCompareFlag;
+	}
+
+	public void setInControlCompareFlag(InControl inControlCompareFlag) {
+		this.inControlCompareFlag = inControlCompareFlag;
 	}
 
 	/**
@@ -228,14 +284,14 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 	/**
 	 * @return the purchased
 	 */
-	public boolean isPurchased() {
+	public Boolean getPurchased() {
 		return purchased;
 	}
 
 	/**
 	 * @param purchased the purchased to set
 	 */
-	public void setPurchased(boolean purchased) {
+	public void setPurchased(Boolean purchased) {
 		this.purchased = purchased;
 	}
 
@@ -293,6 +349,54 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 		this.parentNumber = parentNumber;
 	}
 
+	public Boolean isExpirationDateNull() {
+		return expirationDateNull;
+	}
+
+	public void setExpirationDateNull(boolean expirationDateNull) {
+		this.expirationDateNull = expirationDateNull;
+	}
+
+	public Date getExpirationDateGe() {
+		return expirationDateGe;
+	}
+
+	public void setExpirationDateGe(Date expirationDateGe) {
+		this.expirationDateGe = expirationDateGe;
+	}
+
+	public Date getExpirationDatelt() {
+		return expirationDatelt;
+	}
+
+	public void setExpirationDatelt(Date expirationDatelt) {
+		this.expirationDatelt = expirationDatelt;
+	}
+
+	public List<Junction> getListJunctions() {
+		return listJunctions;
+	}
+
+	public void setListJunctions(List<Junction> listJunctions) {
+		this.listJunctions = listJunctions;
+	}
+
+	public List<String> getListAlias() {
+		return listAlias;
+	}
+
+	public void setListAlias(List<String> listAlias) {
+		this.listAlias = listAlias;
+	}
+
+	public Map<String, Object> getMap() {
+		return map;
+	}
+
+	public void setMap(Map<String, Object> map) {
+		this.map = map;
+	}
+
 	@Override
 	public void clear() {
 		setDefaultValues();
@@ -313,10 +417,19 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 		statusIdCompareFlag = STATUS_ID_NULL;
 		donationId = null;
 		orderId = null;
-		purchased = false;
+		purchased = null;
 		quarantineFinishDate = null;
 		listIds = null;
 		parentNumber = null;
+		inControlCompareFlag = InControl.IN_CONTROL_NULL;
+		split = null;
+		expirationDateNull = false;
+		expirationDateGe = null;
+		expirationDatelt = null;
+		listJunctions = new ArrayList<Junction>();
+		listAlias = new ArrayList<String>();
+		map = null;
+		
 	}
 
 	@Override
@@ -335,9 +448,17 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 		setStatusIdCompareFlag(source.getStatusIdCompareFlag());
 		setDonationId(source.getDonationId());
 		setOrderId(source.getOrderId());
-		setPurchased(source.isPurchased());
+		setPurchased(source.getPurchased());
 		setQuarantineFinishDate(source.getQuarantineFinishDate());
 		setListIds(source.getListIds());
 		setParentNumber(source.getParentNumber());
+		setInControl(source.getInControl());
+		setInControlCompareFlag(source.getInControlCompareFlag());
+		setSplit(source.getSplit());
+		setExpirationDateNull(source.isExpirationDateNull());
+		setExpirationDateGe(source.getExpirationDateGe());
+		setListJunctions(source.getListJunctions());
+		setListAlias(source.getListAlias());
+		setMap(source.getMap());
 	}
 }
