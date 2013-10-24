@@ -1,5 +1,7 @@
 package ru.efive.medicine.niidg.trfu.data.entity;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,11 +34,51 @@ public class BloodSystem extends IdentifiedEntity {
     public void setCount(Integer count) {
         this.count = count;
     }
+    
+    public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
+	}
+	
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public Integer getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Integer roleId) {
+		this.roleId = roleId;
+	}
+	
+	public String getSystemLot() {
+		return systemLot;
+	}
+
+	public void setSystemLot(String systemLot) {
+		this.systemLot = systemLot;
+	}
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	private BloodSystemType type;
 
     private Integer count = 1;
+    
+    private Date expirationDate;
+    
+    private Integer userId;
+    
+    private Integer roleId;
+    
+    private String systemLot;
 	
 	private static final long serialVersionUID = 1L;
 }

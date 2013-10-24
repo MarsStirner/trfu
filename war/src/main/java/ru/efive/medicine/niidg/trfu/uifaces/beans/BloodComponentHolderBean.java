@@ -25,8 +25,12 @@ import ru.efive.dao.sql.entity.enums.RoleType;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
+import ru.efive.medicine.niidg.trfu.dao.BloodSystemDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
+import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
+import ru.efive.medicine.niidg.trfu.data.entity.BloodSystem;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.PropertiesEditorBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
@@ -72,6 +76,29 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 			setDocument(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).get(id));
 			if (getDocument() == null) {
 				setState(STATE_NOT_FOUND);
+			}
+			
+			// блок выполняется только при открытии КК из АРМ Вирусинактивация
+			if (haveBloodSystemId()) {
+				haveConsumableMaterial = true;
+			    Integer bloodSystemId = Integer.valueOf(getBloodSystemId());
+			    BloodSystemDAOImpl bloodSystemDAO = sessionManagement.getDAO(BloodSystemDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_DAO);
+			    BloodSystem bloodSystem = bloodSystemDAO.get(bloodSystemId);
+			    getDocument().setBloodSystem(bloodSystem);
+			    saveDocument();
+			    if (getDocument().getAdditionalVolume() == 0) {
+			    	if (getDocument().getDirAdditionalLiquor() != null) {
+			    		int additionalVolume = getDocument().getDirAdditionalLiquor().getAdditionalVolume();
+				    	getDocument().setAdditionalVolume(additionalVolume);
+			    	}
+			    }
+			    
+			    if (getDocument().getAdditionalLiquor() == null) {
+			    	if (getDocument().getDirAdditionalLiquor() != null) {
+			    		Classifier additionalLiquor = getDocument().getDirAdditionalLiquor().getAdditionalLiquor();
+			    		getDocument().setAdditionalLiquor(additionalLiquor);
+			    	}
+			    }
 			}
 		}
 		catch (Exception e) {
@@ -598,6 +625,35 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     	return result;
     }
     
+    public boolean isHaveConsumableMaterial() {
+    	return haveConsumableMaterial;
+    }
+    
+    public String getConsumableMaterialLot() {
+    	return getDocument().getBloodSystem().getSystemLot();
+    }
+    
+    public String getConsumableMaterialType() {
+    	return getDocument().getBloodSystem().getType().getValue();
+    }
+    
+    public Date getConsumableMaterialExpirationDate() {
+    	return getDocument().getBloodSystem().getExpirationDate();
+    }
+    
+    private String getBloodSystemId() {
+    	return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("bloodSystemId");
+    }
+    
+    // возвращает true только при открытии КК из АРМ Вирусинактивация
+    private boolean haveBloodSystemId() {
+    	String checkingId = getBloodSystemId();
+    	if (checkingId != null && !"".equals(checkingId)) {
+    		return true;
+    	}
+    	return false;
+    }
+    
     public void previewBigLabel() {
     	try {
     		if (getDocument().getBloodGroup() == null || StringUtils.isEmpty(getDocument().getBloodGroup().getValue()) || 
@@ -684,7 +740,6 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 				historyEntry.setOwner(sessionManagement.getLoggedUser());
 				historyEntry.setDocType(bloodComponent.getType());
 				historyEntry.setParentId(bloodComponent.getId());
-//				historyEntry.setActionId(14);
 				historyEntry.setActionId(ApplicationHelper.VIRUSINAKTIVATION_ID);
 				historyEntry.setFromStatusId(bloodComponent.getStatusId());
 				historyEntry.setCommentary("");
@@ -706,6 +761,43 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 		}
 	};
 	
+	public class VirusinWithResuspensionSolutionModalBean extends ModalWindowHolderBean {
+		public VirusinWithResuspensionSolutionModalBean() {
+			if (haveBloodSystemId()) {
+				setModalVisible(true);
+			}
+		}
+		
+		public void perfomVirusinaktivation(){
+			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+			BloodComponent bloodComponent = getDocument();
+			bloodComponent.setPreInactivatedVolume(bloodComponent.getVolume());
+			bloodComponent.setVolume(getVirusinWithResuspensionSolutionVolume());
+			bloodComponent.setInactivated(true);
+			
+			dao.save(bloodComponent);
+			setDocument(bloodComponent);
+			setModalVisible(false);
+		}
+			
+		public int getVirusinWithResuspensionSolutionVolume() {
+			int preInactivatedVolume = getDocument().getVolume();
+			int additionalVolume = getDocument().getAdditionalVolume();
+			int result = preInactivatedVolume + additionalVolume;
+			result = roundResult(result);
+			return result;
+		}
+		
+		private int roundResult(int value) {
+			String str = String.valueOf(value);
+			if (str.length() > 0) {
+				str = str.substring(0, str.length() - 1) + "0";
+			}
+			value = Integer.parseInt(str);
+			return value;
+		}
+	}
+	
 	/**
 	 * Метод возвращает модальное окно Вирусинактивации
 	 * @return VirusinaktivationModalBean
@@ -714,10 +806,13 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 		return virusinaktivationModal;
 	}
 	
+	public VirusinWithResuspensionSolutionModalBean getVirusinWithResuspensionSolutionModal(){
+		return virusinWithResuspensionSolutionModal;
+	}
+	
 	public boolean isVirusinaktivation(){
 		boolean result = false;
 		if(processorModal.getSelectedAction() != null){
-//			if(processorModal.getSelectedAction().getName().equals("Вирусинактивация")){
 			if(processorModal.getSelectedAction().getName().equals(ApplicationHelper.VIRUSINAKTIVATION)){
 				result = true;
 			}
@@ -740,8 +835,10 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 		this.expirationDays = expirationDays;
 	}
 	
+	private VirusinWithResuspensionSolutionModalBean virusinWithResuspensionSolutionModal = new VirusinWithResuspensionSolutionModalBean();
 	
 	private int expirationDays;
+	private boolean haveConsumableMaterial = false;
     
 	@Inject @Named("propertiesRedactorBean")
 	private transient PropertiesEditorBean propertiesEditorBean;

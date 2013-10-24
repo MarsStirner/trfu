@@ -24,6 +24,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.Anticoagulant;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
+import ru.efive.medicine.niidg.trfu.data.dictionary.DirAdditionalLiquor;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAppointment;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ProcessedData;
@@ -503,6 +504,45 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
 		this.appointment = appointment;
 	}
 	
+	public DirAdditionalLiquor getDirAdditionalLiquor() {
+		return dirAdditionalLiquor;
+	}
+	
+	public void setDirAdditionalLiquor(DirAdditionalLiquor dirAdditionalLiquor) {
+		this.dirAdditionalLiquor = dirAdditionalLiquor;
+	}
+	
+	public BloodDonationRequest getDonation() {
+		return donation;
+	}
+
+	public void setDonation(BloodDonationRequest donation) {
+		this.donation = donation;
+	}
+	
+	public BloodSystem getBloodSystem() {
+		return bloodSystem;
+	}
+
+	public void setBloodSystem(BloodSystem bloodSystem) {
+		this.bloodSystem = bloodSystem;
+	}
+	
+	public Classifier getAdditionalLiquor() {
+		return additionalLiquor;
+	}
+
+	public void setAdditionalLiquor(Classifier additionalLiquor) {
+		this.additionalLiquor = additionalLiquor;
+	}
+
+	public int getAdditionalVolume() {
+		return additionalVolume;
+	}
+
+	public void setAdditionalVolume(int additionalVolume) {
+		this.additionalVolume = additionalVolume;
+	}
 	
 	/**
 	 * Автор документа
@@ -789,21 +829,29 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private ExternalAppointment appointment;
 	
-	
-	private static final long serialVersionUID = -7114694453722100437L;
-	
-    /**
+	/**
      * Донация
      */
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "donationId", insertable = false, updatable = false)
     private BloodDonationRequest donation;
+    
+    /**
+	 * Значения по умолчанию для ресуспендирующего раствора
+	 */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+	@JoinColumn(name = "componentType_id", referencedColumnName = "componentType_id", insertable=false, updatable=false)
+	private DirAdditionalLiquor dirAdditionalLiquor;
+	
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+	private BloodSystem bloodSystem;
+    
+    /**
+     * Тип добавочного раствора
+     */
+	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private Classifier additionalLiquor;
+	private int additionalVolume ;
 
-	public BloodDonationRequest getDonation() {
-		return donation;
-	}
-
-	public void setDonation(BloodDonationRequest donation) {
-		this.donation = donation;
-	}
+	private static final long serialVersionUID = -7114694453722100437L;
 }

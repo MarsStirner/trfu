@@ -186,6 +186,38 @@
 										<h:button onclick="virusinaktivationModal.clickClose(); actionsModal.clickClose(); return false;" value="Отмена" />
 									</div>
 								</e5ui-comp:modalWindow>
+								
+								<e5ui-comp:modalWindow id="virusinWithResuspensionSolutionModal"
+											modalWindowHolder="#{bloodComponent.virusinWithResuspensionSolutionModal}"
+											showButtons="false"
+											widgetVar="virusinWithResuspensionSolutionModal">
+									<h:panelGroup>
+										<div id="title">Вирусинактивация</div>
+									</h:panelGroup>
+									<h:panelGroup>
+										<div class="wrap" style="height:90px;background-color:#fff;clear:both;">
+											<div class="inner" style="height: 90px;">
+												<table style="padding:7px; height:100%; text-align:left;" border="0"  width="100%" >														
+													<tr>
+														<td>Объем до вирусинактивации, мл:</td>
+														<td><h:outputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" label="volume"/></td>
+													</tr>
+													<tr>
+														<td>Объем компонента, мл:</td>
+														<td>
+															<h:outputText id="status" value="#{bloodComponent.virusinWithResuspensionSolutionModal.virusinWithResuspensionSolutionVolume}" 
+																style="font-weight:bold;"/>
+														</td>
+													</tr>
+												</table>		
+											</div>
+										</div>
+									</h:panelGroup>
+									<div class="e5ui-modal-bottombuttons">
+										<h:commandButton type="submit" action="#{bloodComponent.virusinWithResuspensionSolutionModal.perfomVirusinaktivation}" value="Выполнить" />
+										<h:button onclick="virusinWithResuspensionSolutionModal.clickClose(); actionsModal.clickClose(); return false;" value="Отмена" />
+									</div>
+								</e5ui-comp:modalWindow>
 							</e5ui:formPart>
 						</div>
 					<h:panelGroup rendered="#{bloodComponent.document.statusId eq 3}">
@@ -522,6 +554,57 @@
 															<f:ajax event="click" listener="#{bloodComponent.inactivatedListener}" render="main_content_form" execute="main_content_form" />
 														</h:selectBooleanCheckbox>
 														<h:outputText value="Вирусинактивация" />
+														<h:panelGroup rendered="#{bloodComponent.haveConsumableMaterial}">
+															<h:outputScript>
+																var isVisibleText = false;
+			
+																function changeVisibleText() {
+																	if (isVisibleText) {
+																		isVisibleText = false;
+																	} else {
+																		isVisibleText = true;
+																	}
+																	hideShowText();
+																}
+			
+																function hideShowText() {
+																	var blockText = $("[id*='consumableMaterialContent']");
+																	if (isVisibleText) {	
+																		blockText.show();
+																	} else {
+																		blockText.hide();
+																	}
+																}
+																
+																function setCursorMaterial(typeCursor) {
+																	var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
+																	$("[id*='consumableMaterialContent']").prev().attr("style", styleTitle);
+																}
+															
+																jQuery(function() {
+																	hideShowText();
+																});
+															</h:outputScript>
+															<span> </span>
+															<a onmouseout="setCursorMaterial('default')" onmouseover="setCursorMaterial('pointer')" 
+															onclick="changeVisibleText();" style="color: #4581c0">Расходный материал</a> 
+															<span id="consumableMaterialContent">
+																<span>ЛОТ: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialLot}"/>
+																<span>.ТИП: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialType}"/>
+																<span>.ГОДЕН ДО: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialExpirationDate}">
+					                								<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+					                							</h:outputText>
+					                						</span>
+															<div>
+																<span>Добавочный раствор: </span>
+																<h:outputText style="font-weight:bold;" value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter" />
+																<span>. Объем, мл: </span>
+																<h:outputText style="font-weight:bold;" value="#{bloodComponent.document.additionalVolume}" />
+															</div>
+														</h:panelGroup>
 													</div>
 													<div style="margin-top: 10px;">
 														<h:selectBooleanCheckbox value="#{bloodComponent.document.irradiated}" disabled="#{bloodComponent.viewState}" />
@@ -844,6 +927,60 @@
 															<f:ajax event="click" listener="#{bloodComponent.inactivatedListener}" render="main_content_form" execute="main_content_form" />
 														</h:selectBooleanCheckbox>
 														<h:outputText value="Вирусинактивация" />
+														<h:panelGroup rendered="#{bloodComponent.haveConsumableMaterial}">
+															<h:outputScript>
+																var isVisibleText = false;
+			
+																function changeVisibleText() {
+																	if (isVisibleText) {
+																		isVisibleText = false;
+																	} else {
+																		isVisibleText = true;
+																	}
+																	hideShowText();
+																}
+			
+																function hideShowText() {
+																	var blockText = $("[id*='consumableMaterialContent']");
+																	if (isVisibleText) {	
+																		blockText.show();
+																	} else {
+																		blockText.hide();
+																	}
+																}
+																
+																function setCursorMaterial(typeCursor) {
+																	var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
+																	$("[id*='consumableMaterialContent']").prev().attr("style", styleTitle);
+																}
+															
+																jQuery(function() {
+																	hideShowText();
+																});
+															</h:outputScript>
+															<span> </span>
+															<a onmouseout="setCursorMaterial('default')" onmouseover="setCursorMaterial('pointer')" 
+															onclick="changeVisibleText();" style="color: #4581c0">Расходный материал</a> 
+															<span id="consumableMaterialContent">
+																<span>ЛОТ: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialLot}"/>
+																<span>.ТИП: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialType}"/>
+																<span>.ГОДЕН ДО: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialExpirationDate}">
+					                								<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+					                							</h:outputText>
+					                						</span>
+					                						<div>
+																<span>Добавочный раствор: </span>
+																<h:outputText value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter" />
+																<h:selectOneMenu style="font-weight:bold;" id="additionalLiquor" value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter">
+																	<f:selectItems value="#{dictionaryManagement.getByCategoryWithEmpty('Ресуспендирующий раствор')}" />
+																</h:selectOneMenu>
+																<span>. Объем, мл: </span>
+																<h:inputText style="font-weight:bold;" value="#{bloodComponent.document.additionalVolume}" />
+															</div>
+														</h:panelGroup>
 													</div>
 													<div style="margin-top: 10px;">
 														<h:selectBooleanCheckbox value="#{bloodComponent.document.irradiated}" disabled="#{bloodComponent.viewState}" />

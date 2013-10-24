@@ -1,0 +1,292 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:e5ui="http://efive.ru/uitemplates"
+	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="#{sessionManagement.templateName}">
+	
+	<ui:define name="running_head">
+		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
+		<h:outputScript library="js" name="views.js" target="head" />
+		<h:outputScript>
+        	jQuery(document).ready(function() {
+        	update_content();
+        	});
+    	</h:outputScript>
+    	<h:outputScript>
+        	var resizeTimer = null;
+        	jQuery(window).bind('resize', function() {
+        	if (resizeTimer) clearTimeout(resizeTimer);
+        	resizeTimer = setTimeout(update_content, 100);
+        	});
+    	</h:outputScript>
+    	<h:outputScript>
+        	function update_content() {
+        	var height = document.body.clientHeight - jQuery("#view_header").height() - jQuery("#footer").height() -
+        	jQuery("#searchbar").height() - jQuery("#table_paging").height()-26;
+        	jQuery("#table_wrap").height(height);
+        	jQuery("#table_inner").height(height);
+        	};
+    	</h:outputScript>
+	</ui:define>
+	
+	<ui:define name="header">
+	<div id="view_header" style="width:100%;">
+        <div id="header">
+            <div class="menu">
+                <e5ui:formPart id="header_title">
+                    <div id="viewtitle">Вирусинактивация</div>
+                </e5ui:formPart>
+                <div class="role">
+                    <div class="top">
+                        <h:commandLink styleClass="top_link" onclick="return false;">
+		                   		<span>
+									<h:outputText value="#{sessionManagement.currentRole}" converter="RoleConverter"/>
+								</span>
+                        </h:commandLink>
+                        <div class="sub">
+                            <ui:repeat value="#{sessionManagement.availableRoles}" var="element">
+                                <div class="item">
+                                    <h:commandLink action="#{sessionManagement.setCurrentRole(element)}">
+                                        <h:outputText value="#{element}" converter="RoleConverter"/>
+                                    </h:commandLink>
+                                </div>
+                            </ui:repeat>
+                        </div>
+                    </div>
+                </div>
+                <div class="username">
+                    <div class="top">
+                        <h:commandLink styleClass="top_link" onclick="return false;">
+		                   		<span>
+									<h:outputText value="#{sessionManagement.loggedUser.description}"/>
+								</span>
+                        </h:commandLink>
+                        <div class="sub">
+                            <div class="item">
+                                <h:commandLink action="#{sessionManagement.logOut}">
+                                    Выход
+                                </h:commandLink>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="actionbar">
+            <div class="menu">
+                <div class="defbutton">
+					<h:outputLink onclick="bloodSystemTypeSelectVar.clickOpen('bloodSystemTypeSelectModal'); return false;">
+						<h:graphicImage value="#{resource['images:button-request.png']}" />
+            			Изменить настройки
+            			<e5ui:formPartTarget formPart="main_table_part"/>
+					</h:outputLink>
+				</div>
+				<div class="top">
+					<h:commandLink styleClass="top_link" onclick="return false;">
+                        <span><h:graphicImage value="#{resource['images:blank.png']}"/>Отчетность</span>
+                    </h:commandLink>           			
+           			<div class="sub">
+                        <div class="item">
+                            <h:outputLink value="#{contextPath}/component/report/report_template.xhtml" target="_blank">
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="docAction" value="create"/>
+                                <f:param name="templateName" value="virusinactiv_by_day.jrxml"/>
+                                <f:param name="consumableMaterial" value="#{virusinactivationComponentList.consumableMaterial}"/>
+                                По вирусин. компонентам за день
+                            </h:outputLink>
+                        </div>
+                        <div class="item">
+                            <h:outputLink value="#{contextPath}/component/report/report_template.xhtml" target="_blank">
+                                <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                <f:param name="docAction" value="create"/>
+                                <f:param name="templateName" value="virusinactiv_by_period.jrxml"/>
+                                <f:param name="consumableMaterial" value="#{virusinactivationComponentList.consumableMaterial}"/>
+                                По вирусин. компонентам за период
+                            </h:outputLink>
+                        </div>
+                    </div>
+				</div>
+            </div>
+        </div>
+    </div>
+	</ui:define>
+	
+	<ui:define name="left_menu"></ui:define>
+
+	<ui:define name="content">
+		<script type="text/javascript">
+			document.ondblclick = function DoubleClick(evt) {
+				if (window.getSelection)
+					window.getSelection().removeAllRanges();
+				else if (document.selection)
+					document.selection.empty();
+			}
+		</script>
+		<h:outputScript>
+        	function goToDocument(id) {
+        		var param = '&amp;bloodSystemId=';
+        		var url;
+        		if (id != 0) {
+        			url = '#{facesContext.externalContext.requestContextPath}/component/blood_component.xhtml?docId=' + id;
+        			var bloodSystemId = $("[id*='bloodSystemId']").text();
+        			if (bloodSystemId != '') {
+        				url += param + bloodSystemId;
+        			}
+        			window.open(url,'_blank');
+				}
+			}
+        </h:outputScript>
+		<e5ui:formPart id="main_table_part">
+			<div id="main_table" style="width:100%;">
+				<div id="searchbar" class="main_searchbar">
+					<h:inputText id="filter_string" value="#{virusinactivationComponentList.filter}" 
+								style="display:block; float:left; width:60%; margin:2px 10px;" title="Поиск" />
+					<h:commandButton value=" " action="#{virusinactivationComponentList.changePageOffset(0)}" styleClass="searchbutton">
+						<f:ajax execute=":main_content_form:filter_string" render=":main_content_form:main_data_tbl :main_content_form:main_data_paging" />
+					</h:commandButton>
+				</div>
+				<div class="wrap_main" id="table_wrap">
+					<div class="inner" id="table_inner">
+						<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl"
+									value="#{virusinactivationComponentList.documents}" var="row" grouping="false">
+							<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+							<e5ui:column style="min-width:5em">
+								<f:facet name="header">
+									<h:commandLink action="#{virusinactivationComponentList.sort('parentNumber,number')}">
+			                        	Номер
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.fullNumber}" />
+							</e5ui:column>
+							<e5ui:column style="min-width:10em">
+								<f:facet name="header">
+									<h:commandLink action="#{virusinactivationComponentList.sort('created')}">
+			                        	Дата создания
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.created}">
+									<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+								</h:outputText>
+							</e5ui:column>
+							<e5ui:column style="min-width:7em">
+								<f:facet name="header">
+									<h:commandLink action="#{virusinactivationComponentList.sort('donation.number')}">
+			                        	Номер донации
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.donation.number}"/>
+							</e5ui:column>
+							<e5ui:column style="min-width:14em">
+								<f:facet name="header">
+									<h:commandLink action="#{virusinactivationComponentList.sort('componentType.value')}">
+			                        	Тип компонента
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.componentType}" converter="BloodComponentTypeConverter" />
+							</e5ui:column>
+							<e5ui:column style="min-width:7em">
+								<f:facet name="header">
+									<h:commandLink action="#{virusinactivationComponentList.sort('donation.commentary')}">
+			                        	Комментарий
+			                        	<f:ajax render="main_data_tbl"/>
+			                        </h:commandLink>
+			                    </f:facet>
+								<h:outputText value="#{row.donation.commentary}"/>
+							</e5ui:column>
+						</e5ui:dataTable>
+					</div>
+				</div>
+				<div id="table_paging">
+					<h:panelGroup id="main_data_paging">
+						<e5ui-comp:tablePager documentListHolder="#{virusinactivationComponentList}" style="display:inline;" />
+						<e5ui-comp:tablePageSizeSelector documentListHolder="#{virusinactivationComponentList}" style="display:inline;float:right;" pageSizes="10,25,50,100" />
+					</h:panelGroup>
+				</div>
+			</div>
+			
+			<h:outputText style="display: none" id="bloodSystemId" value="#{virusinactivationComponentList.currentBloodSystemId}"/>
+			
+			<e5ui-comp:modalWindow id="bloodSystemTypeSelectModal"
+                       modalWindowHolder="#{virusinactivationComponentList.bloodSystemTypeSelectModal}"
+                       showButtons="false"
+                       widgetVar="bloodSystemTypeSelectVar">
+                        <div id="title">Выбор типов систем крови</div>
+                        <div id="blood_modal_container" style="margin-top: 0;">
+                            <div class="wrap" style="height: 300px;">
+                                <div class="inner" style="height: 300px;">
+                                    <e5ui:dataTable id="blood_select_table" border="0" cellpadding="0" cellspacing="0"
+                                                    value="#{virusinactivationComponentList.bloodSystemTypeSelectModal.allTypes}"
+                                                    var="row" grouping="false" width="100%">
+                                        <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+                                                  styleClass="#{virusinactivationComponentList.bloodSystemTypeSelectModal.selected(row)? 'grid_row_selected': ''}"/>
+	                                        <e5ui:column>
+	                                            <f:facet name="header">
+	                                                <p>Название</p>
+	                                            </f:facet>
+	                                            <h:outputText value="#{row.value}"/>
+	                                            <h:commandLink id="selectLink" style="display: none;"
+	                                                           action="#{virusinactivationComponentList.bloodSystemTypeSelectModal.select(row)}"/>
+	                                        </e5ui:column>
+                                    </e5ui:dataTable>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="e5ui-modal-bottombuttons">
+                            <h:commandButton value="Выбрать" action="#{virusinactivationComponentList.bloodSystemTypeSelectModal.openExpirationDateWindow}"/>
+                            <h:button onclick="bloodSystemTypeSelectVar.clickClose(); return false;" value="Отмена"/>
+                        </div>
+				</e5ui-comp:modalWindow>
+				<e5ui-comp:modalWindow id="expirationDateSelectModal"
+                       		modalWindowHolder="#{virusinactivationComponentList.expirationDateSelectModal}"
+                       		showButtons="false"
+                       		widgetVar="expirationDateSelectVar">
+                        	<div id="title">Установка срока годности выбранной системы</div>
+                        	<div id="blood_modal_container" style="margin-top: 0;">
+                        		<div class="wrap" style="height: 120px;">
+                        			<h:panelGroup rendered="#{virusinactivationComponentList.expirationDateSelectModal.invalid}">
+										<div class="row" style="margin:10px 5px;">
+											<h:outputText value="#{virusinactivationComponentList.expirationDateSelectModal.message}" style="font-weight:bold;color:red;" />
+										</div>
+									</h:panelGroup>
+									<div>Лот</div>
+                        			<div><h:inputText id="systemLot" immediate="true"
+                        			value="#{virusinactivationComponentList.expirationDateSelectModal.systemLot}"/></div>
+                        			<div>Годен до</div>
+                        			<div><e5ui-comp:inputDate id="enteredExpirationDate" immediate="true"
+                        			value="#{virusinactivationComponentList.expirationDateSelectModal.enteredExpirationDate}" lang="ru" en="en"/></div>
+                        		</div>	
+                        	</div>
+                        	<div class="e5ui-modal-bottombuttons">
+	                            <h:commandButton value="Выбрать" action="#{virusinactivationComponentList.expirationDateSelectModal.validateExpirationDate}"/>
+    	                    </div>
+				</e5ui-comp:modalWindow>
+		</e5ui:formPart>
+	</ui:define>
+	
+	<ui:define name="footer">
+		<e5ui-comp:splashScreen id="splash_screen" timeout="0">
+			<f:facet name="timeoutPanel">
+				<div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+					Пожалуйста, подождите...</div>
+			</f:facet>
+		</e5ui-comp:splashScreen>
+		<script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+		<h:outputStylesheet library="css" name="datatable.css" />
+		<h:outputStylesheet library="css" name="tablePager.css" />
+		<h:outputStylesheet library="css" name="menu.css" />
+		<h:outputStylesheet library="css" name="modalWindow.css" />
+		<h:outputStylesheet library="css" name="multiMarker.css" />
+	</ui:define>
+	
+</ui:composition>
+
+</html>

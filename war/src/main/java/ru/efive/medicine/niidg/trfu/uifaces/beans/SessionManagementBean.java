@@ -340,7 +340,10 @@ public class SessionManagementBean implements Serializable {
     	}
     	else if (currentRole.getRoleType().equals(RoleType.MEDICAL)) {
     		buffer.append("medical_template.xhtml");
-		}
+		} 
+    	else if (currentRole.getRoleType().equals(RoleType.VIRUSINACTIVATION)) {
+    		buffer.append("virusinactivation_template.xhtml");
+    	}
     	else {
     		buffer.append("minimal.xhtml");
     	}
@@ -396,6 +399,9 @@ public class SessionManagementBean implements Serializable {
     	}
     	else if (currentRole.getRoleType().equals(RoleType.MEDICAL)) {
     		buffer.append("medical/donors");
+		}
+    	else if (currentRole.getRoleType().equals(RoleType.VIRUSINACTIVATION)) {
+    		buffer.append("virusinactivation");
 		}
     	else {
     		buffer.append("donors");

@@ -21,6 +21,7 @@
             <composite:attribute name="dir" shortDescription="Direction indication for text that does not inherit directionality. Valid values are 'LTR' (left-to-right) and 'RTL' (right-to-left)."/>
             <composite:attribute name="disabled" type="java.lang.Boolean" shortDescription="Is the component will disabled"/>
             <composite:attribute name="disableEditor" type="java.lang.Boolean" shortDescription="If true then editor will be disabled and selection will allowed only by datepicker"/>
+            <composite:attribute name="en" shortDescription="Pattern of date yyyy-MM-dd"/>
             <composite:attribute name="id" shortDescription="ID of composite component"/>
             <composite:attribute name="immediate" type="java.lang.Boolean" shortDescription="Identifies during which phase value change event should occur."/>
             <composite:attribute name="jsInitVar" default="{}" shortDescription="JS object or variable name to initialize date picker object"/>
@@ -72,6 +73,7 @@
                     <c:if test="#{not empty cc.attrs.alt}"><f:attribute name="alt" value="#{cc.attrs.alt}"/></c:if>
                     <c:if test="#{not empty cc.attrs.binding}"><f:attribute name="binding" value="#{cc.attrs.binding}"/></c:if>
                     <c:if test="#{not empty cc.attrs.dir}"><f:attribute name="dir" value="#{cc.attrs.dir}"/></c:if>
+                    <c:if test="#{not empty cc.attrs.en}"><f:attribute name="en" value="#{cc.attrs.en}"/></c:if>
                     <c:if test="#{not empty cc.attrs.lang}"><f:attribute name="lang" value="#{cc.attrs.lang}"/></c:if>
                     <c:if test="#{not empty cc.attrs.maxlength}"><f:attribute name="maxlength" value="#{cc.attrs.maxlength}"/></c:if>
                     <c:if test="#{not empty cc.attrs.onblur}"><f:attribute name="onblur" value="#{cc.attrs.onblur}"/></c:if>
@@ -96,8 +98,22 @@
                     <c:if test="#{not empty cc.attrs.validator}"><f:attribute name="validator" value="#{cc.attrs.validator}"/></c:if>
                     <c:if test="#{not empty cc.attrs.validatorMessage}"><f:attribute name="validatorMessage" value="#{cc.attrs.validatorMessage}"/></c:if>
                     <c:if test="#{not empty cc.attrs.valueChangeListener}"><f:attribute name="valueChangeListener" value="#{cc.attrs.valueChangeListener}"/></c:if>
+                    
+                    <c:choose>
+                    	<c:when test="#{empty cc.attrs.en}">
+                        	<c:set var="patternDate" value="dd.MM.yyyy"/>
+                        	<c:set var="maskDate" value="99.99.9999"/>
+                        	<c:set var="formatDate" value="d.m.Y"/>
+                    	</c:when>
+                    	<c:otherwise>
+                        	<c:set var="patternDate" value="yyyy-MM-dd"/>
+                        	<c:set var="maskDate" value="9999-99-99"/>
+                        	<c:set var="formatDate" value="Y-m-d"/>
+                    	</c:otherwise>
+                	</c:choose>
 
-                    <f:convertDateTime for="dateEditor" pattern="dd.MM.yyyy"/>
+					<f:convertDateTime for="dateEditor" pattern="#{patternDate}"/>
+                    
                     <composite:insertChildren/>
                 </h:inputText>&nbsp;
                 <h:commandButton
@@ -120,10 +136,12 @@
                     jQuery(function($){
                         var editorIdSelector = "##{cc.clientId.replaceAll(':', '\\\\\\\\:')}\\:dateEditor";
                         var buttonIdSelector = "##{cc.clientId.replaceAll(':', '\\\\\\\\:')}\\:calendarButton";
-
-                        #{cc.attrs.disableEditor? '$(editorIdSelector).attr("readonly", true)': '$(editorIdSelector).mask("99.99.9999");'}
+                        var maskDate = "#{maskDate}";
+						
+                        #{cc.attrs.disableEditor? '$(editorIdSelector).attr("readonly", true)': '$(editorIdSelector).mask(maskDate);'}
+                        
                         $(buttonIdSelector).DatePicker($.extend({}, #{jsInitVar}, {
-                            format: "d.m.Y",
+                            format: '#{formatDate}',
                             date: $(editorIdSelector).val(),
                             onChange: function(formatted, dates) {
                                 $(editorIdSelector).val(formatted);

@@ -10,7 +10,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
@@ -1172,5 +1174,88 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 			criteria.add(conjunction);
 		}
         return criteria;
+	}
+	
+	/**
+     * Поиск документов
+     *
+     * @param filter          фильтр поиска
+     * @param statusIdList    список статусов
+     * @param showExpired     true - отображать просроченные, false - скрывать просроченные
+     * @param showDeleted     true - show deleted, false - hide deleted
+     * @param offset          смещение
+     * @param count           кол-во результатов
+     * @param orderBy         поле для сортировки
+     * @param orderAsc        направление сортировки
+     * @return список документов
+     */
+	@SuppressWarnings("unchecked")
+	public List<BloodComponent> findDocuments(String filter, List<Integer> statusIdList, boolean showExpired, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+        detachedCriteria.setFetchMode("donation", FetchMode.EAGER);
+        detachedCriteria.add(Restrictions.ne("donationId", 0));
+        
+        if (!showDeleted) {
+            detachedCriteria.add(Restrictions.eq("deleted", false));
+        }
+        if (!showExpired) {
+        	Disjunction disjunction = Restrictions.disjunction();
+        	Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+        	disjunction.add(Restrictions.ge("expirationDate", calendar.getTime()));
+        	disjunction.add(Restrictions.isNull("expirationDate"));
+        	detachedCriteria.add(disjunction);
+        }
+        if (statusIdList.size() != 0) {
+        	detachedCriteria.add(Restrictions.in("statusId", statusIdList));
+        }
+
+		String[] ords = orderBy == null ? null : orderBy.split(",");
+		if (ords != null) {
+			if (ords.length > 1) {
+				addOrder(detachedCriteria, ords, orderAsc);
+			} else {
+				addOrder(detachedCriteria, orderBy, orderAsc);
+			}
+		}
+		
+		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+	}
+	
+	/**
+	 * Количество компонентов
+	 * @param filter          фильтр поиска
+	 * @param statusIdList    список статусов
+	 * @param showExpired     true - отображать просроченные, false - скрывать просроченные
+	 * @param showDeleted     true - show deleted, false - hide deleted
+	 * @return количество компонентов
+	 */
+	public long countDocument(String filter, List<Integer> statusIdList, boolean showExpired, boolean showDeleted) {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+        
+        if (!showDeleted) {
+            detachedCriteria.add(Restrictions.eq("deleted", false));
+        }
+        if (!showExpired) {
+        	Disjunction disjunction = Restrictions.disjunction();
+        	Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+        	disjunction.add(Restrictions.ge("expirationDate", calendar.getTime()));
+        	disjunction.add(Restrictions.isNull("expirationDate"));
+        	detachedCriteria.add(disjunction);
+        }
+        if (statusIdList.size() != 0) {
+        	detachedCriteria.add(Restrictions.in("statusId", statusIdList));
+        }
+        
+		return getCountOf(getSearchCriteria(detachedCriteria, filter));
 	}
 }

@@ -66,6 +66,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 	
 	@Override
 	protected void initNewDocument() {
+		consumableMaterial = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("consumableMaterial");
 		String templateName = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("templateName");
 		if (templateName != null && !templateName.equals("")) {
 			ReportTemplate reportTemplate = sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).findTemplateByName(templateName);
@@ -170,6 +171,11 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 				genericProperties.put("DeputyChiefAccountant", propertiesHolder.getProperty("application", "reports.institution.deputychiefaccountant"));
 				genericProperties.put("Superintendent", propertiesHolder.getProperty("application", "reports.division.superintendent"));
 			}
+			
+			String consumableMaterial = getConsumableMaterial();
+			if (consumableMaterial != null) {
+				genericProperties.put("ConsumableMaterial", consumableMaterial);
+			}
 			reportsManagement.sqlPrintReportByRequestParams(getDocument(), genericProperties);
 			result = true;
 		}
@@ -180,6 +186,10 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 		}
 		return result;
 	}
+	
+	private String getConsumableMaterial() {
+    	return consumableMaterial;
+    }
 	
 	
 	public class ComponentRequestSelectModalBean extends ModalWindowHolderBean {
@@ -236,7 +246,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
     	return componentRequestSelectModal;
     }
 	
-	
+	private String consumableMaterial;
 	private ComponentRequestSelectModalBean componentRequestSelectModal = new ComponentRequestSelectModalBean();
     
 	

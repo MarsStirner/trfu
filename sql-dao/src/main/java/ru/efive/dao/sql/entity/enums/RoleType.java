@@ -48,6 +48,9 @@ public enum RoleType {
 	DIVISION_SUPERINTENDENT,
 	
 	/** предметное администрирование */
-	ENTERPRISE_ADMINISTRATION
+	ENTERPRISE_ADMINISTRATION,
+	
+	/** АРМ Вирусинактивация */
+	VIRUSINACTIVATION
 	
 }
