@@ -320,7 +320,13 @@
 									</tr>
 									<tr class="row">
 										<td class="first">Отделение</td>
-										<td><h:inputText value="#{bloodComponentOrder.document.division}" class="wide" /></td>
+										<td><h:selectOneMenu value="#{bloodComponentOrder.document.division}">
+												<f:selectItems value="#{dictionaryManagement.divisionsWithEmpty}" 
+													var="divisionItem" 
+													itemLabel="#{divisionItem.name}" 
+													itemValue="#{divisionItem.name}" />
+											</h:selectOneMenu>
+										</td>
 									</tr>
 									<tr class="row">
 										<td class="first">Фамилия</td>

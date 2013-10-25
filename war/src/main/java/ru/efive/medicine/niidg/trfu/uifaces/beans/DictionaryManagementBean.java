@@ -12,6 +12,7 @@ import ru.efive.crm.dao.ContragentDAOHibernate;
 import ru.efive.crm.data.Contragent;
 import ru.efive.crm.data.ContragentNomenclature;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
+import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Anticoagulant;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentStatus;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
@@ -30,6 +31,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.ProcessingType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.QualityControlMappingEntry;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Recommendation;
 import ru.efive.medicine.niidg.trfu.data.dictionary.TransfusionType;
+import ru.efive.medicine.niidg.trfu.data.entity.Division;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 @Named("dictionaryManagement")
@@ -309,6 +311,26 @@ public class DictionaryManagementBean implements Serializable {
 		return result;
 	}
 	
+	/**
+	 * Получение списка отделений.
+	 * @return список отделений.
+	 */
+	public List<Division> getDivisionsWithEmpty() {
+		if (divisions == null) {
+			divisions = new ArrayList<Division>();
+			Division emptyDivision = new Division();
+			emptyDivision.setName("");
+			divisions.add(emptyDivision);
+			//добавить весь список отделений
+			divisions.addAll(sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findByName(""));
+		}		
+		return divisions;
+	}
+	
+	/**
+	 * Список отделений. 
+	 */
+	protected List<Division> divisions = null;
 	
 	@Inject @Named("sessionManagement")
 	private transient SessionManagementBean sessionManagement = new SessionManagementBean();
