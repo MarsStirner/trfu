@@ -237,7 +237,13 @@
 									<h:outputText value="#{bloodComponentOrderFilterableList.currentFilter.divisionTitle}" />:
 								</td>
 								<td>
-									<h:inputText size="25" maxlength="25" value="#{bloodComponentOrderFilterableList.currentFilter.division}" styleClass="filterPanelParameter" />
+									<h:selectOneMenu id="blood_component_orders_filter_division" 
+											value="#{bloodComponentOrderFilterableList.currentFilter.division}" styleClass="filterPanelParameter">
+										<f:selectItems value="#{dictionaryManagement.divisionsWithEmpty}" 
+												var="divisionItem" 
+												itemLabel="#{divisionItem.name}" 
+												itemValue="#{divisionItem.name}" />
+									</h:selectOneMenu>
 								</td>
 							</tr>
 							<tr>
