@@ -1,13 +1,18 @@
 package ru.efive.medicine.niidg.trfu.filters;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import ru.efive.medicine.niidg.trfu.filters.bean.AliasFilterBean;
+import ru.efive.medicine.niidg.trfu.filters.bean.FieldFilterBean;
 
 /**
  * Фильтр для представления "Обращения на донацию".
  * 
  * @author Siarhei Ushanau
  */
-public class BloodDonationsFilter extends AbstractFilter<BloodDonationsFilter> {
+public class BloodDonationsFilter extends AppendSRPDFilter<BloodDonationsFilter> {
 	private static final long serialVersionUID = 8817277956915729553L;
 	
 	/**
@@ -30,7 +35,7 @@ public class BloodDonationsFilter extends AbstractFilter<BloodDonationsFilter> {
 	/**
 	 * Имя, фамилия или отчетство донора.
 	 */
-	private String donor;
+	//private String donor;
 	/**
 	 * Дата создания записи об обращении.
 	 */
@@ -52,6 +57,16 @@ public class BloodDonationsFilter extends AbstractFilter<BloodDonationsFilter> {
      * к которым добавляется значение 0 - любой, значение по умолчанию, прописано в константе BLOOD_DONATION_TYPE_NULL_VALUE).
      */
 	private int donationTypeId;
+	
+	private String donorTypeValue;
+	private String donationTypeValue;
+	
+	private List<AliasFilterBean> listAlias;
+	private List<FieldFilterBean> listFilds;
+	private List<FieldFilterBean> listFildsDisjunction;
+	
+	private int donorId;
+	private int transfusiologistId;
 
 	/**
      * Конструктор по умолчанию.
@@ -70,11 +85,13 @@ public class BloodDonationsFilter extends AbstractFilter<BloodDonationsFilter> {
 	}
 
 	public String getDonor() {
-		return donor;
+		return getFirstName();
 	}
 
 	public void setDonor(String donor) {
-		this.donor = donor;
+		setFirstName(donor);
+		setLastName(donor);
+		setMiddleName(donor);
 	}
 
 	public Date getCreated() {
@@ -121,13 +138,75 @@ public class BloodDonationsFilter extends AbstractFilter<BloodDonationsFilter> {
 		return BLOOD_DONATION_TYPE_NULL_VALUE;
 	}
 
+	public List<AliasFilterBean> getListAlias() {
+		return listAlias;
+	}
+
+	public void setListAlias(List<AliasFilterBean> listAlias) {
+		this.listAlias = listAlias;
+	}
+	public List<FieldFilterBean> getListFilds() {
+		return listFilds;
+	}
+
+	public void setListFilds(List<FieldFilterBean> listFilds) {
+		this.listFilds = listFilds;
+	}
+
+	public List<FieldFilterBean> getListFildsDisjunction() {
+		return listFildsDisjunction;
+	}
+
+	public void setListFildsDisjunction(List<FieldFilterBean> listFildsDijunction) {
+		this.listFildsDisjunction = listFildsDijunction;
+	}
+
+	public String getDonorTypeValue() {
+		return donorTypeValue;
+	}
+
+	public void setDonorTypeValue(String donorTypeValue) {
+		this.donorTypeValue = donorTypeValue;
+	}
+
+	public String getDonationTypeValue() {
+		return donationTypeValue;
+	}
+
+	public void setDonationTypeValue(String donationTypeValue) {
+		this.donationTypeValue = donationTypeValue;
+	}
+
+	public int getDonorId() {
+		return donorId;
+	}
+
+	public void setDonorId(int donorId) {
+		this.donorId = donorId;
+	}
+
+	public int getTransfusiologistId() {
+		return transfusiologistId;
+	}
+
+	public void setTransfusiologistId(int transfusiologistId) {
+		this.transfusiologistId = transfusiologistId;
+	}
+
 	protected void setDefaultValues() {
 		number = null;
-		donor = null;
+		//donor = null;
 		created = null;
 		statusId = BLOOD_DONATION_STATUS_NULL_VALUE;
 		donorTypeId = DONOR_TYPE_NULL_VALUE;
 		donationTypeId = BLOOD_DONATION_TYPE_NULL_VALUE;
+		donorTypeValue = null;
+		donationTypeValue = null;
+		listAlias = new ArrayList<AliasFilterBean>();
+		listFilds = new ArrayList<FieldFilterBean>();
+		listFildsDisjunction = new ArrayList<FieldFilterBean>();
+		donorId = 0;
+		transfusiologistId = 0;
 	}
 
 	@Override
@@ -138,10 +217,17 @@ public class BloodDonationsFilter extends AbstractFilter<BloodDonationsFilter> {
 	@Override
 	public void fillFrom(BloodDonationsFilter source) {
 		setNumber(source.getNumber());
-		setDonor(source.getDonor());
+		//setDonor(source.getDonor());
 		setCreated(source.getCreated());
 		setStatusId(source.getStatusId());
 		setDonorTypeId(source.getDonorTypeId());
 		setDonationTypeId(source.getDonationTypeId());
+		setDonorTypeValue(source.getDonorTypeValue());
+		setDonationTypeValue(source.getDonationTypeValue());
+		setListAlias(source.getListAlias());
+		setListFilds(source.getListFilds());
+		setListFildsDisjunction(source.getListFildsDisjunction());
+		setDonorId(source.getDonorId());
+		setTransfusiologistId(source.getTransfusiologistId());
 	}
 }

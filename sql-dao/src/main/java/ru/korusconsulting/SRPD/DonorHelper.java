@@ -220,6 +220,37 @@ public class DonorHelper {
 		}		
 		return donor;
 	}
+	/**
+	 * Используется для мержа данных из ЗХПД и списка объектов типа BloodDonationRequest.
+	 * Место использования: BloodDonationRequestDAOImpl
+	 */
+	public List<BloodDonationRequest> mergeBloodDonationRequestsAndMap(List<BloodDonationRequest> list, Map<String, Map<FieldsInMap, Object>> map) {
+		for(BloodDonationRequest i : list) {
+			i.setDonor(mergeDonorAndMap(i.getDonor(), map.get(i.getDonor().getTempStorageId())));
+		}
+		return list;
+	}
+	/**
+	 * Используется для мержа данных из ЗХПД и объекта типа BloodDonationRequest.
+	 * Место использования: BloodDonationRequestDAOImpl
+	 */
+	
+	public BloodDonationRequest mergeBloodDonationRequestAndMap(BloodDonationRequest bloodDonationRequest, Map<String, Map<FieldsInMap, Object>> map) {
+		bloodDonationRequest.setDonor(
+				mergeDonorAndMap(bloodDonationRequest.getDonor(), map.get(bloodDonationRequest.getDonor().getTempStorageId()))
+						);
+		return bloodDonationRequest;
+	}
+	/**
+	 * Используется для мержа данных из ЗХПД и списка объектов типа BloodComponent.
+	 * Место использования: BloodComponentDAOImpl
+	 */
+	public List<BloodComponent> mergeBloodComponentsAndMap(List<BloodComponent> list, Map<String, Map<FieldsInMap, Object>> map) {
+		for(BloodComponent i : list) {
+			i.getDonation().setDonor(mergeDonorAndMap(i.getDonation().getDonor(), map.get(i.getDonation().getDonor().getTempStorageId())));
+		}
+		return list;
+	}
 		
 	public Map<FieldsInMap, Object> parseAnswerFromSRPDAfterFind(PRPAIN101306UV02 answer) {
 		Map<FieldsInMap, Object> answerMap = null;
@@ -272,30 +303,10 @@ public class DonorHelper {
 		return list;
 	}
 	/**
-	 * Используется для мержа данных из ЗХПД и списка объектов типа BloodDonationRequest.
-	 * Место использования: BloodDonationRequestDAOImpl
-	 */
-	public List<BloodDonationRequest> mergeListBloodDonationRequestAndMap(List<BloodDonationRequest> list, Map<Integer, Map<FieldsInMap, Object>> map) {
-		for(BloodDonationRequest i : list) {
-			i.setDonor(mergeDonorAndMap(i.getDonor(), map.get(i.getDonor().getTempStorageId())));
-		}
-		return list;
-	}
-	/**
-	 * Используется для мержа данных из ЗХПД и списка объектов типа BloodComponent.
-	 * Место использования: BloodComponentDAOImpl
-	 */
-	public List<BloodComponent> mergeListBloodComponentAndMap(List<BloodComponent> list, Map<String, Map<FieldsInMap, Object>> map) {
-		for(BloodComponent i : list) {
-			i.getDonation().setDonor(mergeDonorAndMap(i.getDonation().getDonor(), map.get(i.getDonation().getDonor().getTempStorageId())));
-		}
-		return list;
-	}
-	/**
 	 * Используется для создания Map, для дальнейшей передачи в Обработчик ЗХПД-клиента
 	 * Место использования: BloodDonationRequestDAOImpl, MedicalOperationDAOImpl, DonorDAOImpl
 	 */
-	public Map<FieldsInMap,Object> listIdsDonorsForFilter(AppendSRPDFilter filter) {
+	public Map<FieldsInMap,Object> listIdsSRPDFromFilter(AppendSRPDFilter filter) {
 		Map<FieldsInMap, Object> mapForSearch = new HashMap<FieldsInMap, Object>();
 		String firstName = filter.getFirstName();
 		String lastName = filter.getLastName();
@@ -393,6 +404,17 @@ public class DonorHelper {
 		List<String> ids = new ArrayList<String>();
 		for (BloodComponent i : bloodComponents) {
 			ids.add(i.getDonation().getDonor().getTempStorageId());
+		}
+		return ids;
+	}
+	/**
+	 * Формирует и возвращает список идентификаторов ЗХПД из списка Bloodcomponet-ов
+	 * Используется: BloodDonationRequestDAOImpl
+	 */
+	public List<String> listIdsSRPDFromBloodDonationRequest(List<BloodDonationRequest> bloodDonationRequests) {
+		List<String> ids = new ArrayList<String>();
+		for (BloodDonationRequest i : bloodDonationRequests) {
+			ids.add(i.getDonor().getTempStorageId());
 		}
 		return ids;
 	}
