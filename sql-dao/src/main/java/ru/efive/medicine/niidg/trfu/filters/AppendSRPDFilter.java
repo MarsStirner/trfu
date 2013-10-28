@@ -10,6 +10,16 @@ import java.util.Collection;
  *
  */
 public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
+	public enum CompareType {
+		/* Тип параметра для поиска: искать на "равно" */
+		EQ,
+		/* Тип параметра для поиска: искать на "не равно" */
+		NE,
+		/* Тип параметра для поиска: не искать */
+		NULL,
+		/* Тип параметра для поиска: искать на "подобен" */
+		ILIKE
+	}
 	private static final long serialVersionUID = 4359117959905220257L;
 	/**
 	 * Имя донора для поиска в ЗХПД; по-умолчанию = null

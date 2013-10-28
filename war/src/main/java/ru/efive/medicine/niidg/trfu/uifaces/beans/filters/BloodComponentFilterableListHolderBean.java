@@ -166,7 +166,7 @@ public class BloodComponentFilterableListHolderBean extends
 	public int getTotalCount(BloodComponentsFilter filter) {
 		try {
 			long count = sessionManagement.getDAO(BloodComponentDAOImpl.class,
-					ApplicationHelper.BLOOD_COMPONENT_DAO).countDocument(
+					ApplicationHelper.BLOOD_COMPONENT_DAO).countDocuments(
 					filter);
 			return new Long(count).intValue();
 		} catch (Exception e) {

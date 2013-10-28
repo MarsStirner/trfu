@@ -301,7 +301,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 					/* количество необходимых данных из ЗХПД могло увеличится на основе выборки из базы ТРФУ,
 					 *  поэтому переотправляем запрос к ЗХПД */
 					filter.setListSRPDIds(helper.listIdsSRPDFromBiomaterialDonors(donors));
-					paramMap = helper.listIdsDonorsForFilter(filter);
+					paramMap = helper.listIdsSRPDFromFilter(filter);
 					resMap = srpdDao.get(paramMap);
 				}
 				donors = helper.mergeBiomaterialDonorsAndMap(donors, resMap);
@@ -315,7 +315,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
 			if (DonorHelper.USE_SRPD) {
 				if(filter.isQueryToSRPD()) {
-					Map<FieldsInMap, Object> paramMap = helper.listIdsDonorsForFilter(filter);
+					Map<FieldsInMap, Object> paramMap = helper.listIdsSRPDFromFilter(filter);
 					Map<String,Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
 					filter.setListSRPDIds(resMap.keySet());
 				}
@@ -349,7 +349,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 			List<Biomaterial> biomaterials = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 			if (DonorHelper.USE_SRPD) {
 				filter.setListSRPDIds(helper.listIdsSRPDFromBiomaterial(biomaterials));
-				Map<FieldsInMap, Object> map = helper.listIdsDonorsForFilter(filter);
+				Map<FieldsInMap, Object> map = helper.listIdsSRPDFromFilter(filter);
 				Map<String,Map<FieldsInMap, Object>> resMap = srpdDao.get(map);
 				biomaterials = helper.mergeBiomaterialsAndMap(biomaterials, resMap);
 			}

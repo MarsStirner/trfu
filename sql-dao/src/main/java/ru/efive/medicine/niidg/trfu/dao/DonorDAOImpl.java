@@ -246,7 +246,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         if (DonorHelper.USE_SRPD) {
         	DonorHelper donorHelper = new DonorHelper();
         	/* map with paramters for counting right donors */
-        	Map<FieldsInMap, Object> paramMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
+        	Map<FieldsInMap, Object> paramMap = donorHelper.listIdsSRPDFromFilter(donorsFilter);
         	/* map with result from SRPD */
         	Map<String, Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
         	if (resMap != null && resMap.size() > 0) {
@@ -426,7 +426,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         	if (resMap == null) {
         		/* новый запрос к ЗХПД, т.к. колличество доноров для которых понадобятся данные может увеличится */
         		donorsFilter.setListSRPDIds(donorHelper.listIdsSRPDFromDonors(donors));
-        		paramMap = donorHelper.listIdsDonorsForFilter(donorsFilter);
+        		paramMap = donorHelper.listIdsSRPDFromFilter(donorsFilter);
         		resMap = srpdDao.get(paramMap);
         	}
         	donors = donorHelper.mergeDonorsAndMap(donors, resMap);

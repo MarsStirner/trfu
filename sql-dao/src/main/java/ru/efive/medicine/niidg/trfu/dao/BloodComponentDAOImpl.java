@@ -29,8 +29,8 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.medicine.niidg.trfu.filters.AppendSRPDFilter.CompareType;
 import ru.efive.medicine.niidg.trfu.filters.BloodComponentsFilter;
-import ru.efive.medicine.niidg.trfu.filters.BloodComponentsFilter.InControl;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.korusconsulting.SRPD.DonorHelper;
 import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
@@ -636,7 +636,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
 		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
 		bloodComponentsFilter.setStatusId(3);
-		bloodComponentsFilter.setInControlCompareFlag(InControl.IN_CONTROL_EQ);
+		bloodComponentsFilter.setInControlCompareFlag(CompareType.EQ);
 		bloodComponentsFilter.setInControl(true);
 		return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 		
@@ -646,7 +646,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
 		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
 		bloodComponentsFilter.setStatusId(3);
-		bloodComponentsFilter.setInControlCompareFlag(InControl.IN_CONTROL_EQ);
+		bloodComponentsFilter.setInControlCompareFlag(CompareType.EQ);
 		bloodComponentsFilter.setInControl(true);
 		return countDocument(bloodComponentsFilter);
 	}
@@ -657,7 +657,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
 		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
 		bloodComponentsFilter.setStatusId(statusId);
-		bloodComponentsFilter.setInControlCompareFlag(InControl.IN_CONTROL_EQ);
+		bloodComponentsFilter.setInControlCompareFlag(CompareType.EQ);
 		bloodComponentsFilter.setInControl(false);
 		return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
@@ -666,7 +666,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
 		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
 		bloodComponentsFilter.setStatusId(statusId);
-		bloodComponentsFilter.setInControlCompareFlag(InControl.IN_CONTROL_EQ);
+		bloodComponentsFilter.setInControlCompareFlag(CompareType.EQ);
 		bloodComponentsFilter.setInControl(false);
 		return countDocument(bloodComponentsFilter);
 	}
@@ -796,7 +796,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	private long countDocument(BloodComponentsFilter filter){
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
 		if (!DonorHelper.USE_SRPD && filter.isQueryToSRPD()) {
-			Map<FieldsInMap, Object> paramMap = donorHelper.listIdsDonorsForFilter(filter);
+			Map<FieldsInMap, Object> paramMap = donorHelper.listIdsSRPDFromFilter(filter);
 			filter.setListSRPDIds(srpdDao.get(paramMap).keySet());
 		}
 		return getCountOf(getSearchCriteria(detachedCriteria, filter));
@@ -821,9 +821,9 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		bloodComponents =  getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset,count);
 		if (DonorHelper.USE_SRPD && resMap == null) {
 			filter.setListSRPDIds(donorHelper.listIdsSRPDFromBloodComponent(bloodComponents));
-			paramMap = donorHelper.listIdsDonorsForFilter(filter);
+			paramMap = donorHelper.listIdsSRPDFromFilter(filter);
 			resMap = srpdDao.get(paramMap);
-			bloodComponents = donorHelper.mergeListBloodComponentAndMap(bloodComponents, resMap);
+			bloodComponents = donorHelper.mergeBloodComponentsAndMap(bloodComponents, resMap);
 		}
 		return bloodComponents;
 	}
@@ -938,13 +938,13 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	        }
 	        if (inControl != null) {
 	        	switch (filter.getInControlCompareFlag()) {
-					case IN_CONTROL_EQ:
+					case EQ:
 						criteria.add(Restrictions.eq("inControl", inControl));
 						break;
-					case IN_CONTROL_NE:
+					case NE:
 						criteria.add(Restrictions.ne("inControl", inControl));
 						break;
-					case IN_CONTROL_NULL:
+					case NULL:
 						break;
 	        	}
 	        }
@@ -992,7 +992,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		List<String> listStorageIds = donorHelper.listIdsSRPDFromBloodComponent(components);
 		paramMap.put(FieldsInMap.LIST_STORAGE_IDS, listStorageIds);
 		Map<String, Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
-		components = donorHelper.mergeListBloodComponentAndMap(components, resMap);
+		components = donorHelper.mergeBloodComponentsAndMap(components, resMap);
 		return components;
 	}
 }

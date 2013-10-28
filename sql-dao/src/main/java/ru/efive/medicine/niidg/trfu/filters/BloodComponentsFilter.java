@@ -36,14 +36,7 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 	 * Тип параметра для поиска satus_id: null-значение
 	 */
 	public static final int STATUS_ID_NULL = -10;
-	public enum InControl {
-		/* Тип параметра для поиска in_control: искать на "равно" */
-		IN_CONTROL_EQ,
-		/* Тип параметра для поиска in_control: искать на "не равно" */
-		IN_CONTROL_NE,
-		/* Тип параметра для поиска in_control: не искать */
-		IN_CONTROL_NULL
-	}
+	
 	/**
 	 * Номер компонента крови.
 	 */
@@ -100,11 +93,11 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 	private int statusIdCompareFlag;
 	/**
 	 * Тип поиска:
-	 * IN_CONTROL_EQ - поиск по соответствию
-	 * IN_CONTROL_NE - поиск на несоответствие
-	 * IN_CONTROL_NULL_VALUE - не осуществлять поиск; значение по умолчанию
+	 * EQ - поиск по соответствию
+	 * NE - поиск на несоответствие
+	 * NULL - не осуществлять поиск; значение по умолчанию
 	 */
-	private InControl inControlCompareFlag;
+	private CompareType inControlCompareFlag;
 	
 	private Integer donationId;
 	
@@ -245,11 +238,11 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 		this.statusIdCompareFlag = statusIdCompareFlag;
 	}
 
-	public InControl getInControlCompareFlag() {
+	public CompareType getInControlCompareFlag() {
 		return inControlCompareFlag;
 	}
 
-	public void setInControlCompareFlag(InControl inControlCompareFlag) {
+	public void setInControlCompareFlag(CompareType inControlCompareFlag) {
 		this.inControlCompareFlag = inControlCompareFlag;
 	}
 
@@ -421,7 +414,7 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 		quarantineFinishDate = null;
 		listIds = null;
 		parentNumber = null;
-		inControlCompareFlag = InControl.IN_CONTROL_NULL;
+		inControlCompareFlag = CompareType.NULL;
 		split = null;
 		expirationDateNull = false;
 		expirationDateGe = null;
