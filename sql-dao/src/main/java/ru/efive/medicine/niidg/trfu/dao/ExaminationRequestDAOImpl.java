@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.Conjunction;
@@ -16,10 +17,25 @@ import org.hibernate.criterion.Restrictions;
 
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
+import ru.efive.medicine.niidg.trfu.filters.AppendSRPDFilter.CompareType;
 import ru.efive.medicine.niidg.trfu.filters.ExaminationsFilter;
+import ru.efive.medicine.niidg.trfu.filters.bean.AliasFilterBean;
+import ru.efive.medicine.niidg.trfu.filters.bean.FieldFilterBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import ru.korusconsulting.SRPD.DonorHelper;
+import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
+import ru.korusconsulting.SRPD.SRPDDao;
 
 public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRequest> {
+	private static SRPDDao srpdDao;
+	private static DonorHelper donorHelper;
+	
+	static {
+		if (DonorHelper.USE_SRPD) {
+			srpdDao = new SRPDDao();
+			donorHelper = new DonorHelper();
+		}
+	}
 
     @Override
     protected Class<ExaminationRequest> getPersistentClass() {
@@ -31,6 +47,11 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      */
     public ExaminationRequest get(Serializable id) {
         ExaminationRequest examination = (ExaminationRequest) getHibernateTemplate().get(getPersistentClass(), id);
+        if(DonorHelper.USE_SRPD) {
+        	Map<FieldsInMap, Object> paramMap = donorHelper.makeMapForGet(examination.getDonor().getTempStorageId());
+        	Map<String, Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
+        	examination = donorHelper.mergeExaminationRequestAndMap(examination, resMap);
+        }
         return examination;
     }
 
@@ -39,26 +60,10 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      */
     @Override
     public List<ExaminationRequest> findDocuments(boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-
-        // Не отображаем запланированные
-        detachedCriteria.add(Restrictions.ne("statusId", 9));
-
-        String[] ords = orderBy == null ? null : orderBy.split(",");
-        if (ords != null) {
-            if (ords.length > 1) {
-                addOrder(detachedCriteria, ords, orderAsc);
-            } else {
-                addOrder(detachedCriteria, orderBy, orderAsc);
-            }
-        }
-
-        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        ExaminationsFilter examinationsFilter = createExaminationsFilter(null, showDeleted);
+        examinationsFilter.getListFields().add(FieldFilterBean.init("statusId", 9, CompareType.NE));
+        return findDocument(examinationsFilter, offset, count, orderBy, orderAsc);
+        
     }
 
     /**
@@ -66,17 +71,9 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      */
     @Override
     public long countDocument(boolean showDeleted) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass()).setResultTransformer(
-                DetachedCriteria.DISTINCT_ROOT_ENTITY);
-
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-
-        // Не отображаем запланированные
-        detachedCriteria.add(Restrictions.ne("statusId", 9));
-
-        return getCountOf(detachedCriteria);
+    	ExaminationsFilter examinationsFilter = createExaminationsFilter(null, showDeleted);
+        examinationsFilter.getListFields().add(FieldFilterBean.init("statusId", 9, CompareType.NE));
+    	return countDocuments(examinationsFilter);
     }
 
     /**
@@ -92,26 +89,9 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      */
     @SuppressWarnings("unchecked")
     public List<ExaminationRequest> findDocuments(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-
-        // Не отображаем запланированные
-        detachedCriteria.add(Restrictions.ne("statusId", 9));
-
-        String[] ords = orderBy == null ? null : orderBy.split(",");
-        if (ords != null) {
-            if (ords.length > 1) {
-                addOrder(detachedCriteria, ords, orderAsc);
-            } else {
-                addOrder(detachedCriteria, orderBy, orderAsc);
-            }
-        }
-
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+    	ExaminationsFilter examinationsFilter = createExaminationsFilter(filter, showDeleted);
+        examinationsFilter.getListFields().add(FieldFilterBean.init("statusId", 9, CompareType.NE));
+        return findDocument(examinationsFilter, offset, count, orderBy, orderAsc);
     }
 
     /**
@@ -122,36 +102,10 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      * @return кол-во результатов
      */
     public long countDocument(String filter, boolean showDeleted) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass()).setResultTransformer(
-                DetachedCriteria.DISTINCT_ROOT_ENTITY);
-
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-
-        // Не отображаем запланированные
-        detachedCriteria.add(Restrictions.ne("statusId", 9));
-
-        return getCountOf(getSearchCriteria(detachedCriteria, filter));
+    	ExaminationsFilter examinationsFilter = createExaminationsFilter(null, showDeleted);
+        examinationsFilter.getListFields().add(FieldFilterBean.init("statusId", 9, CompareType.NE));
+        return countDocuments(examinationsFilter);
     }
-
-    private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, String filter) {
-        if (StringUtils.isNotEmpty(filter)) {
-            Disjunction disjunction = Restrictions.disjunction();
-            disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-            criteria.createAlias("donor", "donor", CriteriaSpecification.LEFT_JOIN);
-            disjunction.add(Restrictions.ilike("donor.lastName", filter, MatchMode.ANYWHERE));
-            disjunction.add(Restrictions.ilike("donor.middleName", filter, MatchMode.ANYWHERE));
-            disjunction.add(Restrictions.ilike("donor.firstName", filter, MatchMode.ANYWHERE));
-            criteria.createAlias("therapist", "therapist", CriteriaSpecification.LEFT_JOIN);
-            disjunction.add(Restrictions.ilike("therapist.lastName", filter, MatchMode.ANYWHERE));
-            disjunction.add(Restrictions.ilike("therapist.middleName", filter, MatchMode.ANYWHERE));
-            disjunction.add(Restrictions.ilike("therapist.firstName", filter, MatchMode.ANYWHERE));
-            criteria.add(disjunction);
-        }
-        return criteria;
-    }
-
     /**
      * Поиск обращений на обследование
      *
@@ -161,22 +115,10 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      */
     @SuppressWarnings("unchecked")
     public List<ExaminationRequest> findDocumentsByPerson(boolean showDeleted, int personId, int offset, int count, String orderBy, boolean orderAsc) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
         if (personId > 0) {
-            detachedCriteria.add(Restrictions.eq("therapist.id", personId));
-            String[] ords = orderBy == null ? null : orderBy.split(",");
-            if (ords != null) {
-                if (ords.length > 1) {
-                    addOrder(detachedCriteria, ords, orderAsc);
-                } else {
-                    addOrder(detachedCriteria, orderBy, orderAsc);
-                }
-            }
-            return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        	ExaminationsFilter examinationsFilter = createExaminationsFilter(null, showDeleted);
+        	examinationsFilter.getListFields().add(FieldFilterBean.init("therapist.id", personId, CompareType.EQ));
+        	return findDocument(examinationsFilter, offset, count, orderBy, orderAsc);
         } else {
             return Collections.EMPTY_LIST;
         }
@@ -190,14 +132,10 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      * @return - количество
      */
     public long countDocumentsByPerson(boolean showDeleted, int personId) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
         if (personId > 0) {
-            detachedCriteria.add(Restrictions.eq("therapist.id", personId));
-            return getCountOf(detachedCriteria);
+        	ExaminationsFilter examinationsFilter = createExaminationsFilter(null, showDeleted);
+        	examinationsFilter.getListFields().add(FieldFilterBean.init("therapist.id", personId, CompareType.EQ));
+        	return countDocument(examinationsFilter);
         } else {
             return 0;
         }
@@ -211,24 +149,11 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      */
     @SuppressWarnings("unchecked")
     public List<ExaminationRequest> findDocumentsByByTimeBounds(boolean showDeleted, Date start, Date finish, int offset, int count, String orderBy, boolean orderAsc) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-
-        detachedCriteria.add(Restrictions.ge("planDate", start));
-        detachedCriteria.add(Restrictions.le("planDate", finish));
-
-        String[] ords = orderBy == null ? null : orderBy.split(",");
-        if (ords != null) {
-            if (ords.length > 1) {
-                addOrder(detachedCriteria, ords, orderAsc);
-            } else {
-                addOrder(detachedCriteria, orderBy, orderAsc);
-            }
-        }
-        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+       	ExaminationsFilter examinationsFilter = createExaminationsFilter(null, showDeleted);
+    	examinationsFilter.getListFields().add(FieldFilterBean.init("planDate", start, CompareType.GE));
+    	examinationsFilter.getListFields().add(FieldFilterBean.init("planDate", finish, CompareType.LE));
+    	return findDocument(examinationsFilter, offset, count, orderBy, orderAsc);
+        
 
     }
 
@@ -241,22 +166,10 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      */
     @SuppressWarnings("unchecked")
     public List<ExaminationRequest> findDocumentsByDonor(boolean showDeleted, int donorId, int offset, int count, String orderBy, boolean orderAsc) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
         if (donorId > 0) {
-            detachedCriteria.add(Restrictions.eq("donor.id", donorId));
-            String[] ords = orderBy == null ? null : orderBy.split(",");
-            if (ords != null) {
-                if (ords.length > 1) {
-                    addOrder(detachedCriteria, ords, orderAsc);
-                } else {
-                    addOrder(detachedCriteria, orderBy, orderAsc);
-                }
-            }
-            return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        	ExaminationsFilter examinationsFilter = createExaminationsFilter(null, showDeleted);
+        	examinationsFilter.getListFields().add(FieldFilterBean.init("donor.id", donorId, CompareType.EQ));
+        	return findDocument(examinationsFilter, offset, count, orderBy, orderAsc);
         } else {
             return Collections.EMPTY_LIST;
         }
@@ -270,14 +183,10 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      * @return - количество
      */
     public long countDocumentsByDonor(boolean showDeleted, int donorId) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
         if (donorId > 0) {
-            detachedCriteria.add(Restrictions.eq("donor.id", donorId));
-            return getCountOf(detachedCriteria);
+        	ExaminationsFilter examinationsFilter = createExaminationsFilter(null, showDeleted);
+        	examinationsFilter.getListFields().add(FieldFilterBean.init("donor.id", donorId, CompareType.EQ));
+        	return countDocuments(examinationsFilter);
         } else {
             return 0;
         }
@@ -292,23 +201,11 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      */
     @SuppressWarnings("unchecked")
     public List<ExaminationRequest> findPlannedDocuments(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        detachedCriteria.add(Restrictions.eq("statusId", 9));
-        detachedCriteria.add(Restrictions.isNotNull("planDate"));
-
-        String[] ords = orderBy == null ? null : orderBy.split(",");
-        if (ords != null) {
-            if (ords.length > 1) {
-                addOrder(detachedCriteria, ords, orderAsc);
-            } else {
-                addOrder(detachedCriteria, orderBy, orderAsc);
-            }
-        }
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        ExaminationsFilter examinationsFilter = createExaminationsFilter(filter, showDeleted);
+    	examinationsFilter.getListFields().add(FieldFilterBean.init("statusId", 9, CompareType.EQ));
+    	examinationsFilter.getListFields().add(FieldFilterBean.init("planDate", null, CompareType.NOT_NULL));
+    	return findDocument(examinationsFilter, offset, count, orderBy, orderAsc);
+    	
     }
 
     /**
@@ -319,14 +216,11 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      * @return - количество
      */
     public long countPlannedDocument(String filter, boolean showDeleted) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        detachedCriteria.add(Restrictions.eq("statusId", 9));
-
-        return getCountOf(getSearchCriteria(detachedCriteria, filter));
+        ExaminationsFilter examinationsFilter = createExaminationsFilter(filter, showDeleted);
+    	examinationsFilter.getListFields().add(FieldFilterBean.init("statusId", 9, CompareType.EQ));
+    	/* в начальном коде не было этого параметра, но для выборки документов он используется. !!нужно уточнить!! */
+    	examinationsFilter.getListFields().add(FieldFilterBean.init("planDate", null, CompareType.NOT_NULL));
+    	return countDocuments(examinationsFilter);
     }
 
     /**
@@ -343,27 +237,11 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      */
     @SuppressWarnings("unchecked")
     public List<ExaminationRequest> findDocumentsByStatus(int statusId, String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-
+    	ExaminationsFilter examinationsFilter = createExaminationsFilter(filter, showDeleted);
         if (statusId != 0) {
-            detachedCriteria.add(Restrictions.eq("statusId", statusId));
+        	examinationsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId, CompareType.EQ));
         }
-
-        String[] ords = orderBy == null ? null : orderBy.split(",");
-        if (ords != null) {
-            if (ords.length > 1) {
-                addOrder(detachedCriteria, ords, orderAsc);
-            } else {
-                addOrder(detachedCriteria, orderBy, orderAsc);
-            }
-        }
-
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        return findDocument(examinationsFilter, offset, count, orderBy, orderAsc);
     }
 
     /**
@@ -375,53 +253,27 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      * @return кол-во результатов
      */
     public long countDocumentByStatus(int statusId, String filter, boolean showDeleted) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass()).setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-
+    	ExaminationsFilter examinationsFilter = createExaminationsFilter(filter, showDeleted);
         if (statusId != 0) {
-            detachedCriteria.add(Restrictions.eq("statusId", statusId));
+            examinationsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId, CompareType.EQ));
         }
-
-        return getCountOf(getSearchCriteria(detachedCriteria, filter));
+        return countDocuments(examinationsFilter);
     }
 
 
     @SuppressWarnings("unchecked")
     public List<ExaminationRequest> findRequestsForLaboratory(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(ExaminationRequest.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        Disjunction disjunction = Restrictions.disjunction();
-        disjunction.add(Restrictions.eq("statusId", 2));
-        disjunction.add(Restrictions.eq("statusId", 3));
-        detachedCriteria.add(disjunction);
-        String[] ords = orderBy == null ? null : orderBy.split(",");
-        if (ords != null) {
-            if (ords.length > 1) {
-                addOrder(detachedCriteria, ords, orderAsc);
-            } else {
-                addOrder(detachedCriteria, orderBy, orderAsc);
-            }
-        }
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        ExaminationsFilter examinationsFilter = createExaminationsFilter(filter, showDeleted);
+    	examinationsFilter.getListFieldsDisjunction().add(FieldFilterBean.init("statusId", 2, CompareType.EQ));
+    	examinationsFilter.getListFieldsDisjunction().add(FieldFilterBean.init("statusId", 3, CompareType.EQ));
+        return findDocument(examinationsFilter, offset, count, orderBy, orderAsc);
     }
 
     public long countRequestsForLaboratory(String filter, boolean showDeleted) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(ExaminationRequest.class);
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        Disjunction disjunction = Restrictions.disjunction();
-        disjunction.add(Restrictions.eq("statusId", 2));
-        disjunction.add(Restrictions.eq("statusId", 3));
-        detachedCriteria.add(disjunction);
-        return getCountOf(getSearchCriteria(detachedCriteria, filter));
+        ExaminationsFilter examinationsFilter = createExaminationsFilter(filter, showDeleted);
+    	examinationsFilter.getListFieldsDisjunction().add(FieldFilterBean.init("statusId", 2, CompareType.EQ));
+    	examinationsFilter.getListFieldsDisjunction().add(FieldFilterBean.init("statusId", 3, CompareType.EQ));
+    	return countDocuments(examinationsFilter);
     }
 
 
@@ -429,20 +281,15 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
      * Поиск пересекающихся по времени обращений на обследование
      */
     public long countPlannedDocument(Date planDate, boolean showDeleted) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        detachedCriteria.add(Restrictions.eq("statusId", 9));
+        ExaminationsFilter examinationsFilter = createExaminationsFilter(null, showDeleted);
+    	examinationsFilter.getListFields().add(FieldFilterBean.init("statusId", 9, CompareType.EQ));
 
         if (planDate != null) {
             Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
             calendar.setTime(planDate);
             String formattedDate = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
-            detachedCriteria.add(Restrictions.sqlRestriction("this_.planDate >= date_sub('" + formattedDate + "',interval 10 minute) and this_.planDate <= date_add('" + formattedDate + "',interval 10 minute)"));
-
-            return getCountOf(detachedCriteria);
+            examinationsFilter.getSqlRestrictions().add("this_.planDate >= date_sub('" + formattedDate + "',interval 10 minute) and this_.planDate <= date_add('" + formattedDate + "',interval 10 minute)");
+            return countDocuments(examinationsFilter);
         } else {
             return 0;
         }
@@ -450,10 +297,10 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 
     @SuppressWarnings("unchecked")
     public ExaminationRequest findDocumentByAppointmentId(int appointmentId) {
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass()).setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+    	ExaminationsFilter examinationsFilter = createExaminationsFilter(null, null);
         if (appointmentId > 0) {
-            detachedCriteria.add(Restrictions.eq("appointment.id", appointmentId));
-            List<ExaminationRequest> list = getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+        	examinationsFilter.getListFields().add(FieldFilterBean.init("appointment.id", appointmentId, CompareType.EQ));
+        	List<ExaminationRequest> list = findDocument(examinationsFilter, -1, -1, null, false);
             if ((list != null) && !list.isEmpty()) {
                 return list.get(0);
             } else {
@@ -465,16 +312,10 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
     }
 
 	@SuppressWarnings("unchecked")
-	public List<ExaminationRequest> findDocuments(
-			ExaminationsFilter filter, int offset, int count,
-			String orderBy, boolean orderAsc) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-		addNotDeletedCriteria(detachedCriteria);
-		addNotPlannedCriteria(detachedCriteria);
-		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(
-				getSearchCriteria(detachedCriteria, filter), offset,
-				count);
+	public List<ExaminationRequest> findDocuments(ExaminationsFilter filter, int offset, int count,	String orderBy, boolean orderAsc) {
+		filter.setShowDeleted(false);
+		filter.getListFields().add(FieldFilterBean.init("statusId", 9, CompareType.NE));
+		return findDocument(filter, offset, count, orderBy, orderAsc);
 	}
 
 	private DetachedCriteria getSearchCriteria(
@@ -482,22 +323,59 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 		if (filter != null) {
 			Conjunction conjunction = Restrictions.conjunction();
 			String number = filter.getNumber();
-			String donor = filter.getDonor();
+			String firstName = filter.getFirstName();
+			String lastName = filter.getLastName();
+			String middleName = filter.getMiddleName(); 
 			Date created = filter.getCreated();
 			Date planDate = filter.getPlanDate();
 			int statusId = filter.getStatusId();
 			int examinationTypeId = filter.getExaminationTypeId();
 			
+			for (AliasFilterBean i: filter.getListAlias()) {
+				 criteria.createAlias(i.getAssociationPath(), i.getAlias(), i.getJoinType());
+			}
+			for (FieldFilterBean i: filter.getListFields()) {
+				switch (i.getCompareType()) {
+				case EQ:
+					conjunction.add(Restrictions.eq(i.getFieldName(), i.getValue()));
+					break;
+				case GE:
+					conjunction.add(Restrictions.ge(i.getFieldName(), i.getValue()));
+					break;
+				case LE:
+					conjunction.add(Restrictions.le(i.getFieldName(), i.getValue()));
+					break;
+				case NOT_NULL:
+					conjunction.add(Restrictions.isNotNull(i.getFieldName()));
+					break;
+				case NE:
+					conjunction.add(Restrictions.ne(i.getFieldName(), i.getValue()));
+					break;
+				}
+			}
+			for (String i: filter.getSqlRestrictions()) {
+				conjunction.add(Restrictions.sqlRestriction(i));
+			}
+			
 			if (StringUtils.isNotEmpty(number)) {
 				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
 			}
-			if (StringUtils.isNotEmpty(donor)) {
-	            criteria.createAlias("donor", "donor", CriteriaSpecification.INNER_JOIN);
-	            Disjunction disjunction = Restrictions.disjunction();
-	            disjunction.add(Restrictions.ilike("donor.lastName", donor, MatchMode.ANYWHERE));
-	            disjunction.add(Restrictions.ilike("donor.middleName", donor, MatchMode.ANYWHERE));
-	            disjunction.add(Restrictions.ilike("donor.firstName", donor, MatchMode.ANYWHERE));
-	            conjunction.add(disjunction);
+			if (StringUtils.isNotEmpty(firstName) 
+					|| StringUtils.isNotEmpty(lastName) 
+					|| StringUtils.isNotEmpty(middleName)) {
+				if (!DonorHelper.USE_SRPD) {
+					Disjunction disjunction = Restrictions.disjunction(); 
+					if(StringUtils.isNotEmpty(lastName)) {
+						disjunction.add(Restrictions.ilike("donor.lastName", lastName, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(middleName)) {
+						disjunction.add(Restrictions.ilike("donor.middleName", middleName, MatchMode.ANYWHERE));
+					}
+					if (StringUtils.isNotEmpty(firstName)) {
+						disjunction.add(Restrictions.ilike("donor.firstName", firstName, MatchMode.ANYWHERE));
+					}
+					conjunction.add(disjunction);
+				}
 			}
 			if (created != null) {
 				addDateSearchCriteria(conjunction, created, "created");
@@ -518,13 +396,47 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 	}
 
 	public long countDocument(ExaminationsFilter filter) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria();
-        addNotDeletedCriteria(detachedCriteria);
-		addNotPlannedCriteria(detachedCriteria);
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+		filter.setShowDeleted(false);
+		filter.getListFields().add(FieldFilterBean.init("statusId", 9, CompareType.NE));
+		return countDocuments(filter);
 	}
 
-	private void addNotPlannedCriteria(DetachedCriteria detachedCriteria) {
-        detachedCriteria.add(Restrictions.ne("statusId", 9));
+	private long countDocuments(ExaminationsFilter filter) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+	}
+	private List<ExaminationRequest> findDocument(ExaminationsFilter filter, int offset, int count, String orderBy, boolean orderAsc) {
+		List<ExaminationRequest> examinationaRequests = null;
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+		examinationaRequests = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset,count);
+		if (DonorHelper.USE_SRPD) {
+			filter.setListSRPDIds(donorHelper.listIdsSRPDFromExaminationRequest(examinationaRequests));
+			Map<FieldsInMap, Object> paramMap = donorHelper.listIdsSRPDFromFilter(filter);
+			Map<String, Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
+			examinationaRequests = donorHelper.mergeExaminationRequestsAndMap(examinationaRequests, resMap);
+		}
+		return examinationaRequests;
+	}
+	private ExaminationsFilter createExaminationsFilter(String pattern, Boolean showDeleted) {
+		ExaminationsFilter filter = new ExaminationsFilter();
+		if (StringUtils.isNotEmpty(pattern)) {
+			 filter.getListAlias().add(AliasFilterBean.initAlias("donor", CriteriaSpecification.LEFT_JOIN));
+			 filter.getListAlias().add(AliasFilterBean.initAlias("therapist", CriteriaSpecification.LEFT_JOIN));
+			 
+			 filter.getListFieldsDisjunction().add(FieldFilterBean.init("number", filter, CompareType.ILIKE));
+			 filter.getListFieldsDisjunction().add(FieldFilterBean.init("therapist.lastName", filter, CompareType.ILIKE));
+			 filter.getListFieldsDisjunction().add(FieldFilterBean.init("therapist.middleName", filter, CompareType.ILIKE));
+			 filter.getListFieldsDisjunction().add(FieldFilterBean.init("therapist.firstName", filter, CompareType.ILIKE));
+			 
+			 filter.setFirstName(pattern);
+			 filter.setMiddleName(pattern);
+			 filter.setLastName(pattern);
+		}
+		if (showDeleted != null && !showDeleted) {
+			filter.setShowDeleted(showDeleted);
+			
+		}
+		return filter;
 	}
 }

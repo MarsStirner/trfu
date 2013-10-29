@@ -23,6 +23,7 @@ import org.hl7.v3.PRPAIN101312UV02;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
@@ -251,6 +252,26 @@ public class DonorHelper {
 		}
 		return list;
 	}
+	/**
+	 * Используется для мержа данных из ЗХПД и списка объектов типа ExaminationRequest.
+	 * Место использования: ExaminationRequestDAOImpl
+	 */
+	
+	public List<ExaminationRequest> mergeExaminationRequestsAndMap(List<ExaminationRequest> list, Map<String, Map<FieldsInMap, Object>> map) {
+		for(ExaminationRequest i : list) {
+			i.setDonor(mergeDonorAndMap(i.getDonor(), map.get(i.getDonor().getTempStorageId())));
+		}
+		return list;
+	}
+	/**
+	 * Используется для мержа данных из ЗХПД и объекта типа ExaminationRequest.
+	 * Место использования: ExaminationRequestDAOImpl
+	 */
+	
+	public ExaminationRequest mergeExaminationRequestAndMap(ExaminationRequest examinationRequest, Map<String, Map<FieldsInMap, Object>> map) {
+			examinationRequest.setDonor(mergeDonorAndMap(examinationRequest.getDonor(), map.get(examinationRequest.getDonor().getTempStorageId())));
+		return examinationRequest;
+	}
 		
 	public Map<FieldsInMap, Object> parseAnswerFromSRPDAfterFind(PRPAIN101306UV02 answer) {
 		Map<FieldsInMap, Object> answerMap = null;
@@ -414,6 +435,17 @@ public class DonorHelper {
 	public List<String> listIdsSRPDFromBloodDonationRequest(List<BloodDonationRequest> bloodDonationRequests) {
 		List<String> ids = new ArrayList<String>();
 		for (BloodDonationRequest i : bloodDonationRequests) {
+			ids.add(i.getDonor().getTempStorageId());
+		}
+		return ids;
+	}
+	/**
+	 * Формирует и возвращает список идентификаторов ЗХПД из списка ExaminationRequest-ов
+	 * Используется: ExaminationRequestRequestDAOImpl
+	 */
+	public List<String> listIdsSRPDFromExaminationRequest(List<ExaminationRequest> examinationRequests) {
+		List<String> ids = new ArrayList<String>();
+		for (ExaminationRequest i : examinationRequests) {
 			ids.add(i.getDonor().getTempStorageId());
 		}
 		return ids;

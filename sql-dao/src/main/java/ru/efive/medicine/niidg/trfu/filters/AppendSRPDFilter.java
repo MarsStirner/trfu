@@ -18,7 +18,13 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 		/* Тип параметра для поиска: не искать */
 		NULL,
 		/* Тип параметра для поиска: искать на "подобен" */
-		ILIKE
+		ILIKE,
+		/* Тип параметра для поиска: искать на "больше или равно" */
+		GE,
+		/* Тип параметра для поиска: искать на "меньше или равно" */
+		LE,
+		/* Тип параметра для поиска: искать "не null" */
+		NOT_NULL
 	}
 	private static final long serialVersionUID = 4359117959905220257L;
 	/**

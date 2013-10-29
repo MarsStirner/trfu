@@ -1,13 +1,18 @@
 package ru.efive.medicine.niidg.trfu.filters;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import ru.efive.medicine.niidg.trfu.filters.bean.AliasFilterBean;
+import ru.efive.medicine.niidg.trfu.filters.bean.FieldFilterBean;
 
 /**
  * Фильтр для представления "Обращения на обследование".
  * 
  * @author Siarhei Ushanau
  */
-public class ExaminationsFilter extends AbstractFilter<ExaminationsFilter> {
+public class ExaminationsFilter extends AppendSRPDFilter<ExaminationsFilter> {
 	private static final long serialVersionUID = 8458216636560993764L;
 	/**
 	 * "Нулевое" значение для статуса обращения на обследование.
@@ -25,7 +30,7 @@ public class ExaminationsFilter extends AbstractFilter<ExaminationsFilter> {
 	/**
 	 * Имя, фамилия или отчетство донора.
 	 */
-	private String donor;
+	//private String donor;
 	/**
 	 * Планируемая дата обследования.
 	 */
@@ -47,6 +52,11 @@ public class ExaminationsFilter extends AbstractFilter<ExaminationsFilter> {
      */
 	private int examinationTypeId;
 	
+	private List<AliasFilterBean> listAlias;
+	private List<FieldFilterBean> listFields;
+	private List<FieldFilterBean> listFieldsDisjunction;
+	private List<String> sqlRestrictions;
+	
     /**
      * Конструктор по умолчанию.
      */
@@ -64,11 +74,13 @@ public class ExaminationsFilter extends AbstractFilter<ExaminationsFilter> {
 	}
 
 	public String getDonor() {
-		return donor;
+		return getFirstName();
 	}
 
 	public void setDonor(String donor) {
-		this.donor = donor;
+		setFirstName(donor);
+		setLastName(donor);
+		setMiddleName(donor);
 	}
 
 	public Date getPlanDate() {
@@ -111,13 +123,49 @@ public class ExaminationsFilter extends AbstractFilter<ExaminationsFilter> {
 		return EXAMINATION_TYPE_NULL_VALUE;
 	}
 
+	public List<AliasFilterBean> getListAlias() {
+		return listAlias;
+	}
+
+	public void setListAlias(List<AliasFilterBean> listAlias) {
+		this.listAlias = listAlias;
+	}
+
+	public List<FieldFilterBean> getListFields() {
+		return listFields;
+	}
+
+	public void setListFields(List<FieldFilterBean> listFilds) {
+		this.listFields = listFilds;
+	}
+
+	public List<FieldFilterBean> getListFieldsDisjunction() {
+		return listFieldsDisjunction;
+	}
+
+	public void setListFieldsDisjunction(List<FieldFilterBean> listFieldsDisjunction) {
+		this.listFieldsDisjunction = listFieldsDisjunction;
+	}
+
+	public List<String> getSqlRestrictions() {
+		return sqlRestrictions;
+	}
+
+	public void setSqlRestrictions(List<String> sqlRestrictions) {
+		this.sqlRestrictions = sqlRestrictions;
+	}
+
 	protected void setDefaultValues() {
 		number = null;
-		donor = null;
+		//donor = null;
 		created = null;
 		planDate = null;
 		examinationTypeId = EXAMINATION_TYPE_NULL_VALUE;
 		statusId = EXAMINATION_STATUS_NULL_VALUE;
+		listAlias = new ArrayList<AliasFilterBean>();
+		listFields = new ArrayList<FieldFilterBean>();
+		listFieldsDisjunction = new ArrayList<FieldFilterBean>();
+		sqlRestrictions = new ArrayList<String>();
 	}
 
 	@Override
@@ -133,5 +181,8 @@ public class ExaminationsFilter extends AbstractFilter<ExaminationsFilter> {
 		setPlanDate(source.getPlanDate());
 		setStatusId(source.getStatusId());
 		setExaminationTypeId(source.getExaminationTypeId());
+		setListFields(source.getListFields());
+		setListFieldsDisjunction(source.getListFieldsDisjunction());
+		setSqlRestrictions(source.getSqlRestrictions());
 	}
 }
