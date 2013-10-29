@@ -713,7 +713,6 @@
 										</td>
 										<td>
 											<h:panelGroup id="maker_info">
-												<h:inputHidden id="globalMaker" value="#{propertiesRedactorBean.selectedProperties.extendedProperties['reports.institution.name'].objectValue}"/>
 												<h:outputText id="maker" value="#{bloodComponent.document.maker.fullName}" 
 											 	class="wide" />
 												<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="#{contextPath}/component/contragent.xhtml" target="_blank">
@@ -728,16 +727,6 @@
 													showButtons="false"
 													style="width:500px;"
 													widgetVar="contragentSelectVar">
-												<h:outputScript>
-													jQuery(function(){
-														var globalMaker = $("[id*='globalMaker']").val();
-														$("[id*='contragent_select_table'] tbody td").each(function() {
-															if ($(this).text() == globalMaker) {
-																$(this).parent().hide();
-															}
-														});
-													});
-												</h:outputScript>
 												<div id="title">Выбор изготовителя</div>
 													<div id="modal_container" style="margin-top: 0;">
 														<div class="searchbar">

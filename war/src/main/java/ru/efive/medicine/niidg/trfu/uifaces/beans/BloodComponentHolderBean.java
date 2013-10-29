@@ -357,8 +357,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 	private BloodDonationRequest donation;
 	
 	public class ContragentSelectModalHolder extends ModalWindowHolderBean {
-    	
-    	public ContragentListHolderBean getContragentList() {
+		public ContragentListHolderBean getContragentList() {
             return contragentList;
         }
 
@@ -372,6 +371,17 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 		
 		public boolean selected(Contragent contragent) {
 			return this.contragent == null? false: this.contragent.equals(contragent);
+		}
+		
+		@Override
+		protected void doShow() {
+			List<Contragent> contragents = contragentList.getDocuments();
+			for(Contragent contragent: contragents) {
+				if (contragent.getFullName().equals(getInstitutionName())) {
+					contragents.remove(contragent);
+					break;
+				}
+			}
 		}
     	
     	@Override
@@ -833,6 +843,12 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     
 	public void setExpirationDays(int expirationDays) {
 		this.expirationDays = expirationDays;
+	}
+	
+	public String getInstitutionName() {
+		String result;
+		result = (String) propertiesEditorBean.getSelectedProperties().getExtendedProperties().get("reports.institution.name").getObjectValue();
+		return result;
 	}
 	
 	private VirusinWithResuspensionSolutionModalBean virusinWithResuspensionSolutionModal = new VirusinWithResuspensionSolutionModalBean();
