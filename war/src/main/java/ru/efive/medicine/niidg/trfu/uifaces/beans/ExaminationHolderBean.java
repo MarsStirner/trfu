@@ -64,6 +64,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
 	
 	@Override
 	protected void initDocument(Integer id) {
+		initUserLists();
 		ExaminationRequest examination = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).get(id);
 		if (examination == null) {
 			setState(STATE_NOT_FOUND);
@@ -82,6 +83,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
 	
 	@Override
 	protected void initNewDocument() {
+		initUserLists();
 		ExaminationRequest examination = new ExaminationRequest();
 		examination.setStatusId(1);
 		Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
@@ -208,6 +210,31 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
 		}
 	}
 	
+	private void initUserLists() {
+		userDocuments = new ArrayList<User>(userList.getDocuments());
+	    userTransfusiologistDocuments = getTherapistUserList(userList.getDocuments());
+	}
+	
+	private List<User> getTherapistUserList(List<User> userListDoc) {
+		List<User> therapistUserList = new ArrayList<User>();
+		for (User user : userListDoc) {
+			if(findRoleTherapist(user.getRoleList())) {
+				therapistUserList.add(user);
+			}
+		}
+		return therapistUserList;
+	}
+	
+	private boolean findRoleTherapist(List<Role> roleList) {
+		boolean result = false;
+		for (Role role : roleList) {
+			if (RoleType.THERAPIST.equals(role.getRoleType())) {
+				result = true;
+				break;					
+			}
+		}
+		return result;
+	}
 	
 	public class DonorSelectModalHolder extends ModalWindowHolderBean {
     	
@@ -260,7 +287,8 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
     	return staffNurseSelectModal;
     }
 	
-	
+    private List<User> userDocuments;
+    private List<User> userTransfusiologistDocuments;
 	@Inject @Named("sessionManagement")
 	SessionManagementBean sessionManagement = new SessionManagementBean();
 	@Inject @Named("donorList")
@@ -274,9 +302,8 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
 	private UserSelectModalBean therapistSelectModal = new UserSelectModalBean() {
 		@Override
 		public UserListHolderBean getUserList() {
-			List<User> therapistUserList = getTherapistUserList(userList.getDocuments());
 			userList.getDocuments().clear();
-			userList.getDocuments().addAll(therapistUserList);
+			userList.getDocuments().addAll(userTransfusiologistDocuments);
 			return userList;
 		}
 		@Override
@@ -291,30 +318,11 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
 			userList.markNeedRefresh();
 			setUser(null);
 		}
-		
-		private List<User> getTherapistUserList(List<User> userListDoc) {
-			List<User> therapistUserList = new ArrayList<User>();
-			for (User user : userListDoc) {
-				if(findRoleTherapist(user.getRoleList())) {
-					therapistUserList.add(user);
-				}
-			}
-			return therapistUserList;
-		}
-		
-		private boolean findRoleTherapist(List<Role> roleList) {
-			boolean result = false;
-			for (Role role : roleList) {
-				if (RoleType.THERAPIST.equals(role.getRoleType())) {
-					result = true;
-					break;					
-				}
-			}
-			return result;
-		}
 	};
 	private UserSelectModalBean staffNurseSelectModal = new UserSelectModalBean() {
 		public UserListHolderBean getUserList() {
+			userList.getDocuments().clear();
+			userList.getDocuments().addAll(userDocuments);
 			return userList;
 		}
 		@Override

@@ -97,8 +97,8 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 	
 	@Override
 	protected void initDocument(Integer id) {
+		initUserLists();
 		BloodDonationRequest request = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).get(id);
-		//request.setTestList(examinationEntryList.getEntriesByExaminationRequest(id));
 		DonorRejectionDAOImpl dao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, ApplicationHelper.REJECTION_DAO);
 		List<DonorRejection> list = dao.findDocumentsByRequestId("d_" + id);
 
@@ -130,6 +130,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 	
 	@Override
 	protected void initNewDocument() {
+		initUserLists();
 		BloodDonationRequest bloodDonation = new BloodDonationRequest();
 		bloodDonation.setStatusId(1);
 		Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
@@ -417,6 +418,32 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		}
 	}
 	
+	private void initUserLists() {
+		userDocuments = new ArrayList<User>(userList.getDocuments());
+	    userTransfusiologistDocuments = getTherapistUserList(userList.getDocuments());
+	}
+	
+	private List<User> getTherapistUserList(List<User> userListDoc) {
+		List<User> therapistUserList = new ArrayList<User>();
+		for (User user : userListDoc) {
+			if(findRoleTherapist(user.getRoleList())) {
+				therapistUserList.add(user);
+			}
+		}
+		return therapistUserList;
+	}
+	
+	private boolean findRoleTherapist(List<Role> roleList) {
+		boolean result = false;
+		for (Role role : roleList) {
+			if (RoleType.THERAPIST.equals(role.getRoleType())) {
+				result = true;
+				break;					
+			}
+		}
+		return result;
+	}
+	
 	public ProcessorModalBean getProcessorModal() {
 		return processorModal;
 	}
@@ -549,7 +576,8 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
     	return staffNurseSelectModal;
     }
 	
-	
+    private List<User> userDocuments;
+    private List<User> userTransfusiologistDocuments;
 	@Inject @Named("sessionManagement")
 	private transient SessionManagementBean sessionManagement = new SessionManagementBean();
 	@Inject @Named("donorList")
@@ -567,7 +595,10 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 	private RejectionDescriptionHolder rejectionDescriptionHolder = new RejectionDescriptionHolder();
 
 	private UserSelectModalBean registratorSelectModal = new UserSelectModalBean() {
+		@Override
 		public UserListHolderBean getUserList() {
+			userList.getDocuments().clear();
+			userList.getDocuments().addAll(userDocuments);
 			return userList;
 		}
 		@Override
@@ -586,9 +617,8 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 	private UserSelectModalBean transfusiologistSelectModal = new UserSelectModalBean() {
 		@Override
 		public UserListHolderBean getUserList() {
-			List<User> therapistUserList = getTherapistUserList(userList.getDocuments());
 			userList.getDocuments().clear();
-			userList.getDocuments().addAll(therapistUserList);
+			userList.getDocuments().addAll(userTransfusiologistDocuments);
 			return userList;
 		}
 		@Override
@@ -604,29 +634,13 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 			setUser(null);
 		}
 		
-		private List<User> getTherapistUserList(List<User> userListDoc) {
-			List<User> therapistUserList = new ArrayList<User>();
-			for (User user : userListDoc) {
-				if(findRoleTherapist(user.getRoleList())) {
-					therapistUserList.add(user);
-				}
-			}
-			return therapistUserList;
-		}
 		
-		private boolean findRoleTherapist(List<Role> roleList) {
-			boolean result = false;
-			for (Role role : roleList) {
-				if (RoleType.THERAPIST.equals(role.getRoleType())) {
-					result = true;
-					break;					
-				}
-			}
-			return result;
-		}
 	};
 	private UserSelectModalBean staffNurseSelectModal = new UserSelectModalBean() {
+		@Override
 		public UserListHolderBean getUserList() {
+			userList.getDocuments().clear();
+			userList.getDocuments().addAll(userDocuments);
 			return userList;
 		}
 		@Override
