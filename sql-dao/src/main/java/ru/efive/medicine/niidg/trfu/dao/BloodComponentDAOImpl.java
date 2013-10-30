@@ -1237,6 +1237,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	public long countDocument(String filter, List<Integer> statusIdList, boolean showExpired, boolean showDeleted) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+        detachedCriteria.add(Restrictions.ne("donationId", 0));
         
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
