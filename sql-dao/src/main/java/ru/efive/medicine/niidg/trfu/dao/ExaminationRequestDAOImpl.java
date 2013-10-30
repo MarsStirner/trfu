@@ -50,7 +50,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
         if(DonorHelper.USE_SRPD) {
         	Map<FieldsInMap, Object> paramMap = donorHelper.makeMapForGet(examination.getDonor().getTempStorageId());
         	Map<String, Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
-        	examination = donorHelper.mergeExaminationRequestAndMap(examination, resMap);
+        	examination = donorHelper.mergeRequestAndMap(examination, resMap);
         }
         return examination;
     }
@@ -411,10 +411,10 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
 		examinationaRequests = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset,count);
 		if (DonorHelper.USE_SRPD) {
-			filter.setListSRPDIds(donorHelper.listIdsSRPDFromExaminationRequest(examinationaRequests));
+			filter.setListSRPDIds(donorHelper.listIdsSRPDFromRequest(examinationaRequests));
 			Map<FieldsInMap, Object> paramMap = donorHelper.listIdsSRPDFromFilter(filter);
 			Map<String, Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
-			examinationaRequests = donorHelper.mergeExaminationRequestsAndMap(examinationaRequests, resMap);
+			examinationaRequests = donorHelper.mergeRequestsAndMap(examinationaRequests, resMap);
 		}
 		return examinationaRequests;
 	}
@@ -435,7 +435,6 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 		}
 		if (showDeleted != null && !showDeleted) {
 			filter.setShowDeleted(showDeleted);
-			
 		}
 		return filter;
 	}

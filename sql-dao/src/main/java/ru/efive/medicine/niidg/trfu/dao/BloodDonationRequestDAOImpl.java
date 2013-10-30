@@ -291,10 +291,10 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
 		List<BloodDonationRequest> list = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count); 
 		if (DonorHelper.USE_SRPD) {
-			filter.setListSRPDIds(donorHelper.listIdsSRPDFromBloodDonationRequest(list));
+			filter.setListSRPDIds(donorHelper.listIdsSRPDFromRequest(list));
 			Map<FieldsInMap, Object> paramMap = donorHelper.listIdsSRPDFromFilter(filter);
 			Map<String, Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
-			list = donorHelper.mergeBloodDonationRequestsAndMap(list, resMap);
+			list = donorHelper.mergeRequestsAndMap(list, resMap);
 		}
 		return list;
 	}
@@ -334,7 +334,7 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 		if (DonorHelper.USE_SRPD) {
 			Map<FieldsInMap, Object> paramMap = donorHelper.makeMapForGet(bloodDonationRequest.getDonor().getTempStorageId());
 			Map<String, Map<FieldsInMap, Object>> resMap = srpdDao.get(paramMap);
-			bloodDonationRequest = donorHelper.mergeBloodDonationRequestAndMap(bloodDonationRequest, resMap);
+			bloodDonationRequest = (BloodDonationRequest)donorHelper.mergeRequestAndMap(bloodDonationRequest, resMap);
 			
 		}
 		return bloodDonationRequest;

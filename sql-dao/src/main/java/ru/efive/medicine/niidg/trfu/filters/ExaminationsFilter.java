@@ -156,8 +156,8 @@ public class ExaminationsFilter extends AppendSRPDFilter<ExaminationsFilter> {
 	}
 
 	protected void setDefaultValues() {
+		super.setDefaultValues();
 		number = null;
-		//donor = null;
 		created = null;
 		planDate = null;
 		examinationTypeId = EXAMINATION_TYPE_NULL_VALUE;
@@ -175,6 +175,7 @@ public class ExaminationsFilter extends AppendSRPDFilter<ExaminationsFilter> {
 
 	@Override
 	public void fillFrom(ExaminationsFilter source) {
+		super.fillFrom(source);
 		setNumber(source.getNumber());
 		setDonor(source.getDonor());
 		setCreated(source.getCreated());

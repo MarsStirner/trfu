@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hl7.v3.PRPAIN101306UV02;
 import org.hl7.v3.PRPAIN101312UV02;
 
+import ru.efive.medicine.niidg.trfu.data.AbstractRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
@@ -222,25 +223,25 @@ public class DonorHelper {
 		return donor;
 	}
 	/**
-	 * Используется для мержа данных из ЗХПД и списка объектов типа BloodDonationRequest.
-	 * Место использования: BloodDonationRequestDAOImpl
+	 * Используется для мержа данных из ЗХПД и списка объектов типа BloodDonationRequest, ExaminationRequest
+	 * Место использования: BloodDonationRequestDAOImpl, ExaminationRequestDAOImpl, RequestDAOImpl
 	 */
-	public List<BloodDonationRequest> mergeBloodDonationRequestsAndMap(List<BloodDonationRequest> list, Map<String, Map<FieldsInMap, Object>> map) {
-		for(BloodDonationRequest i : list) {
+	public <T extends AbstractRequest> List<T> mergeRequestsAndMap(List<T> list, Map<String, Map<FieldsInMap, Object>> map) {
+		for(T i : list) {
 			i.setDonor(mergeDonorAndMap(i.getDonor(), map.get(i.getDonor().getTempStorageId())));
 		}
 		return list;
 	}
 	/**
-	 * Используется для мержа данных из ЗХПД и объекта типа BloodDonationRequest.
-	 * Место использования: BloodDonationRequestDAOImpl
+	 * Используется для мержа данных из ЗХПД и объекта типа BloodDonationRequest, ExaminationRequest.
+	 * Место использования: BloodDonationRequestDAOImpl, ExaminationRequestDAOImpl
 	 */
 	
-	public BloodDonationRequest mergeBloodDonationRequestAndMap(BloodDonationRequest bloodDonationRequest, Map<String, Map<FieldsInMap, Object>> map) {
-		bloodDonationRequest.setDonor(
-				mergeDonorAndMap(bloodDonationRequest.getDonor(), map.get(bloodDonationRequest.getDonor().getTempStorageId()))
+	public <T extends AbstractRequest> T mergeRequestAndMap(T request, Map<String, Map<FieldsInMap, Object>> map) {
+		request.setDonor(
+				mergeDonorAndMap(request.getDonor(), map.get(request.getDonor().getTempStorageId()))
 						);
-		return bloodDonationRequest;
+		return request;
 	}
 	/**
 	 * Используется для мержа данных из ЗХПД и списка объектов типа BloodComponent.
@@ -251,26 +252,6 @@ public class DonorHelper {
 			i.getDonation().setDonor(mergeDonorAndMap(i.getDonation().getDonor(), map.get(i.getDonation().getDonor().getTempStorageId())));
 		}
 		return list;
-	}
-	/**
-	 * Используется для мержа данных из ЗХПД и списка объектов типа ExaminationRequest.
-	 * Место использования: ExaminationRequestDAOImpl
-	 */
-	
-	public List<ExaminationRequest> mergeExaminationRequestsAndMap(List<ExaminationRequest> list, Map<String, Map<FieldsInMap, Object>> map) {
-		for(ExaminationRequest i : list) {
-			i.setDonor(mergeDonorAndMap(i.getDonor(), map.get(i.getDonor().getTempStorageId())));
-		}
-		return list;
-	}
-	/**
-	 * Используется для мержа данных из ЗХПД и объекта типа ExaminationRequest.
-	 * Место использования: ExaminationRequestDAOImpl
-	 */
-	
-	public ExaminationRequest mergeExaminationRequestAndMap(ExaminationRequest examinationRequest, Map<String, Map<FieldsInMap, Object>> map) {
-			examinationRequest.setDonor(mergeDonorAndMap(examinationRequest.getDonor(), map.get(examinationRequest.getDonor().getTempStorageId())));
-		return examinationRequest;
 	}
 		
 	public Map<FieldsInMap, Object> parseAnswerFromSRPDAfterFind(PRPAIN101306UV02 answer) {
@@ -429,23 +410,12 @@ public class DonorHelper {
 		return ids;
 	}
 	/**
-	 * Формирует и возвращает список идентификаторов ЗХПД из списка Bloodcomponet-ов
-	 * Используется: BloodDonationRequestDAOImpl
+	 * Формирует и возвращает список идентификаторов ЗХПД из списка BloodDonationRequest-ов, ExaminationRequest-ов
+	 * Используется: BloodDonationRequestDAOImpl, ExaminationRequestDAOImpl, RequestDAOImpl
 	 */
-	public List<String> listIdsSRPDFromBloodDonationRequest(List<BloodDonationRequest> bloodDonationRequests) {
+	public <T extends AbstractRequest> List<String> listIdsSRPDFromRequest(List<T> requests) {
 		List<String> ids = new ArrayList<String>();
-		for (BloodDonationRequest i : bloodDonationRequests) {
-			ids.add(i.getDonor().getTempStorageId());
-		}
-		return ids;
-	}
-	/**
-	 * Формирует и возвращает список идентификаторов ЗХПД из списка ExaminationRequest-ов
-	 * Используется: ExaminationRequestRequestDAOImpl
-	 */
-	public List<String> listIdsSRPDFromExaminationRequest(List<ExaminationRequest> examinationRequests) {
-		List<String> ids = new ArrayList<String>();
-		for (ExaminationRequest i : examinationRequests) {
+		for (T i : requests) {
 			ids.add(i.getDonor().getTempStorageId());
 		}
 		return ids;
@@ -476,15 +446,4 @@ public class DonorHelper {
 		}
 		return null;
 	}
-	
-	/*public String cretateTelFromPhoneForSRPD(TELCOM type, String tel) {
-		switch (type) {
-		case TEL:
-			return "tel:" + tel;
-
-		case EMAIL:
-			return "mailto:" + tel;
-		}
-	return null;
-	}*/
 }
