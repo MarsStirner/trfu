@@ -249,6 +249,17 @@
                        		modalWindowHolder="#{virusinactivationComponentList.expirationDateSelectModal}"
                        		showButtons="false"
                        		widgetVar="expirationDateSelectVar">
+                       		<h:outputScript>
+                       			$(document).ready(function() {
+    								$("[id*='systemLot']").bind('paste', function(event) {
+    									var _this = this;
+        								setTimeout( function() {
+            								var text = $(_this).val();
+            								console.log(text);
+        								}, 100);
+    								});
+								});
+        					</h:outputScript>
                         	<div id="title">Установка срока годности выбранной системы</div>
                         	<div id="blood_modal_container" style="margin-top: 0;">
                         		<div class="wrap" style="height: 120px;">
@@ -258,7 +269,7 @@
 										</div>
 									</h:panelGroup>
 									<div>Лот</div>
-                        			<div><h:inputText id="systemLot" immediate="true"
+                        			<div><h:inputText id="systemLot" immediate="true" 
                         			value="#{virusinactivationComponentList.expirationDateSelectModal.systemLot}"/></div>
                         			<div>Годен до</div>
                         			<div><e5ui-comp:inputDate id="enteredExpirationDate" immediate="true"
