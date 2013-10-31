@@ -1029,14 +1029,6 @@ public final class ProcessFactory {
 				
 				statuses.put(readyStatus.getId(), readyStatus);
 				
-				//Зарегистрирован - Вирусинактивация
-				toStatusAction = new StatusChangeVirusinactivationAction(process);
-				
-				toStatusAction.setId(ApplicationHelper.VIRUSINAKTIVATION_ID);
-				toStatusAction.setName(ApplicationHelper.VIRUSINAKTIVATION);
-				toStatusAction.setInitialStatus(status);
-				fromStatusActions.add(toStatusAction);
-				
 				// Зарегистрирован - Утилизирован
 				toStatusAction = new StatusChangeAction(process) {
 					@Override
@@ -1213,14 +1205,6 @@ public final class ProcessFactory {
 				
 				toStatusAction.setDestinationStatus(readyStatus);
 				
-				fromStatusActions.add(toStatusAction);
-				
-				//В карантине - Вирусинактивация
-				toStatusAction = new StatusChangeVirusinactivationAction(process);
-				
-				toStatusAction.setId(ApplicationHelper.VIRUSINAKTIVATION_ID);
-				toStatusAction.setName(ApplicationHelper.VIRUSINAKTIVATION);
-				toStatusAction.setInitialStatus(status);
 				fromStatusActions.add(toStatusAction);
 				
 				// В карантине - Задержка
