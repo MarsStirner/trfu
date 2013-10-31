@@ -24,6 +24,7 @@ import ru.efive.medicine.niidg.trfu.data.AbstractRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.medicine.niidg.trfu.data.entity.DonorRejection;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
@@ -253,6 +254,16 @@ public class DonorHelper {
 		}
 		return list;
 	}
+	/**
+	 * Используется для мержа данных из ЗХПД и списка объектов типа DonorRejection.
+	 * Место использования: DonorRejectionDAOImpl
+	 */
+	public List<DonorRejection> mergeDonorRejectionsAndMap(List<DonorRejection> list, Map<String, Map<FieldsInMap, Object>> map) {
+		for(DonorRejection i : list) {
+			i.setDonor(mergeDonorAndMap(i.getDonor(), map.get(i.getDonor().getTempStorageId())));
+		}
+		return list;
+	}
 		
 	public Map<FieldsInMap, Object> parseAnswerFromSRPDAfterFind(PRPAIN101306UV02 answer) {
 		Map<FieldsInMap, Object> answerMap = null;
@@ -416,6 +427,17 @@ public class DonorHelper {
 	public <T extends AbstractRequest> List<String> listIdsSRPDFromRequest(List<T> requests) {
 		List<String> ids = new ArrayList<String>();
 		for (T i : requests) {
+			ids.add(i.getDonor().getTempStorageId());
+		}
+		return ids;
+	}
+	/**
+	 * Формирует и возвращает список идентификаторов ЗХПД из списка DonorRejection-ов
+	 * Используется: DonorRejectionDAOImpl
+	 */
+	public List<String> listIdsSRPDFromDonorRejectionRequest(List<DonorRejection> requests) {
+		List<String> ids = new ArrayList<String>();
+		for (DonorRejection i : requests) {
 			ids.add(i.getDonor().getTempStorageId());
 		}
 		return ids;
