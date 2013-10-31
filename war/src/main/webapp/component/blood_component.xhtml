@@ -69,6 +69,11 @@
 	<ui:define name="left_menu"></ui:define>
 	
 	<ui:define name="header">
+		<h:panelGroup rendered="#{bloodComponent.refreshVirusinactivationList}">
+			<h:outputScript>
+				window.opener.location.reload();
+			</h:outputScript>
+		</h:panelGroup>
 		<div id="form_header">
 			<div class="actionbar">
 				<div class="menu">

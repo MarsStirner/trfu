@@ -73,6 +73,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 	@Override
 	protected void initDocument(Integer id) {
 		try {
+			needRefreshVirusinactivationList = false;
 			setDocument(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).get(id));
 			if (getDocument() == null) {
 				setState(STATE_NOT_FOUND);
@@ -788,6 +789,8 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 			dao.save(bloodComponent);
 			setDocument(bloodComponent);
 			setModalVisible(false);
+			needRefreshVirusinactivationList = true;
+			virusinactivationComponentList.refresh();
 		}
 			
 		public int getVirusinWithResuspensionSolutionVolume() {
@@ -807,6 +810,10 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 			return value;
 		}
 	}
+	
+	public boolean isRefreshVirusinactivationList() {
+    	return needRefreshVirusinactivationList;
+    }
 	
 	/**
 	 * Метод возвращает модальное окно Вирусинактивации
@@ -851,11 +858,12 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 		return result;
 	}
 	
-	private VirusinWithResuspensionSolutionModalBean virusinWithResuspensionSolutionModal = new VirusinWithResuspensionSolutionModalBean();
-	
 	private int expirationDays;
 	private boolean haveConsumableMaterial = false;
+	private boolean needRefreshVirusinactivationList = false;
     
+	@Inject @Named("virusinactivationComponentList")
+	private VirusinactivationBloodComponetsBean virusinactivationComponentList;
 	@Inject @Named("propertiesRedactorBean")
 	private transient PropertiesEditorBean propertiesEditorBean;
 	@Inject @Named("sessionManagement")
@@ -867,6 +875,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 	@Inject @Named("reports")
     private transient ReportsManagmentBean reportsManagement = new ReportsManagmentBean();
 	
+	private VirusinWithResuspensionSolutionModalBean virusinWithResuspensionSolutionModal = new VirusinWithResuspensionSolutionModalBean();
 	private ContragentSelectModalHolder contragentSelectModal = new ContragentSelectModalHolder();
 	private SplitModalHolder splitModal = new SplitModalHolder();
 	

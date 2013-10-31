@@ -1195,6 +1195,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         detachedCriteria.setFetchMode("donation", FetchMode.EAGER);
         detachedCriteria.add(Restrictions.ne("donationId", 0));
+        detachedCriteria.add(Restrictions.eq("inactivated", false));
         
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
@@ -1238,6 +1239,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         detachedCriteria.add(Restrictions.ne("donationId", 0));
+        detachedCriteria.add(Restrictions.eq("inactivated", false));
         
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
