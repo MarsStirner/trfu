@@ -1,7 +1,6 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,7 +64,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 		List<BloodComponent> result = new ArrayList<BloodComponent>();
 		try {
 			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocuments(filter, statusIdList, false, false, 
-					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
+					getPagination().getOffset(), getPagination().getPageSize(), "created", false);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -198,7 +197,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
     		invalid = false;
     		message = "";
     	}
-
+		
 		public void validateExpirationDate() {
 			if("".equals(systemLot)){
 				setErrorMessage(ERR_MSG_LOT);
