@@ -26,8 +26,10 @@ import ru.efive.uifaces.bean.ModalWindowHolderBean;
 public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHolderBean<BloodComponent> {
 	private static final long serialVersionUID = 8942121183249792240L;
 	
-	// статусы - зарегистрирован, в карантине, готов к выдаче, готов к выдаче из карантина
-	private List<Integer> statusIdList = Arrays.asList(new Integer[] { 1, 2, 3, 5}); 
+	// статусы КК - зарегистрирован, в карантине, готов к выдаче, готов к выдаче из карантина
+	private List<Integer> bloodComponentStatusIdList = Arrays.asList(new Integer[] { 1, 2, 3, 5});
+	// статусы донаций КК - донация, получение результатов анализов, паспортизация
+	private List<Integer> donationStatusIdList = Arrays.asList(new Integer[] {2, 3, 4}); 
 		
 	@Inject @Named("sessionManagement")
 	private SessionManagementBean sessionManagement;
@@ -51,7 +53,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			result = new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).countDocument(filter, statusIdList, false, false)).intValue();
+			result = new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).countDocument(filter, bloodComponentStatusIdList, donationStatusIdList, false, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -63,7 +65,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 	protected List<BloodComponent> loadDocuments() {
 		List<BloodComponent> result = new ArrayList<BloodComponent>();
 		try {
-			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocuments(filter, statusIdList, false, false, 
+			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocuments(filter, bloodComponentStatusIdList, donationStatusIdList, false, false, 
 					getPagination().getOffset(), getPagination().getPageSize(), "created", false);
 		}
 		catch (Exception e) {

@@ -554,7 +554,7 @@
 													<legend>
 														<label><span class="title">Обработка</span> </label>
 													</legend>
-													<div>
+													<div style="border: 2px groove threedface;">
 														<h:selectBooleanCheckbox value="#{bloodComponent.document.inactivated}" disabled="true">
 															<f:ajax event="click" listener="#{bloodComponent.inactivatedListener}" render="main_content_form" execute="main_content_form" />
 														</h:selectBooleanCheckbox>
@@ -611,21 +611,21 @@
 															</div>
 														</h:panelGroup>
 													</div>
-													<div style="margin-top: 10px;">
+													<div style="margin-top: 10px;border: 2px groove threedface;">
 														<h:selectBooleanCheckbox value="#{bloodComponent.document.irradiated}" disabled="#{bloodComponent.viewState}" />
 														<h:outputText value="Облучение" />
 													</div>
 													<h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
-														<div style="margin-top: 10px;">
+														<div style="margin-top: 10px;border: 2px groove threedface;">
 															<h:selectBooleanCheckbox value="#{bloodComponent.document.leukoFiltered}" disabled="#{bloodComponent.viewState}" />
 															<h:outputText value="Лейкофильтрация" />
 														</div>
 													</h:panelGroup>
-													<div style="margin-top: 10px;">
+													<div style="margin-top: 10px;border: 2px groove threedface;">
 														<h:selectBooleanCheckbox value="#{bloodComponent.document.pooling}" disabled="#{bloodComponent.viewState}" />
 														<h:outputText value="Пулирование" />
 													</div>
-													<div style="margin-top: 10px;">
+													<div style="margin-top: 10px;border: 2px groove threedface;">
 														<h:selectBooleanCheckbox value="#{bloodComponent.document.washing}" disabled="#{bloodComponent.viewState}" />
 														<h:outputText value="Отмывание" />
 													</div>

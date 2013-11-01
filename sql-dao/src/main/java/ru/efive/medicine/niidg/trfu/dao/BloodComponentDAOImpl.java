@@ -1180,7 +1180,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      * Поиск документов
      *
      * @param filter          фильтр поиска
-     * @param statusIdList    список статусов
+     * @param bloodComponentStatusIdList    список статусов КК
+     * @param donationStatusIdList    список статусов донаций КК
      * @param showExpired     true - отображать просроченные, false - скрывать просроченные
      * @param showDeleted     true - show deleted, false - hide deleted
      * @param offset          смещение
@@ -1190,31 +1191,10 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      * @return список документов
      */
 	@SuppressWarnings("unchecked")
-	public List<BloodComponent> findDocuments(String filter, List<Integer> statusIdList, boolean showExpired, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
+	public List<BloodComponent> findDocuments(String filter, List<Integer> bloodComponentStatusIdList, List<Integer> donationStatusIdList, boolean showExpired, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        detachedCriteria.setFetchMode("donation", FetchMode.EAGER);
-        detachedCriteria.add(Restrictions.ne("donationId", 0));
-        detachedCriteria.add(Restrictions.eq("inactivated", false));
+		detachedCriteria = setVirusinaktivationCriteria(detachedCriteria, bloodComponentStatusIdList, donationStatusIdList, showExpired, showDeleted);
         
-        if (!showDeleted) {
-            detachedCriteria.add(Restrictions.eq("deleted", false));
-        }
-        if (!showExpired) {
-        	Disjunction disjunction = Restrictions.disjunction();
-        	Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
-            calendar.set(Calendar.HOUR_OF_DAY, 0);
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-            calendar.set(Calendar.MILLISECOND, 0);
-        	disjunction.add(Restrictions.ge("expirationDate", calendar.getTime()));
-        	disjunction.add(Restrictions.isNull("expirationDate"));
-        	detachedCriteria.add(disjunction);
-        }
-        if (statusIdList.size() != 0) {
-        	detachedCriteria.add(Restrictions.in("statusId", statusIdList));
-        }
-
 		String[] ords = orderBy == null ? null : orderBy.split(",");
 		if (ords != null) {
 			if (ords.length > 1) {
@@ -1230,16 +1210,45 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	/**
 	 * Количество компонентов
 	 * @param filter          фильтр поиска
-	 * @param statusIdList    список статусов
+	 * @param bloodComponentStatusIdList    список статусов КК
+     * @param donationStatusIdList    список статусов донаций КК
 	 * @param showExpired     true - отображать просроченные, false - скрывать просроченные
 	 * @param showDeleted     true - show deleted, false - hide deleted
 	 * @return количество компонентов
 	 */
-	public long countDocument(String filter, List<Integer> statusIdList, boolean showExpired, boolean showDeleted) {
+	public long countDocument(String filter, List<Integer> bloodComponentStatusIdList, List<Integer> donationStatusIdList, boolean showExpired, boolean showDeleted) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+		detachedCriteria = setVirusinaktivationCriteria(detachedCriteria, bloodComponentStatusIdList, donationStatusIdList, showExpired, showDeleted);
+        
+		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+	}
+	
+	private DetachedCriteria setVirusinaktivationCriteria(DetachedCriteria detachedCriteria, List<Integer> bloodComponentStatusIdList, List<Integer> donationStatusIdList, boolean showExpired, boolean showDeleted) {
+		
+		detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         detachedCriteria.add(Restrictions.ne("donationId", 0));
         detachedCriteria.add(Restrictions.eq("inactivated", false));
+        
+        detachedCriteria.setFetchMode("donation", FetchMode.EAGER);
+        detachedCriteria.createAlias("donation", "donation");
+        detachedCriteria.setFetchMode("author", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("maker", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("anticoagulant", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("appointment", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("bloodGroup", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("rhesusFactor", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("preservative", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.donor", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.registrator", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.therapist", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.staffNurse", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.appointment", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.bloodSystems", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.donorType", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.examination", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.operationalCrew", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.report", FetchMode.LAZY);
+        detachedCriteria.setFetchMode("donation.transfusiologist", FetchMode.LAZY);
         
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
@@ -1255,10 +1264,13 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         	disjunction.add(Restrictions.isNull("expirationDate"));
         	detachedCriteria.add(disjunction);
         }
-        if (statusIdList.size() != 0) {
-        	detachedCriteria.add(Restrictions.in("statusId", statusIdList));
+        if (bloodComponentStatusIdList.size() != 0) {
+        	detachedCriteria.add(Restrictions.in("statusId", bloodComponentStatusIdList));
+        }
+        if (donationStatusIdList.size() != 0) {
+        	detachedCriteria.add(Restrictions.in("donation.statusId", donationStatusIdList));
         }
         
-		return getCountOf(getSearchCriteria(detachedCriteria, filter));
+        return detachedCriteria;
 	}
 }
