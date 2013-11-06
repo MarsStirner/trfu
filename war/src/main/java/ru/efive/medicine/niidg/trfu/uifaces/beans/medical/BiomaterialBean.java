@@ -357,6 +357,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
     		}
     		if (sum == getDocument().getVolume()) {
     			MedicalOperationDAOImpl dao = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO);
+    			int count = 1;
     			for (VolumeEntry volume: volumeList) {
     				Biomaterial biomaterial = getDocument().cloneComponent();
     				biomaterial.setId(0);
@@ -412,8 +413,8 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
     				biomaterial.setSplitDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
     				
     				if (biomaterial.getOperation() != null) {
-    					int count = new Long(dao.countBiomaterialsByOperation(biomaterial.getOperation(), "", false)).intValue();
     					biomaterial.setNumber(getDocument().getNumber() + "." + StringUtils.right("00" + count, 3));
+    					count++;
     				}
     				
     				dao.save(biomaterial);

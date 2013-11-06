@@ -263,6 +263,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		}
 		
 		if (operation != null && operation.getId() > 0) {
+			detachedCriteria.add(Restrictions.isNull("parentBiomaterial"));
 			detachedCriteria.add(Restrictions.eq("operation.id", operation.getId()));
 			
 			return getCountOf(getSearchCriteria(detachedCriteria, filter, "Biomaterial"));
