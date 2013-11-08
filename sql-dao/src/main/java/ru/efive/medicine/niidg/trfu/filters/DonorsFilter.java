@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ru.efive.medicine.niidg.trfu.filters.bean.AliasFilterBean;
+import ru.efive.medicine.niidg.trfu.filters.bean.FieldFilterBean;
+import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
+
 /**
  * Фильтр для представления "Доноры".
  * 
@@ -54,22 +58,6 @@ public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 	 */
 	private String number;
 	/**
-	 * Имя донора.
-	 */
-	private String firstName;
-	/**
-	 * Фамилия донора.
-	 */
-	private String lastName;
-	/**
-	 * Отчетсво донора.
-	 */
-	private String middleName;
-	/**
-	 * Дата рождения донора.
-	 */
-	private Date birth;
-	/**
 	 * Дата создания записи о доноре.
 	 */
 	private Date created;
@@ -90,14 +78,6 @@ public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 	 * Номер документа.
 	 */
 	private String documentNumber;
-	/**
-	 * Серия страховки ОМС, если нужно добавить.
-	 */
-	private String insuranceSeries;
-	/**
-	 * Номер страховки ОМС, если нужно добавить.
-	 */
-	private String insuranceNumber;
     /**
      * Номер донора в ЕДЦ.
      */
@@ -133,29 +113,18 @@ public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 	private int categoryId;
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Отображение DonorType.value
-	 */
-	private String donorTypeValue;
-	/**
-	 * Список stogate_id
-	 */
-	private List<Integer> listStorageIds;
-	/**
 	 * Список id-ов для ограничения условий выборки
 	 */
 	private List listIds;
 	/**
-	 * Флаг для определения использовать conjunction или disjunction
-	 */
-	private boolean conjunction;
-	/**
-	 * Логин для авторизации, по умолчанию должен быть null
-	 */
-	private String mail;
-	/**
 	 * Пароль для авторизации, по умолчанию должен быть null
 	 */
-	private String password;
+	//private String password;
+	//////////////////////////////////////////////////////////////////
+	private List<FieldFilterBean> listFields;
+	private List<List<FieldFilterBean>> listFieldsDisjunction;
+	private List<AliasFilterBean> listAlias;
+	
 	
     /**
      * Конструктор по умолчанию.
@@ -171,38 +140,6 @@ public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 
 	public void setNumber(String number) {
 		this.number = number;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getMiddleName() {
-		return middleName;
-	}
-
-	public void setMiddleName(String middleName) {
-		this.middleName = middleName;
-	}
-
-	public Date getBirth() {
-		return birth;
-	}
-
-	public void setBirth(Date birth) {
-		this.birth = birth;
 	}
 
 	public Date getCreated() {
@@ -343,35 +280,6 @@ public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 	}
 
 	/**
-	 * @return the donorTypeValue
-	 */
-	public String getDonorTypeValue() {
-		return donorTypeValue;
-	}
-
-	/**
-	 * @param donorTypeValue the donorTypeValue to set
-	 */
-	public void setDonorTypeValue(String donorTypeValue) {
-		this.donorTypeValue = donorTypeValue;
-	}
-
-	/**
-	 * @return the listStogateIds
-	 */
-	public List<Integer> getListStorageIds() {
-		return listStorageIds;
-	}
-
-	/**
-	 * @param listStogateIds the listStogateIds to set
-	 */
-	public void setListStorageIds(List<Integer> listStorageIds) {
-		this.listStorageIds = listStorageIds;
-	}
-
-
-	/**
 	 * @return the listStatusId
 	 */
 	public List<Integer> getLisStatusId() {
@@ -400,48 +308,6 @@ public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 	}
 
 	/**
-	 * @return the useConjunction
-	 */
-	public boolean isConjunction() {
-		return conjunction;
-	}
-
-	/**
-	 * @param useConjunction the useConjunction to set
-	 */
-	public void setConjunction(boolean conjunction) {
-		this.conjunction = conjunction;
-	}
-
-	/**
-	 * @return the insuranceSeries
-	 */
-	public String getInsuranceSeries() {
-		return insuranceSeries;
-	}
-
-	/**
-	 * @param insuranceSeries the insuranceSeries1 to set
-	 */
-	public void setInsuranceSeries(String insuranceSeries) {
-		this.insuranceSeries = insuranceSeries;
-	}
-
-	/**
-	 * @return the insuranceNumber
-	 */
-	public String getInsuranceNumber() {
-		return insuranceNumber;
-	}
-
-	/**
-	 * @param insuranceNumber the insuranceNumber to set
-	 */
-	public void setInsuranceNumber(String insuranceNumber) {
-		this.insuranceNumber = insuranceNumber;
-	}
-
-	/**
 	 * @return the listStatusId
 	 */
 	public List<Integer> getListStatusId() {
@@ -449,31 +315,41 @@ public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 	}
 
 	/**
-	 * @return the mail
-	 */
-	public String getMail() {
-		return mail;
-	}
-
-	/**
-	 * @param mail the mail to set
-	 */
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
-
-	/**
 	 * @return the password
 	 */
-	public String getPassword() {
+	/*public String getPassword() {
 		return password;
 	}
 
 	/**
 	 * @param password the password to set
 	 */
-	public void setPassword(String password) {
+	/*public void setPassword(String password) {
 		this.password = password;
+	}*/
+
+	public List<FieldFilterBean> getListFields() {
+		return listFields;
+	}
+
+	public void setListFields(List<FieldFilterBean> listFields) {
+		this.listFields = listFields;
+	}
+
+	public List<List<FieldFilterBean>> getListFieldsDisjunction() {
+		return listFieldsDisjunction;
+	}
+
+	public void setListFieldsDisjunction(List<List<FieldFilterBean>> listFieldsDisjunction) {
+		this.listFieldsDisjunction = listFieldsDisjunction;
+	}
+
+	public List<AliasFilterBean> getListAlias() {
+		return listAlias;
+	}
+
+	public void setListAlias(List<AliasFilterBean> listAlias) {
+		this.listAlias = listAlias;
 	}
 
 	@Override
@@ -483,17 +359,11 @@ public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 
 	protected void setDefaultValues() {
 		number = null;
-		firstName = null;
-		lastName = null;
-		middleName = null;
-		birth = null;
 		created = null;
 		genderId = GENDER_NULL_VALUE;
 		documentTypeId = DOCUMENT_TYPE_NULL_VALUE;
 		documentSeries = null;
 		documentNumber = null;
-		insuranceSeries = null;
-		insuranceNumber = null;
 		externalNumber = null;
 		factAddress = null;
 		bloodGroupId = BLOOD_GROUP_NULL_VALUE;
@@ -501,30 +371,26 @@ public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 		pastQuarantineId = PAST_QUARANTINE_NULL_VALUE;
 		categoryId = DONOR_CATEGORY_NULL_VALUE;
 		/////////////////////////////////////////////////////////
-		donorTypeValue = null;
-		listStorageIds = new ArrayList<Integer>();
 		listStatusId = new ArrayList<Integer>();
 		listIds = new ArrayList();
 		conjunction = true;
 		listStatusId.add(DONOR_STATUS_NULL_VALUE);
-		mail = null;
-		password = null;
+		//password = null;
+		///////////////////////////////////////////////////////
+		listFields = new ArrayList<FieldFilterBean>();
+		listFieldsDisjunction = new ArrayList<List<FieldFilterBean>>();
+		listAlias = new ArrayList<AliasFilterBean>();
 	}
 
 	public void fillFrom(DonorsFilter source) {
 		super.fillFrom(source);
 		setNumber(source.getNumber());
-		setFirstName(source.getFirstName());
-		setLastName(source.getLastName());
-		setMiddleName(source.getMiddleName());
 		setCreated(source.getCreated());
 		setBirth(source.getBirth());
 		setGenderId(source.getGenderId());
 		setDocumentTypeId(source.getDocumentTypeId());
 		setDocumentSeries(source.getDocumentSeries());
 		setDocumentNumber(source.getDocumentNumber());
-		setInsuranceSeries(source.getInsuranceSeries());
-		setInsuranceNumber(source.getInsuranceNumber());
 		setExternalNumber(source.getExternalNumber());
 		setFactAddress(source.getFactAddress());
 		setStatusId(source.getStatusId());
@@ -533,12 +399,12 @@ public class DonorsFilter extends  AppendSRPDFilter<DonorsFilter> {
 		setPastQuarantineId(source.getPastQuarantineId());
 		setCategoryId(source.getCategoryId());
 		///////////////////////////////////////////////////////
-		setDonorTypeValue(source.getDonorTypeValue());
-		setListStorageIds(source.getListStorageIds());
 		setListStatusId(source.getListStatusId());
 		setListIds(source.getListIds());
-		setConjunction(source.isConjunction());
-		setMail(source.getMail());
-		setPassword(source.getPassword());
+		//setPassword(source.getPassword());
+		///////////////////////////////////////////////////////
+		setListFields(source.getListFields());
+		setListFieldsDisjunction(source.getListFieldsDisjunction());
+		setListAlias(source.getListAlias());
 	}
 }

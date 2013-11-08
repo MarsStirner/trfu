@@ -5,6 +5,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Order;
@@ -15,6 +16,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.util.Assert;
 
 import ru.efive.dao.sql.entity.AbstractEntity;
+import ru.efive.medicine.niidg.trfu.filters.bean.FieldFilterBean;
 import ru.efive.medicine.niidg.trfu.util.DateHelper;
 
 import java.io.Serializable;
@@ -394,5 +396,21 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 		conjunction.add(Restrictions.ge(dateField, fromDate));
 		conjunction.add(Restrictions.le(dateField, toDate));
 		junction.add(conjunction);
+	}
+	
+	protected Criterion makeRestriction(FieldFilterBean bean) {
+		Criterion crit = null;
+		switch (bean.getCompareType()) {
+			case ILIKE:
+				crit = Restrictions.ilike(bean.getFieldName(), bean.getValue());
+				break;
+			case IN:
+				crit = Restrictions.in(bean.getFieldName(), (List)bean.getValue());
+				break;
+			case EQ:
+				crit = Restrictions.eq(bean.getFieldName(), bean.getValue());
+				break;
+		}
+		return crit;
 	}
 }

@@ -32,5 +32,18 @@ public class FieldFilterBean {
 		return bean;
 		
 	}
+	/**
+	 * Создаёт поле дл сравнения, по умолчанию сравнение: EQ
+	 * @param field - имя поля
+	 * @param value - значение поля
+	 */
+	public static FieldFilterBean init(String field, Object value) {
+		FieldFilterBean bean = new FieldFilterBean();
+		bean.setFieldName(field);
+		bean.setValue(value);
+		bean.setCompareType(CompareType.EQ);
+		return bean;
+		
+	}
 
 }

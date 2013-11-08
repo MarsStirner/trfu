@@ -1,6 +1,7 @@
 package ru.efive.medicine.niidg.trfu.filters;
 
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * Фильтр для работы с данными, которые используются в ЗХПД и 
@@ -24,7 +25,9 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 		/* Тип параметра для поиска: искать на "меньше или равно" */
 		LE,
 		/* Тип параметра для поиска: искать "не null" */
-		NOT_NULL
+		NOT_NULL,
+		/* Тип параметра для поиска: искать "входит в список" */
+		IN
 	}
 	private static final long serialVersionUID = 4359117959905220257L;
 	/**
@@ -40,21 +43,13 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 	 */
 	private String middleName;
 	/**
-	 * Серия паспорта для поиска в ЗХПД; по-умолчанию = null
+	 * Паспорта для поиска в ЗХПД; по-умолчанию = null
 	 */
-	private String passportSeries;
+	private String passport;
 	/**
-	 * Номер паспорта для поиска в ЗХПД; по-умолчанию = null
+	 * Полис ОМС для поиска в ЗХПД; по-умолчанию = null
 	 */
-	private String passportNumber;
-	/**
-	 * серия полиса ОМС для поиска в ЗХПД; по-умолчанию = null
-	 */
-	private String insuranceSeries;
-	/**
-	 * номер полиса ОМС для поиска в ЗХПД; по-умолчанию = null
-	 */
-	private String insuranceNumber;
+	private String insurance;
 	/**
 	 * место работы для поиска в ЗХПД; по-умолчанию = null
 	 */
@@ -71,7 +66,14 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 	 * авдрес прописки для поиска в ЗХПД; по-умолчанию = null
 	 */
 	private String registrationAdress;
-	
+	/**
+	 * Логин для авторизации, по умолчанию должен быть null
+	 */
+	private String mail;
+	/**
+	 * Дата рождения в строковом формате. По-умолчанию null.
+	 */
+	private Date birth;
 	/**
 	 * Список идентификаторов ЗХПД
 	 */
@@ -142,63 +144,48 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 	}
 
 	/**
-	 * @return the passportSeries
+	 * @return the passport
 	 */
-	public String getPassportSeries() {
-		return passportSeries;
+	public String getPassport() {
+		return passport;
 	}
 
 	/**
 	 * @param passportSeries the passportSeries to set
 	 */
-	public void setPassportSeries(String passportSeries) {
-		this.passportSeries = passportSeries;
+	public void setPassport(String passport) {
+		this.passport = passport;
 		this.queryToSRPD = true;
 	}
 
 	/**
-	 * @return the passportNumber
+	 * @return the insurance
 	 */
-	public String getPassportNumber() {
-		return passportNumber;
+	public String getInsurance() {
+		return insurance;
 	}
-
 	/**
-	 * @param passportNumber the passportNumber to set
+	 * @param insuranceSeries the insurance to set
 	 */
-	public void setPassportNumber(String passportNumber) {
-		this.passportNumber = passportNumber;
+	public void setInsurance(String insurance) {
+		this.insurance = insurance;
 		this.queryToSRPD = true;
 	}
 
-	/**
-	 * @return the insuranceSeries
-	 */
-	public String getInsuranceSeries() {
-		return insuranceSeries;
+	public String getMail() {
+		return mail;
 	}
 
-	/**
-	 * @param insuranceSeries the insuranceSeries to set
-	 */
-	public void setInsuranceSeries(String insuranceSeries) {
-		this.insuranceSeries = insuranceSeries;
-		this.queryToSRPD = true;
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
 
-	/**
-	 * @return the insuranceNumber
-	 */
-	public String getInsuranceNumber() {
-		return insuranceNumber;
+	public Date getBirth() {
+		return birth;
 	}
 
-	/**
-	 * @param insuranceNumber the insuranceNumber to set
-	 */
-	public void setInsuranceNumber(String insuranceNumber) {
-		this.insuranceNumber = insuranceNumber;
-		this.queryToSRPD = true;
+	public void setBirth(Date birth) {
+		this.birth = birth;
 	}
 
 	/**
@@ -331,10 +318,8 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 		setListSRPDIds(((AppendSRPDFilter<T>)source).getListSRPDIds());
 		setShowDeleted(((AppendSRPDFilter<T>)source).isShowDeleted());
 		setConjunction(((AppendSRPDFilter<T>)source).isConjunction());
-		setPassportSeries(((AppendSRPDFilter<T>)source).getPassportSeries());
-		setPassportNumber(((AppendSRPDFilter<T>)source).getPassportNumber());
-		setInsuranceSeries(((AppendSRPDFilter<T>)source).getInsuranceSeries());
-		setInsuranceNumber(((AppendSRPDFilter<T>)source).getInsuranceNumber());
+		setPassport(((AppendSRPDFilter<T>)source).getPassport());
+		setInsurance(((AppendSRPDFilter<T>)source).getInsurance());
 		setEmployment(((AppendSRPDFilter<T>)source).getEmployment());
 		setWorkPhone(((AppendSRPDFilter<T>)source).getWorkPhone());
 		setPhone(((AppendSRPDFilter<T>)source).getPhone());
@@ -347,10 +332,10 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 		firstName = null;
 		lastName = null;
 		middleName = null;
-		passportSeries = null;
-		passportNumber = null;
-		insuranceSeries = null;
-		insuranceNumber = null;
+		passport = null;
+		passport = null;
+		insurance = null;
+		insurance = null;
 		employment = null;
 		workPhone = null;
 		phone = null;

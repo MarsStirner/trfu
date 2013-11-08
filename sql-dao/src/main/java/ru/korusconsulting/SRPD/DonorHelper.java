@@ -324,10 +324,8 @@ public class DonorHelper {
 		String firstName = filter.getFirstName();
 		String lastName = filter.getLastName();
 		String middleName = filter.getMiddleName();
-		String passportSeries = filter.getPassportSeries();
-		String passportNumber = filter.getPassportNumber();
-		String insuranceSeries = filter.getInsuranceSeries();
-		String insuranceNumber = filter.getInsuranceNumber();
+		String passport = filter.getPassport();
+		String insurance = filter.getInsurance();
 		String employment = filter.getEmployment();
 		String workPhone = filter.getWorkPhone();
 		String phone = filter.getPhone();
@@ -342,11 +340,11 @@ public class DonorHelper {
 		if (StringUtils.isNotEmpty(firstName)) {
 			mapForSearch.put(FieldsInMap.FIRST_NAME, firstName);
 		}
-		if (StringUtils.isNotEmpty(passportSeries) && StringUtils.isNotEmpty(passportNumber)) {
-			//mapForSearch.put(FieldsInMap.PASSPORT_NUMBER, passportSeries + passportNumber);
+		if (StringUtils.isNotEmpty(passport)) {
+			mapForSearch.put(FieldsInMap.PASSPORT_NUMBER, passport);
 		}
-		if (StringUtils.isNotEmpty(insuranceSeries) && StringUtils.isNotEmpty(insuranceNumber)) {
-			//mapForSearch.put(FieldsInMap.OMC_NUMBER, insuranceSeries + insuranceSeries);
+		if (StringUtils.isNotEmpty(insurance)) {
+			mapForSearch.put(FieldsInMap.OMC_NUMBER, insurance);
 		}
 		if (StringUtils.isNotEmpty(employment)) {
 			mapForSearch.put(FieldsInMap.EMPLOYMENT, employment);
