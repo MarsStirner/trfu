@@ -1,1 +1,1 @@
-ALTER TABLE `trfu`.`trfu_analysis_type_external_indicators` DROP INDEX `indicator_id_UNIQUE`;
+ALTER TABLE `trfu`.`trfu_analysis_type_external_indicators` DROP INDEX `indicator_id`;
