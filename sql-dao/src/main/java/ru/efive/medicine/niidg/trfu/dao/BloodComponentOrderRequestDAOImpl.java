@@ -218,13 +218,13 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 			if (StringUtils.isNotEmpty(number)) {
 				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
 			}
-			if (createdFrom != null && createdTo != null) {
+			if (createdFrom != null || createdTo != null) {
 				addDateSearchCriteria(conjunction, createdFrom, createdTo, "created");
 			}
-			if (factDateFrom != null && factDateTo != null) {
+			if (factDateFrom != null || factDateTo != null) {
 				addDateSearchCriteria(conjunction, factDateFrom, factDateTo, "factDate");
 			}
-			if (recipientBirthFrom != null && recipientBirthTo != null) {
+			if (recipientBirthFrom != null || recipientBirthTo != null) {
 				addDateSearchCriteria(conjunction, recipientBirthFrom, recipientBirthTo, "recipientBirth");
 			}
 			if (StringUtils.isNotEmpty(recipient)) {

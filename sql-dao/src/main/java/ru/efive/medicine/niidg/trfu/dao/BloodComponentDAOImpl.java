@@ -1139,10 +1139,10 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	        if (rhesusFactorId != BloodComponentsFilter.RHESUS_FACTOR_NULL_VALUE) {
 	        	conjunction.add(Restrictions.eq("rhesusFactor.id", rhesusFactorId));
 	        }
-			if (donationDateFrom != null && donationDateTo != null) {
+			if (donationDateFrom != null || donationDateTo != null) {
 				addDateSearchCriteria(conjunction, donationDateFrom, donationDateTo, "donationDate");
 			}
-			if (expirationDateFrom != null && expirationDateTo != null) {
+			if (expirationDateFrom != null || expirationDateTo != null) {
 				addDateSearchCriteria(conjunction, expirationDateFrom, expirationDateTo, "expirationDate");
 			}
 			
@@ -1151,7 +1151,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 			if (statusId != BloodComponentsFilter.BLOOD_COMPONENT_STATUS_NULL_VALUE) {
 				criteria.createAlias("history", "history", Criteria.INNER_JOIN);
 				conjunction.add(Restrictions.eq("history.toStatusId", statusId));
-				if (historyCreatedDateFrom != null && historyCreatedDateTo != null) {
+				if (historyCreatedDateFrom != null || historyCreatedDateTo != null) {
 					addDateSearchCriteria(conjunction, historyCreatedDateFrom, historyCreatedDateTo, "history.created");
 				} 
 		    }
