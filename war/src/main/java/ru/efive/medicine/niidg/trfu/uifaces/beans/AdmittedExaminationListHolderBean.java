@@ -30,7 +30,8 @@ public class AdmittedExaminationListHolderBean extends AbstractDocumentListHolde
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			return new Long(sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).countDocumentByStatus(5, filter, false)).intValue();
+			return new Long(sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).countDocumentByStatus(5, 
+					filterNumberExamination, filterDonorLastName, filterDonorFirstName, filterDonorMiddleName, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -42,7 +43,8 @@ public class AdmittedExaminationListHolderBean extends AbstractDocumentListHolde
 	protected List<ExaminationRequest> loadDocuments() {
 		List<ExaminationRequest> result = new ArrayList<ExaminationRequest>();
 		try {
-			result = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).findDocumentsByStatus(5, filter, false,
+			result = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).findDocumentsByStatus(5, 
+					filterNumberExamination, filterDonorLastName, filterDonorFirstName, filterDonorMiddleName, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
@@ -56,15 +58,42 @@ public class AdmittedExaminationListHolderBean extends AbstractDocumentListHolde
 		return super.getDocuments();
 	}
 	
-	public String getFilter() {
-		return filter;
+	public String getFilterNumberExamination() {
+		return filterNumberExamination;
 	}
-	
-	public void setFilter(String filter) {
-		this.filter = filter;
+
+	public void setFilterNumberExamination(String filterNumberExamination) {
+		this.filterNumberExamination = filterNumberExamination;
 	}
-	
-	private String filter;
+
+	public String getFilterDonorLastName() {
+		return filterDonorLastName;
+	}
+
+	public void setFilterDonorLastName(String filterDonorLastName) {
+		this.filterDonorLastName = filterDonorLastName;
+	}
+
+	public String getFilterDonorFirstName() {
+		return filterDonorFirstName;
+	}
+
+	public void setFilterDonorFirstName(String filterDonorFirstName) {
+		this.filterDonorFirstName = filterDonorFirstName;
+	}
+
+	public String getFilterDonorMiddleName() {
+		return filterDonorMiddleName;
+	}
+
+	public void setFilterDonorMiddleName(String filterDonorMiddleName) {
+		this.filterDonorMiddleName = filterDonorMiddleName;
+	}
+
+	private String filterNumberExamination;
+	private String filterDonorLastName;
+	private String filterDonorFirstName;
+	private String filterDonorMiddleName;
 	
 	
 	@Inject @Named("sessionManagement")

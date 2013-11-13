@@ -210,7 +210,7 @@
     <div class="defbutton">
         <h:commandLink onclick="parentExaminationSelect.clickOpen('parentExaminationSelect'); return false;">
             <h:graphicImage value="#{resource['images:button-do.png']}"/>
-            Изменить обращение на обследование
+            Выбрать донора/обследование
         </h:commandLink>
         <e5ui-comp:modalWindow id="parentExaminationSelect" modalWindowHolder="#{bloodDonation.parentExaminationSelect}"
                                style="width:400px;"
@@ -219,15 +219,41 @@
             <div id="title">Выбор обращения на обследование</div>
             <div id="examination_list" style="margin-top:0;">
                 <div class="searchbar">
-                    <h:inputText id="filter_string"
-                                 value="#{bloodDonation.parentExaminationSelect.examinationList.filter}"
-                                 style="display:block; float:left; margin-right:10px;" title="Поиск"/>
-                    <h:commandButton value=" "
+                    <div style="float:right; margin-right:5px;">
+                    	<h:outputLabel for="filter_string_last_name" style="float:left; margin-right:5px;">Фамилия</h:outputLabel>
+                    	<h:inputText id="filter_string_last_name"
+                                 value="#{bloodDonation.parentExaminationSelect.examinationList.filterDonorLastName}"
+                                 style="display:block;" title="Поиск по фамилии"/>
+                    </div>
+                    <div style="float:right; margin-right:5px;">
+                    	<h:outputLabel for="filter_string_first_name" style="float:left; margin-right:5px;">Имя</h:outputLabel>           
+                    	<h:inputText id="filter_string_first_name"
+                                 value="#{bloodDonation.parentExaminationSelect.examinationList.filterDonorFirstName}"
+                                 style="display:block;" title="Поиск по имени"/>
+                    </div>
+                    <div style="float:right; margin-right:5px;">
+                    	<h:outputLabel for="filter_string_middle_name" style="float:left; margin-right:5px;">Отчество</h:outputLabel>
+                    	<h:inputText id="filter_string_middle_name"
+                                 value="#{bloodDonation.parentExaminationSelect.examinationList.filterDonorMiddleName}"
+                                 style="display:block;" title="Поиск по отчеству"/>
+					</div>
+					<div style="float:right; margin-right:5px;">
+                		<h:outputLabel for="filter_string_number_examination" style="float:left; margin-right:5px;">Номер обследования</h:outputLabel>
+                    	<h:inputText id="filter_string_number_examination"
+                                 value="#{bloodDonation.parentExaminationSelect.examinationList.filterNumberExamination}"
+                                 style="display:block;" title="Поиск по номеру"/>
+                    </div>
+					<div style="float:right; margin-right:5px;">                              
+                    	<h:commandButton value=" "
                                      action="#{bloodDonation.parentExaminationSelect.examinationList.changePageOffset(0)}"
                                      styleClass="searchbutton">
-                        <f:ajax execute=":main_content_form:parentExaminationSelect:filter_string"
+                        <f:ajax execute=":main_content_form:parentExaminationSelect:filter_string_number_examination 
+                        :main_content_form:parentExaminationSelect:filter_string_last_name 
+                        :main_content_form:parentExaminationSelect:filter_string_first_name 
+                        :main_content_form:parentExaminationSelect:filter_string_middle_name"
                                 render=":main_content_form:parentExaminationSelect:examination_select_table :main_content_form:parentExaminationSelect:examination_paging"/>
-                    </h:commandButton>
+                    	</h:commandButton>
+                    </div>
                 </div>
                 <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
                     <div class="inner" style="height:300px;">
@@ -238,7 +264,7 @@
                                       styleClass="#{bloodDonation.parentExaminationSelect.selected(row)? 'grid_row_selected': ''}"/>
                             <e5ui:column style="min-width:5em">
                                 <f:facet name="header">
-                                    <p>Номер</p>
+                                    <p>Номер обследования</p>
                                 </f:facet>
                                 <h:outputText value="#{row.number}"/>
                                 <h:commandLink id="selectLink" style="display: none;"
@@ -247,7 +273,7 @@
                             </e5ui:column>
                             <e5ui:column style="min-width:10em">
                                 <f:facet name="header">
-                                    <p>Донор</p>
+                                    <p style="margin-left: 70px">Донор</p>
                                 </f:facet>
                                 <h:outputText value="#{row.donor.descriptionShort}"/>
                             </e5ui:column>
@@ -543,14 +569,7 @@
 <table class="form_grid">
 <tr class="row">
     <td class="first">
-        <h:panelGroup rendered="#{sessionManagement.admin or (bloodDonation.document.donor eq null)}">
-            <h:outputLink onclick="donorSelectVar.clickOpen('donorSelectModal'); return false;">
-                Донор:
-            </h:outputLink>
-        </h:panelGroup>
-        <h:panelGroup rendered="#{not(sessionManagement.admin or (bloodDonation.document.donor eq null))}">
-            Донор:
-        </h:panelGroup>
+         Донор:
     </td>
     <td>
         <h:panelGroup id="donor_info">
@@ -562,56 +581,6 @@
                 <f:param name="docId" value="#{bloodDonation.document.donor.id}"/>
             </h:outputLink>
         </h:panelGroup>
-
-        <e5ui-comp:modalWindow id="donorSelectModal"
-                               modalWindowHolder="#{bloodDonation.donorSelectModal}"
-                               render=":main_content_form:donor_info"
-                               execute="donor_select_table"
-                               showButtons="false"
-                               style="width: 500px;"
-                               widgetVar="donorSelectVar">
-            <div id="title">Выбор донора</div>
-            <div id="donor_list" style="margin-top:0;">
-                <div class="searchbar">
-                    <h:inputText id="filter_string" value="#{bloodDonation.donorSelectModal.donorList.filter}"
-                                 style="display:block; float:left; margin-right:10px;" title="Поиск"/>
-                    <h:commandButton value=" " action="#{bloodDonation.donorSelectModal.donorList.changePageOffset(0)}"
-                                     styleClass="searchbutton">
-                        <f:ajax execute=":main_content_form:donorSelectModal:filter_string"
-                                render=":main_content_form:donorSelectModal:donor_select_table :main_content_form:donorSelectModal:donor_paging"/>
-                    </h:commandButton>
-                </div>
-                <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
-                    <div class="inner" style="height:300px;">
-                        <e5ui:dataTable id="donor_select_table" border="0" cellpadding="0" cellspacing="0"
-                                        value="#{bloodDonation.donorSelectModal.donorList.documents}"
-                                        var="row" grouping="false" width="100%">
-                            <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
-                                      styleClass="#{bloodDonation.donorSelectModal.selected(row)? 'grid_row_selected': ''}"/>
-                            <e5ui:column>
-                                <f:facet name="header">
-                                    <p>Донор</p>
-                                </f:facet>
-                                <h:outputText value="#{row.description}"/>
-                                <h:commandLink id="selectLink" style="display: none;"
-                                               rendered="#{not bloodDonation.donorSelectModal.selected(row)}"
-                                               action="#{bloodDonation.donorSelectModal.select(row)}"/>
-                            </e5ui:column>
-                        </e5ui:dataTable>
-                    </div>
-                </div>
-                <div style="clear:both;">
-                    <h:panelGroup id="donor_paging">
-                        <e5ui-comp:tablePager documentListHolder="#{bloodDonation.donorSelectModal.donorList}"/>
-                    </h:panelGroup>
-                </div>
-            </div>
-            <div class="e5ui-modal-bottombuttons">
-                <h:button onclick="donorSelectVar.clickSave(); return false;" value="Выбрать"/>
-                <h:button onclick="donorSelectVar.clickClose(); return false;" value="Отмена"/>
-            </div>
-        </e5ui-comp:modalWindow>
-
     </td>
 </tr>
 <tr class="row">

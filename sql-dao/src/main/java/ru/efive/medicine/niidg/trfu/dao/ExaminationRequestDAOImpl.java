@@ -12,12 +12,16 @@ import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
+import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
 import ru.efive.medicine.niidg.trfu.filters.ExaminationsFilter;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import ru.efive.medicine.niidg.trfu.util.DateHelper;
 
 public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRequest> {
 
@@ -387,8 +391,109 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 
         return getCountOf(getSearchCriteria(detachedCriteria, filter));
     }
+    
+    /**
+     * Поиск документов с расширенным фильтром
+     *
+     * @param statusId    идентификатор статуса
+     * @param filterNumberExamination      критерий поиска по номеру обследования 
+     * @param filterDonorLastName      критерий поиска по фамилии
+     * @param filterDonorFirstName      критерий поиска по имени
+     * @param filterDonorMiddleName      критерий поиска по отчеству
+     * @param showDeleted true - show deleted, false - hide deleted
+     * @param offset      смещение
+     * @param count       кол-во результатов
+     * @param orderBy     поле для сортировки
+     * @param orderAsc    направление сортировки
+     * @return список документов
+     */
+    @SuppressWarnings("unchecked")
+    public List<ExaminationRequest> findDocumentsByStatus(int statusId, String filterNumberExamination, String filterDonorLastName, String filterDonorFirstName, String filterDonorMiddleName,
+    		boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
 
+        detachedCriteria = getCriteriaForAdmittedExaminations(detachedCriteria, statusId, showDeleted);
 
+        String[] ords = orderBy == null ? null : orderBy.split(",");
+        if (ords != null) {
+            if (ords.length > 1) {
+                addOrder(detachedCriteria, ords, orderAsc);
+            } else {
+                addOrder(detachedCriteria, orderBy, orderAsc);
+            }
+        }
+
+        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filterNumberExamination, filterDonorLastName, filterDonorFirstName, filterDonorMiddleName), offset, count);
+    }
+
+    /**
+     * Кол-во документов с расширенным фильтром
+     *
+     * @param statusId    идентификатор статуса
+     * @param filterNumberExamination      критерий поиска по номеру обследования 
+     * @param filterDonorLastName      критерий поиска по фамилии
+     * @param filterDonorFirstName      критерий поиска по имени
+     * @param filterDonorMiddleName      критерий поиска по отчеству
+     * @param showDeleted true - show deleted, false - hide deleted
+     * @return кол-во результатов
+     */
+    public long countDocumentByStatus(int statusId, String filterNumberExamination, String filterDonorLastName, String filterDonorFirstName, String filterDonorMiddleName,
+    		boolean showDeleted) {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass()).setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+
+        detachedCriteria = getCriteriaForAdmittedExaminations(detachedCriteria, statusId, showDeleted);
+
+        return getCountOf(getSearchCriteria(detachedCriteria, filterNumberExamination, filterDonorLastName, filterDonorFirstName, filterDonorMiddleName));
+    }
+    
+    private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, String filterNumberExamination, String filterDonorLastName, String filterDonorFirstName, String filterDonorMiddleName) {
+    	if (StringUtils.isNotEmpty(filterNumberExamination) || StringUtils.isNotEmpty(filterDonorLastName) || StringUtils.isNotEmpty(filterDonorFirstName) || StringUtils.isNotEmpty(filterDonorMiddleName)) {
+    		Disjunction disjunction = Restrictions.disjunction();
+    		criteria.createAlias("donor", "donor", CriteriaSpecification.LEFT_JOIN);
+    		if (StringUtils.isNotEmpty(filterNumberExamination)) {
+    			disjunction.add(Restrictions.ilike("number", filterNumberExamination, MatchMode.ANYWHERE));
+    		}
+    		if (StringUtils.isNotEmpty(filterDonorLastName)) {
+    			disjunction.add(Restrictions.ilike("donor.lastName", filterDonorLastName, MatchMode.ANYWHERE));
+    		}
+    		if (StringUtils.isNotEmpty(filterDonorFirstName)) {
+    			disjunction.add(Restrictions.ilike("donor.firstName", filterDonorFirstName, MatchMode.ANYWHERE));
+    		}
+    		if (StringUtils.isNotEmpty(filterDonorMiddleName)) {
+    			disjunction.add(Restrictions.ilike("donor.middleName", filterDonorMiddleName, MatchMode.ANYWHERE));
+    		}
+    		criteria.add(disjunction);
+    	}
+        
+        return criteria;
+    }
+    
+    private DetachedCriteria getCriteriaForAdmittedExaminations(DetachedCriteria detachedCriteria, int statusId, boolean showDeleted) {
+    	if (!showDeleted) {
+            detachedCriteria.add(Restrictions.eq("deleted", false));
+        }
+
+        if (statusId != 0) {
+            detachedCriteria.add(Restrictions.eq("statusId", statusId));
+        }
+        
+        Date currentDate = new Date();
+        Date fromDate = DateHelper.getDateWithoutTime(currentDate);
+        detachedCriteria.add(Restrictions.ge("created", fromDate));
+		Date toDate = DateHelper.getDateWithoutTime(DateHelper.getTomorrowDate(currentDate));
+		detachedCriteria.add(Restrictions.lt("created", toDate));
+		
+		DetachedCriteria subCriteria = DetachedCriteria.forClass(BloodDonationRequest.class);
+		subCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+		subCriteria.add(Restrictions.isNotNull("examination.id"));
+	    subCriteria.setProjection(Projections.property("examination.id"));
+	    
+	    detachedCriteria.add(Subqueries.propertyNotIn("id", subCriteria));
+    	
+    	return detachedCriteria;
+    }
+    
     @SuppressWarnings("unchecked")
     public List<ExaminationRequest> findRequestsForLaboratory(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
         DetachedCriteria detachedCriteria = DetachedCriteria.forClass(ExaminationRequest.class);

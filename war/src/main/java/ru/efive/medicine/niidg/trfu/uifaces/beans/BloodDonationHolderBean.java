@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -136,10 +135,6 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
 		bloodDonation.setCreated(created);
 		bloodDonation.setTherapist(sessionManagement.getLoggedUser());
-		/*bloodDonation.setBloodSystem(operationalBean.getCurrentSystem() == null || operationalBean.getCurrentSystem().getId() == 0? null: 
-			operationalBean.getCurrentSystem());
-		bloodDonation.setOperationalCrew(operationalBean.getCurrentCrew() == null || operationalBean.getCurrentCrew().getId() == 0? null: 
-			operationalBean.getCurrentCrew());*/
 		String parentId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("parentId");
 		if (parentId != null && !parentId.equals("")) {
 			bloodDonation.setDonor(sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).get(Integer.parseInt(parentId)));
@@ -449,8 +444,8 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 	}
 	
 	public class DonorSelectModalHolder extends ModalWindowHolderBean {
-    	
-    	public DonorListHolderBean getDonorList() {
+		
+		public DonorListHolderBean getDonorList() {
             return donorList;
         }
 
@@ -483,11 +478,11 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 
 		private Donor donor;
 	}
-    
-    public DonorSelectModalHolder getDonorSelectModal() {
+	
+	public DonorSelectModalHolder getDonorSelectModal() {
         return donorSelectModal;
     }
-
+    
     public BloodSystemSelect getBloodSystemTypeSelectModal() {
         return bloodSystemTypeSelectModal;
     }
@@ -543,8 +538,10 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
     	
     	@Override
         protected void doHide() {
-    		admittedExaminationList.setFilter("");
-    		admittedExaminationList.markNeedRefresh();
+    		admittedExaminationList.setFilterNumberExamination("");
+    		admittedExaminationList.setFilterDonorFirstName("");
+    		admittedExaminationList.setFilterDonorLastName("");
+    		admittedExaminationList.setFilterDonorMiddleName("");
     		examinationRequest = null;
         }
     	
@@ -556,6 +553,12 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 				getDocument().setDonor(examinationRequest.getDonor());
 				getDocument().setNumber(examinationRequest.getNumber());
 			}
+		}
+		
+		@Override
+		protected void doShow() {
+			super.doShow();
+			admittedExaminationList.reset();
 		}
 
 		private ExaminationRequest examinationRequest;
@@ -589,7 +592,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
     @Inject @Named("operationalSession")
     private transient OperationalSessionBean operational;
 
-	private DonorSelectModalHolder donorSelectModal = new DonorSelectModalHolder();
+    private DonorSelectModalHolder donorSelectModal = new DonorSelectModalHolder();
     private BloodSystemSelect bloodSystemTypeSelectModal = new BloodSystemSelect();
 	private ParentExaminationSelect parentExaminationSelect = new ParentExaminationSelect();
 	private RejectionDescriptionHolder rejectionDescriptionHolder = new RejectionDescriptionHolder();
