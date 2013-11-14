@@ -52,6 +52,12 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 			isEqIds = sessionManagement.getLoggedUser().getId() == getDocument().getTransfusiologist().getId() ? true : false;
 		}
 		boolean isOperational = sessionManagement.isOperational();
+		if (isOperational) {
+			if (getDocument().getBloodSystems().size() == 0) {
+				BloodSystem currentBloodSystem = operational.getCurrentOperationalSetup().getBloodSystem();
+				getDocument().getBloodSystems().add(currentBloodSystem);
+			}
+		}
 		boolean isSizeZero = getDocument().getFactEntries().size() == 0 ? true : false;
 		if (isEditState()) {
 			if (isStatusGT1 && (isEqIds || isOperational || isTransfusiologist() || isHeadNurse()) && isSizeZero) {

@@ -9,11 +9,20 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodSystem;
 import ru.efive.medicine.niidg.trfu.data.entity.OperationalCrew;
 
 public class OperationalSetup {
-    private List<BloodSystemType> systemTypes = new ArrayList<BloodSystemType>();
+	private List<BloodSystemType> systemTypes = new ArrayList<BloodSystemType>();
     private OperationalCrew crew;
     private Date created;
     private String name;
     private boolean unsaved;
+    private BloodSystem bloodSystem;
+    
+    public BloodSystem getBloodSystem() {
+		return bloodSystem;
+	}
+
+	public void setBloodSystem(BloodSystem bloodSystem) {
+		this.bloodSystem = bloodSystem;
+	}
 
     public List<BloodSystemType> getSystemTypes() {
         return systemTypes;

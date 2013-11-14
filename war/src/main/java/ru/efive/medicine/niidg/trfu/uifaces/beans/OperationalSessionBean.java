@@ -1,7 +1,6 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
@@ -11,7 +10,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ru.efive.medicine.niidg.trfu.dao.BloodSystemDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.OperationalCrewDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodSystem;
@@ -76,6 +74,18 @@ public class OperationalSessionBean implements java.io.Serializable {
 			}
 			else {
 				if (currentOperationalSetup.isUnsaved()) {
+					BloodSystem currentBloodSystem = new BloodSystem();
+					currentBloodSystem.setType(currentOperationalSetup.getSystemTypes().get(0));
+					currentBloodSystem.setCount(1);
+					Integer roleId = sessionManagement.getCurrentRole().getId();
+					currentBloodSystem.setRoleId(roleId);
+					Integer userId = sessionManagement.getLoggedUser().getId();
+					currentBloodSystem.setUserId(userId);
+					
+					BloodSystemDAOImpl bloodSystemDAO = sessionManagement.getDAO(BloodSystemDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_DAO);
+					bloodSystemDAO.save(currentBloodSystem);
+					
+					currentOperationalSetup.setBloodSystem(currentBloodSystem);
 					currentOperationalSetup.setUnsaved(false);
 					operational.addOperationalSetup(currentOperationalSetup);
 				}
