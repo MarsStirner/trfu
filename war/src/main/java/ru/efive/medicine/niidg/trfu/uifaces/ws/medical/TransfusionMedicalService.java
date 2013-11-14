@@ -169,7 +169,7 @@ public class TransfusionMedicalService {
 	            return result;
 	        }
 	        request.setTransfusionType(orderInformation.getTransfusionType());
-	        request.setVolume(orderInformation.getVolume());
+	        request.setCount(orderInformation.getVolume());
 	        BloodComponentOrderRequestDAOImpl dao = (BloodComponentOrderRequestDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.COMPONENT_ORDER_DAO);
 	        dao.save(request);
 	        if (request.getId() != 0) {
