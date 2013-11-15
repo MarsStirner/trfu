@@ -8,7 +8,7 @@
     
     <groupId>ru.efive.workflow</groupId>
     <artifactId>workflow-core</artifactId>
-    <version>0.3.69-SNAPSHOT</version>
+    <version>0.3.70-SNAPSHOT</version>
     <packaging>jar</packaging>
 	
     <name>E5 WorkFlow Core Library</name>
@@ -17,7 +17,7 @@
     <parent>
 	<groupId>ru.efive.medicine.niidg</groupId>
         <artifactId>trfu</artifactId>
-        <version>0.3.69-SNAPSHOT</version>
+        <version>0.3.70-SNAPSHOT</version>
     </parent>
 
     <dependencies>

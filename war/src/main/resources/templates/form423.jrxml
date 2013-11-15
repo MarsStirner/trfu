@@ -789,8 +789,8 @@ FROM `trfu_blood_component_types` trfu_blood_component_types
 	INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
 	left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` = trfu_blood_component_order_requests.`id`
 WHERE trfu_blood_components.`deleted` = 0
-	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE('2013-06-01')
-	AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE('2013-06-30')
+	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE($P{StartDate})
+	AND DATE(trfu_blood_component_order_requests.`factDate`) <= ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
 	AND trfu_blood_component_order_requests.`status_id` = 3
 	and (trfu_blood_component_types.`value` LIKE '%эритроцит%взвесь%аферез%')
 	and trfu_blood_components.maker_id = '11'
@@ -804,8 +804,8 @@ FROM `trfu_blood_component_types` trfu_blood_component_types
 	INNER JOIN `trfu_blood_components` trfu_blood_components ON trfu_blood_component_types.`id` = trfu_blood_components.`componentType_id`
 	left outer JOIN `trfu_blood_component_order_requests` trfu_blood_component_order_requests ON trfu_blood_components.`orderId` = trfu_blood_component_order_requests.`id`
 WHERE trfu_blood_components.`deleted` = 0
-	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE('2013-06-01')
-	AND DATE(trfu_blood_component_order_requests.`factDate`) <= DATE('2013-06-30')
+	AND DATE(trfu_blood_component_order_requests.`factDate`) >= DATE($P{StartDate})
+	AND DATE(trfu_blood_component_order_requests.`factDate`) <= ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
 	AND trfu_blood_component_order_requests.`status_id` = 3
 	and (trfu_blood_component_types.`value` LIKE '%эритроцит%взвесь%аферез%')
 	and trfu_blood_components.maker_id != '11'
