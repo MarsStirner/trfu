@@ -413,7 +413,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
     				biomaterial.setSplitDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
     				
     				if (biomaterial.getOperation() != null) {
-    					biomaterial.setNumber(getDocument().getNumber() + "." + StringUtils.right("00" + count, 3));
+    					biomaterial.setNumber(getDocument().getNumber() + "." + StringUtils.right("0" + count, 2));
     					count++;
     				}
     				

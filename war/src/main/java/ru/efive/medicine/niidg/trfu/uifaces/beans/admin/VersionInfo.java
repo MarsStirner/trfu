@@ -9,8 +9,8 @@ import javax.inject.Named;
 @ConversationScoped
 public class VersionInfo implements Serializable {
 	private static final long serialVersionUID = 6929693412341369918L;
-	private String versionAssembly = "0.3.70";
-	private String dateAssembly = "15.11.2013 16:30:00";
+	private String versionAssembly = "0.3.71";
+	private String dateAssembly = "18.11.2013 17:20:00";
 	
 	public String getVersionAssembly() {
 		return versionAssembly;
