@@ -334,71 +334,123 @@
 
 
                 <div>
-                    <h:outputLink title="Бригада:"
-                                  onclick="operationalCrewSelectVar.clickOpen('operationalCrewSelectModal'); return false;">
-                        Бригада
+                        Бригада<br/>
+                    <h:outputLink title="Врач"
+                                  onclick="operationalDoctorSelectVar.clickOpen('operationalDoctorSelectModal'); return false;">
+                        Врач
                     </h:outputLink>
-                    <h:panelGroup id="crew_list">
-                        <div>
-                            <ui:repeat value="#{operationalSession.currentCrew.staffList}" var="element">
-                                <h:outputText value="#{element.descriptionShort}" class="width"/>
-                                <br/>
-                            </ui:repeat>
+                    <h:outputText id="doctor" value="#{operationalSession.currentDoctor.description}" class="wide"/>
+                    <br />
+                    <h:outputLink title="медицинская сестра"
+                                  onclick="operationalStaffNurseSelectVar.clickOpen('operationalStaffNurseSelectModal'); return false;">
+                        м/с
+                    </h:outputLink>
+                    <h:outputText id="staffNurse" value="#{operationalSession.currentStuffNurse.description}" class="wide"/>
+                     <br />
+                    <e5ui-comp:modalWindow id="operationalDoctorSelectModal"
+                                       modalWindowHolder="#{bloodDonationOperationalList.operationalDoctorSelectModal}"
+                                       render=":main_content_form:operationalEditorModal:doctor"
+                                       execute="doctor_select_table"
+                                       showButtons="false"
+                                       style="width: 500px;"
+                                       widgetVar="operationalDoctorSelectVar">
+                    <div id="title">Операционная</div>
+                    <div id="doctor_list" style="margin-top:0;">
+                        <div class="searchbar">
+                            <h:inputText id="filter_doctor_string"
+                                         value="#{bloodDonationOperationalList.operationalDoctorSelectModal.userList.filter}"
+                                         style="display:block; float:left; margin-right:10px;" title="Поиск"/>
+                            <h:commandButton value=" "
+                                             action="#{bloodDonationOperationalList.operationalDoctorSelectModal.userList.changePageOffset(0)}"
+                                             styleClass="searchbutton">
+                                <f:ajax execute=":main_content_form:operationalEditorModal:operationalDoctorSelectModal:filter_doctor_string"
+                                        render=":main_content_form:operationalEditorModal:operationalDoctorSelectModal:doctor_select_table :main_content_form:operationalEditorModal:operationalDoctorSelectModal:doctor_paging"/>
+                            </h:commandButton>
                         </div>
-                    </h:panelGroup>
-                    <e5ui-comp:modalWindow id="operationalCrewSelectModal"
-                                           modalWindowHolder="#{bloodDonationOperationalList.operationalCrewSelectModal}"
-                                           render=":main_content_form:operationalEditorModal:crew_list :main_content_form:operationalEditorModal:op_editor_bottom"
-                                           execute="select_table" showButtons="false"
-                                           style="width: 500px;" widgetVar="operationalCrewSelectVar">
-                        <div id="title">Выбор бригады</div>
-                        <div id="crew_modal_container" style="margin-top: 0;">
-                            <div class="searchbar">
-                                <span style="float: left; margin-top: 3px">Поиск:&nbsp;</span>
-                                <h:inputText id="filter_string"
-                                             value="#{bloodDonationOperationalList.operationalCrewSelectModal.userList.filter}"
-                                             style="display:block; float:left; margin-right:10px;" title="Поиск"/>
-                                <h:commandButton value=" "
-                                                 action="#{bloodDonationOperationalList.operationalCrewSelectModal.userList.changePageOffset(0)}"
-                                                 styleClass="searchbutton">
-                                    <f:ajax execute=":main_content_form:operationalEditorModal:operationalCrewSelectModal:filter_string"
-                                            render=":main_content_form:operationalEditorModal:operationalCrewSelectModal:select_table :main_content_form:operationalEditorModal:operationalCrewSelectModal:modal_paging"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="wrap" style="height: 300px;">
-                                <div class="inner" style="height: 300px;">
-                                    <e5ui:dataTable id="select_table" border="0" cellpadding="0" cellspacing="0"
-                                                    value="#{userList.documents}" var="row" grouping="false"
-                                                    width="100%">
-                                        <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
-                                                  styleClass="#{bloodDonationOperationalList.operationalCrewSelectModal.selected(row)? 'grid_row_selected': ''}"/>
-                                        <e5ui:column>
-                                            <f:facet name="header">
-                                                <p>Сотрудник</p>
-                                            </f:facet>
-                                            <h:outputText value="#{row.description}"/>
-                                            <h:commandLink id="selectLink" style="display: none;"
-                                                           rendered="#{not bloodDonationOperationalList.operationalCrewSelectModal.selected(row)}"
-                                                           action="#{bloodDonationOperationalList.operationalCrewSelectModal.select(row)}"/>
-                                            <h:commandLink id="unselectLink" style="display: none;"
-                                                           rendered="#{bloodDonationOperationalList.operationalCrewSelectModal.selected(row)}"
-                                                           action="#{bloodDonationOperationalList.operationalCrewSelectModal.unselect(row)}"/>
-                                        </e5ui:column>
-                                    </e5ui:dataTable>
-                                </div>
-                            </div>
-                            <div style="clear: both;">
-                                <h:panelGroup id="modal_paging">
-                                    <e5ui-comp:tablePager id="pager"
-                                                          documentListHolder="#{bloodDonationOperationalList.operationalCrewSelectModal.userList}"/>
-                                </h:panelGroup>
+                        <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+                            <div class="inner" style="height:300px;">
+                                <e5ui:dataTable id="doctor_select_table" border="0" cellpadding="0" cellspacing="0"
+                                                value="#{bloodDonationOperationalList.operationalDoctorSelectModal.userList.documents}"
+                                                var="row" grouping="false" width="100%">
+                                    <e5ui:row onclick="e5ui_util.clickElement(this, 'selectDoctorLink$');"
+                                              styleClass="#{bloodDonationOperationalList.operationalDoctorSelectModal.selected(row)? 'grid_row_selected': ''}"/>
+                                    <e5ui:column>
+                                        <f:facet name="header">
+                                            <p>Врач</p>
+                                        </f:facet>
+                                        <h:outputText value="#{row.description}"/>
+                                        <h:commandLink id="selectDoctorLink" style="display: none;"
+                                                       rendered="#{not bloodDonationOperationalList.operationalDoctorSelectModal.selected(row)}"
+                                                       action="#{bloodDonationOperationalList.operationalDoctorSelectModal.select(row)}"/>
+                                    </e5ui:column>
+                                </e5ui:dataTable>
                             </div>
                         </div>
-                        <div class="e5ui-modal-bottombuttons">
-                            <h:button onclick="operationalCrewSelectVar.clickSave(); return false;" value="Выбрать"/>
-                            <h:button onclick="operationalCrewSelectVar.clickClose(); return false;" value="Отмена"/>
+                        <div style="clear:both;">
+                            <h:panelGroup id="doctor_paging">
+                                <e5ui-comp:tablePager
+                                        documentListHolder="#{bloodDonationOperationalList.operationalDoctorSelectModal.userList}"/>
+                            </h:panelGroup>
                         </div>
-                    </e5ui-comp:modalWindow>
+                    </div>
+                    <div class="e5ui-modal-bottombuttons">
+                        <h:button onclick="operationalDoctorSelectVar.clickSave(); return false;" value="Выбрать"/>
+                        <h:button onclick="operationalDoctorSelectVar.clickClose(); return false;" value="Отмена"/>
+                    </div>
+                </e5ui-comp:modalWindow>
+                
+                <e5ui-comp:modalWindow id="operationalStaffNurseSelectModal"
+                                       modalWindowHolder="#{bloodDonationOperationalList.operationalStaffNurseSelectModal}"
+                                       render=":main_content_form:operationalEditorModal:staffNurse"
+                                       execute="doctor_select_table"
+                                       showButtons="false"
+                                       style="width: 500px;"
+                                       widgetVar="operationalStaffNurseSelectVar">
+                    <div id="title">Операционная</div>
+                    <div id="staff_nurse_list" style="margin-top:0;">
+                        <div class="searchbar">
+                            <h:inputText id="filter_nurse_string"
+                                         value="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.userList.filter}"
+                                         style="display:block; float:left; margin-right:10px;" title="Поиск"/>
+                            <h:commandButton value=" "
+                                             action="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.userList.changePageOffset(0)}"
+                                             styleClass="searchbutton">
+                                <f:ajax execute=":main_content_form:operationalEditorModal:operationalStaffNurseSelectModal:filter_nurse_string"
+                                        render=":main_content_form:operationalEditorModal:operationalStaffNurseSelectModal:staff_nurse_select_table :main_content_form:operationalEditorModal:operationalStaffNurseSelectModal:staff_nurse_paging"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
+                            <div class="inner" style="height:300px;">
+                                <e5ui:dataTable id="staff_nurse_select_table" border="0" cellpadding="0" cellspacing="0"
+                                                value="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.userList.documents}"
+                                                var="row" grouping="false" width="100%">
+                                    <e5ui:row onclick="e5ui_util.clickElement(this, 'selectStaffNurseLink$');"
+                                              styleClass="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.selected(row)? 'grid_row_selected': ''}"/>
+                                    <e5ui:column>
+                                        <f:facet name="header">
+                                            <p>Медицинская сестра</p>
+                                        </f:facet>
+                                        <h:outputText value="#{row.description}"/>
+                                        <h:commandLink id="selectStaffNurseLink" style="display: none;"
+                                                       rendered="#{not bloodDonationOperationalList.operationalStaffNurseSelectModal.selected(row)}"
+                                                       action="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.select(row)}"/>
+                                    </e5ui:column>
+                                </e5ui:dataTable>
+                            </div>
+                        </div>
+                        <div style="clear:both;">
+                            <h:panelGroup id="staff_nurse_paging">
+                                <e5ui-comp:tablePager
+                                        documentListHolder="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.userList}"/>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                    <div class="e5ui-modal-bottombuttons">
+                        <h:button onclick="operationalStaffNurseSelectVar.clickSave(); return false;" value="Выбрать"/>
+                        <h:button onclick="operationalStaffNurseSelectVar.clickClose(); return false;" value="Отмена"/>
+                    </div>
+                </e5ui-comp:modalWindow>
+                
                 </div>
 
                 <div style="margin-top:15px;">

@@ -15,14 +15,16 @@ import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 
+import ru.efive.dao.sql.dao.user.RoleDAOHibernate;
+import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.enums.RoleType;
 import ru.efive.dao.sql.entity.user.Role;
-import ru.efive.dao.sql.entity.user.User;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.*;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.*;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListHolderBean;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListByAppointmentHolderBean;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListByRoleTypeHolderBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.wf.util.OperationalHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
@@ -56,6 +58,9 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 			if (getDocument().getBloodSystems().size() == 0) {
 				BloodSystem currentBloodSystem = operational.getCurrentOperationalSetup().getBloodSystem();
 				getDocument().getBloodSystems().add(currentBloodSystem);
+			}
+			if (operational.getCurrentOperationalSetup().getStaffNurse() != null) {
+				getDocument().setStaffNurse(operational.getCurrentOperationalSetup().getStaffNurse());
 			}
 		}
 		boolean isSizeZero = getDocument().getFactEntries().size() == 0 ? true : false;
@@ -102,7 +107,6 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 	
 	@Override
 	protected void initDocument(Integer id) {
-		initUserLists();
 		BloodDonationRequest request = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).get(id);
 		DonorRejectionDAOImpl dao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, ApplicationHelper.REJECTION_DAO);
 		List<DonorRejection> list = dao.findDocumentsByRequestId("d_" + id);
@@ -135,7 +139,6 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 	
 	@Override
 	protected void initNewDocument() {
-		initUserLists();
 		BloodDonationRequest bloodDonation = new BloodDonationRequest();
 		bloodDonation.setStatusId(1);
 		Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
@@ -419,32 +422,6 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		}
 	}
 	
-	private void initUserLists() {
-		userDocuments = new ArrayList<User>(userList.getDocuments());
-	    userTransfusiologistDocuments = getTherapistUserList(userList.getDocuments());
-	}
-	
-	private List<User> getTherapistUserList(List<User> userListDoc) {
-		List<User> therapistUserList = new ArrayList<User>();
-		for (User user : userListDoc) {
-			if(findRoleTherapist(user.getRoleList())) {
-				therapistUserList.add(user);
-			}
-		}
-		return therapistUserList;
-	}
-	
-	private boolean findRoleTherapist(List<Role> roleList) {
-		boolean result = false;
-		for (Role role : roleList) {
-			if (RoleType.THERAPIST.equals(role.getRoleType())) {
-				result = true;
-				break;					
-			}
-		}
-		return result;
-	}
-	
 	public ProcessorModalBean getProcessorModal() {
 		return processorModal;
 	}
@@ -574,41 +551,47 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
         return parentExaminationSelect;
     }
     
-    
-    public UserSelectModalBean getRegistratorSelectModal() {
+    public AbstractUserSelectModalBean getRegistratorSelectModal() {
     	return registratorSelectModal;
     }
-    public UserSelectModalBean getTransfusiologistSelectModal() {
+    
+    public AbstractUserSelectModalBean getTransfusiologistSelectModal() {
     	return transfusiologistSelectModal;
     }
-    public UserSelectModalBean getStaffNurseSelectModal() {
+    
+    public AbstractUserSelectModalBean getStaffNurseSelectModal() {
     	return staffNurseSelectModal;
     }
-	
-    private List<User> userDocuments;
-    private List<User> userTransfusiologistDocuments;
+    
 	@Inject @Named("sessionManagement")
 	private transient SessionManagementBean sessionManagement = new SessionManagementBean();
 	@Inject @Named("donorList")
     private transient DonorListHolderBean donorList;
-	@Inject @Named("userList")
-    private transient UserListHolderBean userList;
 	@Inject @Named("admittedExaminationList")
     private transient AdmittedExaminationListHolderBean admittedExaminationList;
     @Inject @Named("operationalSession")
     private transient OperationalSessionBean operational;
+    @Inject @Named("bloodDonationOperationalList")
+    private transient BloodDonationOperationalListHolderBean bloodDonationOperational;
 
     private DonorSelectModalHolder donorSelectModal = new DonorSelectModalHolder();
     private BloodSystemSelect bloodSystemTypeSelectModal = new BloodSystemSelect();
 	private ParentExaminationSelect parentExaminationSelect = new ParentExaminationSelect();
 	private RejectionDescriptionHolder rejectionDescriptionHolder = new RejectionDescriptionHolder();
+	
+	private UserListByRoleTypeHolderBean registratorUserListBean;
+    private UserListByRoleTypeHolderBean transfusiologistUserListBean;
+    private UserListByAppointmentHolderBean staffUserListBean;
 
-	private UserSelectModalBean registratorSelectModal = new UserSelectModalBean() {
+	private AbstractUserSelectModalBean registratorSelectModal = new AbstractUserSelectModalBean() {
 		@Override
-		public UserListHolderBean getUserList() {
-			userList.getDocuments().clear();
-			userList.getDocuments().addAll(userDocuments);
-			return userList;
+		public UserListByRoleTypeHolderBean getUserList() {
+			if (registratorUserListBean == null) {
+				UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+				RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO);
+				registratorUserListBean = new UserListByRoleTypeHolderBean(RoleType.REGISTRATOR, userDAO, roleDAO);
+			}
+			return registratorUserListBean;
 		}
 		@Override
 		protected void doSave() {
@@ -618,17 +601,20 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		@Override
 		protected void doHide() {
 			super.doHide();
-			userList.setFilter("");
-			userList.markNeedRefresh();
+			registratorUserListBean.setFilter("");
+			registratorUserListBean.markNeedRefresh();
 			setUser(null);
 		}
 	};
-	private UserSelectModalBean transfusiologistSelectModal = new UserSelectModalBean() {
+	private AbstractUserSelectModalBean transfusiologistSelectModal = new AbstractUserSelectModalBean() {
 		@Override
-		public UserListHolderBean getUserList() {
-			userList.getDocuments().clear();
-			userList.getDocuments().addAll(userTransfusiologistDocuments);
-			return userList;
+		public UserListByRoleTypeHolderBean getUserList() {
+			if (transfusiologistUserListBean == null) {
+				UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+				RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO);
+				transfusiologistUserListBean = new UserListByRoleTypeHolderBean(RoleType.THERAPIST, userDAO, roleDAO);
+			}
+			return transfusiologistUserListBean;
 		}
 		@Override
 		protected void doSave() {
@@ -638,19 +624,19 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		@Override
 		protected void doHide() {
 			super.doHide();
-			userList.setFilter("");
-			userList.markNeedRefresh();
+			transfusiologistUserListBean.setFilter("");
+			transfusiologistUserListBean.markNeedRefresh();
 			setUser(null);
 		}
-		
-		
 	};
-	private UserSelectModalBean staffNurseSelectModal = new UserSelectModalBean() {
+	private AbstractUserSelectModalBean staffNurseSelectModal = new AbstractUserSelectModalBean() {
 		@Override
-		public UserListHolderBean getUserList() {
-			userList.getDocuments().clear();
-			userList.getDocuments().addAll(userDocuments);
-			return userList;
+		public UserListByAppointmentHolderBean getUserList() {
+			if (staffUserListBean == null) {
+				UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+				staffUserListBean = new UserListByAppointmentHolderBean("Операционная сестра", userDAO);
+			}
+			return staffUserListBean;
 		}
 		@Override
 		protected void doSave() {
@@ -660,8 +646,8 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		@Override
 		protected void doHide() {
 			super.doHide();
-			userList.setFilter("");
-			userList.markNeedRefresh();
+			staffUserListBean.setFilter("");
+			staffUserListBean.markNeedRefresh();
 			setUser(null);
 		}
 	};
@@ -699,5 +685,6 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 			}
 		}
 	};
+	
 	private static final long serialVersionUID = 8070559401705301872L;
 }

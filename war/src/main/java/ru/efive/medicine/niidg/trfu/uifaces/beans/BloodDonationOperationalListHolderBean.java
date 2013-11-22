@@ -9,15 +9,12 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import ru.efive.dao.sql.entity.enums.ConverterName;
-import ru.efive.dao.sql.entity.user.User;
+import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
-import ru.efive.medicine.niidg.trfu.data.entity.OperationalCrew;
-import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalIndicator;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListHolderBean;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListByAppointmentHolderBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
@@ -32,10 +29,10 @@ public class BloodDonationOperationalListHolderBean extends AbstractDocumentList
     SessionManagementBean sessionManagement;
     @Inject @Named("operationalSession")
     private transient OperationalSessionBean operational;
-    @Inject @Named("userList")
-    private transient UserListHolderBean userList;
+    private UserListByAppointmentHolderBean doctorUserListBean;
+    private UserListByAppointmentHolderBean staffNurseUserListBean;
 
-    private static final long serialVersionUID = 6546450615334686914L;
+	private static final long serialVersionUID = 6546450615334686914L;
 
 	@Override
 	public Pagination initPagination() {
@@ -85,32 +82,63 @@ public class BloodDonationOperationalListHolderBean extends AbstractDocumentList
 		this.filter = filter;
 	}
 	
-	public UserListSelectModalBean getOperationalCrewSelectModal() {
-    	return operationalCrewSelectModal;
+	public AbstractUserSelectModalBean getOperationalDoctorSelectModal() {
+    	return operationalDoctorSelectModal;
     }
-
-
-	private UserListSelectModalBean operationalCrewSelectModal = new UserListSelectModalBean() {
-		public UserListHolderBean getUserList() {
-			return userList;
+	
+	public AbstractUserSelectModalBean getOperationalStaffNurseSelectModal() {
+    	return operationalStaffNurseSelectModal;
+    }
+	
+	public OperationalEditorModal getOperationalEditor() {
+        return operationalEditor;
+    }
+	
+	private AbstractUserSelectModalBean operationalDoctorSelectModal = new AbstractUserSelectModalBean() {
+		@Override
+		public UserListByAppointmentHolderBean getUserList() {
+			if (doctorUserListBean == null) {
+				UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+				doctorUserListBean = new UserListByAppointmentHolderBean("Врач-трансфузиолог", userDAO);
+			}
+			return doctorUserListBean;
 		}
 		@Override
 		protected void doSave() {
 			super.doSave();
-			OperationalCrew crew = operational.getCurrentCrew();
-			Set<User> staff = new HashSet<User>();
-			staff.addAll(getUsers());
-			crew.setStaff(staff);
+			operational.getCurrentOperationalSetup().setDoctor(getUser());
 		}
 		@Override
 		protected void doHide() {
 			super.doHide();
-			userList.setFilter("");
-			userList.markNeedRefresh();
-			setUsers(new ArrayList<User>());
+			doctorUserListBean.setFilter("");
+			doctorUserListBean.markNeedRefresh();
+			setUser(null);
 		}
 	};
-
+	
+	private AbstractUserSelectModalBean operationalStaffNurseSelectModal = new AbstractUserSelectModalBean() {
+		@Override
+		public UserListByAppointmentHolderBean getUserList() {
+			if (staffNurseUserListBean == null) {
+				UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+				staffNurseUserListBean = new UserListByAppointmentHolderBean("Операционная сестра", userDAO);
+			}
+			return staffNurseUserListBean;
+		}
+		@Override
+		protected void doSave() {
+			super.doSave();
+			operational.getCurrentOperationalSetup().setStaffNurse(getUser());
+		}
+		@Override
+		protected void doHide() {
+			super.doHide();
+			staffNurseUserListBean.setFilter("");
+			staffNurseUserListBean.markNeedRefresh();
+			setUser(null);
+		}
+	};
 
     public BloodSystemSelect getBloodSystemTypeSelectModal() {
         return bloodSystemTypeSelectModal;
@@ -146,10 +174,6 @@ public class BloodDonationOperationalListHolderBean extends AbstractDocumentList
             selected.clear();
             super.doHide();
         }
-    }
-
-    public OperationalEditorModal getOperationalEditor() {
-        return operationalEditor;
     }
 
     public class OperationalEditorModal extends ModalWindowHolderBean{

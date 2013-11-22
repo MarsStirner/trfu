@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.LogicalExpression;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.JDBCConnectionException;
@@ -375,4 +376,82 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
         
 		return getCountOf(detachedCriteria);
 	}
+    
+    public List<User> getUsersByAppointment(String appointment, String pattern, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
+    	DetachedCriteria detachedCriteria = DetachedCriteria.forClass(User.class);
+    	detachedCriteria = getDetachedCriteriaByAppointment(detachedCriteria, appointment, pattern, showDeleted);
+        
+    	String[] ords = orderBy == null ? null : orderBy.split(",");
+		if (ords != null) {
+			if (ords.length > 1) {
+				addOrder(detachedCriteria, ords, orderAsc);
+			} else {
+				addOrder(detachedCriteria, orderBy, orderAsc);
+			}
+		}
+		return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+    }
+    
+    public long countUsersByAppointment(String appointment, String pattern, boolean showDeleted) {
+    	DetachedCriteria detachedCriteria = DetachedCriteria.forClass(User.class);
+    	detachedCriteria = getDetachedCriteriaByAppointment(detachedCriteria, appointment, pattern, showDeleted);
+    	
+    	return getCountOf(detachedCriteria);
+    }
+    
+    private DetachedCriteria getDetachedCriteriaByAppointment(DetachedCriteria detachedCriteria, String appointment, String pattern, boolean showDeleted) {
+    	detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+    	
+    	if (StringUtils.isNotEmpty(pattern)) {
+            LogicalExpression orExp = Restrictions.or(Restrictions.ilike("lastName", pattern + "%"), 
+            		Restrictions.ilike("middleName", pattern + "%"));
+            orExp = Restrictions.or(orExp, Restrictions.ilike("firstName", pattern + "%"));
+            detachedCriteria.add(orExp);
+        }
+        
+        if (StringUtils.isNotEmpty(appointment)) {
+        	detachedCriteria.createAlias("appointment", "appointment");
+        	detachedCriteria.add(Restrictions.ilike("appointment.name", appointment, MatchMode.ANYWHERE));
+        }
+        
+        if (!showDeleted) {
+            detachedCriteria.add(Restrictions.eq("deleted", false));
+        }
+        
+    	return detachedCriteria;
+    }
+    
+    public List<User> findUsersByRole(Role role, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
+        DetachedCriteria detachedCriteria = createCriteriaForUsersByRole(role, showDeleted);
+        
+        String[] ords = orderBy == null ? null : orderBy.split(",");
+		if (ords != null) {
+			if (ords.length > 1) {
+				addOrder(detachedCriteria, ords, orderAsc);
+			} else {
+				addOrder(detachedCriteria, orderBy, orderAsc);
+			}
+		}
+        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+    }
+
+    public long countUsersByRole(Role role, boolean showDeleted) {
+        DetachedCriteria detachedCriteria = createCriteriaForUsersByRole(role, showDeleted);
+        return getCountOf(detachedCriteria);
+    }
+    
+    private DetachedCriteria createCriteriaForUsersByRole(Role role, boolean showDeleted) {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(User.class);
+
+        if (role != null) {
+        	detachedCriteria.createAlias("roles", "roles");
+            detachedCriteria.add(Restrictions.eq("roles.id", role.getId()));
+        }
+
+        if (!showDeleted) {
+            detachedCriteria.add(Restrictions.eq("deleted", false));
+        }
+
+        return detachedCriteria;
+    }
 }

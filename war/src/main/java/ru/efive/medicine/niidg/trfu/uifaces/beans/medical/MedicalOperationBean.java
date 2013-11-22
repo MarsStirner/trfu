@@ -1,10 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.medical;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ConversationScoped;
@@ -16,9 +14,9 @@ import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 
+import ru.efive.dao.sql.dao.user.RoleDAOHibernate;
+import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.enums.RoleType;
-import ru.efive.dao.sql.entity.user.Role;
-import ru.efive.dao.sql.entity.user.User;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
@@ -31,10 +29,11 @@ import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.OperationParameters;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.OperationReport;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Supply;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.AbstractUserSelectModalBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.DictionaryManagementBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.ProcessorModalBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.UserSelectModalBean;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListByRoleTypeHolderBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListHolderBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper;
@@ -278,7 +277,7 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 		return processorModal;
 	}
     
-    public UserSelectModalBean getTransfusiologistSelectModal() {
+    public AbstractUserSelectModalBean getTransfusiologistSelectModal() {
     	return transfusiologistSelectModal;
     }
     
@@ -320,15 +319,18 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
     private transient UserListHolderBean userList;
 	@Inject @Named("dictionaryManagement")
     private transient DictionaryManagementBean dictionaryManagement;
+	private UserListByRoleTypeHolderBean transfusiologistUserListBean;
 	
 	private DonorSelectModalHolder donorSelectModal = new DonorSelectModalHolder();
-	private UserSelectModalBean transfusiologistSelectModal = new UserSelectModalBean() {
+	private AbstractUserSelectModalBean transfusiologistSelectModal = new AbstractUserSelectModalBean() {
 		@Override
-		public UserListHolderBean getUserList() {
-			List<User> therapistUserList = getTherapistUserList(userList.getDocuments());
-			userList.getDocuments().clear();
-			userList.getDocuments().addAll(therapistUserList);
-			return userList;
+		public UserListByRoleTypeHolderBean getUserList() {
+			if (transfusiologistUserListBean == null) {
+				UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+				RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO);
+				transfusiologistUserListBean = new UserListByRoleTypeHolderBean(RoleType.THERAPIST, userDAO, roleDAO);
+			}
+			return transfusiologistUserListBean;
 		}
 		@Override
 		protected void doSave() {
@@ -338,30 +340,9 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 		@Override
 		protected void doHide() {
 			super.doHide();
-			userList.setFilter("");
-			userList.markNeedRefresh();
+			transfusiologistUserListBean.setFilter("");
+			transfusiologistUserListBean.markNeedRefresh();
 			setUser(null);
-		}
-		
-		private List<User> getTherapistUserList(List<User> userListDoc) {
-			List<User> therapistUserList = new ArrayList<User>();
-			for (User user : userListDoc) {
-				if(findRoleTherapist(user.getRoleList())) {
-					therapistUserList.add(user);
-				}
-			}
-			return therapistUserList;
-		}
-		
-		private boolean findRoleTherapist(List<Role> roleList) {
-			boolean result = false;
-			for (Role role : roleList) {
-				if (RoleType.THERAPIST.equals(role.getRoleType())) {
-					result = true;
-					break;					
-				}
-			}
-			return result;
 		}
 	};
 	

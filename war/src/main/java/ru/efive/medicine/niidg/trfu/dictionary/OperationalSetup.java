@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ru.efive.dao.sql.entity.user.User;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodSystem;
 import ru.efive.medicine.niidg.trfu.data.entity.OperationalCrew;
@@ -15,6 +16,24 @@ public class OperationalSetup {
     private String name;
     private boolean unsaved;
     private BloodSystem bloodSystem;
+    private User doctor;
+    private User staffNurse;
+    
+    public User getDoctor() {
+		return doctor;
+	}
+
+	public void setDoctor(User doctor) {
+		this.doctor = doctor;
+	}
+
+	public User getStaffNurse() {
+		return staffNurse;
+	}
+
+	public void setStaffNurse(User staffNurse) {
+		this.staffNurse = staffNurse;
+	}
     
     public BloodSystem getBloodSystem() {
 		return bloodSystem;

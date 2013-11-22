@@ -95,7 +95,7 @@ public class OperationalCrew extends IdentifiedEntity {
 	private Date registered;
 	
 	@ManyToMany
-	@Cascade({ org.hibernate.annotations.CascadeType.ALL })
+	@Cascade({ org.hibernate.annotations.CascadeType.REFRESH })
 	@JoinTable(name = "trfu_operational_crew_members", 
 			joinColumns = { @JoinColumn(name = "crew_id") }, 
 			inverseJoinColumns = { @JoinColumn(name = "member_id") })
