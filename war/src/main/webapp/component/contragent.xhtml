@@ -121,6 +121,16 @@
 								<h:outputText value="#{contragent.document.nomenclature}" converter="ContragentNomenclatureConverter" class="wide" />
 							</td>
 						</tr>
+						<tr>
+							<td class="first">
+								<label>
+									<span class="title">Удалить:</span>
+								</label>
+							</td>
+							<td>
+								<h:selectBooleanCheckbox value="#{contragent.document.deleted}" disabled="true"/>
+							</td>
+						</tr>
 					</table>
 				</div>
 			</h:panelGroup>
@@ -217,6 +227,16 @@
 							</td>
 							<td>
 								<h:outputText id="nomenclatureIndex" value="#{contragent.document.nomenclature}" converter="ContragentNomenclatureConverter" class="wide" />
+							</td>
+						</tr>
+						<tr>
+							<td class="first">
+								<label>
+									<span class="title">Удалить:</span>
+								</label>
+							</td>
+							<td>
+								<h:selectBooleanCheckbox value="#{contragent.document.deleted}" />
 							</td>
 						</tr>
 					</table>

@@ -84,6 +84,7 @@ public class ContragentHolder extends AbstractDocumentHolderBean<Contragent, Int
 						FacesMessage.SEVERITY_ERROR,
 						"Документ не может быть сохранен. Попробуйте повторить позже.", ""));
 			}
+			result = true;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -104,6 +105,7 @@ public class ContragentHolder extends AbstractDocumentHolderBean<Contragent, Int
 						FacesMessage.SEVERITY_ERROR,
 						"Документ не может быть сохранен. Попробуйте повторить позже.", ""));
 			}
+			result = true;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
