@@ -8,6 +8,8 @@ import java.util.Map;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Junction;
 
+import ru.efive.medicine.niidg.trfu.filters.bean.FieldFilterBean;
+
 /**
  * Фильтр для представления "Компоненты крови".
  * 
@@ -120,6 +122,7 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 	private List<Junction> listJunctions;
 	private List<String> listAlias;
 	private Map<String, Object> map;
+	private List<FieldFilterBean> listFields;
 	
     public String getNumber() {
 		return number;
@@ -390,6 +393,14 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 		this.map = map;
 	}
 
+	public List<FieldFilterBean> getListFields() {
+		return listFields;
+	}
+
+	public void setListFields(List<FieldFilterBean> listFields) {
+		this.listFields = listFields;
+	}
+
 	@Override
 	public void clear() {
 		setDefaultValues();
@@ -422,6 +433,7 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 		listJunctions = new ArrayList<Junction>();
 		listAlias = new ArrayList<String>();
 		map = null;
+		listFields = new ArrayList<FieldFilterBean>();
 		
 	}
 
@@ -453,5 +465,6 @@ public class BloodComponentsFilter extends AppendSRPDFilter<BloodComponentsFilte
 		setListJunctions(source.getListJunctions());
 		setListAlias(source.getListAlias());
 		setMap(source.getMap());
+		setListFields(source.getListFields());
 	}
 }

@@ -1,6 +1,7 @@
 package ru.efive.medicine.niidg.trfu.dao.medical;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -16,14 +17,17 @@ import org.hibernate.criterion.Restrictions;
 
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.dao.sql.entity.document.Document;
-import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Processing;
+import ru.efive.medicine.niidg.trfu.filters.AppendSRPDFilter.CompareType;
 import ru.efive.medicine.niidg.trfu.filters.BiomaterialDonorsFilter;
 import ru.efive.medicine.niidg.trfu.filters.BiomaterialsFilter;
+import ru.efive.medicine.niidg.trfu.filters.MedicalOperationFilter;
 import ru.efive.medicine.niidg.trfu.filters.OperationsFilter;
+import ru.efive.medicine.niidg.trfu.filters.bean.AliasFilterBean;
+import ru.efive.medicine.niidg.trfu.filters.bean.FieldFilterBean;
 import ru.korusconsulting.SRPD.DonorHelper;
 import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
 import ru.korusconsulting.SRPD.SRPDDao;
@@ -109,9 +113,9 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	}
 	
 	public BiomaterialDonor getDonorByExternalId(Serializable externalId, boolean showDeleted) {
-		BiomaterialDonorsFilter filter = createBiamaterialDonorsFilter(null, showDeleted);
-		BiomaterialDonor donor = null;
-		filter.setExternalId(externalId);
+		BiomaterialDonorsFilter filter = createBiomaterialDonorsFilter(null, showDeleted);
+		//filter.setExternalId(externalId);
+		filter.getListFields().add(FieldFilterBean.init("externalId", externalId));
 		List<BiomaterialDonor> list = findDonors(filter, -1, -1, null, true);
         if (list != null && !list.isEmpty()) {
         	return list.get(0);
@@ -124,12 +128,12 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<BiomaterialDonor> findDonors(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
-		BiomaterialDonorsFilter biomaterialFilter = createBiamaterialDonorsFilter(filter, showDeleted);
+		BiomaterialDonorsFilter biomaterialFilter = createBiomaterialDonorsFilter(filter, showDeleted);
 		return findDonors(biomaterialFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	public long countDonors(String filter, boolean showDeleted) {
-        BiomaterialDonorsFilter biomaterialFilter = createBiamaterialDonorsFilter(filter, showDeleted);
+        BiomaterialDonorsFilter biomaterialFilter = createBiomaterialDonorsFilter(filter, showDeleted);
         return countDonors(biomaterialFilter);
 	}
 	
@@ -151,7 +155,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	public List<Operation> findOperationsByDonor(BiomaterialDonor donor, String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
         if (donor != null && donor.getId() > 0) {
         	OperationsFilter operationfilterFilter = createOperationsFilter(filter, showDeleted);
-    		operationfilterFilter.setDonorId(donor.getId());
+        	operationfilterFilter.getListFields().add(FieldFilterBean.init("donor.id", donor.getId()));
     		return findOperations(operationfilterFilter, offset, count, orderBy, orderAsc);
         }
         else {
@@ -169,16 +173,15 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	}
 	
 	public long countBiomaterials(String filter, boolean showDeleted) {
-		DetachedCriteria detachedCriteria = createDetachedCriteria(Biomaterial.class);
 		BiomaterialsFilter biomaterialsFilter = createBiomaterialsFilter(filter, showDeleted);
-		return getCountOf(getSearchCriteria(detachedCriteria, biomaterialsFilter));
+		return getCountOf(getSearchCriteria(biomaterialsFilter));
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Biomaterial> findBiomaterials(String filter, int statusId, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		BiomaterialsFilter biomaterialsFilter = createBiomaterialsFilter(filter, showDeleted);
         if (statusId != 0) {
-        	biomaterialsFilter.setStatusId(statusId);
+        	biomaterialsFilter.getListFields().add(FieldFilterBean.init("statusId", filter));
         }
         return findBiomaterials(biomaterialsFilter, offset, count, orderBy, orderAsc);
 	}
@@ -186,7 +189,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	public long countBiomaterials(String filter, int statusId, boolean showDeleted) {
 		BiomaterialsFilter biomaterialFilter = createBiomaterialsFilter(filter, showDeleted);
         if (statusId != 0) {
-        	biomaterialFilter.setStatusId(statusId);
+        	biomaterialFilter.getListFields().add(FieldFilterBean.init("statusId", filter));
         }
         return countBiomaterials(biomaterialFilter);
 	}
@@ -195,7 +198,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	public List<Biomaterial> findBiomaterialsByOperation(Operation operation, String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
         if (operation != null && operation.getId() > 0) {
         	BiomaterialsFilter biomaterialsFilter = createBiomaterialsFilter(filter, showDeleted);
-        	biomaterialsFilter.setOperationId(operation.getId());
+        	biomaterialsFilter.getListFields().add(FieldFilterBean.init("operation.id", operation.getId()));
         	return findBiomaterials(biomaterialsFilter, offset, count, orderBy, orderAsc);
         }
         else {
@@ -206,7 +209,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	public long countBiomaterialsByOperation(Operation operation, String filter, boolean showDeleted) {
 		if (operation != null && operation.getId() > 0) {
 			BiomaterialsFilter biomaterialsFilter = createBiomaterialsFilter(filter, showDeleted);
-			biomaterialsFilter.setOperationId(operation.getId());
+			biomaterialsFilter.getListFields().add(FieldFilterBean.init("operation.id", operation.getId()));
 			return countBiomaterials(biomaterialsFilter);
 		}
 		else {
@@ -281,9 +284,8 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	 */
 	
 	private List<BiomaterialDonor> findDonors(BiomaterialDonorsFilter filter,int offset, int count, String orderBy, boolean orderAsc) {
-			DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
+			DetachedCriteria detachedCriteria = getSearchCriteria(filter);
 			List<BiomaterialDonor> donors;
-			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
 			addOrderCriteria(orderBy, orderAsc, detachedCriteria);
 			if (DonorHelper.USE_SRPD) {
 				Map<String,Map<FieldsInMap, Object>> resMap = null;
@@ -311,8 +313,6 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 			return donors;
 		}
 		private long countDonors(BiomaterialDonorsFilter filter) {
-			DetachedCriteria detachedCriteria = createDetachedCriteria(BiomaterialDonor.class);
-			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
 			if (DonorHelper.USE_SRPD) {
 				if(filter.isQueryToSRPD()) {
 					Map<FieldsInMap, Object> paramMap = helper.listIdsSRPDFromFilter(filter);
@@ -320,7 +320,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 					filter.setListSRPDIds(resMap.keySet());
 				}
 			} 
-			return getCountOf(getSearchCriteria(detachedCriteria, filter));
+			return getCountOf(getSearchCriteria(filter));
 			
 		}
 		/**
@@ -328,27 +328,27 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		 */
 		private List<Operation> findOperations(OperationsFilter filter, int offset, int count, String orderBy, boolean orderAsc) {
 			List<Operation> operations = null;
-			DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
-			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
+			DetachedCriteria detachedCriteria = getSearchCriteria(filter);
 			operations =  getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 			return operations;
 		}
 		private long countOperations(OperationsFilter filter) {
-			DetachedCriteria detachedCriteria = createDetachedCriteria(Operation.class);
-			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
+			DetachedCriteria detachedCriteria = getSearchCriteria(filter);
 			return getCountOf(detachedCriteria);
 		}
 		/**
 		 * Biomaterial - универсальные методы для нахождения и подсчётак количества
 		 */
 		private List<Biomaterial> findBiomaterials(BiomaterialsFilter filter,int offset, int count, String orderBy, boolean orderAsc) {
-			DetachedCriteria detachedCriteria = createDetachedCriteria(Biomaterial.class);
+			DetachedCriteria detachedCriteria = getSearchCriteria(filter);
 			addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
 			@SuppressWarnings("unchecked")
-			List<Biomaterial> biomaterials = getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+			List<Biomaterial> biomaterials = getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 			if (DonorHelper.USE_SRPD) {
-				filter.setListSRPDIds(helper.listIdsSRPDFromBiomaterial(biomaterials));
+				if (filter.getListFieldsDisjunction().size() < 1) {
+					filter.getListFieldsDisjunction().add(new ArrayList<FieldFilterBean>());
+				}
+				filter.getListFieldsDisjunction().get(0).add(FieldFilterBean.init("temp_storage_id", helper.listIdsSRPDFromBiomaterial(biomaterials), CompareType.IN));
 				Map<FieldsInMap, Object> map = helper.listIdsSRPDFromFilter(filter);
 				Map<String,Map<FieldsInMap, Object>> resMap = srpdDao.get(map);
 				biomaterials = helper.mergeBiomaterialsAndMap(biomaterials, resMap);
@@ -356,24 +356,36 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 			return biomaterials;
 		}
 		private long countBiomaterials(BiomaterialsFilter filter) {
-			DetachedCriteria detachedCriteria = createDetachedCriteria(Biomaterial.class);
-			detachedCriteria = getSearchCriteria(detachedCriteria, filter);
-			return getCountOf(getSearchCriteria(detachedCriteria, filter));
+			long res = getCountOf(getSearchCriteria(filter)); 
+			return res;
 		}
 		/**
 		 * Creation DetachedCriteria for BiomaterialDonorsFilter
 		 */
-		private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, BiomaterialDonorsFilter filter) {
+		private DetachedCriteria getSearchCriteria(MedicalOperationFilter filter) {
+			DetachedCriteria criteria = createDetachedCriteria(filter.getCurrentEntity());
 			if (filter != null) {
-				Disjunction disjunction = Restrictions.disjunction();
+				/*Disjunction disjunction = Restrictions.disjunction();
 				Serializable externalId = filter.getExternalId();
 				String number = filter.getNumber();
 				String infectiousStatus = filter.getInfectiousStatus();
 				String pregnancy = filter.getPregnancy();
 				String commentary = filter.getCommentary();
-				String factAdress = filter.getFactAdress();
+				String factAdress = filter.getFactAdress();*/
+				Collection<FieldFilterBean> fields = filter.getListFields();
+				Collection<List<FieldFilterBean>> disjFields = filter.getListFieldsDisjunction();
 				Collection<String> listIdsSRPD = filter.getListSRPDIds();
-				if (externalId != null) {
+				for(FieldFilterBean i: fields) {
+					criteria.add(makeRestriction(i));
+				}
+				for (List<FieldFilterBean> j: disjFields) {
+					Disjunction disj = Restrictions.disjunction();
+					for (FieldFilterBean i: j) {
+						disj.add(makeRestriction(i));
+					}
+					criteria.add(disj);
+				}
+				/*if (externalId != null) {
 					disjunction.add(Restrictions.eq("externalId", externalId));
 					
 				}
@@ -391,56 +403,11 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				}
 				if (StringUtils.isNotEmpty(factAdress)) {
 					disjunction.add(Restrictions.ilike("factAddress", factAdress, MatchMode.ANYWHERE));
+				}*/
+				if (listIdsSRPD != null) {
+						//disjunction.add(Restrictions.in("tempStorageId", listIdsSRPD));
 				}
-				if (!DonorHelper.USE_SRPD) {
-					String firstName = filter.getFirstName();
-					String lastName = filter.getLastName();
-					String middleName = filter.getMiddleName();
-					String passportSeries = filter.getPassportSeries();
-					String passportNumber = filter.getPassportNumber();
-					String insuranceSeries = filter.getInsuranceSeries();
-					String insuranceNumber = filter.getInsuranceNumber();
-					String employment = filter.getEmployment();
-					String workPhone = filter.getWorkPhone();
-					String phone = filter.getPhone();
-					String registrationAdress = filter.getRegistrationAdress();
-					if (StringUtils.isNotEmpty(lastName)) {
-						disjunction.add(Restrictions.ilike("lastName", lastName, MatchMode.ANYWHERE));
-					}
-					if (StringUtils.isNotEmpty(middleName)) {
-						disjunction.add(Restrictions.ilike("middleName", middleName, MatchMode.ANYWHERE));
-					}
-					if (StringUtils.isNotEmpty(firstName)) {
-						disjunction.add(Restrictions.ilike("firstName", firstName, MatchMode.ANYWHERE));
-					}
-					if (StringUtils.isNotEmpty(passportSeries)) {
-						disjunction.add(Restrictions.ilike("passportSeries", passportSeries, MatchMode.ANYWHERE));
-					}
-					if (StringUtils.isNotEmpty(passportNumber)) {
-						disjunction.add(Restrictions.ilike("passportNumber", passportNumber, MatchMode.ANYWHERE));
-					}
-					if (StringUtils.isNotEmpty(insuranceSeries)) {
-						disjunction.add(Restrictions.ilike("insuranceSeries", insuranceSeries, MatchMode.ANYWHERE));
-					}
-					if (StringUtils.isNotEmpty(insuranceNumber)) {
-						disjunction.add(Restrictions.ilike("insuranceNumber", insuranceNumber, MatchMode.ANYWHERE));
-					}
-					if (StringUtils.isNotEmpty(employment)) {
-						disjunction.add(Restrictions.ilike("employment", employment, MatchMode.ANYWHERE));
-					}
-					if (StringUtils.isNotEmpty(workPhone)) {
-						disjunction.add(Restrictions.ilike("workPhone", workPhone, MatchMode.ANYWHERE));
-					}
-					if (StringUtils.isNotEmpty(phone)) {
-						disjunction.add(Restrictions.ilike("phone", phone, MatchMode.ANYWHERE));
-					}
-					if (StringUtils.isNotEmpty(registrationAdress)) {
-						disjunction.add(Restrictions.ilike("registrationAddress", registrationAdress, MatchMode.ANYWHERE));
-					}
-				} else if (listIdsSRPD != null) {
-						disjunction.add(Restrictions.in("tempStorageId", listIdsSRPD));
-				}
-				criteria.add(disjunction);	
+				//criteria.add(disjunction);	
 				if (!filter.isShowDeleted()) {
 					criteria.add(Restrictions.eq("deleted", false));
 				}
@@ -450,7 +417,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		/**
 		 * Creation DetachedCriteria for OperationsFilter
 		 */
-		private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, OperationsFilter filter) {
+		/*private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, OperationsFilter filter) {
 			if (filter != null) {
 				Disjunction disjunction = Restrictions.disjunction();
 				String number = filter.getNumber();
@@ -497,7 +464,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		/**
 		 * Create DetachedCriteria for search Biomaterials
 		 */
-		private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, BiomaterialsFilter filter) {
+		/*private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, BiomaterialsFilter filter) {
 			if (filter != null) {
 				Disjunction disjunction = Restrictions.disjunction();
 				String number = filter.getNumber();
@@ -545,25 +512,42 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		/**
 		 * Create filter for creation DetachedCriteria for BiomaterialDonor
 		 */
-		private BiomaterialDonorsFilter createBiamaterialDonorsFilter(String pattern, boolean showDeleted) {
+		private BiomaterialDonorsFilter createBiomaterialDonorsFilter(String pattern, boolean showDeleted) {
 			BiomaterialDonorsFilter filter = new BiomaterialDonorsFilter();
-			filter.setShowDeleted(showDeleted);
-			if (StringUtils.isNotEmpty(pattern)) {
-				filter.setNumber(pattern);
-				filter.setPregnancy(pattern);
-				filter.setCommentary(pattern);
-				filter.setLastName(pattern);
-				filter.setFirstName(pattern);
-				filter.setMiddleName(pattern);
-				filter.setPassportSeries(pattern);
-				filter.setPassportNumber(pattern);
-				filter.setInsuranceNumber(pattern);
-				filter.setInsuranceSeries(pattern);
-				filter.setEmployment(pattern);
-				filter.setWorkPhone(pattern);
-				filter.setPhone(pattern);
-				filter.setRegistrationAdress(pattern);
-				filter.setFactAdress(pattern);
+			if (!showDeleted) {
+				filter.setShowDeleted(showDeleted);
+			}
+ 			if (StringUtils.isNotEmpty(pattern)) {
+ 				List<FieldFilterBean> fields = new ArrayList<FieldFilterBean>();
+ 				fields.add(FieldFilterBean.init("number", filter, CompareType.ILIKE));
+ 				fields.add(FieldFilterBean.init("factAddress", filter, CompareType.ILIKE));
+ 				fields.add(FieldFilterBean.init("infectiousStatus", filter, CompareType.ILIKE));
+ 				fields.add(FieldFilterBean.init("pregnancy", filter, CompareType.ILIKE));
+ 				fields.add(FieldFilterBean.init("commentary", filter, CompareType.ILIKE));
+ 				if (DonorHelper.USE_SRPD) {
+ 					filter.setFirstName(pattern);
+ 					filter.setMiddleName(pattern);
+ 					filter.setPassport(pattern);
+ 					filter.setInsuranceNumber(pattern);
+ 					filter.setInsuranceSeries(pattern);
+ 					filter.setEmployment(pattern);
+ 					filter.setWorkPhone(pattern);
+ 					filter.setPhone(pattern);
+ 					filter.setRegistrationAdress(pattern);
+ 				} else {
+ 					fields.add(FieldFilterBean.init("lastName", filter, CompareType.ILIKE));
+ 					fields.add(FieldFilterBean.init("middleName", filter, CompareType.ILIKE));
+ 					fields.add(FieldFilterBean.init("firstName", filter, CompareType.ILIKE));
+ 					fields.add(FieldFilterBean.init("passportSeries", filter, CompareType.ILIKE));
+ 					fields.add(FieldFilterBean.init("passportNumber", filter, CompareType.ILIKE));
+ 					fields.add(FieldFilterBean.init("insuranceSeries", filter, CompareType.ILIKE));
+ 					fields.add(FieldFilterBean.init("insuranceNumber", filter, CompareType.ILIKE));
+ 					fields.add(FieldFilterBean.init("employment", filter, CompareType.ILIKE));
+ 					fields.add(FieldFilterBean.init("workPhone", filter, CompareType.ILIKE));
+ 					fields.add(FieldFilterBean.init("phone", filter, CompareType.ILIKE));
+ 					fields.add(FieldFilterBean.init("registrationAddress", filter, CompareType.ILIKE));
+ 				}
+ 				filter.getListFieldsDisjunction().add(fields);
 			}
 			return filter;
 		}
@@ -574,12 +558,21 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 			OperationsFilter filter = new OperationsFilter();
 			filter.setShowDeleted(showDeleted);
 			if (StringUtils.isNotEmpty(pattern)) {
-				filter.setNumber(pattern);
-				filter.setRecepient(pattern);
-				filter.setIdNumber(pattern);
-				filter.setLastName(pattern);
-				filter.setFirstName(pattern);
-				filter.setMiddleName(pattern);
+				List<FieldFilterBean> disjFields = new ArrayList<FieldFilterBean>();
+				disjFields.add(FieldFilterBean.init("number", pattern, CompareType.ILIKE));
+				disjFields.add(FieldFilterBean.init("recipient", pattern, CompareType.ILIKE));
+				disjFields.add(FieldFilterBean.init("idNumber", pattern, CompareType.ILIKE));
+				if (DonorHelper.USE_SRPD) {
+					filter.setLastName(pattern);
+					filter.setFirstName(pattern);
+					filter.setMiddleName(pattern);
+				} else {
+					filter.getListAlias().add(AliasFilterBean.initAlias("donor", CriteriaSpecification.LEFT_JOIN));
+					disjFields.add(FieldFilterBean.init("donor.lastName", filter, CompareType.ILIKE));
+ 					disjFields.add(FieldFilterBean.init("donor.middleName", filter, CompareType.ILIKE));
+ 					disjFields.add(FieldFilterBean.init("donor.firstName", filter, CompareType.ILIKE));
+				}
+				filter.getListFieldsDisjunction().add(disjFields);
 			}
 			return filter;
 		}
@@ -588,11 +581,16 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 		 */
 		private BiomaterialsFilter createBiomaterialsFilter(String pattern, boolean showDeleted) {
 			BiomaterialsFilter filter = new BiomaterialsFilter();
+			if (!showDeleted) {
+				filter.setShowDeleted(showDeleted);
+			}
 			filter.setShowDeleted(showDeleted);
 			if (StringUtils.isNotEmpty(pattern)) {
-				filter.setNumber(pattern);
-				filter.setOperationNumber(pattern);
-				filter.setOperationRecepient(pattern);
+				filter.getListAlias().add(AliasFilterBean.initAlias("operation", CriteriaSpecification.LEFT_JOIN));
+				List<FieldFilterBean> disjFields = new ArrayList<FieldFilterBean>();
+				disjFields.add(FieldFilterBean.init("number", pattern, CompareType.ILIKE));
+				disjFields.add(FieldFilterBean.init("operation.recipient", pattern, CompareType.ILIKE));
+				disjFields.add(FieldFilterBean.init("operation.number", pattern, CompareType.ILIKE));
 			}
 			return filter;
 		}

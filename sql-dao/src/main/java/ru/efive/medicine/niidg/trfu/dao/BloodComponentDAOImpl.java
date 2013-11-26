@@ -31,6 +31,7 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.AppendSRPDFilter.CompareType;
 import ru.efive.medicine.niidg.trfu.filters.BloodComponentsFilter;
+import ru.efive.medicine.niidg.trfu.filters.bean.FieldFilterBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.korusconsulting.SRPD.DonorHelper;
 import ru.korusconsulting.SRPD.DonorHelper.FieldsInMap;
@@ -66,8 +67,9 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocuments(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		BloodComponentsFilter bloodComponentFilter = createBloodComponentsFilter(filter, showDeleted);
-		bloodComponentFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
-		bloodComponentFilter.setStatusId(100);
+		/*bloodComponentFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
+		bloodComponentFilter.setStatusId(100);*/
+		bloodComponentFilter.getListFields().add(FieldFilterBean.init("statusId", 100, CompareType.NE));
 		return findDocuments(bloodComponentFilter, offset, count, orderBy, orderAsc);
 	}
 
@@ -79,10 +81,11 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      * @return кол-во результатов
      */
 	public long countDocument(String filter, boolean showDeleted) {
-        BloodComponentsFilter bloodComponentsfilter = createBloodComponentsFilter(filter, showDeleted);
-        bloodComponentsfilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
-        bloodComponentsfilter.setStatusId(100);
-        return countDocument(bloodComponentsfilter);
+        BloodComponentsFilter bloodComponentFilter = createBloodComponentsFilter(filter, showDeleted);
+        /*bloodComponentsfilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
+        bloodComponentsfilter.setStatusId(100);*/
+        bloodComponentFilter.getListFields().add(FieldFilterBean.init("statusId", 100, CompareType.NE));
+        return countDocument(bloodComponentFilter);
 	}
 	
 	/**
