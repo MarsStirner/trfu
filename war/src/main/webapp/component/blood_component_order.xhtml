@@ -485,7 +485,7 @@
 						</h:panelGroup>
 					</fieldset>
 				</div>
-				<div>
+				<div style="overflow: auto;">
 					<fieldset>
 						<legend>
 							<a onmouseout="setCursor('default')" onmouseover="setCursor('pointer')" 
@@ -507,7 +507,7 @@
 					                </e5ui:column>
 					                <e5ui:column style="min-width:8em">
 					            		<f:facet name="header">
-					                        <p>Статус</p>
+					                        <p>Со статуса</p>
 					                    </f:facet>
 					                	<h:outputText value="#{row.fromStatusName}" />
 					                </e5ui:column>
@@ -516,6 +516,12 @@
 					                        <p>Действие</p>
 					                    </f:facet>
 					                	<h:outputText value="#{row.actionName}" />
+					                </e5ui:column>
+					            	<e5ui:column style="min-width:8em">
+					            		<f:facet name="header">
+					                        <p>На статус</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.toStatusName}" />
 					                </e5ui:column>
 					                <e5ui:column style="min-width:12em">
 					            		<f:facet name="header">

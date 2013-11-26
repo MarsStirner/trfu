@@ -1060,7 +1060,7 @@
                     </e5ui:column>
                     <e5ui:column style="min-width:5em">
                         <f:facet name="header">
-                            <p>Статус</p>
+                            <p>Со cтатуса</p>
                         </f:facet>
                         <h:outputText value="#{row.fromStatusName}"/>
                     </e5ui:column>
@@ -1070,13 +1070,19 @@
                         </f:facet>
                         <h:outputText value="#{row.actionName}"/>
                     </e5ui:column>
+                    <e5ui:column style="min-width:5em">
+					    <f:facet name="header">
+					     	<p>На статус</p>
+					   	</f:facet>
+						<h:outputText value="#{row.toStatusName}" />
+					</e5ui:column>
                     <e5ui:column style="min-width:6em">
                         <f:facet name="header">
                             <p>Автор</p>
                         </f:facet>
                         <h:outputText value="#{row.owner.descriptionShort}"/>
                     </e5ui:column>
-                    <e5ui:column style="min-width:8em">
+                    <e5ui:column style="min-width:7em">
                         <f:facet name="header">
                             <p>Комментарий</p>
                         </f:facet>

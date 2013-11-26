@@ -623,7 +623,7 @@
 					            </e5ui:column>
 					            <e5ui:column style="min-width:5em">
 					            	<f:facet name="header">
-					                    <p>Статус</p>
+					                    <p>Со статуса</p>
 					                </f:facet>
 					               	<h:outputText value="#{row.fromStatusName}" />
 					            </e5ui:column>
@@ -633,7 +633,13 @@
 					                </f:facet>
 					               	<h:outputText value="#{row.actionName}" />
 					             </e5ui:column>
-					             <e5ui:column style="min-width:7em">
+					             <e5ui:column style="min-width:5em">
+					            		<f:facet name="header">
+					                        <p>На статус</p>
+					                    </f:facet>
+					                	<h:outputText value="#{row.toStatusName}" />
+					             </e5ui:column>
+					             <e5ui:column style="min-width:6em">
 					            	<f:facet name="header">
 					                    <p>Автор</p>
 					                </f:facet>
