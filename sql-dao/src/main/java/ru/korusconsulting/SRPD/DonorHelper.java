@@ -37,6 +37,7 @@ public class DonorHelper {
 		FIRST_NAME,
 		LAST_NAME ,
 		MIDDLE_NAME,
+		OMC_SERIES,
 		OMC_NUMBER,
 		PASSPORT_NUMBER,
 		PHONE,
@@ -57,7 +58,7 @@ public class DonorHelper {
 	private final static String FEMALE = "F";
 	/* flag for using or unusing SRPD */
 	public final static Boolean USE_SRPD = true;
-	protected final String pattern = "yyyyMMdd";
+	protected final String pattern = "dd.MM.yyyy";
 	
 	/** creation Map from {@link DonorsFilter}, which will be contain {@link List}s of parameters for search */
 	public Map<FieldsInMap, Object> makeMapFromDonorsFilter(DonorsFilter donorsFilter, List<Donor> donors) {
@@ -81,7 +82,8 @@ public class DonorHelper {
 		map.put(FieldsInMap.FIRST_NAME, donor.getFirstName());
 		map.put(FieldsInMap.LAST_NAME, donor.getLastName());
 		map.put(FieldsInMap.MIDDLE_NAME, donor.getMiddleName());
-		map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber() + " " + donor.getInsuranceSeries());
+		map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber());
+		map.put(FieldsInMap.OMC_SERIES, donor.getInsuranceSeries());
 		map.put(FieldsInMap.PASSPORT_NUMBER, donor.getPassportNumber() + " " + donor.getPassportSeries());
 		map.put(FieldsInMap.PHONE, donor.getPhone());
 		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
@@ -108,7 +110,8 @@ public class DonorHelper {
 		map.put(FieldsInMap.FIRST_NAME, donor.getFirstName());
 		map.put(FieldsInMap.LAST_NAME, donor.getLastName());
 		map.put(FieldsInMap.MIDDLE_NAME, donor.getMiddleName());
-		map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber() + " " + donor.getInsuranceSeries());
+		map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber());
+		map.put(FieldsInMap.OMC_SERIES, donor.getInsuranceSeries());
 		map.put(FieldsInMap.PASSPORT_NUMBER, donor.getPassportNumber() + " " + donor.getPassportSeries());
 		map.put(FieldsInMap.PHONE, donor.getPhone());
 		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
@@ -125,11 +128,10 @@ public class DonorHelper {
 		donor.setLastName((String)mapWithValues.get(FieldsInMap.LAST_NAME));
 		donor.setMiddleName((String)mapWithValues.get(FieldsInMap.MIDDLE_NAME));
 		if (mapWithValues.get(FieldsInMap.OMC_NUMBER) != null) {
-			String[] insurance = ((String)mapWithValues.get(FieldsInMap.OMC_NUMBER)).split(" ");
-			if (insurance.length > 1) {
-				donor.setInsuranceNumber(insurance[0]);
-				donor.setInsuranceSeries(insurance[1]);
-			}
+			donor.setInsuranceNumber((String)mapWithValues.get(FieldsInMap.OMC_NUMBER));
+		}
+		if (mapWithValues.get(FieldsInMap.OMC_SERIES) != null) {
+			donor.setInsuranceNumber((String)mapWithValues.get(FieldsInMap.OMC_SERIES));
 		}
 		if (mapWithValues.get(FieldsInMap.PASSPORT_NUMBER) != null) {
 			String[] passport = ((String)mapWithValues.get(FieldsInMap.PASSPORT_NUMBER)).split(" ");
@@ -186,8 +188,12 @@ public class DonorHelper {
 	public List<Biomaterial> mergeBiomaterialsAndMap(List<Biomaterial> biomaterials, Map<String, Map<FieldsInMap, Object>> map) {
 		Map<FieldsInMap, Object> values;
 		for(Biomaterial i: biomaterials) {
-			values = map.get(i.getOperation().getDonor().getTempStorageId());
-			i.getOperation().setDonor(mergeDonorAndMap(i.getOperation().getDonor(), values));
+			try {
+				values = map.get(i.getOperation().getDonor().getTempStorageId());
+				i.getOperation().setDonor(mergeDonorAndMap(i.getOperation().getDonor(), values));
+			} catch (Exception e) {
+				System.out.println(i.getId());
+			}
 		}
 		return biomaterials;
 	}
@@ -196,11 +202,13 @@ public class DonorHelper {
 		donor.setLastName((String)mapWithValues.get(FieldsInMap.LAST_NAME));
 		donor.setMiddleName((String)mapWithValues.get(FieldsInMap.MIDDLE_NAME));
 		if (mapWithValues.get(FieldsInMap.OMC_NUMBER) != null) {
-			String[] insurance = ((String)mapWithValues.get(FieldsInMap.OMC_NUMBER)).split(" ");
-			if (insurance.length > 1) {
-				donor.setInsuranceNumber(insurance[0]);
-				donor.setInsuranceSeries(insurance[1]);
-			}
+			donor.setInsuranceNumber((String)mapWithValues.get(FieldsInMap.OMC_NUMBER));
+		}
+		if (mapWithValues.get(FieldsInMap.OMC_NUMBER) != null) {
+			donor.setInsuranceNumber((String)mapWithValues.get(FieldsInMap.OMC_NUMBER));
+		}
+		if (mapWithValues.get(FieldsInMap.OMC_SERIES) != null) {
+			donor.setInsuranceNumber((String)mapWithValues.get(FieldsInMap.OMC_SERIES));
 		}
 		if (mapWithValues.get(FieldsInMap.PASSPORT_NUMBER) != null) {
 			String[] passport = ((String)mapWithValues.get(FieldsInMap.PASSPORT_NUMBER)).split(" ");
@@ -325,7 +333,8 @@ public class DonorHelper {
 		String lastName = filter.getLastName();
 		String middleName = filter.getMiddleName();
 		String passport = filter.getPassport();
-		String insurance = filter.getInsurance();
+		String insuranceNumber = filter.getInsuranceNumber();
+		String insuranceSeries = filter.getInsuranceSeries();
 		String employment = filter.getEmployment();
 		String workPhone = filter.getWorkPhone();
 		String phone = filter.getPhone();
@@ -343,8 +352,11 @@ public class DonorHelper {
 		if (StringUtils.isNotEmpty(passport)) {
 			mapForSearch.put(FieldsInMap.PASSPORT_NUMBER, passport);
 		}
-		if (StringUtils.isNotEmpty(insurance)) {
-			mapForSearch.put(FieldsInMap.OMC_NUMBER, insurance);
+		if (StringUtils.isNotEmpty(insuranceNumber)) {
+			mapForSearch.put(FieldsInMap.OMC_NUMBER, insuranceNumber);
+		}
+		if (StringUtils.isNotEmpty(insuranceSeries)) {
+			mapForSearch.put(FieldsInMap.OMC_SERIES, insuranceSeries);
 		}
 		if (StringUtils.isNotEmpty(employment)) {
 			mapForSearch.put(FieldsInMap.EMPLOYMENT, employment);
@@ -463,6 +475,14 @@ public class DonorHelper {
 		if (date != null) {
 			DateFormat df = new SimpleDateFormat(pattern);
 			return df.format(date);
+		}
+		return null;
+	}
+	/** Метод для создания и записи даты по одному формату  */
+	public String createStringFromPhone(String phone) {
+		if (phone != null) {
+			phone = phone.replaceAll(" ", "");
+			phone = phone.replaceAll("-", "");
 		}
 		return null;
 	}

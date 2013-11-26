@@ -72,8 +72,9 @@ public class SRPDDao {
 	private static final String EMAIL = "mailto:";
 	
 	private static final String ROOT_ID_FROM_SRPD_FOR_UPDATE ="3.0.0.0";
-	private static final String ROOT_PASSPORT_NUMBER = "3.0.0.2";
-	private static final String ROOT_INSURANCE_NUMBER = "3.0.0.5";
+	private static final String ROOT_PASSPORT_NUMBER = "3.0.0.1";
+	private static final String ROOT_INSURANCE_NUMBER = "3.0.0.9";
+	private static final String ROOT_INSURANCE_SERIES = "3.0.0.8";
 	private static final String DATE_FORMAT_FOR_SRPD = "yyyyMMdd";
 	
 	private static final String SRPD_ADRESS_PROPERTIE = "srpdAdress";
@@ -160,7 +161,8 @@ public class SRPDDao {
 		String result = addPDToSRPDData((String)information.get(FieldsInMap.FIRST_NAME), 
 										(String)information.get(FieldsInMap.LAST_NAME),
 										(String)information.get(FieldsInMap.MIDDLE_NAME), 
-										(String)information.get(FieldsInMap.OMC_NUMBER), 
+										(String)information.get(FieldsInMap.OMC_NUMBER),
+										(String)information.get(FieldsInMap.OMC_SERIES),
 										(String)information.get(FieldsInMap.PASSPORT_NUMBER),
 										(String)information.get(FieldsInMap.PHONE), 
 										(String)information.get(FieldsInMap.ADRESS),
@@ -178,7 +180,8 @@ public class SRPDDao {
 		String lastName = (String)params.get(FieldsInMap.LAST_NAME); 
 		String firstName = (String)params.get(FieldsInMap.FIRST_NAME);
 		String middleName = (String)params.get(FieldsInMap.MIDDLE_NAME); 
-		String insurance = (String)params.get(FieldsInMap.OMC_NUMBER); 
+		String insuranceNumber = (String)params.get(FieldsInMap.OMC_NUMBER);
+		String insuranceSeries = (String)params.get(FieldsInMap.OMC_SERIES);
 		String passport = (String)params.get(FieldsInMap.PASSPORT_NUMBER);
 		String phone = (String)params.get(FieldsInMap.PHONE); 
 		String adress = (String)params.get(FieldsInMap.ADRESS);
@@ -186,7 +189,7 @@ public class SRPDDao {
 		String email = (String)params.get(FieldsInMap.EMAIL);
 		String employment = (String)params.get(FieldsInMap.EMPLOYMENT); 
 		String birth = (String)params.get(FieldsInMap.BIRTH); 
-		String gender = (String)params.get(FieldsInMap.BIRTH);
+		String gender = (String)params.get(FieldsInMap.GENDER);
 		if(StringUtils.isEmpty(tempStorageId)) {
 			return null;
 		}
@@ -236,13 +239,13 @@ public class SRPDDao {
 	    if (StringUtils.isNotEmpty(workPhone)) {
 	    	person.getTelecom().add(createPersonTelecom(factory, workPhone, TelecommunicationAddressUse.WP));
 	    }
-	    if (StringUtils.isNotEmpty(email)) {
+	    /*if (StringUtils.isNotEmpty(email)) {
 	    	person.getTelecom().add(createPersonTelecom(factory, email, null));
-	    }
+	    }*/
 	    
-	    if (StringUtils.isNotEmpty(employment)) {
+	    /*if (StringUtils.isNotEmpty(employment)) {
 	    	person.getAddr().add(createPersonAddr(factory, employment, PostalAddressUse.WP));
-	    }
+	    }*/
 	    if (StringUtils.isNotEmpty(adress)) {
 	    	person.getAddr().add(createPersonAddr(factory, adress, PostalAddressUse.H));
 	    }
@@ -254,10 +257,12 @@ public class SRPDDao {
 	    if (StringUtils.isNotEmpty(passport)) {
 	    	person.getAsOtherIDs().add(createPersonOtherIDs(factory, passport, ROOT_PASSPORT_NUMBER));
 	    }
-	    if (StringUtils.isNotEmpty(insurance)) {
-	    	person.getAsOtherIDs().add(createPersonOtherIDs(factory, insurance, ROOT_INSURANCE_NUMBER));
+	    if (StringUtils.isNotEmpty(insuranceNumber)) {
+	    	person.getAsOtherIDs().add(createPersonOtherIDs(factory, insuranceNumber, ROOT_INSURANCE_NUMBER));
 	    }
-	    
+	    if (StringUtils.isNotEmpty(insuranceSeries)) {
+	    	person.getAsOtherIDs().add(createPersonOtherIDs(factory, insuranceSeries, ROOT_INSURANCE_SERIES));
+	    }
 	    if (StringUtils.isNotEmpty(gender)) {
 	    	person.setAdministrativeGenderCode(createGender(factory, (String)params.get(FieldsInMap.GENDER)));
 	    }
@@ -301,7 +306,7 @@ public class SRPDDao {
 	}
 	
 	public String addPDToSRPDData(String family, String givven, String suffix, 
-			   				  String numberOMC, String numberPassport, String homePhone,
+			   				  String numberOMC, String seriesOMC, String numberPassport, String homePhone,
 			   				  String address, String workPhone, String email, 
 			   				  String employmentId, String birthDate, String genderId) {
 		PRPAIN101311UV02 prm = new PRPAIN101311UV02();
@@ -343,12 +348,12 @@ public class SRPDDao {
         strAdrLine.getContent().add(address);
         adr.getContent().add(factory.createADStreetAddressLine(strAdrLine));
         adreses.add(adr);
-        final ADExplicit adrEmp = factory.createADExplicit();
-        adrEmp.getUse().add(PostalAddressUse.WP);
+        //final ADExplicit adrEmp = factory.createADExplicit();
+        //adrEmp.getUse().add(PostalAddressUse.WP);
         strAdrLine = factory.createAdxpStreetAddressLine();
         strAdrLine.getContent().add(employmentId);
-        adrEmp.getContent().add(factory.createADStreetAddressLine(strAdrLine));
-        adreses.add(adrEmp);
+        //adrEmp.getContent().add(factory.createADStreetAddressLine(strAdrLine));
+        //adreses.add(adrEmp);
         person.getAsOtherIDs().add(new PRPAMT101301UV02OtherIDs() );
         person.getAsOtherIDs().get(0).getId().add(new II());
         person.getAsOtherIDs().get(0).getId().get(0).setRoot(ROOT_PASSPORT_NUMBER);
@@ -356,6 +361,9 @@ public class SRPDDao {
         person.getAsOtherIDs().get(0).getId().add(new II());
         person.getAsOtherIDs().get(0).getId().get(1).setRoot(ROOT_INSURANCE_NUMBER);
         person.getAsOtherIDs().get(0).getId().get(1).setExtension(numberOMC);
+        person.getAsOtherIDs().get(0).getId().add(new II());
+        person.getAsOtherIDs().get(0).getId().get(2).setRoot(ROOT_INSURANCE_SERIES);
+        person.getAsOtherIDs().get(0).getId().get(2).setExtension(seriesOMC);
         
         if (StringUtils.isNotEmpty(homePhone)) {
         	tels.add(createPersonTelecom(factory, homePhone, TelecommunicationAddressUse.HP));
@@ -363,9 +371,9 @@ public class SRPDDao {
         if (StringUtils.isNotEmpty(workPhone)) {
         	tels.add(createPersonTelecom(factory, workPhone, TelecommunicationAddressUse.WP));
         }
-        if (StringUtils.isNotEmpty(email)) {
+        /*if (StringUtils.isNotEmpty(email)) {
         	tels.add(createPersonTelecom(factory, email, null));
-        }
+        }*/
         
         TS birthTime = createBirthTime(factory, birthDate);
         person.setBirthTime(birthTime);
@@ -373,10 +381,15 @@ public class SRPDDao {
         CE ce = createGender(null, genderId);
         person.setAdministrativeGenderCode(ce);
 
-        PRPAIN101312UV02 res = pdm.add(prm);
-        String root = res.getControlActProcess().getSubject().get(0).getRegistrationEvent().getSubject1().getIdentifiedPerson().
+        try {
+        	PRPAIN101312UV02 res = pdm.add(prm);
+        	String root = res.getControlActProcess().getSubject().get(0).getRegistrationEvent().getSubject1().getIdentifiedPerson().
                 getIdentifiedPerson().getId().get(0).getExtension();
-		return root;
+        	return root;
+        } catch (Exception e) {
+        	System.out.println(e);
+			return null;
+		}
 	}
 	/* ---------------------create TEL------------------------------ */
 	private PRPAMT101302UV02PersonTelecom createPersonTelecom(ObjectFactory factory, String value, TelecommunicationAddressUse type) {
@@ -468,7 +481,10 @@ public class SRPDDao {
 	/* ----------- creation tel-format from URL-format ------------ */
 	private String reParseTelcom(String telcom) {
 		if (StringUtils.isNotEmpty(telcom)) {
-			return telcom.split(":")[1];
+			String[]array = telcom.split(":");
+			if (array.length > 1) {
+				return array[1];
+			}
 		}
 		return null;
 	}
@@ -525,9 +541,9 @@ public class SRPDDao {
 	        		if (i.getUse() != null && i.getUse().size() > 0) {
 	        			if (PostalAddressUse.H.equals(i.getUse().get(0))) {
 	        				addr = createAdressFromAD(i);
-	        			} else if (PostalAddressUse.WP.equals(i.getUse().get(0))) {
+	        			}/* else if (PostalAddressUse.WP.equals(i.getUse().get(0))) {
 	        				employment = createAdressFromAD(i);
-	        			}
+	        			}*/
 	        		}
 	        	}
 	        	
@@ -559,11 +575,21 @@ public class SRPDDao {
 	        		}
 	        	} else if (ROOT_INSURANCE_NUMBER.equals(i.getId().get(0).getRoot())) {
 	        		if (StringUtils.isNotEmpty(i.getId().get(0).getExtension().trim())) {
-	        			String[] insurance = reParseNumber(i.getId().get(0).getExtension());
+	        			/*String[] insurance = reParseNumber(i.getId().get(0).getExtension());
 	        			if (insurance.length == 2) {
 	        				insuranceNumber = insurance[0];
 	        				insuranceSeries = insurance[1];
-	        			}
+	        			}*/
+	        			insuranceNumber = i.getId().get(0).getExtension();
+	        		}
+	        	} else if (ROOT_INSURANCE_SERIES.equals(i.getId().get(0).getRoot())) {
+	        		if (StringUtils.isNotEmpty(i.getId().get(0).getExtension().trim())) {
+	        			/*String[] insurance = reParseNumber(i.getId().get(0).getExtension());
+	        			if (insurance.length == 2) {
+	        				insuranceNumber = insurance[0];
+	        				insuranceSeries = insurance[1];
+	        			}*/
+	        			insuranceSeries = i.getId().get(0).getExtension();
 	        		}
 	        	}
 	        }

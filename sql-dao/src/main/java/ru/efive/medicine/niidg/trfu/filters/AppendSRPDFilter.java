@@ -47,9 +47,13 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 	 */
 	private String passport;
 	/**
-	 * Полис ОМС для поиска в ЗХПД; по-умолчанию = null
+	 * Номер полиса ОМС для поиска в ЗХПД; по-умолчанию = null
 	 */
-	private String insurance;
+	private String insuranceNumber;
+	/**
+	 * Серия полиса ОМС для поиска в ЗХПД; по-умолчанию = null
+	 */
+	private String insuranceSeries;
 	/**
 	 * место работы для поиска в ЗХПД; по-умолчанию = null
 	 */
@@ -158,17 +162,21 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 		this.queryToSRPD = true;
 	}
 
-	/**
-	 * @return the insurance
-	 */
-	public String getInsurance() {
-		return insurance;
+	public String getInsuranceNumber() {
+		return insuranceNumber;
 	}
-	/**
-	 * @param insuranceSeries the insurance to set
-	 */
-	public void setInsurance(String insurance) {
-		this.insurance = insurance;
+
+	public void setInsuranceNumber(String insuranceNumber) {
+		this.insuranceNumber = insuranceNumber;
+		this.queryToSRPD = true;
+	}
+
+	public String getInsuranceSeries() {
+		return insuranceSeries;
+	}
+
+	public void setInsuranceSeries(String insuranceSeries) {
+		this.insuranceSeries = insuranceSeries;
 		this.queryToSRPD = true;
 	}
 
@@ -319,7 +327,8 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 		setShowDeleted(((AppendSRPDFilter<T>)source).isShowDeleted());
 		setConjunction(((AppendSRPDFilter<T>)source).isConjunction());
 		setPassport(((AppendSRPDFilter<T>)source).getPassport());
-		setInsurance(((AppendSRPDFilter<T>)source).getInsurance());
+		setInsuranceNumber(((AppendSRPDFilter<T>)source).getInsuranceNumber());
+		setInsuranceSeries(((AppendSRPDFilter<T>)source).getInsuranceSeries());
 		setEmployment(((AppendSRPDFilter<T>)source).getEmployment());
 		setWorkPhone(((AppendSRPDFilter<T>)source).getWorkPhone());
 		setPhone(((AppendSRPDFilter<T>)source).getPhone());
@@ -334,8 +343,8 @@ public abstract class AppendSRPDFilter<T> extends AbstractFilter<T> {
 		middleName = null;
 		passport = null;
 		passport = null;
-		insurance = null;
-		insurance = null;
+		insuranceNumber = null;
+		insuranceSeries = null;
 		employment = null;
 		workPhone = null;
 		phone = null;

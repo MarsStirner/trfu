@@ -1,8 +1,5 @@
 package ru.korusconsulting.migration.dao;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +17,9 @@ public class MigrationDonorHelper extends DonorHelper {
 		map.put(FieldsInMap.MIDDLE_NAME, donor.getMiddleName());
 		map.put(FieldsInMap.OMC_NUMBER, donor.getInsuranceNumber() + " " + donor.getInsuranceSeries());
 		map.put(FieldsInMap.PASSPORT_NUMBER, donor.getPassportNumber() + " " + donor.getPassportSeries());
-		map.put(FieldsInMap.PHONE, donor.getPhone());
+		map.put(FieldsInMap.PHONE, createStringFromPhone(donor.getPhone()));
 		map.put(FieldsInMap.ADRESS, donor.getRegistrationAddress());
-		map.put(FieldsInMap.WORK_PHONE, donor.getWorkPhone());
+		map.put(FieldsInMap.WORK_PHONE, createStringFromPhone(donor.getWorkPhone()));
 		map.put(FieldsInMap.EMPLOYMENT, donor.getEmployment());
 		map.put(FieldsInMap.BIRTH, createStringFromDate(donor.getBirth()));
 		map.put(FieldsInMap.GENDER, ((Integer)donor.getGender()).toString());

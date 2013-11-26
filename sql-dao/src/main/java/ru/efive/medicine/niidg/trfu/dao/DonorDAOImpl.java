@@ -58,25 +58,6 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 		return countDocuments(filter);
 	}
 	
-	/*private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, String filter) {
-		if (StringUtils.isNotEmpty(filter)) {
-			Disjunction disjunction = Restrictions.disjunction();
-	        disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.ilike("externalNumber", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.ilike("lastName", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.ilike("middleName", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.ilike("firstName", filter, MatchMode.ANYWHERE));
-	        criteria.createAlias("donorType", "donorType", CriteriaSpecification.LEFT_JOIN);
-	        disjunction.add(Restrictions.ilike("donorType.value", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.ilike("passportSeries", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.ilike("passportNumber", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.ilike("insuranceSeries", filter, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.ilike("insuranceNumber", filter, MatchMode.ANYWHERE));
-	        criteria.add(disjunction);
-		}
-        return criteria;
-	}*/
-	
 	@SuppressWarnings("unchecked")
 	public List<Donor> findRejectedDocuments(String pattern, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		
@@ -487,7 +468,8 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 				filter.setFirstName(pattern);
 				filter.setMiddleName(pattern);
 				filter.setPassport(pattern);
-				filter.setInsurance(pattern);
+				filter.setInsuranceNumber(pattern);
+				filter.setInsuranceSeries(pattern);
 			}
 			filter.getListFieldsDisjunction().add(fields);
 		}
