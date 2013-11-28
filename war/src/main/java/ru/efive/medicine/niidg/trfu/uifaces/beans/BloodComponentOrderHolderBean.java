@@ -392,6 +392,15 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
 				history.add(getHistoryEntry());
 				request.setHistory(history);
 			}
+			//при нажатии на Компонент выдан вычислить общий объем выданных КК
+			if (request.getStatusId() == 3) {
+				int sumVolume = 0;
+				List<BloodComponent> bloodComponents = bloodComponentList.getDocumentsByOrder(request.getId());
+				for(BloodComponent bloodComponent: bloodComponents) {
+					sumVolume += bloodComponent.getVolume();
+				}
+				request.setVolume(sumVolume);
+			}
 			setDocument(request);
 			BloodComponentOrderHolderBean.this.save();
 		}
