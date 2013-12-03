@@ -1086,7 +1086,6 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		addNotDeletedCriteria(detachedCriteriaSub);
 		addNotSplittedCriteria(detachedCriteriaSub);
 		detachedCriteriaSub = getSearchCriteria(detachedCriteriaSub, filter);
-		addOrderCriteria(orderBy, orderAsc, detachedCriteriaSub);
 		
 		DetachedCriteria criteria = createDetachedCriteria();
 		List<?> ids = getHibernateTemplate().findByCriteria(detachedCriteriaSub);
@@ -1094,6 +1093,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 			return new ArrayList<BloodComponent>();
 		} 
 		criteria.add(Restrictions.in("id", ids));
+		addOrderCriteria(orderBy, orderAsc, criteria);
 		return getHibernateTemplate().findByCriteria(criteria, offset, count);
 	}
 
