@@ -139,6 +139,18 @@ public class User extends IdentifiedEntity {
 				(StringUtils.isNotEmpty(firstName) ? firstName.substring(0, 1) + "." : "") +
 				(StringUtils.isNotEmpty(middleName) ? middleName.substring(0, 1) + "." : ""));
 	}
+	
+	/**
+	 * для использования в теге e5ui:column
+	 */
+	@Transient
+	public Boolean getPropertyDeleted() {
+		return isDeleted();
+	}
+	@Transient
+	public void setPropertyDeleted(Boolean deleted) {
+		setDeleted(deleted);
+	}
 
 	public Boolean isDeleted() {
 		return deleted;

@@ -60,6 +60,12 @@ public class UserListHolderBean extends AbstractDocumentListHolderBean<User> {
 		this.filter = filter;
 	}
 	
+	public void saveUsers() {
+		UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+		userDAO.save(getDocuments());
+		refresh();
+	}
+	
 	
 	private String filter;
 	

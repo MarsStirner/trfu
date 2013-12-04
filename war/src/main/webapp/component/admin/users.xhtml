@@ -53,6 +53,12 @@
             	<e5ui:formPartTarget formPart="main_table_part"/>
            	</h:commandLink>
 		</div>
+		<div class="defbutton">
+			<h:commandLink action="#{userList.saveUsers()}">
+				<h:graphicImage value="#{resource['images:dell_buttn.png']}" />
+				Удалить выбранных пользователей
+			</h:commandLink>
+		</div>
 	</ui:define>
 
 	<ui:define name="content">
@@ -78,6 +84,12 @@
 						<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl"
 									value="#{userList.documents}" var="row" grouping="false">
 							<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+							<e5ui:column style="min-width:3em">
+								<f:facet name="header">
+									<p>Выбрать</p>
+			                    </f:facet>
+								<h:selectBooleanCheckbox value="#{row.propertyDeleted}" />
+							</e5ui:column>
 							<e5ui:column>
 								<f:facet name="header">
 									<h:commandLink action="#{userList.sort('lastName,firstName,middleName')}">
