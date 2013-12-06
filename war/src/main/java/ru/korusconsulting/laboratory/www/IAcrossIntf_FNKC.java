@@ -8,5 +8,5 @@
 package ru.korusconsulting.laboratory.www;
 
 public interface IAcrossIntf_FNKC extends java.rmi.Remote {
-    public int queryAnalysis(DonorInfo donorInfo, DiagnosticRequestInfo diagnosticRequestInfo, BiomaterialInfo biomaterialInfo, OrderInfo orderInfo) throws java.rmi.RemoteException;
+    public int queryAnalysis(ru.korusconsulting.laboratory.www.PatientInfo patientInfo, ru.korusconsulting.laboratory.www.DiagnosticRequestInfo diagnosticRequestInfo, ru.korusconsulting.laboratory.www.BiomaterialInfo biomaterialInfo, ru.korusconsulting.laboratory.www.OrderInfo orderInfo) throws java.rmi.RemoteException;
 }

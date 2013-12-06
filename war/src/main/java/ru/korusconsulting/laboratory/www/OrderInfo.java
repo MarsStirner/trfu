@@ -8,18 +8,66 @@
 package ru.korusconsulting.laboratory.www;
 
 public class OrderInfo  implements java.io.Serializable {
+    private java.lang.String diagnosticCode;
+
+    private java.lang.String diagnosticName;
+
     private int orderPriority;
 
-    private Tindicator[] indicators;
+    private ru.korusconsulting.laboratory.www.Tindicator[] indicators;
 
     public OrderInfo() {
     }
 
     public OrderInfo(
+           java.lang.String diagnosticCode,
+           java.lang.String diagnosticName,
            int orderPriority,
-           Tindicator[] indicators) {
+           ru.korusconsulting.laboratory.www.Tindicator[] indicators) {
+           this.diagnosticCode = diagnosticCode;
+           this.diagnosticName = diagnosticName;
            this.orderPriority = orderPriority;
            this.indicators = indicators;
+    }
+
+
+    /**
+     * Gets the diagnosticCode value for this OrderInfo.
+     * 
+     * @return diagnosticCode
+     */
+    public java.lang.String getDiagnosticCode() {
+        return diagnosticCode;
+    }
+
+
+    /**
+     * Sets the diagnosticCode value for this OrderInfo.
+     * 
+     * @param diagnosticCode
+     */
+    public void setDiagnosticCode(java.lang.String diagnosticCode) {
+        this.diagnosticCode = diagnosticCode;
+    }
+
+
+    /**
+     * Gets the diagnosticName value for this OrderInfo.
+     * 
+     * @return diagnosticName
+     */
+    public java.lang.String getDiagnosticName() {
+        return diagnosticName;
+    }
+
+
+    /**
+     * Sets the diagnosticName value for this OrderInfo.
+     * 
+     * @param diagnosticName
+     */
+    public void setDiagnosticName(java.lang.String diagnosticName) {
+        this.diagnosticName = diagnosticName;
     }
 
 
@@ -48,7 +96,7 @@ public class OrderInfo  implements java.io.Serializable {
      * 
      * @return indicators
      */
-    public Tindicator[] getIndicators() {
+    public ru.korusconsulting.laboratory.www.Tindicator[] getIndicators() {
         return indicators;
     }
 
@@ -58,7 +106,7 @@ public class OrderInfo  implements java.io.Serializable {
      * 
      * @param indicators
      */
-    public void setIndicators(Tindicator[] indicators) {
+    public void setIndicators(ru.korusconsulting.laboratory.www.Tindicator[] indicators) {
         this.indicators = indicators;
     }
 
@@ -74,6 +122,12 @@ public class OrderInfo  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
+            ((this.diagnosticCode==null && other.getDiagnosticCode()==null) || 
+             (this.diagnosticCode!=null &&
+              this.diagnosticCode.equals(other.getDiagnosticCode()))) &&
+            ((this.diagnosticName==null && other.getDiagnosticName()==null) || 
+             (this.diagnosticName!=null &&
+              this.diagnosticName.equals(other.getDiagnosticName()))) &&
             this.orderPriority == other.getOrderPriority() &&
             ((this.indicators==null && other.getIndicators()==null) || 
              (this.indicators!=null &&
@@ -89,6 +143,12 @@ public class OrderInfo  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
+        if (getDiagnosticCode() != null) {
+            _hashCode += getDiagnosticCode().hashCode();
+        }
+        if (getDiagnosticName() != null) {
+            _hashCode += getDiagnosticName().hashCode();
+        }
         _hashCode += getOrderPriority();
         if (getIndicators() != null) {
             for (int i=0;
@@ -112,6 +172,18 @@ public class OrderInfo  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.korusconsulting.ru", "OrderInfo"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("diagnosticCode");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "diagnosticCode"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("diagnosticName");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "diagnosticName"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("orderPriority");
         elemField.setXmlName(new javax.xml.namespace.QName("", "orderPriority"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));

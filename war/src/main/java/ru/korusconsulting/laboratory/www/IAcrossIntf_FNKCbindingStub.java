@@ -7,7 +7,7 @@
 
 package ru.korusconsulting.laboratory.www;
 
-public class IAcrossIntf_FNKCbindingStub extends org.apache.axis.client.Stub implements IAcrossIntf_FNKC {
+public class IAcrossIntf_FNKCbindingStub extends org.apache.axis.client.Stub implements ru.korusconsulting.laboratory.www.IAcrossIntf_FNKC {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
@@ -25,13 +25,13 @@ public class IAcrossIntf_FNKCbindingStub extends org.apache.axis.client.Stub imp
         org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("queryAnalysis");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "DonorInfo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.korusconsulting.ru", "DonorInfo"), DonorInfo.class, false, false);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "PatientInfo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.korusconsulting.ru", "PatientInfo"), ru.korusconsulting.laboratory.www.PatientInfo.class, false, false);
         oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "DiagnosticRequestInfo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.korusconsulting.ru", "DiagnosticRequestInfo"), DiagnosticRequestInfo.class, false, false);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "DiagnosticRequestInfo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.korusconsulting.ru", "DiagnosticRequestInfo"), ru.korusconsulting.laboratory.www.DiagnosticRequestInfo.class, false, false);
         oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "BiomaterialInfo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.korusconsulting.ru", "BiomaterialInfo"), BiomaterialInfo.class, false, false);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "BiomaterialInfo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.korusconsulting.ru", "BiomaterialInfo"), ru.korusconsulting.laboratory.www.BiomaterialInfo.class, false, false);
         oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "OrderInfo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.korusconsulting.ru", "OrderInfo"), OrderInfo.class, false, false);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "OrderInfo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.korusconsulting.ru", "OrderInfo"), ru.korusconsulting.laboratory.www.OrderInfo.class, false, false);
         oper.addParameter(param);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         oper.setReturnClass(int.class);
@@ -73,42 +73,42 @@ public class IAcrossIntf_FNKCbindingStub extends org.apache.axis.client.Stub imp
             java.lang.Class simplelistdf = org.apache.axis.encoding.ser.SimpleListDeserializerFactory.class;
             qName = new javax.xml.namespace.QName("http://www.korusconsulting.ru", "BiomaterialInfo");
             cachedSerQNames.add(qName);
-            cls = BiomaterialInfo.class;
+            cls = ru.korusconsulting.laboratory.www.BiomaterialInfo.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
             qName = new javax.xml.namespace.QName("http://www.korusconsulting.ru", "DiagnosticRequestInfo");
             cachedSerQNames.add(qName);
-            cls = DiagnosticRequestInfo.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.korusconsulting.ru", "DonorInfo");
-            cachedSerQNames.add(qName);
-            cls = DonorInfo.class;
+            cls = ru.korusconsulting.laboratory.www.DiagnosticRequestInfo.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
             qName = new javax.xml.namespace.QName("http://www.korusconsulting.ru", "OrderInfo");
             cachedSerQNames.add(qName);
-            cls = OrderInfo.class;
+            cls = ru.korusconsulting.laboratory.www.OrderInfo.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.korusconsulting.ru", "PatientInfo");
+            cachedSerQNames.add(qName);
+            cls = ru.korusconsulting.laboratory.www.PatientInfo.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
             qName = new javax.xml.namespace.QName("http://www.korusconsulting.ru", "Tindicator");
             cachedSerQNames.add(qName);
-            cls = Tindicator.class;
+            cls = ru.korusconsulting.laboratory.www.Tindicator.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
             qName = new javax.xml.namespace.QName("urn:AcrossIntf_FNKCIntf", "arr_indic");
             cachedSerQNames.add(qName);
-            cls = Tindicator[].class;
+            cls = ru.korusconsulting.laboratory.www.Tindicator[].class;
             cachedSerClasses.add(cls);
             qName = new javax.xml.namespace.QName("http://www.korusconsulting.ru", "Tindicator");
             qName2 = null;
@@ -182,7 +182,7 @@ public class IAcrossIntf_FNKCbindingStub extends org.apache.axis.client.Stub imp
         }
     }
 
-    public int queryAnalysis(DonorInfo donorInfo, DiagnosticRequestInfo diagnosticRequestInfo, BiomaterialInfo biomaterialInfo, OrderInfo orderInfo) throws java.rmi.RemoteException {
+    public int queryAnalysis(ru.korusconsulting.laboratory.www.PatientInfo patientInfo, ru.korusconsulting.laboratory.www.DiagnosticRequestInfo diagnosticRequestInfo, ru.korusconsulting.laboratory.www.BiomaterialInfo biomaterialInfo, ru.korusconsulting.laboratory.www.OrderInfo orderInfo) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -195,7 +195,7 @@ public class IAcrossIntf_FNKCbindingStub extends org.apache.axis.client.Stub imp
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {donorInfo, diagnosticRequestInfo, biomaterialInfo, orderInfo});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {patientInfo, diagnosticRequestInfo, biomaterialInfo, orderInfo});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

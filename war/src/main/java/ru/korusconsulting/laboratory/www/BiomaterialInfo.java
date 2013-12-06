@@ -12,9 +12,13 @@ public class BiomaterialInfo  implements java.io.Serializable {
 
     private java.lang.String orderBiomaterialName;
 
+    private int orderPrefBarCode;
+
     private java.lang.String orderBarCode;
 
     private java.util.Calendar orderProbeDate;
+
+    private java.lang.String orderBiomaterialComment;
 
     public BiomaterialInfo() {
     }
@@ -22,12 +26,16 @@ public class BiomaterialInfo  implements java.io.Serializable {
     public BiomaterialInfo(
            java.lang.String orderBiomaterialCode,
            java.lang.String orderBiomaterialName,
+           int orderPrefBarCode,
            java.lang.String orderBarCode,
-           java.util.Calendar orderProbeDate) {
+           java.util.Calendar orderProbeDate,
+           java.lang.String orderBiomaterialComment) {
            this.orderBiomaterialCode = orderBiomaterialCode;
            this.orderBiomaterialName = orderBiomaterialName;
+           this.orderPrefBarCode = orderPrefBarCode;
            this.orderBarCode = orderBarCode;
            this.orderProbeDate = orderProbeDate;
+           this.orderBiomaterialComment = orderBiomaterialComment;
     }
 
 
@@ -72,6 +80,26 @@ public class BiomaterialInfo  implements java.io.Serializable {
 
 
     /**
+     * Gets the orderPrefBarCode value for this BiomaterialInfo.
+     * 
+     * @return orderPrefBarCode
+     */
+    public int getOrderPrefBarCode() {
+        return orderPrefBarCode;
+    }
+
+
+    /**
+     * Sets the orderPrefBarCode value for this BiomaterialInfo.
+     * 
+     * @param orderPrefBarCode
+     */
+    public void setOrderPrefBarCode(int orderPrefBarCode) {
+        this.orderPrefBarCode = orderPrefBarCode;
+    }
+
+
+    /**
      * Gets the orderBarCode value for this BiomaterialInfo.
      * 
      * @return orderBarCode
@@ -110,6 +138,26 @@ public class BiomaterialInfo  implements java.io.Serializable {
         this.orderProbeDate = orderProbeDate;
     }
 
+
+    /**
+     * Gets the orderBiomaterialComment value for this BiomaterialInfo.
+     * 
+     * @return orderBiomaterialComment
+     */
+    public java.lang.String getOrderBiomaterialComment() {
+        return orderBiomaterialComment;
+    }
+
+
+    /**
+     * Sets the orderBiomaterialComment value for this BiomaterialInfo.
+     * 
+     * @param orderBiomaterialComment
+     */
+    public void setOrderBiomaterialComment(java.lang.String orderBiomaterialComment) {
+        this.orderBiomaterialComment = orderBiomaterialComment;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof BiomaterialInfo)) return false;
@@ -128,12 +176,16 @@ public class BiomaterialInfo  implements java.io.Serializable {
             ((this.orderBiomaterialName==null && other.getOrderBiomaterialName()==null) || 
              (this.orderBiomaterialName!=null &&
               this.orderBiomaterialName.equals(other.getOrderBiomaterialName()))) &&
+            this.orderPrefBarCode == other.getOrderPrefBarCode() &&
             ((this.orderBarCode==null && other.getOrderBarCode()==null) || 
              (this.orderBarCode!=null &&
               this.orderBarCode.equals(other.getOrderBarCode()))) &&
             ((this.orderProbeDate==null && other.getOrderProbeDate()==null) || 
              (this.orderProbeDate!=null &&
-              this.orderProbeDate.equals(other.getOrderProbeDate())));
+              this.orderProbeDate.equals(other.getOrderProbeDate()))) &&
+            ((this.orderBiomaterialComment==null && other.getOrderBiomaterialComment()==null) || 
+             (this.orderBiomaterialComment!=null &&
+              this.orderBiomaterialComment.equals(other.getOrderBiomaterialComment())));
         __equalsCalc = null;
         return _equals;
     }
@@ -151,11 +203,15 @@ public class BiomaterialInfo  implements java.io.Serializable {
         if (getOrderBiomaterialName() != null) {
             _hashCode += getOrderBiomaterialName().hashCode();
         }
+        _hashCode += getOrderPrefBarCode();
         if (getOrderBarCode() != null) {
             _hashCode += getOrderBarCode().hashCode();
         }
         if (getOrderProbeDate() != null) {
             _hashCode += getOrderProbeDate().hashCode();
+        }
+        if (getOrderBiomaterialComment() != null) {
+            _hashCode += getOrderBiomaterialComment().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -180,6 +236,12 @@ public class BiomaterialInfo  implements java.io.Serializable {
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderPrefBarCode");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderPrefBarCode"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("orderBarCode");
         elemField.setXmlName(new javax.xml.namespace.QName("", "orderBarCode"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
@@ -190,6 +252,12 @@ public class BiomaterialInfo  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("", "orderProbeDate"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
         elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderBiomaterialComment");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderBiomaterialComment"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
     }
 

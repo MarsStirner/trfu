@@ -36,7 +36,7 @@ import ru.korusconsulting.laboratory.www.IAcrossIntf_FNKC;
 import ru.korusconsulting.laboratory.www.IAcrossIntf_FNKCservice;
 import ru.korusconsulting.laboratory.www.IAcrossIntf_FNKCserviceLocator;
 import ru.korusconsulting.laboratory.www.OrderInfo;
-import ru.korusconsulting.laboratory.www.DonorInfo;
+import ru.korusconsulting.laboratory.www.PatientInfo;
 import ru.korusconsulting.laboratory.www.Tindicator;
 
 public class IntegrationHelper {
@@ -83,29 +83,29 @@ public class IntegrationHelper {
 				boolean failureFlag = false;
 				List<String> failureDescription = new ArrayList<String>();
 				IAcrossIntf_FNKCservice service = new IAcrossIntf_FNKCserviceLocator();
-				DonorInfo donor = new DonorInfo();
-				donor.setId(examination.getDonor().getId());
+				PatientInfo donor = new PatientInfo();
+				donor.setPatientMisId(examination.getDonor().getId());
 				if (examination.getDonor().getBirth() == null) {
 					failureFlag = true;
 					failureDescription.add("Не указана дата рождения донора");
 				}
 				else {
-					donor.setBirthDate(new SimpleDateFormat("dd.MM.yyyy").format(examination.getDonor().getBirth()));
+					donor.setPatientBirthDate(new SimpleDateFormat("dd.MM.yyyy").format(examination.getDonor().getBirth()));
 				}
-				donor.setLastName(examination.getDonor().getLastName());
-				donor.setFirstName(examination.getDonor().getFirstName());
-				donor.setMiddleName(examination.getDonor().getMiddleName());
-				donor.setGender(examination.getDonor().getGender() == 0? 2: 1);
+				donor.setPatientFamily(examination.getDonor().getLastName());
+				donor.setPatientName(examination.getDonor().getFirstName());
+				donor.setPatientPatronum(examination.getDonor().getMiddleName());
+				donor.setPatientSex(examination.getDonor().getGender() == 0? 2: 1);
 				
 				DiagnosticRequestInfo request = new DiagnosticRequestInfo();
-				request.setOrderId(examination.getAppointment().getId());
+				request.setOrderMisId(examination.getAppointment().getId());
 				Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
 				calendar.setTime(examination.getAppointment().getCreated());
-				request.setOrderDate(calendar);
-				request.setOrderPhysicianLastName(examination.getAppointment().getAuthor().getLastName());
-				request.setOrderPhysicianFirstName(examination.getAppointment().getAuthor().getFirstName());
-				request.setOrderPhysicianMiddleName(examination.getAppointment().getAuthor().getMiddleName());
-				request.setOrderPhysicianId("0");
+				request.setOrderMisDate(calendar);
+				request.setOrderDoctorFamily(examination.getAppointment().getAuthor().getLastName());
+				request.setOrderDoctorName(examination.getAppointment().getAuthor().getFirstName());
+				request.setOrderDoctorPatronum(examination.getAppointment().getAuthor().getMiddleName());
+				request.setOrderDoctorMisId("0");
 				
 				BiomaterialInfo biomaterial = new BiomaterialInfo();
 				biomaterial.setOrderBiomaterialCode("");
@@ -202,29 +202,29 @@ public class IntegrationHelper {
 				boolean failureFlag = false;
 				List<String> failureDescription = new ArrayList<String>();
 				IAcrossIntf_FNKCservice service = new IAcrossIntf_FNKCserviceLocator();
-				DonorInfo donor = new DonorInfo();
-				donor.setId(donation.getDonor().getId());
+				PatientInfo donor = new PatientInfo();
+				donor.setPatientMisId(donation.getDonor().getId());
 				if (donation.getDonor().getBirth() == null) {
 					failureFlag = true;
 					failureDescription.add("Не указана дата рождения донора");
 				}
 				else {
-					donor.setBirthDate(new SimpleDateFormat("dd.MM.yyyy").format(donation.getDonor().getBirth()));
+					donor.setPatientBirthDate(new SimpleDateFormat("dd.MM.yyyy").format(donation.getDonor().getBirth()));
 				}
-				donor.setLastName(donation.getDonor().getLastName());
-				donor.setFirstName(donation.getDonor().getFirstName());
-				donor.setMiddleName(donation.getDonor().getMiddleName());
-				donor.setGender(donation.getDonor().getGender() == 0? 2: 1);
+				donor.setPatientFamily(donation.getDonor().getLastName());
+				donor.setPatientName(donation.getDonor().getFirstName());
+				donor.setPatientPatronum(donation.getDonor().getMiddleName());
+				donor.setPatientSex(donation.getDonor().getGender() == 0? 2: 1);
 				
 				DiagnosticRequestInfo request = new DiagnosticRequestInfo();
-				request.setOrderId(donation.getAppointment().getId());
+				request.setOrderMisId(donation.getAppointment().getId());
 				Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
 				calendar.setTime(donation.getAppointment().getCreated());
-				request.setOrderDate(calendar);
-				request.setOrderPhysicianLastName(donation.getAppointment().getAuthor().getLastName());
-				request.setOrderPhysicianFirstName(donation.getAppointment().getAuthor().getFirstName());
-				request.setOrderPhysicianMiddleName(donation.getAppointment().getAuthor().getMiddleName());
-				request.setOrderPhysicianId("0");
+				request.setOrderMisDate(calendar);
+				request.setOrderDoctorFamily(donation.getAppointment().getAuthor().getLastName());
+				request.setOrderDoctorName(donation.getAppointment().getAuthor().getFirstName());
+				request.setOrderDoctorPatronum(donation.getAppointment().getAuthor().getMiddleName());
+				request.setOrderDoctorMisId("0");
 				
 				BiomaterialInfo biomaterial = new BiomaterialInfo();
 				biomaterial.setOrderBiomaterialCode("");

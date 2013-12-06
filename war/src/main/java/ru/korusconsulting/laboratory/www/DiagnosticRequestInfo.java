@@ -8,154 +8,346 @@
 package ru.korusconsulting.laboratory.www;
 
 public class DiagnosticRequestInfo  implements java.io.Serializable {
-    private int orderId;
+    private int orderMisId;
 
-    private java.util.Calendar orderDate;
+    private java.lang.String orderCaseId;
 
-    private java.lang.String orderPhysicianLastName;
+    private int orderFinanceId;
 
-    private java.lang.String orderPhysicianFirstName;
+    private java.util.Calendar orderMisDate;
 
-    private java.lang.String orderPhysicianMiddleName;
+    private int orderPregnat;
 
-    private java.lang.String orderPhysicianId;
+    private java.lang.String orderDiagCode;
+
+    private java.lang.String orderDiagText;
+
+    private java.lang.String orderComment;
+
+    private java.lang.String orderDepartmentName;
+
+    private java.lang.String orderDepartmentMisId;
+
+    private java.lang.String orderDoctorFamily;
+
+    private java.lang.String orderDoctorName;
+
+    private java.lang.String orderDoctorPatronum;
+
+    private java.lang.String orderDoctorMisId;
 
     public DiagnosticRequestInfo() {
     }
 
     public DiagnosticRequestInfo(
-           int orderId,
-           java.util.Calendar orderDate,
-           java.lang.String orderPhysicianLastName,
-           java.lang.String orderPhysicianFirstName,
-           java.lang.String orderPhysicianMiddleName,
-           java.lang.String orderPhysicianId) {
-           this.orderId = orderId;
-           this.orderDate = orderDate;
-           this.orderPhysicianLastName = orderPhysicianLastName;
-           this.orderPhysicianFirstName = orderPhysicianFirstName;
-           this.orderPhysicianMiddleName = orderPhysicianMiddleName;
-           this.orderPhysicianId = orderPhysicianId;
+           int orderMisId,
+           java.lang.String orderCaseId,
+           int orderFinanceId,
+           java.util.Calendar orderMisDate,
+           int orderPregnat,
+           java.lang.String orderDiagCode,
+           java.lang.String orderDiagText,
+           java.lang.String orderComment,
+           java.lang.String orderDepartmentName,
+           java.lang.String orderDepartmentMisId,
+           java.lang.String orderDoctorFamily,
+           java.lang.String orderDoctorName,
+           java.lang.String orderDoctorPatronum,
+           java.lang.String orderDoctorMisId) {
+           this.orderMisId = orderMisId;
+           this.orderCaseId = orderCaseId;
+           this.orderFinanceId = orderFinanceId;
+           this.orderMisDate = orderMisDate;
+           this.orderPregnat = orderPregnat;
+           this.orderDiagCode = orderDiagCode;
+           this.orderDiagText = orderDiagText;
+           this.orderComment = orderComment;
+           this.orderDepartmentName = orderDepartmentName;
+           this.orderDepartmentMisId = orderDepartmentMisId;
+           this.orderDoctorFamily = orderDoctorFamily;
+           this.orderDoctorName = orderDoctorName;
+           this.orderDoctorPatronum = orderDoctorPatronum;
+           this.orderDoctorMisId = orderDoctorMisId;
     }
 
 
     /**
-     * Gets the orderId value for this DiagnosticRequestInfo.
+     * Gets the orderMisId value for this DiagnosticRequestInfo.
      * 
-     * @return orderId
+     * @return orderMisId
      */
-    public int getOrderId() {
-        return orderId;
+    public int getOrderMisId() {
+        return orderMisId;
     }
 
 
     /**
-     * Sets the orderId value for this DiagnosticRequestInfo.
+     * Sets the orderMisId value for this DiagnosticRequestInfo.
      * 
-     * @param orderId
+     * @param orderMisId
      */
-    public void setOrderId(int orderId) {
-        this.orderId = orderId;
+    public void setOrderMisId(int orderMisId) {
+        this.orderMisId = orderMisId;
     }
 
 
     /**
-     * Gets the orderDate value for this DiagnosticRequestInfo.
+     * Gets the orderCaseId value for this DiagnosticRequestInfo.
      * 
-     * @return orderDate
+     * @return orderCaseId
      */
-    public java.util.Calendar getOrderDate() {
-        return orderDate;
+    public java.lang.String getOrderCaseId() {
+        return orderCaseId;
     }
 
 
     /**
-     * Sets the orderDate value for this DiagnosticRequestInfo.
+     * Sets the orderCaseId value for this DiagnosticRequestInfo.
      * 
-     * @param orderDate
+     * @param orderCaseId
      */
-    public void setOrderDate(java.util.Calendar orderDate) {
-        this.orderDate = orderDate;
+    public void setOrderCaseId(java.lang.String orderCaseId) {
+        this.orderCaseId = orderCaseId;
     }
 
 
     /**
-     * Gets the orderPhysicianLastName value for this DiagnosticRequestInfo.
+     * Gets the orderFinanceId value for this DiagnosticRequestInfo.
      * 
-     * @return orderPhysicianLastName
+     * @return orderFinanceId
      */
-    public java.lang.String getOrderPhysicianLastName() {
-        return orderPhysicianLastName;
+    public int getOrderFinanceId() {
+        return orderFinanceId;
     }
 
 
     /**
-     * Sets the orderPhysicianLastName value for this DiagnosticRequestInfo.
+     * Sets the orderFinanceId value for this DiagnosticRequestInfo.
      * 
-     * @param orderPhysicianLastName
+     * @param orderFinanceId
      */
-    public void setOrderPhysicianLastName(java.lang.String orderPhysicianLastName) {
-        this.orderPhysicianLastName = orderPhysicianLastName;
+    public void setOrderFinanceId(int orderFinanceId) {
+        this.orderFinanceId = orderFinanceId;
     }
 
 
     /**
-     * Gets the orderPhysicianFirstName value for this DiagnosticRequestInfo.
+     * Gets the orderMisDate value for this DiagnosticRequestInfo.
      * 
-     * @return orderPhysicianFirstName
+     * @return orderMisDate
      */
-    public java.lang.String getOrderPhysicianFirstName() {
-        return orderPhysicianFirstName;
+    public java.util.Calendar getOrderMisDate() {
+        return orderMisDate;
     }
 
 
     /**
-     * Sets the orderPhysicianFirstName value for this DiagnosticRequestInfo.
+     * Sets the orderMisDate value for this DiagnosticRequestInfo.
      * 
-     * @param orderPhysicianFirstName
+     * @param orderMisDate
      */
-    public void setOrderPhysicianFirstName(java.lang.String orderPhysicianFirstName) {
-        this.orderPhysicianFirstName = orderPhysicianFirstName;
+    public void setOrderMisDate(java.util.Calendar orderMisDate) {
+        this.orderMisDate = orderMisDate;
     }
 
 
     /**
-     * Gets the orderPhysicianMiddleName value for this DiagnosticRequestInfo.
+     * Gets the orderPregnat value for this DiagnosticRequestInfo.
      * 
-     * @return orderPhysicianMiddleName
+     * @return orderPregnat
      */
-    public java.lang.String getOrderPhysicianMiddleName() {
-        return orderPhysicianMiddleName;
+    public int getOrderPregnat() {
+        return orderPregnat;
     }
 
 
     /**
-     * Sets the orderPhysicianMiddleName value for this DiagnosticRequestInfo.
+     * Sets the orderPregnat value for this DiagnosticRequestInfo.
      * 
-     * @param orderPhysicianMiddleName
+     * @param orderPregnat
      */
-    public void setOrderPhysicianMiddleName(java.lang.String orderPhysicianMiddleName) {
-        this.orderPhysicianMiddleName = orderPhysicianMiddleName;
+    public void setOrderPregnat(int orderPregnat) {
+        this.orderPregnat = orderPregnat;
     }
 
 
     /**
-     * Gets the orderPhysicianId value for this DiagnosticRequestInfo.
+     * Gets the orderDiagCode value for this DiagnosticRequestInfo.
      * 
-     * @return orderPhysicianId
+     * @return orderDiagCode
      */
-    public java.lang.String getOrderPhysicianId() {
-        return orderPhysicianId;
+    public java.lang.String getOrderDiagCode() {
+        return orderDiagCode;
     }
 
 
     /**
-     * Sets the orderPhysicianId value for this DiagnosticRequestInfo.
+     * Sets the orderDiagCode value for this DiagnosticRequestInfo.
      * 
-     * @param orderPhysicianId
+     * @param orderDiagCode
      */
-    public void setOrderPhysicianId(java.lang.String orderPhysicianId) {
-        this.orderPhysicianId = orderPhysicianId;
+    public void setOrderDiagCode(java.lang.String orderDiagCode) {
+        this.orderDiagCode = orderDiagCode;
+    }
+
+
+    /**
+     * Gets the orderDiagText value for this DiagnosticRequestInfo.
+     * 
+     * @return orderDiagText
+     */
+    public java.lang.String getOrderDiagText() {
+        return orderDiagText;
+    }
+
+
+    /**
+     * Sets the orderDiagText value for this DiagnosticRequestInfo.
+     * 
+     * @param orderDiagText
+     */
+    public void setOrderDiagText(java.lang.String orderDiagText) {
+        this.orderDiagText = orderDiagText;
+    }
+
+
+    /**
+     * Gets the orderComment value for this DiagnosticRequestInfo.
+     * 
+     * @return orderComment
+     */
+    public java.lang.String getOrderComment() {
+        return orderComment;
+    }
+
+
+    /**
+     * Sets the orderComment value for this DiagnosticRequestInfo.
+     * 
+     * @param orderComment
+     */
+    public void setOrderComment(java.lang.String orderComment) {
+        this.orderComment = orderComment;
+    }
+
+
+    /**
+     * Gets the orderDepartmentName value for this DiagnosticRequestInfo.
+     * 
+     * @return orderDepartmentName
+     */
+    public java.lang.String getOrderDepartmentName() {
+        return orderDepartmentName;
+    }
+
+
+    /**
+     * Sets the orderDepartmentName value for this DiagnosticRequestInfo.
+     * 
+     * @param orderDepartmentName
+     */
+    public void setOrderDepartmentName(java.lang.String orderDepartmentName) {
+        this.orderDepartmentName = orderDepartmentName;
+    }
+
+
+    /**
+     * Gets the orderDepartmentMisId value for this DiagnosticRequestInfo.
+     * 
+     * @return orderDepartmentMisId
+     */
+    public java.lang.String getOrderDepartmentMisId() {
+        return orderDepartmentMisId;
+    }
+
+
+    /**
+     * Sets the orderDepartmentMisId value for this DiagnosticRequestInfo.
+     * 
+     * @param orderDepartmentMisId
+     */
+    public void setOrderDepartmentMisId(java.lang.String orderDepartmentMisId) {
+        this.orderDepartmentMisId = orderDepartmentMisId;
+    }
+
+
+    /**
+     * Gets the orderDoctorFamily value for this DiagnosticRequestInfo.
+     * 
+     * @return orderDoctorFamily
+     */
+    public java.lang.String getOrderDoctorFamily() {
+        return orderDoctorFamily;
+    }
+
+
+    /**
+     * Sets the orderDoctorFamily value for this DiagnosticRequestInfo.
+     * 
+     * @param orderDoctorFamily
+     */
+    public void setOrderDoctorFamily(java.lang.String orderDoctorFamily) {
+        this.orderDoctorFamily = orderDoctorFamily;
+    }
+
+
+    /**
+     * Gets the orderDoctorName value for this DiagnosticRequestInfo.
+     * 
+     * @return orderDoctorName
+     */
+    public java.lang.String getOrderDoctorName() {
+        return orderDoctorName;
+    }
+
+
+    /**
+     * Sets the orderDoctorName value for this DiagnosticRequestInfo.
+     * 
+     * @param orderDoctorName
+     */
+    public void setOrderDoctorName(java.lang.String orderDoctorName) {
+        this.orderDoctorName = orderDoctorName;
+    }
+
+
+    /**
+     * Gets the orderDoctorPatronum value for this DiagnosticRequestInfo.
+     * 
+     * @return orderDoctorPatronum
+     */
+    public java.lang.String getOrderDoctorPatronum() {
+        return orderDoctorPatronum;
+    }
+
+
+    /**
+     * Sets the orderDoctorPatronum value for this DiagnosticRequestInfo.
+     * 
+     * @param orderDoctorPatronum
+     */
+    public void setOrderDoctorPatronum(java.lang.String orderDoctorPatronum) {
+        this.orderDoctorPatronum = orderDoctorPatronum;
+    }
+
+
+    /**
+     * Gets the orderDoctorMisId value for this DiagnosticRequestInfo.
+     * 
+     * @return orderDoctorMisId
+     */
+    public java.lang.String getOrderDoctorMisId() {
+        return orderDoctorMisId;
+    }
+
+
+    /**
+     * Sets the orderDoctorMisId value for this DiagnosticRequestInfo.
+     * 
+     * @param orderDoctorMisId
+     */
+    public void setOrderDoctorMisId(java.lang.String orderDoctorMisId) {
+        this.orderDoctorMisId = orderDoctorMisId;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -170,22 +362,42 @@ public class DiagnosticRequestInfo  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            this.orderId == other.getOrderId() &&
-            ((this.orderDate==null && other.getOrderDate()==null) || 
-             (this.orderDate!=null &&
-              this.orderDate.equals(other.getOrderDate()))) &&
-            ((this.orderPhysicianLastName==null && other.getOrderPhysicianLastName()==null) || 
-             (this.orderPhysicianLastName!=null &&
-              this.orderPhysicianLastName.equals(other.getOrderPhysicianLastName()))) &&
-            ((this.orderPhysicianFirstName==null && other.getOrderPhysicianFirstName()==null) || 
-             (this.orderPhysicianFirstName!=null &&
-              this.orderPhysicianFirstName.equals(other.getOrderPhysicianFirstName()))) &&
-            ((this.orderPhysicianMiddleName==null && other.getOrderPhysicianMiddleName()==null) || 
-             (this.orderPhysicianMiddleName!=null &&
-              this.orderPhysicianMiddleName.equals(other.getOrderPhysicianMiddleName()))) &&
-            ((this.orderPhysicianId==null && other.getOrderPhysicianId()==null) || 
-             (this.orderPhysicianId!=null &&
-              this.orderPhysicianId.equals(other.getOrderPhysicianId())));
+            this.orderMisId == other.getOrderMisId() &&
+            ((this.orderCaseId==null && other.getOrderCaseId()==null) || 
+             (this.orderCaseId!=null &&
+              this.orderCaseId.equals(other.getOrderCaseId()))) &&
+            this.orderFinanceId == other.getOrderFinanceId() &&
+            ((this.orderMisDate==null && other.getOrderMisDate()==null) || 
+             (this.orderMisDate!=null &&
+              this.orderMisDate.equals(other.getOrderMisDate()))) &&
+            this.orderPregnat == other.getOrderPregnat() &&
+            ((this.orderDiagCode==null && other.getOrderDiagCode()==null) || 
+             (this.orderDiagCode!=null &&
+              this.orderDiagCode.equals(other.getOrderDiagCode()))) &&
+            ((this.orderDiagText==null && other.getOrderDiagText()==null) || 
+             (this.orderDiagText!=null &&
+              this.orderDiagText.equals(other.getOrderDiagText()))) &&
+            ((this.orderComment==null && other.getOrderComment()==null) || 
+             (this.orderComment!=null &&
+              this.orderComment.equals(other.getOrderComment()))) &&
+            ((this.orderDepartmentName==null && other.getOrderDepartmentName()==null) || 
+             (this.orderDepartmentName!=null &&
+              this.orderDepartmentName.equals(other.getOrderDepartmentName()))) &&
+            ((this.orderDepartmentMisId==null && other.getOrderDepartmentMisId()==null) || 
+             (this.orderDepartmentMisId!=null &&
+              this.orderDepartmentMisId.equals(other.getOrderDepartmentMisId()))) &&
+            ((this.orderDoctorFamily==null && other.getOrderDoctorFamily()==null) || 
+             (this.orderDoctorFamily!=null &&
+              this.orderDoctorFamily.equals(other.getOrderDoctorFamily()))) &&
+            ((this.orderDoctorName==null && other.getOrderDoctorName()==null) || 
+             (this.orderDoctorName!=null &&
+              this.orderDoctorName.equals(other.getOrderDoctorName()))) &&
+            ((this.orderDoctorPatronum==null && other.getOrderDoctorPatronum()==null) || 
+             (this.orderDoctorPatronum!=null &&
+              this.orderDoctorPatronum.equals(other.getOrderDoctorPatronum()))) &&
+            ((this.orderDoctorMisId==null && other.getOrderDoctorMisId()==null) || 
+             (this.orderDoctorMisId!=null &&
+              this.orderDoctorMisId.equals(other.getOrderDoctorMisId())));
         __equalsCalc = null;
         return _equals;
     }
@@ -197,21 +409,41 @@ public class DiagnosticRequestInfo  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        _hashCode += getOrderId();
-        if (getOrderDate() != null) {
-            _hashCode += getOrderDate().hashCode();
+        _hashCode += getOrderMisId();
+        if (getOrderCaseId() != null) {
+            _hashCode += getOrderCaseId().hashCode();
         }
-        if (getOrderPhysicianLastName() != null) {
-            _hashCode += getOrderPhysicianLastName().hashCode();
+        _hashCode += getOrderFinanceId();
+        if (getOrderMisDate() != null) {
+            _hashCode += getOrderMisDate().hashCode();
         }
-        if (getOrderPhysicianFirstName() != null) {
-            _hashCode += getOrderPhysicianFirstName().hashCode();
+        _hashCode += getOrderPregnat();
+        if (getOrderDiagCode() != null) {
+            _hashCode += getOrderDiagCode().hashCode();
         }
-        if (getOrderPhysicianMiddleName() != null) {
-            _hashCode += getOrderPhysicianMiddleName().hashCode();
+        if (getOrderDiagText() != null) {
+            _hashCode += getOrderDiagText().hashCode();
         }
-        if (getOrderPhysicianId() != null) {
-            _hashCode += getOrderPhysicianId().hashCode();
+        if (getOrderComment() != null) {
+            _hashCode += getOrderComment().hashCode();
+        }
+        if (getOrderDepartmentName() != null) {
+            _hashCode += getOrderDepartmentName().hashCode();
+        }
+        if (getOrderDepartmentMisId() != null) {
+            _hashCode += getOrderDepartmentMisId().hashCode();
+        }
+        if (getOrderDoctorFamily() != null) {
+            _hashCode += getOrderDoctorFamily().hashCode();
+        }
+        if (getOrderDoctorName() != null) {
+            _hashCode += getOrderDoctorName().hashCode();
+        }
+        if (getOrderDoctorPatronum() != null) {
+            _hashCode += getOrderDoctorPatronum().hashCode();
+        }
+        if (getOrderDoctorMisId() != null) {
+            _hashCode += getOrderDoctorMisId().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -224,38 +456,86 @@ public class DiagnosticRequestInfo  implements java.io.Serializable {
     static {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.korusconsulting.ru", "DiagnosticRequestInfo"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("orderId");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "orderId"));
+        elemField.setFieldName("orderMisId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderMisId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("orderDate");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "orderDate"));
+        elemField.setFieldName("orderCaseId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderCaseId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderFinanceId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderFinanceId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderMisDate");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderMisDate"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("orderPhysicianLastName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "orderPhysicianLastName"));
+        elemField.setFieldName("orderPregnat");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderPregnat"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderDiagCode");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderDiagCode"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderDiagText");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderDiagText"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderComment");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderComment"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderDepartmentName");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderDepartmentName"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderDepartmentMisId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderDepartmentMisId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderDoctorFamily");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderDoctorFamily"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("orderPhysicianFirstName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "orderPhysicianFirstName"));
+        elemField.setFieldName("orderDoctorName");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderDoctorName"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("orderPhysicianMiddleName");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "orderPhysicianMiddleName"));
+        elemField.setFieldName("orderDoctorPatronum");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderDoctorPatronum"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("orderPhysicianId");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "orderPhysicianId"));
+        elemField.setFieldName("orderDoctorMisId");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "orderDoctorMisId"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

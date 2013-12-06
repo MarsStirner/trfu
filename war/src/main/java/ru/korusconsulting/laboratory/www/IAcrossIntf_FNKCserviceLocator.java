@@ -7,7 +7,7 @@
 
 package ru.korusconsulting.laboratory.www;
 
-public class IAcrossIntf_FNKCserviceLocator extends org.apache.axis.client.Service implements IAcrossIntf_FNKCservice {
+public class IAcrossIntf_FNKCserviceLocator extends org.apache.axis.client.Service implements ru.korusconsulting.laboratory.www.IAcrossIntf_FNKCservice {
 
     public IAcrossIntf_FNKCserviceLocator() {
     }
@@ -22,7 +22,7 @@ public class IAcrossIntf_FNKCserviceLocator extends org.apache.axis.client.Servi
     }
 
     // Use to get a proxy class for IAcrossIntf_FNKCPort
-    private java.lang.String IAcrossIntf_FNKCPort_address = "http://node1-lis/ws_acl_trfu/AcrossWebServ_TRFU.exe/soap/IAcrossIntf_FNKC";
+    private java.lang.String IAcrossIntf_FNKCPort_address = "http://10.129.188.43/ws_acl/AcrossWebServ.exe/soap/IAcrossIntf_FNKC";
 
     public java.lang.String getIAcrossIntf_FNKCPortAddress() {
         return IAcrossIntf_FNKCPort_address;
@@ -39,7 +39,7 @@ public class IAcrossIntf_FNKCserviceLocator extends org.apache.axis.client.Servi
         IAcrossIntf_FNKCPortWSDDServiceName = name;
     }
 
-    public IAcrossIntf_FNKC getIAcrossIntf_FNKCPort() throws javax.xml.rpc.ServiceException {
+    public ru.korusconsulting.laboratory.www.IAcrossIntf_FNKC getIAcrossIntf_FNKCPort() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(IAcrossIntf_FNKCPort_address);
@@ -50,9 +50,9 @@ public class IAcrossIntf_FNKCserviceLocator extends org.apache.axis.client.Servi
         return getIAcrossIntf_FNKCPort(endpoint);
     }
 
-    public IAcrossIntf_FNKC getIAcrossIntf_FNKCPort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public ru.korusconsulting.laboratory.www.IAcrossIntf_FNKC getIAcrossIntf_FNKCPort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            IAcrossIntf_FNKCbindingStub _stub = new IAcrossIntf_FNKCbindingStub(portAddress, this);
+            ru.korusconsulting.laboratory.www.IAcrossIntf_FNKCbindingStub _stub = new ru.korusconsulting.laboratory.www.IAcrossIntf_FNKCbindingStub(portAddress, this);
             _stub.setPortName(getIAcrossIntf_FNKCPortWSDDServiceName());
             return _stub;
         }
@@ -72,8 +72,8 @@ public class IAcrossIntf_FNKCserviceLocator extends org.apache.axis.client.Servi
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (IAcrossIntf_FNKC.class.isAssignableFrom(serviceEndpointInterface)) {
-                IAcrossIntf_FNKCbindingStub _stub = new IAcrossIntf_FNKCbindingStub(new java.net.URL(IAcrossIntf_FNKCPort_address), this);
+            if (ru.korusconsulting.laboratory.www.IAcrossIntf_FNKC.class.isAssignableFrom(serviceEndpointInterface)) {
+                ru.korusconsulting.laboratory.www.IAcrossIntf_FNKCbindingStub _stub = new ru.korusconsulting.laboratory.www.IAcrossIntf_FNKCbindingStub(new java.net.URL(IAcrossIntf_FNKCPort_address), this);
                 _stub.setPortName(getIAcrossIntf_FNKCPortWSDDServiceName());
                 return _stub;
             }
