@@ -11,6 +11,7 @@ import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.StringType;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.util.Assert;
@@ -409,6 +410,27 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 				break;
 			case EQ:
 				crit = Restrictions.eq(bean.getFieldName(), bean.getValue());
+				break;
+			case GE:
+				crit = Restrictions.ge(bean.getFieldName(), bean.getValue());
+				break;
+			case NULL:
+				crit = Restrictions.isNull(bean.getFieldName());
+				break;
+			case NOT_NULL:
+				crit = Restrictions.isNotNull(bean.getFieldName());
+				break;
+			case LE:
+				crit = Restrictions.le(bean.getFieldName(), bean.getValue());
+				break;
+			case LT:
+				crit = Restrictions.lt(bean.getFieldName(), bean.getValue());
+				break;
+			case NE:
+				crit = Restrictions.ne(bean.getFieldName(), bean.getValue());
+				break;
+			case SQL:
+				crit = Restrictions.sqlRestriction(bean.getFieldName(),bean.getValue(), new StringType());
 				break;
 		}
 		return crit;

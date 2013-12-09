@@ -258,7 +258,9 @@ public class DonorHelper {
 	 */
 	public List<BloodComponent> mergeBloodComponentsAndMap(List<BloodComponent> list, Map<String, Map<FieldsInMap, Object>> map) {
 		for(BloodComponent i : list) {
-			i.getDonation().setDonor(mergeDonorAndMap(i.getDonation().getDonor(), map.get(i.getDonation().getDonor().getTempStorageId())));
+			if (i.getDonation().getDonor().getTempStorageId() != null) {
+				i.getDonation().setDonor(mergeDonorAndMap(i.getDonation().getDonor(), map.get(i.getDonation().getDonor().getTempStorageId())));
+			}
 		}
 		return list;
 	}

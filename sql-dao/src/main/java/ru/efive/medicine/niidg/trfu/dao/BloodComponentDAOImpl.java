@@ -31,6 +31,7 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.AppendSRPDFilter.CompareType;
 import ru.efive.medicine.niidg.trfu.filters.BloodComponentsFilter;
+import ru.efive.medicine.niidg.trfu.filters.bean.AliasFilterBean;
 import ru.efive.medicine.niidg.trfu.filters.bean.FieldFilterBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.korusconsulting.SRPD.DonorHelper;
@@ -67,8 +68,6 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocuments(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		BloodComponentsFilter bloodComponentFilter = createBloodComponentsFilter(filter, showDeleted);
-		/*bloodComponentFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
-		bloodComponentFilter.setStatusId(100);*/
 		bloodComponentFilter.getListFields().add(FieldFilterBean.init("statusId", 100, CompareType.NE));
 		return findDocuments(bloodComponentFilter, offset, count, orderBy, orderAsc);
 	}
@@ -82,8 +81,6 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
      */
 	public long countDocument(String filter, boolean showDeleted) {
         BloodComponentsFilter bloodComponentFilter = createBloodComponentsFilter(filter, showDeleted);
-        /*bloodComponentsfilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
-        bloodComponentsfilter.setStatusId(100);*/
         bloodComponentFilter.getListFields().add(FieldFilterBean.init("statusId", 100, CompareType.NE));
         return countDocument(bloodComponentFilter);
 	}
@@ -136,12 +133,10 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	public List<BloodComponent> findDocuments(String filter, int statusId, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
         BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
         if (statusId != 0) {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        	bloodComponentsFilter.setStatusId(statusId);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId));
         }
         else {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
-        	bloodComponentsFilter.setStatusId(100);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", 100, CompareType.NE));
         }
         return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
@@ -156,12 +151,10 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	public long countDocument(String filter, int statusId, boolean showDeleted) {
         BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
         if (statusId != 0) {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        	bloodComponentsFilter.setStatusId(statusId);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId));
         }
         else {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
-        	bloodComponentsFilter.setStatusId(100);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", 100, CompareType.NE));
         }
       return countDocument(bloodComponentsFilter);
 	}
@@ -188,16 +181,16 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-        	bloodComponentsFilter.setExpirationDateGe(calendar	.getTime());
-        	bloodComponentsFilter.setExpirationDateNull(true);
+            List<FieldFilterBean> disj = new ArrayList<FieldFilterBean>();
+            disj.add(FieldFilterBean.init("expirationDate", calendar.getTime(),CompareType.GE));
+            disj.add(FieldFilterBean.init("expirationDate", true, CompareType.NULL));
+            bloodComponentsFilter.getListFielsDisjunction().add(disj);
         }
         if (statusId != 0) {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        	bloodComponentsFilter.setStatusId(statusId);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId));
         }
         else {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
-        	bloodComponentsFilter.setStatusId(100);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", 100, CompareType.NE));
         }
         return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
@@ -218,16 +211,16 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
-            bloodComponentsFilter.setExpirationDateGe(calendar.getTime());
-            bloodComponentsFilter.setExpirationDateNull(true);
+            List<FieldFilterBean> disj = new ArrayList<FieldFilterBean>();
+            disj.add(FieldFilterBean.init("expirationDate", calendar.getTime(),CompareType.GE));
+            disj.add(FieldFilterBean.init("expirationDate", true, CompareType.NULL));
+            bloodComponentsFilter.getListFielsDisjunction().add(disj);
         }
         if (statusId != 0) {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        	bloodComponentsFilter.setStatusId(statusId);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId));
         }
         else {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
-        	bloodComponentsFilter.setStatusId(100);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", 100, CompareType.NE));
         }
         return countDocument(bloodComponentsFilter);
 	}
@@ -244,12 +237,15 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        bloodComponentsFilter.setExpirationDatelt(calendar.getTime());
+        List<FieldFilterBean> disj = new ArrayList<FieldFilterBean>();
+        disj.add(FieldFilterBean.init("expirationDate", calendar.getTime(),CompareType.LT));
+        disj.add(FieldFilterBean.init("expirationDate", true, CompareType.NULL));
+        bloodComponentsFilter.getListFielsDisjunction().add(disj);
         
-        Disjunction disjunction = Restrictions.disjunction();
-        disjunction.add(Restrictions.eq("statusId", 2));
-        disjunction.add(Restrictions.eq("statusId", 3));
-        bloodComponentsFilter.getListJunctions().add(disjunction);
+        disj = new ArrayList<FieldFilterBean>();
+        disj.add(FieldFilterBean.init("statusId", 2));
+        disj.add(FieldFilterBean.init("statusId", 3));
+        bloodComponentsFilter.getListFielsDisjunction().add(disj);
         return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
@@ -260,12 +256,15 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        bloodComponentsFilter.setExpirationDatelt(calendar.getTime());
+        List<FieldFilterBean> disj = new ArrayList<FieldFilterBean>();
+        disj.add(FieldFilterBean.init("expirationDate", calendar.getTime(),CompareType.LT));
+        disj.add(FieldFilterBean.init("expirationDate", true, CompareType.NULL));
+        bloodComponentsFilter.getListFielsDisjunction().add(disj);
         
-        Disjunction disjunction = Restrictions.disjunction();
-        disjunction.add(Restrictions.eq("statusId", 2));
-        disjunction.add(Restrictions.eq("statusId", 3));
-        bloodComponentsFilter.getListJunctions().add(disjunction);
+        disj = new ArrayList<FieldFilterBean>();
+        disj.add(FieldFilterBean.init("statusId", 2));
+        disj.add(FieldFilterBean.init("statusId", 3));
+        bloodComponentsFilter.getListFielsDisjunction().add(disj);
 
         return countDocument(bloodComponentsFilter);
 	}
@@ -372,8 +371,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, false);
         if (orderId > 0) {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        	bloodComponentsFilter.setOrderId(orderId);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", orderId));
         }
         return findDocument(bloodComponentsFilter, -1, -1, "parentNumber,number", true);
 	}
@@ -387,8 +385,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	public List<BloodComponent> findComponentsByStatusId(boolean showDeleted, int statusId, int offset, int count, String orderBy, boolean orderAsc) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, showDeleted);
         if (statusId > 0) {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        	bloodComponentsFilter.setStatusId(statusId);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId));
         }
         return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
@@ -401,8 +398,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	public long countComponentsByStatusId(boolean showDeleted, int statusId) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, showDeleted);
         if (statusId > 0) {
-        	bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        	bloodComponentsFilter.setStatusId(statusId);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId));
         }
         return countDocument(bloodComponentsFilter);
 	}
@@ -421,9 +417,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findPurchasedDocuments(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, showDeleted);
-		bloodComponentsFilter.setPurchased(true);
-        bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        bloodComponentsFilter.setStatusId(100);
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", 100));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("purchased", true));
         return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
@@ -435,9 +430,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 */
 	public long countPurchasedDocument(String filter, boolean showDeleted) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-		bloodComponentsFilter.setPurchased(true);
-        bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        bloodComponentsFilter.setStatusId(100);
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", 100));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("purchased", true));
         return countDocument(bloodComponentsFilter);
 	}
 	
@@ -455,9 +449,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findQuarantinedDocuments(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-        bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        bloodComponentsFilter.setStatusId(2);
-        bloodComponentsFilter.setQuarantineFinishDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", 2));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("quarantineFinishDate", Calendar.getInstance(ApplicationHelper.getLocale()).getTime(), CompareType.LE));
         return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
@@ -470,9 +463,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	 */
 	public long countQuarantinedDocument(String filter, boolean showDeleted) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        bloodComponentsFilter.setStatusId(2);
-        bloodComponentsFilter.setQuarantineFinishDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", 2));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("quarantineFinishDate", Calendar.getInstance(ApplicationHelper.getLocale()).getTime(), CompareType.LE));
         return countDocument(bloodComponentsFilter);
 	}
 	
@@ -499,7 +491,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	bloodComponentsFilter.setListIds(list);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("id", list,CompareType.IN));
         	return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
         }
         else {
@@ -524,7 +516,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	bloodComponentsFilter.setListIds(list);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("id", list,CompareType.IN));
             return countDocument(bloodComponentsFilter);
         }
         else {
@@ -544,7 +536,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	bloodComponentsFilter.setListIds(list);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("id", list,CompareType.IN));
         	return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
         }
         else {
@@ -562,7 +554,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	bloodComponentsFilter.setListIds(list);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("id", list,CompareType.IN));
             return countDocument(bloodComponentsFilter);
         }
         else {
@@ -585,9 +577,9 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocumentsByFullNumber(String parentNumber, String number, boolean showDeleted) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, showDeleted);
-		bloodComponentsFilter.setPurchased(true);
-		bloodComponentsFilter.setParentNumber(parentNumber);
-		bloodComponentsFilter.setNumber(number);
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("purchased", true));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("parentNumber", parentNumber, CompareType.ILIKE));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("number", parentNumber, CompareType.ILIKE));
 		return findDocuments(bloodComponentsFilter, -1, -1, null, false);
 	}
 	
@@ -625,7 +617,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).addScalar("id").list();
         
         if (list != null && list.size() > 0) {
-        	bloodComponentsFilter.setListIds(list);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("id", list, CompareType.IN));
         	return findDocument(bloodComponentsFilter, -1, -1, null, false);
         }
         else {
@@ -637,20 +629,16 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocumentsInControl(String filter, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-		bloodComponentsFilter.setStatusId(3);
-		bloodComponentsFilter.setInControlCompareFlag(CompareType.EQ);
-		bloodComponentsFilter.setInControl(true);
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", 3));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("inControl", true));
 		return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 		
 	}
 	
 	public long countDocumentsInControl(String filter, boolean showDeleted) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-		bloodComponentsFilter.setStatusId(3);
-		bloodComponentsFilter.setInControlCompareFlag(CompareType.EQ);
-		bloodComponentsFilter.setInControl(true);
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", 3));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("inControl", true));
 		return countDocument(bloodComponentsFilter);
 	}
 	
@@ -658,19 +646,15 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findControlledComponentsByStatusId(String filter, int statusId, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-		bloodComponentsFilter.setStatusId(statusId);
-		bloodComponentsFilter.setInControlCompareFlag(CompareType.EQ);
-		bloodComponentsFilter.setInControl(false);
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("inControl", false));
 		return findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc);
 	}
 	
 	public long countControlledComponentsByStatusId(String filter, int statusId, boolean showDeleted) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-		bloodComponentsFilter.setStatusId(statusId);
-		bloodComponentsFilter.setInControlCompareFlag(CompareType.EQ);
-		bloodComponentsFilter.setInControl(false);
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("inControl", false));
 		return countDocument(bloodComponentsFilter);
 	}
 	
@@ -678,14 +662,13 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findQuarantinedComponentsByStatusId(String filter, int statusId, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, false);
-		bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-		bloodComponentsFilter.setStatusId(statusId);
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("statusId", statusId));
         
-		bloodComponentsFilter.getListAlias().add("history");
-        Disjunction disjunction = Restrictions.disjunction();
-        disjunction.add(Restrictions.eq("history.toStatusId", 2));
-        disjunction.add(Restrictions.eq("history.fromStatusId", 2));
-        bloodComponentsFilter.getListJunctions().add(disjunction);
+		bloodComponentsFilter.getListAlias().add(AliasFilterBean.initAlias("history", CriteriaSpecification.LEFT_JOIN));
+        List<FieldFilterBean> disj = new ArrayList<FieldFilterBean>();
+        disj.add(FieldFilterBean.init("history.toStatusId", 2));
+        disj.add(FieldFilterBean.init("history.fromStatusId", 2));
+        bloodComponentsFilter.getListFielsDisjunction().add(disj);
         
         List<BloodComponent> result = new ArrayList<BloodComponent>(
         		new LinkedHashSet<BloodComponent>(findDocument(bloodComponentsFilter, offset, count, orderBy, orderAsc)));
@@ -695,14 +678,13 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public long countQuarantinedComponentsByStatusId(String filter, int statusId, boolean showDeleted) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(filter, showDeleted);
-        bloodComponentsFilter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_EQ);
-        bloodComponentsFilter.setStatusId(statusId);
-        
-        bloodComponentsFilter.getListAlias().add("history");
-        Disjunction disjunction = Restrictions.disjunction();
-        disjunction.add(Restrictions.eq("history.toStatusId", 2));
-        disjunction.add(Restrictions.eq("history.fromStatusId", 2));
-        bloodComponentsFilter.getListJunctions().add(disjunction);
+		
+		bloodComponentsFilter.getListAlias().add(AliasFilterBean.initAlias("history", CriteriaSpecification.LEFT_JOIN));
+		 List<FieldFilterBean> disj = new ArrayList<FieldFilterBean>();
+	     disj.add(FieldFilterBean.init("history.toStatusId", 2));
+	     disj.add(FieldFilterBean.init("history.fromStatusId", 2));
+	     bloodComponentsFilter.getListFielsDisjunction().add(disj);
+		
         List<BloodComponent> result = new ArrayList<BloodComponent>(new LinkedHashSet<BloodComponent>(
         		findDocument(bloodComponentsFilter, -1, -1, null, false)));
         
@@ -720,7 +702,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	bloodComponentsFilter.setListIds(list);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("id", list,CompareType.IN));
         	return findDocument(bloodComponentsFilter, -1, -1, null, false);
         }
         else {
@@ -739,7 +721,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         List list = getSession().createSQLQuery(query).list();
         
         if (list.size() > 0) {
-        	bloodComponentsFilter.setListIds(list);
+        	bloodComponentsFilter.getListFields().add(FieldFilterBean.init("id", list,CompareType.IN));
         	return findDocument(bloodComponentsFilter, -1, -1, null, false);
         }
         else {
@@ -750,7 +732,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findSplitComponents() {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, false);
-		bloodComponentsFilter.setSplit(true);
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("split", true));
 		return findDocument(bloodComponentsFilter, -1, -1, null, false);
 	}
 	
@@ -761,7 +743,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 		List list = getSession().createSQLQuery("select c.id from trfu_blood_components c where c.split = 1 and c.donationId <> 0 group by c.donationId").list();
 		
 		if (list.size() > 0) {
-			bloodComponentsFilter.setListIds(list);
+			bloodComponentsFilter.getListFields().add(FieldFilterBean.init("id", list, CompareType.IN));
 			return findDocument(bloodComponentsFilter, -1, -1, null, false);
 		}
 		else {
@@ -772,9 +754,11 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	@SuppressWarnings("unchecked")
 	public BloodComponent findParentComponent(BloodComponent splitComponent) {
 		BloodComponentsFilter bloodComponentsFilter = createBloodComponentsFilter(null, false);
-		bloodComponentsFilter.setParentNumber(splitComponent.getParentNumber());
-		bloodComponentsFilter.setNumber(splitComponent.getNumber());
-		bloodComponentsFilter.setDonationId(splitComponent.getDonationId());
+		
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("parentNumber", splitComponent.getParentNumber(), CompareType.ILIKE));
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("number", splitComponent.getNumber(), CompareType.ILIKE));
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		bloodComponentsFilter.getListFields().add(FieldFilterBean.init("donationId", splitComponent.getDonationId(), CompareType.ILIKE));
 		List<BloodComponent> list = findDocument(bloodComponentsFilter, -1, -1, null, false);
 		if (list.isEmpty()) {
 			return null;
@@ -785,15 +769,13 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	}
 	
 	public long countDocuments(BloodComponentsFilter filter) {
-		filter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
-		filter.setStatusId(100);
+		filter.getListFields().add(FieldFilterBean.init("statusId", 100, CompareType.NE));
 		return countDocument(filter);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<BloodComponent> findDocuments(BloodComponentsFilter filter, int offset, int count, String orderBy, boolean orderAsc) {
-		filter.setStatusIdCompareFlag(BloodComponentsFilter.STATUS_ID_NE);
-		filter.setStatusId(100);
+		filter.getListFields().add(FieldFilterBean.init("statusId", 100, CompareType.NE));
 		return findDocument(filter, offset, count, orderBy, orderAsc);
 	}
 	private long countDocument(BloodComponentsFilter filter){
@@ -843,23 +825,27 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 			Date donationDate = filter.getDonationDate();
 			Date expirationDate = filter.getExpirationDate();
 			int statusId = filter.getStatusId();
-			//String fio = filter.getFio();
 			String firstName = filter.getFirstName();
 			String lastName = filter.getLastName();
 			String middleName = filter.getMiddleName();
-			Boolean purchased = filter.getPurchased();
-			Date quarantineFinishDate = filter.getQuarantineFinishDate();
 			Collection<String> listSRPDIds = filter.getListSRPDIds();
-			List<Integer> listIds = filter.getListIds();
-			Boolean inControl = filter.getInControl();
-			Boolean split = filter.getSplit();
-			/* temporal */
-			List<Junction> listJunctions = filter.getListJunctions();
-			List<String> listAlias = filter.getListAlias();
-			for (String i: listAlias) {
-				criteria.createAlias(i, i, CriteriaSpecification.LEFT_JOIN);
+			List<AliasFilterBean> listAlias = filter.getListAlias();
+			List<List<FieldFilterBean>> listDisj = filter.getListFielsDisjunction();
+			List<FieldFilterBean> listFields = filter.getListFields();
+			for (AliasFilterBean i: listAlias) {
+				criteria.createAlias(i.getAssociationPath(), i.getAlias(), i.getJoinType());
 			}
-			for (Junction i: listJunctions) {
+			for (FieldFilterBean i: listFields) {
+				conjunction.add(makeRestriction(i));
+			}
+			for(List<FieldFilterBean> j: listDisj) {
+				Disjunction disj = Restrictions.disjunction();
+				for(FieldFilterBean i: j) {
+					disj.add(makeRestriction(i));
+				}
+				criteria.add(disj);
+			}
+			for (Junction i: filter.getListJunction()) {
 				criteria.add(i);	
 			}
 			if (filter.getMap() != null) {
@@ -892,12 +878,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 			/* Проверка статуса: 1. CompareFlag = null_value или  eq -  Resrtictions.eq 
 			 * 					 2. CompareFlag = ne - Restritions.ne */
 	        if (statusId != BloodComponentsFilter.BLOOD_COMPONENT_STATUS_NULL_VALUE) {
-	        	if (filter.getStatusIdCompareFlag() == BloodComponentsFilter.STATUS_ID_NULL 
-	        			|| filter.getStatusIdCompareFlag() == BloodComponentsFilter.STATUS_ID_EQ) {
-	        		conjunction.add(Restrictions.eq("statusId", statusId));
-	        	} else if(filter.getStatusIdCompareFlag() == BloodComponentsFilter.STATUS_ID_NE) {
-	        		conjunction.add(Restrictions.ne("statusId", statusId));
-	        	}
+	        	conjunction.add(Restrictions.eq("statusId", statusId));
 	        }
 	        if (bloodComponentTypeId != BloodComponentsFilter.BLOOD_COMPONENT_TYPE_NULL_VALUE) {
 	        	conjunction.add(Restrictions.eq("componentType.id", bloodComponentTypeId));
@@ -905,7 +886,6 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	        if (makerId != BloodComponentsFilter.MAKER_NULL_VALUE) {
 	        	conjunction.add(Restrictions.eq("maker.id", makerId));
 	        }
-	        //if (StringUtils.isNotEmpty(fio)) {
 	        if ((!DonorHelper.USE_SRPD && filter.isQueryToSRPD()) || listSRPDIds != null) {
 	        	criteria.createAlias("donation", "donation", CriteriaSpecification.INNER_JOIN);
 	        	criteria.createAlias("donation.donor", "donor", CriteriaSpecification.INNER_JOIN);
@@ -930,43 +910,6 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	        if (!filter.isShowDeleted()) {
 				criteria.add(Restrictions.eq("deleted", false));
 			}
-	        if(purchased != null) {
-	        	criteria.add(Restrictions.eq("purchased", purchased));
-	        }
-	        if (quarantineFinishDate != null) {
-	        	criteria.add(Restrictions.le("quarantineFinishDate", quarantineFinishDate));
-	        }
-	        if (listIds != null && listIds.size() > 0) {
-	        	criteria.add(Restrictions.in("id", listIds));
-	        }
-	        if (inControl != null) {
-	        	switch (filter.getInControlCompareFlag()) {
-					case EQ:
-						criteria.add(Restrictions.eq("inControl", inControl));
-						break;
-					case NE:
-						criteria.add(Restrictions.ne("inControl", inControl));
-						break;
-					case NULL:
-						break;
-	        	}
-	        }
-	        if (split != null) {
-	        	criteria.add(Restrictions.eq("split", split));
-	        }
-	        if (filter.getExpirationDateGe() != null || filter.isExpirationDateNull()) {
-	        	Disjunction disj = Restrictions.disjunction();
-	        	if (filter.getExpirationDateGe() != null) {
-	        		disj.add(Restrictions.ge("expirationDate", filter.getExpirationDateGe()));
-	        	}
-	        	if (filter.isExpirationDateNull()) {
-	        		disj.add(Restrictions.isNull("expirationDate"));
-	        	}
-	        	criteria.add(disj);
-	        }
-	        if (filter.getExpirationDatelt() != null) {
-	        	criteria.add(Restrictions.lt("expirationDate", filter.getExpirationDatelt()));
-	        }
 			criteria.add(conjunction);
 		}
 		return criteria;
@@ -974,16 +917,23 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	private BloodComponentsFilter createBloodComponentsFilter(String pattern, Boolean showDeleted) {
 		BloodComponentsFilter filter = new BloodComponentsFilter();
 		if (StringUtils.isNotEmpty(pattern)) {
-			filter.getListAlias().add("componentType");
-			Disjunction disjunction = Restrictions.disjunction();
+			filter.getListAlias().add(AliasFilterBean.initAlias("componentType", CriteriaSpecification.LEFT_JOIN));
+			List<FieldFilterBean> listDisj = new ArrayList<FieldFilterBean>();
+			listDisj.add(FieldFilterBean.init("componentType.value", pattern, CompareType.ILIKE));
+			listDisj.add(FieldFilterBean.init("parentNumber", pattern, CompareType.ILIKE));
+			listDisj.add(FieldFilterBean.init("number", pattern, CompareType.ILIKE));
+			listDisj.add(FieldFilterBean.init("DATE_FORMAT(this_.donationDate, '%d.%m.%Y') like lower(?)", filter + "%", CompareType.SQL));
+			/*Disjunction disjunction = Restrictions.disjunction();
 	        disjunction.add(Restrictions.ilike("componentType.value", pattern, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("parentNumber", pattern, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("number", pattern, MatchMode.ANYWHERE));
-	        disjunction.add(Restrictions.sqlRestriction("DATE_FORMAT(this_.donationDate, '%d.%m.%Y') like lower(?)", filter + "%", new StringType()));
+	        disjunction.add(Restrictions.sqlRestriction("DATE_FORMAT(this_.donationDate, '%d.%m.%Y') like lower(?)", filter + "%", new StringType()));*/
 	        if (pattern.length() > 8) {
-	        	disjunction.add(Restrictions.sqlRestriction("CONCAT(this_.parentNumber, this_.number) like RIGHT(?, 8)", filter + "%", new StringType()));
+	        	//disjunction.add(Restrictions.sqlRestriction("CONCAT(this_.parentNumber, this_.number) like RIGHT(?, 8)", filter + "%", new StringType()));
+	        	listDisj.add(FieldFilterBean.init("CONCAT(this_.parentNumber, this_.number) like RIGHT(?, 8)", filter + "%", CompareType.SQL));
 	        }
-	        filter.getListJunctions().add(disjunction);
+	        //filter.getListJunction().add(disjunction);
+	        filter.getListFielsDisjunction().add(listDisj);
 		}
 		if (showDeleted != null) {
 			filter.setShowDeleted(showDeleted);
