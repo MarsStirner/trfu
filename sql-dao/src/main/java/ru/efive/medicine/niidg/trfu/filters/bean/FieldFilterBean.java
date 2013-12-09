@@ -6,6 +6,11 @@ public class FieldFilterBean {
 	private String fieldName;
 	private Object value;
 	private CompareType compareType;
+	
+	private FieldFilterBean() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	public String getFieldName() {
 		return fieldName;
 	}

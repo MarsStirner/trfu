@@ -22,6 +22,10 @@ public class AliasFilterBean {
 	public void setJoinType(int joinType) {
 		this.joinType = joinType;
 	}
+	
+	private AliasFilterBean() {
+		super();
+	}
 	public static AliasFilterBean initAlias(String associationPath, String alias, int joinType) {
 		AliasFilterBean res = new AliasFilterBean();
 		res.setAlias(alias);
