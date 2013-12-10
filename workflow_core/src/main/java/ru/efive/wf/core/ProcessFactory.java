@@ -967,6 +967,100 @@ public final class ProcessFactory {
 				noStatusActions.add(noStatusAction);
 				
 				process.setNoStatusActions(noStatusActions);
+				
+				
+				// Определение допуска к донорству - Допущен
+				status = new Status<T>();
+				status.setId(4);
+				status.setName("Определение допуска к донорству");
+				status.setProcessedData(t);
+				fromStatusActions = new ArrayList<StatusChangeAction>();
+				toStatusAction = new StatusChangeAction(process);
+				toStatusAction.setId(4);
+				toStatusAction.setName("Допущен");
+				toStatusAction.setInitialStatus(status);
+
+				toStatusAction.setDestinationStatus(grantedStatus);
+				
+				activites = new ArrayList<IActivity>();
+				activity = new InvokeMethodActivity();
+				list = new ArrayList<Object>();
+				list.add(t);
+				activity.setInvokeInformation("ru.efive.medicine.niidg.trfu.wf.util.WorkflowHelper", "setCandidate", list);
+				activity.setParentAction(toStatusAction);
+				activites.add(activity);
+				toStatusAction.setPreActionActivities(activites);
+				
+				fromStatusActions.add(toStatusAction);
+				
+				// Определение допуска к донорству - Отвод от донорства
+				toRejectedAction = new StatusChangeAction(process);
+				toRejectedAction.setId(-2);
+				toRejectedAction.setName("Отвести от донорства");
+				toRejectedAction.setCommentNecessary(true);
+				toRejectedAction.setInitialStatus(status);
+				
+				toRejectedAction.setDestinationStatus(statusRejected);
+				
+				activites = new ArrayList<IActivity>();
+				localActivity = new ParametrizedPropertyLocalActivity();
+				localActivity.setParentAction(toRejectedAction);
+				form = new DonorRejectionForm();
+				form.setBeanName("examination");
+				localActivity.setDocument(form);
+				activites.add(localActivity);
+				toRejectedAction.setLocalActivities(activites);
+				
+				activites = new ArrayList<IActivity>();
+				activity = new InvokeMethodActivity();
+				list = new ArrayList<Object>();
+				list.add(t);
+				activity.setInvokeInformation("ru.efive.medicine.niidg.trfu.wf.util.WorkflowHelper", "setDonorRejected", list);
+				activity.setParentAction(toRejectedAction);
+				activites.add(activity);
+				toRejectedAction.setPreActionActivities(activites);
+				
+				fromStatusActions.add(toRejectedAction);
+				
+				// Определение допуска к донорству - На дообследование
+				toStatusAction = new StatusChangeAction(process);
+				toStatusAction.setId(5);
+				toStatusAction.setName("На дообследование");
+				toStatusAction.setInitialStatus(status);
+
+				toStatus = new Status<T>();
+				toStatus.setId(6);
+				toStatus.setName("Направлен на дообследование");
+				toStatus.setProcessedData(t);
+				toStatusAction.setDestinationStatus(toStatus);
+
+				fromStatusActions.add(toStatusAction);
+				
+				
+				// Определение допуска к донорству - Отменено
+				toStatusAction = new StatusChangeAction(process);
+				toStatusAction.setId(-4);
+				toStatusAction.setName("Отменить");
+				toStatusAction.setInitialStatus(status);
+				
+				toStatusAction.setDestinationStatus(notHappenedStatus);
+				
+				activites = new ArrayList<IActivity>();
+				localActivity = new ParametrizedPropertyLocalActivity();
+				localActivity.setParentAction(toStatusAction);
+				reasonForm = new InputReasonForm();
+				reasonForm.setBeanName("examination");
+				reasonForm.setActionCommentaryField("WFResultDescription");
+				reasonForm.setScope(EditablePropertyScope.LOCAL);
+				localActivity.setDocument(reasonForm);
+				activites.add(localActivity);
+				toStatusAction.setLocalActivities(activites);
+				
+				fromStatusActions.add(toStatusAction);
+				
+				status.setAvailableActions(fromStatusActions);
+				
+				statuses.put(status.getId(), status);
 			}
 			else if (t.getType().equals("BloodComponent")) {
 				System.out.println("Initialization process for blood component");

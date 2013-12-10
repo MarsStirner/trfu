@@ -80,10 +80,12 @@
 </div>
 <div class="defbutton">
     <e5ui:formPart id="actions_fp">
-        <h:commandLink onclick="actionsModal.clickOpen('actionsModal'); return false;">
-            <h:graphicImage value="#{resource['images:button-do.png']}"/>
-            Действия
-        </h:commandLink>
+    	<h:panelGroup rendered="#{bloodDonation.document.statusId ne -2}">
+        	<h:commandLink onclick="actionsModal.clickOpen('actionsModal'); return false;">
+            	<h:graphicImage value="#{resource['images:button-do.png']}"/>
+            	Действия
+        	</h:commandLink>
+        </h:panelGroup>	
         <e5ui-comp:modalWindow id="actionsModal"
                                modalWindowHolder="#{bloodDonation.processorModal}"
                                render=":main_content_form" execute="selectedAction"
