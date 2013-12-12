@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+﻿<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -12,6 +12,7 @@
 	<ui:define name="running_head">
 		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
 		<h:outputScript library="js" name="views.js" target="head" />
+		<h:outputScript library="js" name="translite.js" target="head"  />
 		<h:outputScript>
         	jQuery(document).ready(function() {
         	update_content();
@@ -250,15 +251,15 @@
                        		showButtons="false"
                        		widgetVar="expirationDateSelectVar">
                        		<h:outputScript>
-                       			$(document).ready(function() {
-    								$("[id*='systemLot']").bind('paste', function(event) {
-    									var _this = this;
-        								setTimeout( function() {
-            								var text = $(_this).val();
-            								console.log(text);
-        								}, 100);
-    								});
-								});
+								function validateLot() {
+									var str = '' + $("[id*='systemLot']").val();
+									var symb = str.slice(0,2);
+									if (symb == '&amp;)') {
+										str = str.substring(2);
+									}
+									str = str.translite();
+									$("[id*='systemLot']").val(str);
+								}
         					</h:outputScript>
                         	<div id="title">Данные об используемой системе</div>
                         	<div id="blood_modal_container" style="margin-top: 0;">
@@ -269,7 +270,7 @@
 										</div>
 									</h:panelGroup>
 									<div>Лот</div>
-                        			<div><h:inputText id="systemLot" immediate="true" 
+                        			<div><h:inputText id="systemLot" immediate="true" onblur="validateLot()"
                         			value="#{virusinactivationComponentList.expirationDateSelectModal.systemLot}"/></div>
                         			<div>Годен до</div>
                         			<div><e5ui-comp:inputDate id="enteredExpirationDate" immediate="true"
