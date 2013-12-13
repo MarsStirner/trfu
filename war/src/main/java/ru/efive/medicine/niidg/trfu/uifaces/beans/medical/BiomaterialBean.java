@@ -264,7 +264,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
     }
     
     public void recalcVolume(AjaxBehaviorEvent event) {
-    	int volume = 0;
+    	double volume = 0;
     	if (getDocument().getInitialVolume() > 0) {
     		volume = getDocument().getInitialVolume();
     	}

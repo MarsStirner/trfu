@@ -113,7 +113,7 @@ WHERE
 	<field name="additional_substances" class="java.lang.String"/>
 	<field name="trfu_medical_biomaterials_cellCount" class="java.lang.Double"/>
 	<field name="trfu_medical_biomaterials_number" class="java.lang.String"/>
-	<field name="trfu_medical_biomaterials_volume" class="java.lang.Integer"/>
+	<field name="trfu_medical_biomaterials_volume" class="java.lang.Double"/>
 	<field name="trfu_classifiers_value" class="java.lang.String"/>
 	<field name="trfu_medical_operations_recipient" class="java.lang.String"/>
 	<field name="trfu_medical_operations_ibNumber" class="java.lang.String"/>
@@ -124,14 +124,14 @@ WHERE
 	<field name="received" class="java.sql.Timestamp"/>
 	<field name="expirationDate" class="java.sql.Timestamp"/>
 	<field name="tnc" class="java.lang.Double"/>
-	<field name="trfu_medical_biomaterials_initialVolume" class="java.lang.Integer"/>
+	<field name="trfu_medical_biomaterials_initialVolume" class="java.lang.Double"/>
 	<field name="trfu_medical_biomaterials_cd3x8PerKg" class="java.lang.Double"/>
 	<field name="trfu_medical_biomaterials_cd3X8" class="java.lang.Double"/>
 	<field name="trfu_medical_biomaterials_cd34X6PerKg" class="java.lang.Double"/>
 	<field name="trfu_medical_biomaterials_cd34X6" class="java.lang.Double"/>
 	<field name="trfu_medical_biomaterials_cd34" class="java.lang.Double"/>
 	<field name="trfu_medical_operations_unp" class="java.lang.String"/>
-	<field name="trfu_medical_biomaterial_additional_substances_volume" class="java.lang.Integer"/>
+	<field name="trfu_medical_biomaterial_additional_substances_volume" class="java.lang.Double"/>
 	<field name="substanceType" class="java.lang.String"/>
 	<field name="trfu_medical_biomaterials_anticoagulantVolume" class="java.lang.Double"/>
 	<field name="trfu_anticoagulants_value" class="java.lang.String"/>

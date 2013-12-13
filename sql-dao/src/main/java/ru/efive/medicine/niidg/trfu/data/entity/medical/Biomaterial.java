@@ -91,11 +91,11 @@ public class Biomaterial extends Document implements ProcessedData, Cloneable {
 		return operation;
 	}
 	
-	public int getInitialVolume() {
+	public double getInitialVolume() {
 		return initialVolume;
 	}
 
-	public void setInitialVolume(int initialVolume) {
+	public void setInitialVolume(double initialVolume) {
 		this.initialVolume = initialVolume;
 	}
 
@@ -118,11 +118,11 @@ public class Biomaterial extends Document implements ProcessedData, Cloneable {
 		additionalSubstances.remove(substance);
 	}
 
-	public int getVolume() {
+	public double getVolume() {
 		return volume;
 	}
 
-	public void setVolume(int volume) {
+	public void setVolume(double volume) {
 		this.volume = volume;
 	}
 
@@ -378,7 +378,7 @@ public class Biomaterial extends Document implements ProcessedData, Cloneable {
 	/**
 	 * Исходный объем
 	 */
-	private int initialVolume;
+	private double initialVolume;
 	
 	/**
 	 * Добавленный объём
@@ -394,7 +394,7 @@ public class Biomaterial extends Document implements ProcessedData, Cloneable {
 	/**
      * Объем биоматериала
      */
-    private int volume;
+    private double volume;
     
     /**
      * Антикоагулянт

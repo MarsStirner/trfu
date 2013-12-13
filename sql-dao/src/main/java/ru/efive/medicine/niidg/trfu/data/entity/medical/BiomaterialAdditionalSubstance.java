@@ -25,7 +25,7 @@ public class BiomaterialAdditionalSubstance extends IdentifiedEntity {
 	/**
 	 * Добавляемый объем
 	 */
-	private int volume;
+	private double volume;
 	
 	private static final long serialVersionUID = 1L;
 
@@ -38,11 +38,11 @@ public class BiomaterialAdditionalSubstance extends IdentifiedEntity {
 		this.substanceType = substanceType;
 	}
 
-	public int getVolume() {
+	public double getVolume() {
 		return volume;
 	}
 
-	public void setVolume(int volume) {
+	public void setVolume(double volume) {
 		this.volume = volume;
 	}
 	
