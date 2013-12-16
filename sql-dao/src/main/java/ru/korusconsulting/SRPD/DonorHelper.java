@@ -164,16 +164,20 @@ public class DonorHelper {
 	public List<Donor> mergeDonorsAndMap(List<Donor> donors, Map<String, Map<FieldsInMap, Object>> map) {
 		Map<FieldsInMap, Object> values;
 		for(Donor i: donors) {
-			values = map.get(i.getTempStorageId());
-			i = mergeDonorAndMap(i, values);
+			if (StringUtils.isNotEmpty(i.getTempStorageId())) {
+				values = map.get(i.getTempStorageId());
+				i = mergeDonorAndMap(i, values);
+			}
 		}
 		return donors;
 	}
 	public List<BiomaterialDonor> mergeBiomaterialDonorsAndMap(List<BiomaterialDonor> donors, Map<String, Map<FieldsInMap, Object>> map) {
 		Map<FieldsInMap, Object> values;
 		for(BiomaterialDonor i: donors) {
-			values = map.get(i.getTempStorageId());
-			i = mergeDonorAndMap(i, values);
+			if (StringUtils.isNotEmpty(i.getTempStorageId())) {
+				values = map.get(i.getTempStorageId());
+				i = mergeDonorAndMap(i, values);
+			}
 		}
 		return donors;
 	}
@@ -204,9 +208,6 @@ public class DonorHelper {
 		if (mapWithValues.get(FieldsInMap.OMC_NUMBER) != null) {
 			donor.setInsuranceNumber((String)mapWithValues.get(FieldsInMap.OMC_NUMBER));
 		}
-		if (mapWithValues.get(FieldsInMap.OMC_NUMBER) != null) {
-			donor.setInsuranceNumber((String)mapWithValues.get(FieldsInMap.OMC_NUMBER));
-		}
 		if (mapWithValues.get(FieldsInMap.OMC_SERIES) != null) {
 			donor.setInsuranceNumber((String)mapWithValues.get(FieldsInMap.OMC_SERIES));
 		}
@@ -228,7 +229,8 @@ public class DonorHelper {
 		}
 		if (mapWithValues.get(FieldsInMap.GENDER) != null) {
 			donor.setGender(createGender((String)mapWithValues.get(FieldsInMap.GENDER)));
-		}		
+		}
+		donor.setTempStorageId((String) mapWithValues.get(FieldsInMap.TEMP_STORAGE_ID));
 		return donor;
 	}
 	/**

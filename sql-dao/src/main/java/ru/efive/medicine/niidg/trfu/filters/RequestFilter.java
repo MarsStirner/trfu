@@ -1,5 +1,6 @@
 package ru.efive.medicine.niidg.trfu.filters;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.efive.medicine.niidg.trfu.filters.bean.AliasFilterBean;
@@ -45,6 +46,9 @@ public class RequestFilter extends AppendSRPDFilter<ExaminationsFilter> {
 	
 	protected void setDefaultValues() {
 		super.setDefaultValues();
+		listAlias = new ArrayList<AliasFilterBean>();
+		listFields = new ArrayList<FieldFilterBean>();
+		listFieldsDisjunction = new ArrayList<FieldFilterBean>();
 	}
 	@Override
 	public void clear() {
