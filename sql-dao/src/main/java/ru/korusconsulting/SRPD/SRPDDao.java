@@ -87,7 +87,7 @@ public class SRPDDao {
 			prop = DonorHelper.createPropertiesForURL("storage_utility.properties");
 			TmisPdm.initWsdl(prop.get(SRPD_ADRESS_PROPERTIE).toString());
 		} catch (Exception e) {
-			TmisPdm.initWsdl("http://198.199.126.156:8080/pdm-war/tmis-pdm?wsdl");
+			TmisPdm.initWsdl("http://127.0.0.1:8080/pdm-war/tmis-pdm?wsdl");
 		}
 		TmisPdm service = new TmisPdm();
 		pdm = service.getPortPdm(); 
