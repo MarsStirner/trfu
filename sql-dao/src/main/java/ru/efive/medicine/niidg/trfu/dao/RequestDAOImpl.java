@@ -89,10 +89,12 @@ public class RequestDAOImpl extends GenericDAOHibernate<AbstractRequest> {
 	
 	private long countDocuments(RequestFilter filter, Class persistenceClass) {
 		DetachedCriteria criteria = createDetachedCriteria(persistenceClass);
+		criteria = getSearchCriteria(filter, criteria);
 		return getCountOf(criteria);
 	}
 	private List<AbstractRequest> findDocuments(RequestFilter filter, Class persistenceClass, int offset, int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria criteria = createDetachedCriteria(persistenceClass);
+		criteria = getSearchCriteria(filter, criteria);
 		addOrder(criteria, orderBy, orderAsc);
 		List<AbstractRequest> examinationRequests = getHibernateTemplate().findByCriteria(criteria, offset, count);
 		if (DonorHelper.USE_SRPD) {
@@ -105,11 +107,7 @@ public class RequestDAOImpl extends GenericDAOHibernate<AbstractRequest> {
 	}
 	private DetachedCriteria getSearchCriteria(RequestFilter filter, DetachedCriteria criteria) {
 		for(FieldFilterBean i: filter.getListFields()) {
-			switch (i.getCompareType()) {
-			case EQ:
-				criteria.add(Restrictions.eq(i.getFieldName(), i.getValue()));
-				break;
-			}
+			criteria.add(makeRestriction(i));
 		}
 		if (!filter.isShowDeleted()){
 			criteria.add(Restrictions.eq("deleted", false));

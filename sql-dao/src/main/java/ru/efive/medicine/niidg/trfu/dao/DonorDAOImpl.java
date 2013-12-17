@@ -376,8 +376,6 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 			Map<String,Map<DonorHelper.FieldsInMap, Object>> map = new SRPDDao().get(new DonorHelper().makeMapForGet(donor.getTempStorageId()));
 			if (map != null && map.size() > 0) {
 				donor = donorHelper.mergeDonorAndMap(donor, (Map<FieldsInMap, Object>)map.values().toArray()[0]);
-			} else {
-				return null;
 			}
 		}
 		return donor;
