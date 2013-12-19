@@ -3,6 +3,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ConversationScoped;
@@ -15,7 +16,9 @@ import org.apache.commons.lang.StringUtils;
 
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
+import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
@@ -54,6 +57,7 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
 	@Override
 	protected void initDocument(Integer id) {
 		setDocument(sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).get(id));
+		setDonationToday();
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
 		}
@@ -163,6 +167,10 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
     	setDocument(donor);
     }
     
+    public boolean isDonationToday() {
+    	return donationToday;
+    }
+    
     public boolean isRequestCreationAvailable() {
     	Donor donor = getDocument();
     	if (donor.getStatusId() == -2 && donor.getRejection() != null && donor.getRejection().getRejectionType().getType() == 4) {
@@ -190,6 +198,18 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
     		
     	}
     	return result;
+    }
+    
+    public void setDonationToday() {
+    	Donor donor = getDocument();
+    	Date current = new Date();
+    	BloodDonationRequestDAOImpl dao = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO);
+    	List<BloodDonationRequest> donations = dao.findDonationRequestsByDonorIdAndDateCreated(false, donor.getId(), current, -1, -1, null, true);
+    	if (donations.size() > 0) {
+    		donationToday = true;
+    	} else {
+    		donationToday = false;
+    	}
     }
 	
     /* MODAL HOLDERS */
@@ -234,6 +254,7 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
 	SessionManagementBean sessionManagement = new SessionManagementBean();
 	@Inject @Named("donorList")
 	DonorListHolderBean donorList = new DonorListHolderBean();
+	private boolean donationToday;
 	
 	private AddressSelectModal registrationAddressSelect = new AddressSelectModal() {
 		@Override

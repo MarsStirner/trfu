@@ -192,6 +192,38 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
         }
 	}
 	
+	/**
+	 * Поиск обращений на донацию по донору и дате создания донации
+	 * @param showDeleted     true - show deleted, false - hide deleted
+	 * @param donorId - идентификатор донора
+	 * @param created - дата создания
+	 * @return - список обращений на донацию
+	 */
+	@SuppressWarnings("unchecked")
+	public List<BloodDonationRequest> findDonationRequestsByDonorIdAndDateCreated(boolean showDeleted, int donorId, Date created, int offset, int count, String orderBy, boolean orderAsc) {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+        if (!showDeleted) {
+        	detachedCriteria.add(Restrictions.eq("deleted", false));
+        }
+        if (donorId > 0) {
+	        detachedCriteria.add(Restrictions.eq("donor.id", donorId));
+	        addDateSearchCriteria(detachedCriteria, created, created, "created");
+			String[] ords = orderBy == null ? null : orderBy.split(",");
+			if (ords != null) {
+				if (ords.length > 1) {
+					addOrder(detachedCriteria, ords, orderAsc);
+				} else {
+					addOrder(detachedCriteria, orderBy, orderAsc);
+				}
+			}
+	        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        }
+        else {
+        	return Collections.emptyList();
+        }
+	}
+	
 	
 	/**
 	 * Поиск обращений на донацию
@@ -243,7 +275,6 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
         	return 0;
         }
 	}
-	
 	
 	/**
      * Поиск документов

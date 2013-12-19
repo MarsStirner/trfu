@@ -400,4 +400,15 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 			conjunction.add(Restrictions.lt(dateField, toDate));
 		}
 	}
+	
+	protected void addDateSearchCriteria(DetachedCriteria detachedCriteria, Date from, Date to, String dateField) {
+		if (from != null) {
+			Date fromDate = DateHelper.getDateWithoutTime(from);
+			detachedCriteria.add(Restrictions.ge(dateField, fromDate));
+		}
+		if (to != null) {
+			Date toDate = DateHelper.getDateWithoutTime(DateHelper.getTomorrowDate(to));
+			detachedCriteria.add(Restrictions.lt(dateField, toDate));
+		}
+	}
 }
