@@ -425,6 +425,16 @@ public class DictionaryManagementBean implements Serializable {
 	 */
 	public List<Contragent> getContragents() {
 		ContragentDAOHibernate dao = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO);
-		return dao.getContragents();
+		return dao.getContragents(false);
+	}
+	
+	/**
+	 * Возвращает список контрагентов так же и помеченные как удаленные.
+	 * 
+	 * @return список контрагентов.
+	 */
+	public List<Contragent> getContragentsWithDeleted() {
+		ContragentDAOHibernate dao = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO);
+		return dao.getContragents(true);
 	}
 }

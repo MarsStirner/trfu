@@ -349,7 +349,7 @@
 									<h:selectOneMenu id="blood_components_filter_maker_id_parameter" 
 											value="#{bloodComponentFilterableList.currentFilter.makerId}" styleClass="filterPanelParameterWide">
 										<f:selectItem itemLabel="" itemValue="#{bloodComponentFilterableList.currentFilter.makerNullValue}" />
-										<f:selectItems value="#{dictionaryManagement.contragents}" 
+										<f:selectItems value="#{dictionaryManagement.contragentsWithDeleted}" 
 												var="listItem" 
 												itemLabel="#{listItem.fullName}" 
 												itemValue="#{listItem.id}" />
