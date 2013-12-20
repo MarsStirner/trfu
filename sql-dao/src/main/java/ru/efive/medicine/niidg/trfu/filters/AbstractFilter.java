@@ -18,6 +18,10 @@ public abstract class AbstractFilter<T> implements Serializable {
 	 */
 	public static final String NUMBER_TITLE = "Номер";
 	/**
+	 * Подпись для параметра "ИБ".
+	 */
+	public static final String IB_NUMBER_TITLE = "ИБ";
+	/**
 	 * Подпись для параметра "Имя".
 	 */
 	public static final String FIRST_NAME_TITLE = "Имя";
@@ -189,6 +193,10 @@ public abstract class AbstractFilter<T> implements Serializable {
 	
 	public String getNumberTitle() {
 		return NUMBER_TITLE;
+	}
+	
+	public String getIbNumberTitle() {
+		return IB_NUMBER_TITLE;
 	}
 
 	public String getFirstNameTitle() {

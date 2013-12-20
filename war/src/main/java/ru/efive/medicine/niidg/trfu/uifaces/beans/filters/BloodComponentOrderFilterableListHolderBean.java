@@ -42,6 +42,7 @@ public class BloodComponentOrderFilterableListHolderBean
 	public List<FilterParameter> getNotNullFilterParameters() {
 		List<FilterParameter> parameters = new ArrayList<FilterParameter>();
 		String number = storedFilter.getNumber();
+		String ibNumber = storedFilter.getIbNumber();
 		Date createdFrom = storedFilter.getCreatedFrom();
 		Date createdTo = storedFilter.getCreatedTo();
 		Date factDateFrom = storedFilter.getFactDateFrom();
@@ -60,6 +61,10 @@ public class BloodComponentOrderFilterableListHolderBean
 		if (StringUtils.isNotEmpty(number)) {
 			parameters.add(new FilterParameter(AbstractFilter.NUMBER_TITLE,
 					number));
+		}
+		if (StringUtils.isNotEmpty(ibNumber)) {
+			parameters.add(new FilterParameter(AbstractFilter.IB_NUMBER_TITLE,
+					ibNumber));
 		}
 		if (createdFrom != null) {
 			parameters.add(new FilterParameter(

@@ -200,6 +200,7 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 		if (filter != null) {
 			Conjunction conjunction = Restrictions.conjunction();
 			String number = filter.getNumber();
+			String ibNumber = filter.getIbNumber();
 			Date createdFrom = filter.getCreatedFrom();
 			Date createdTo = filter.getCreatedTo();
 			Date factDateFrom = filter.getFactDateFrom();
@@ -217,6 +218,9 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 			
 			if (StringUtils.isNotEmpty(number)) {
 				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
+			}
+			if (StringUtils.isNotEmpty(ibNumber)) {
+				conjunction.add(Restrictions.ilike("ibNumber", ibNumber, MatchMode.ANYWHERE));
 			}
 			if (createdFrom != null || createdTo != null) {
 				addDateSearchCriteria(conjunction, createdFrom, createdTo, "created");

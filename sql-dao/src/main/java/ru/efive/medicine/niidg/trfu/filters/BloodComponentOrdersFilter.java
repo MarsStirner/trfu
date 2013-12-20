@@ -20,6 +20,10 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 	 */
 	private String number;
 	/**
+	 * Номер истории болезни.
+	 */
+	private String ibNumber;
+	/**
 	 * Дата создания записи об обращении с.
 	 */
 	private Date createdFrom;
@@ -95,6 +99,14 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 
 	public void setNumber(String number) {
 		this.number = number;
+	}
+	
+	public String getIbNumber() {
+		return ibNumber;
+	}
+
+	public void setIbNumber(String ibNumber) {
+		this.ibNumber = ibNumber;
 	}
 
 	public Date getCreatedFrom() {
@@ -215,6 +227,7 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 
 	protected void setDefaultValues() {
 		number = null;
+		ibNumber = null;
 		createdFrom = null;
 		createdTo = null;
 		division = null;
@@ -239,6 +252,7 @@ public class BloodComponentOrdersFilter extends AbstractFilter<BloodComponentOrd
 	@Override
 	public void fillFrom(BloodComponentOrdersFilter source) {
 		setNumber(source.getNumber());
+		setIbNumber(source.getIbNumber());
 		setCreatedFrom(source.getCreatedFrom());
 		setCreatedTo(source.getCreatedTo());
 		setDivision(source.getDivision());
