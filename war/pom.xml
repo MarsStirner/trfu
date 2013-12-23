@@ -15,7 +15,7 @@
     <parent>
 	<groupId>ru.efive.medicine.niidg</groupId>
         <artifactId>trfu</artifactId>
-        <version>0.3.85-SNAPSHOT</version>
+        <version>0.3.86-SNAPSHOT</version>
     </parent>
 
     <dependencies>
