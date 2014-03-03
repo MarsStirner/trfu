@@ -21,7 +21,7 @@ public class DivisionConverter implements Converter {
 			SessionManagementBean sessionManagement = 
 				(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
 						SessionManagementBean.class);
-			List<Division> list = sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findByName(value);
+			List<Division> list = sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findByName(value, true);
 			if (list.size() > 0) {
 				result = list.get(0);
 			}

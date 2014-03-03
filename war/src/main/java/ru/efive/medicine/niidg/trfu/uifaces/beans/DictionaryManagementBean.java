@@ -322,7 +322,7 @@ public class DictionaryManagementBean implements Serializable {
 			emptyDivision.setName("");
 			divisions.add(emptyDivision);
 			//добавить весь список отделений
-			divisions.addAll(sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findByName(""));
+			divisions.addAll(sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findByName("", false));
 		}		
 		return divisions;
 	}

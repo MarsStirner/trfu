@@ -71,7 +71,7 @@ public class DivisionHolderBean extends AbstractDocumentHolderBean<Division, Int
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не указано название отделения", ""));
 				return false;
 			}
-			if (dao.findByName(getDocument().getName()).size() > 0) {
+			if (dao.findByName(getDocument().getName(), true).size() > 0) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Отделение с таким названием уже зарегистрировано", ""));
 				return false;
 			}
@@ -103,7 +103,7 @@ public class DivisionHolderBean extends AbstractDocumentHolderBean<Division, Int
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не указано название отделения", ""));
 				return false;
 			}
-			if (dao.findByName(getDocument().getName()).size() > 0) {
+			if (dao.findByName(getDocument().getName(), true).size() > 0) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Отделение с таким названием уже зарегистрировано", ""));
 				return false;
 			}
