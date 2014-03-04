@@ -208,7 +208,7 @@
     </div>
 </div>
 <h:panelGroup
-        rendered="#{(bloodDonation.editState or bloodDonation.createState) and sessionManagement.admin and (bloodDonation.document.examination eq null)}">
+        rendered="#{(bloodDonation.editState or bloodDonation.createState) and (bloodDonation.document.examination eq null)}">
     <div class="defbutton">
         <h:commandLink onclick="parentExaminationSelect.clickOpen('parentExaminationSelect'); return false;">
             <h:graphicImage value="#{resource['images:button-do.png']}"/>
