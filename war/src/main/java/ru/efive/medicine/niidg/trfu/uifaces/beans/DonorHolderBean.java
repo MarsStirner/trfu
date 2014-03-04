@@ -57,9 +57,11 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
 	@Override
 	protected void initDocument(Integer id) {
 		setDocument(sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).get(id));
-		setDonationToday();
+		
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
+		} else {
+			setDonationToday();
 		}
 	}
 	
