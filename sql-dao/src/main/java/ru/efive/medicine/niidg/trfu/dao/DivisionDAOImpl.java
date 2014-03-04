@@ -17,18 +17,6 @@ public class DivisionDAOImpl extends GenericDAOHibernate<Division> {
 		return Division.class;
 	}
 	
-//	@SuppressWarnings("unchecked")
-//	public List<Division> findByName(String name) {
-//		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
-//        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-//        
-//        if (StringUtils.isNotEmpty(name)) {
-//            detachedCriteria.add(Restrictions.ilike("name", name));
-//        }
-//        
-//		return getHibernateTemplate().findByCriteria(detachedCriteria);
-//	}
-	
 	@SuppressWarnings("unchecked")
 	public List<Division> findByName(String name, boolean showDeleted) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
