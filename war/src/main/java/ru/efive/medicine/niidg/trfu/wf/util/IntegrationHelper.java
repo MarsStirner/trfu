@@ -395,7 +395,7 @@ public class IntegrationHelper {
 			        component.setComponentTypeId(bloodComponent.getComponentType().getId());
 			        component.setDonorId(orderRequest.getRecipientId());
 			        component.setDoseCount(bloodComponent.getDoseCount());
-			        component.setNumber(bloodComponent.getNumber());
+			        component.setNumber(bloodComponent.getParentNumber());
 			        component.setRhesusFactorId(bloodComponent.getRhesusFactor().getValue().equals("отрицательный")? 1: 0);
 			        component.setComponentId(bloodComponent.getId());
 			        component.setVolume(bloodComponent.getVolume());
