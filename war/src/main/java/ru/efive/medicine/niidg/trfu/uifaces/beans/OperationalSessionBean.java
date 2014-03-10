@@ -1,7 +1,7 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,8 +38,8 @@ public class OperationalSessionBean implements java.io.Serializable {
 	}
 	
 	public List<BloodSystemType> getCurrentSystems() {
-		if (currentOperationalSetup == null || currentOperationalSetup.getSystemTypes().isEmpty()) {
-			initDocument();
+		if (currentOperationalSetup == null) {
+			Collections.emptyList();
 		}
 		return currentOperationalSetup.getSystemTypes();
 	}
@@ -80,9 +80,18 @@ public class OperationalSessionBean implements java.io.Serializable {
 		boolean result = false;
 		try {
 			Set<User> staff = new HashSet<User>();
-			staff.addAll(Arrays.asList(currentOperationalSetup.getDoctor(), currentOperationalSetup.getStaffNurse()));
-			currentOperationalSetup.getCrew().setStaff(staff);
-			OperationalCrew crew = sessionManagement.getDAO(OperationalCrewDAOImpl.class, ApplicationHelper.OPERATIONAL_CREW_DAO).save(currentOperationalSetup.getCrew());
+			if (getCurrentDoctor() != null) {
+				staff.add(getCurrentDoctor());
+			}
+			if (getCurrentStuffNurse() != null) {
+				staff.add(getCurrentStuffNurse());
+			}
+			OperationalCrew crew = null;
+			if (staff.size() > 0) {
+				currentOperationalSetup.getCrew().setStaff(staff);
+				crew = sessionManagement.getDAO(OperationalCrewDAOImpl.class, ApplicationHelper.OPERATIONAL_CREW_DAO).save(currentOperationalSetup.getCrew());
+			}
+			
 			if (crew == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 						"Невозможно сохранить. Попробуйте повторить позже.", ""));
