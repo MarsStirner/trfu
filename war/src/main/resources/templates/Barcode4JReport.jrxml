@@ -27,37 +27,43 @@ request.number=$P{requestNumber}]]>
 	<field name="firstName" class="java.lang.String"/>
 	<detail>
 		<band height="57" splitType="Stretch">
-			<textField pattern="">
-				<reportElement style="Tahoma" x="7" y="4" width="77" height="20" backcolor="#000000"/>
+			<textField>
+				<reportElement x="0" y="45" width="84" height="10"/>
 				<textElement>
-					<font fontName="Tahoma" size="8" isBold="false"/>
+					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{lastName}+" "+
 				($F{firstName}).charAt(0)+"."+
-				($F{middleName}).charAt(0)+".               ").substring(0,18)+System.getProperty("line.separator")+
-				"№ "+$F{d_number}]]></textFieldExpression>
+				($F{middleName}).charAt(0)+".               ").substring(0,18)]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement style="Tahoma" x="8" y="4" width="68" height="30">
+					<property name="net.sf.jasperreports.export.pdf.tag.h1"/>
+				</reportElement>
+				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="0.7" textPosition="none">
+					<jr:codeExpression><![CDATA[$F{r_number}]]></jr:codeExpression>
+				</jr:Code128>
+			</componentElement>
+			<textField pattern="dd.MM.yyyy">
+				<reportElement x="76" y="4" width="8" height="40" backcolor="#000000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font fontName="Tahoma" size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{created}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="7" y="45" width="77" height="10"/>
+				<reportElement x="8" y="34" width="68" height="10"/>
 				<textElement>
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Донация "+$F{r_number}]]></textFieldExpression>
 			</textField>
-			<componentElement>
-				<reportElement style="Tahoma" x="4" y="24" width="70" height="20">
-					<property name="net.sf.jasperreports.export.pdf.tag.h1"/>
-				</reportElement>
-				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="0.8" textPosition="none">
-					<jr:codeExpression><![CDATA[$F{r_number}]]></jr:codeExpression>
-				</jr:Code128>
-			</componentElement>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="74" y="18" width="8" height="32" backcolor="#000000"/>
+				<reportElement x="0" y="4" width="8" height="40" backcolor="#000000"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{created}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["№ "+$F{d_number}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
