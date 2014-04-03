@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Barcode4JReport" pageWidth="88" pageHeight="57" columnWidth="80" leftMargin="2" rightMargin="2" topMargin="0" bottomMargin="0" uuid="7b844c1d-253a-4ce1-8a0f-c38e8ac4f0ab">
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Barcode4JReport" pageWidth="88" pageHeight="57" columnWidth="80" leftMargin="2" rightMargin="2" topMargin="0" bottomMargin="0">
 	<property name="ireport.zoom" value="5.69624750374862"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="42"/>
@@ -28,7 +28,7 @@ request.number=$P{requestNumber}]]>
 	<detail>
 		<band height="57" splitType="Stretch">
 			<textField>
-				<reportElement x="9" y="47" width="84" height="10" uuid="dc85f15a-7910-41ae-8a0e-c1be20915d13"/>
+				<reportElement x="9" y="47" width="84" height="10"/>
 				<textElement>
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
@@ -37,7 +37,7 @@ request.number=$P{requestNumber}]]>
 				($F{middleName}).charAt(0)+".               ").substring(0,18)]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement style="Barcode" x="14" y="1" width="57" height="46" uuid="c758776f-e31f-4226-bad8-8fa9ffb311bd">
+				<reportElement style="Barcode" x="14" y="1" width="57" height="46">
 					<property name="net.sf.jasperreports.export.pdf.tag.h1"/>
 				</reportElement>
 				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="0.7" textPosition="none">
@@ -45,21 +45,21 @@ request.number=$P{requestNumber}]]>
 				</jr:Code128>
 			</componentElement>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="73" y="4" width="8" height="40" backcolor="#000000" uuid="22950d3b-17e8-4811-8b18-eb76c21b6e5b"/>
+				<reportElement x="73" y="4" width="8" height="40" backcolor="#000000"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{created}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="8" y="38" width="68" height="10" uuid="56c88d98-9976-45bc-82ca-e11b4d4df55c"/>
+				<reportElement x="8" y="38" width="68" height="10"/>
 				<textElement>
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Донация "+$F{r_number}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="5" y="4" width="8" height="40" backcolor="#000000" uuid="60a57c3a-47ed-440e-9ddb-8c50f9e3534d"/>
+				<reportElement x="5" y="4" width="8" height="40" backcolor="#000000"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="6" isBold="false"/>
 				</textElement>
