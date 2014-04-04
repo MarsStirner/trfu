@@ -2,9 +2,9 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Barcode4JReport" pageWidth="88" pageHeight="57" columnWidth="80" leftMargin="2" rightMargin="2" topMargin="0" bottomMargin="0">
 	<property name="ireport.zoom" value="5.69624750374862"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.y" value="45"/>
 	<style name="Tahoma" fontName="Tahoma" fontSize="4" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
-	<style name="Barcode" hAlign="Left" fontName="SansSerif" fontSize="10" isBold="true"/>
+	<style name="Barcode" hAlign="Left" fontName="Code 128" fontSize="10" isBold="true"/>
 	<parameter name="requestNumber" class="java.lang.String"/>
 	<queryString language="hql">
 		<![CDATA[select
