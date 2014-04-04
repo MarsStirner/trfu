@@ -2,9 +2,9 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Barcode4JReport" pageWidth="88" pageHeight="57" columnWidth="80" leftMargin="2" rightMargin="2" topMargin="0" bottomMargin="0">
 	<property name="ireport.zoom" value="5.69624750374862"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="42"/>
+	<property name="ireport.y" value="48"/>
 	<style name="Tahoma" fontName="Tahoma" fontSize="4" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
-	<style name="Barcode" fontName="Tahoma" fontSize="10"/>
+	<style name="Barcode" fontSize="10"/>
 	<parameter name="requestNumber" class="java.lang.String"/>
 	<queryString language="hql">
 		<![CDATA[select
@@ -28,7 +28,7 @@ request.number=$P{requestNumber}]]>
 	<detail>
 		<band height="57" splitType="Stretch">
 			<textField>
-				<reportElement x="9" y="47" width="84" height="10"/>
+				<reportElement x="9" y="45" width="84" height="10"/>
 				<textElement>
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
@@ -37,7 +37,7 @@ request.number=$P{requestNumber}]]>
 				($F{middleName}).charAt(0)+".               ").substring(0,18)]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement style="Barcode" x="14" y="1" width="57" height="46">
+				<reportElement style="Tahoma" x="8" y="1" width="68" height="40">
 					<property name="net.sf.jasperreports.export.pdf.tag.h1"/>
 				</reportElement>
 				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="0.7" textPosition="none">
@@ -52,7 +52,7 @@ request.number=$P{requestNumber}]]>
 				<textFieldExpression><![CDATA[$F{created}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="8" y="38" width="68" height="10"/>
+				<reportElement x="8" y="37" width="68" height="10"/>
 				<textElement>
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
