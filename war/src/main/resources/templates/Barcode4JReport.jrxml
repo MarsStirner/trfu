@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Barcode4JReport" pageWidth="88" pageHeight="57" columnWidth="80" leftMargin="2" rightMargin="2" topMargin="0" bottomMargin="0">
-	<property name="ireport.zoom" value="5.69624750374862"/>
+	<property name="ireport.zoom" value="5.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="45"/>
-	<style name="Tahoma" fontName="Tahoma" fontSize="4" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
-	<style name="Barcode" hAlign="Left" fontName="Code 128" fontSize="10" isBold="true"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Barcode" fontName="DejaVu Sans" fontSize="10"/>
 	<parameter name="requestNumber" class="java.lang.String"/>
 	<queryString language="hql">
 		<![CDATA[select
@@ -27,6 +26,28 @@ request.number=$P{requestNumber}]]>
 	<field name="firstName" class="java.lang.String"/>
 	<detail>
 		<band height="57" splitType="Stretch">
+			<componentElement>
+				<reportElement style="Barcode" x="8" y="1" width="70" height="40">
+					<property name="net.sf.jasperreports.export.pdf.tag.h1"/>
+				</reportElement>
+				<c:Code128 xmlns:c="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="1.0" textPosition="none">
+					<c:codeExpression><![CDATA[$F{r_number}]]></c:codeExpression>
+				</c:Code128>
+			</componentElement>
+			<textField pattern="dd.MM.yyyy">
+				<reportElement x="76" y="4" width="8" height="40" backcolor="#000000"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+					<font fontName="Tahoma" size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{created}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="7" y="35" width="77" height="10"/>
+				<textElement>
+					<font fontName="Tahoma" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Донация "+$F{r_number}]]></textFieldExpression>
+			</textField>
 			<textField>
 				<reportElement x="9" y="45" width="84" height="10"/>
 				<textElement>
@@ -36,30 +57,8 @@ request.number=$P{requestNumber}]]>
 				($F{firstName}).charAt(0)+"."+
 				($F{middleName}).charAt(0)+".               ").substring(0,18)]]></textFieldExpression>
 			</textField>
-			<componentElement>
-				<reportElement style="Barcode" mode="Transparent" x="8" y="0" width="68" height="40">
-					<property name="net.sf.jasperreports.export.pdf.tag.h1"/>
-				</reportElement>
-				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="0.7" textPosition="none">
-					<jr:codeExpression><![CDATA[$F{r_number}]]></jr:codeExpression>
-				</jr:Code128>
-			</componentElement>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="73" y="4" width="8" height="40" backcolor="#000000"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
-					<font fontName="Tahoma" size="6" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{created}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="8" y="38" width="68" height="10"/>
-				<textElement>
-					<font fontName="Tahoma" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Донация "+$F{r_number}]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd.MM.yyyy">
-				<reportElement x="6" y="4" width="8" height="40" backcolor="#000000"/>
+				<reportElement x="0" y="4" width="8" height="40" backcolor="#000000"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
 					<font fontName="Tahoma" size="6" isBold="false"/>
 				</textElement>
