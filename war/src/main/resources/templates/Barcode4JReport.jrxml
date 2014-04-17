@@ -27,7 +27,7 @@ request.number=$P{requestNumber}]]>
 	<detail>
 		<band height="57" splitType="Stretch">
 			<componentElement>
-				<reportElement style="Barcode" x="8" y="1" width="70" height="40">
+				<reportElement style="Barcode" x="8" y="1" width="70" height="50">
 					<property name="net.sf.jasperreports.export.pdf.tag.h1"/>
 				</reportElement>
 				<c:Code128 xmlns:c="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="1.0" textPosition="none">
