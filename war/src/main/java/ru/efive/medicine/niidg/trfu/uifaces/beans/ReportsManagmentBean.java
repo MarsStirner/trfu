@@ -291,7 +291,7 @@ public class ReportsManagmentBean {
 			return;
 		}
 		
-		printRequestAttributeSet.add(new Copies((Integer) count));		
+		printRequestAttributeSet.add(new Copies(Integer.parseInt(count.toString())));
 		JRPrintServiceExporter exporter=new JRPrintServiceExporter();
 		exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
 		/* We set the selected service and pass it as a paramenter */
@@ -300,9 +300,9 @@ public class ReportsManagmentBean {
 		exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);
 		exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
 		exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
-		exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_X, new Integer(5));
+		exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_X, new Integer(0));
 		//exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_X, new Integer(0));
-		exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_Y, new Integer(-5));
+		exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_Y, new Integer(0));
 		//exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_Y, new Integer(0));
 
 		try {		
@@ -383,7 +383,7 @@ public class ReportsManagmentBean {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""));
 		}
 		
-		printRequestAttributeSet.add(new Copies((Integer) count));
+		printRequestAttributeSet.add(new Copies(Integer.parseInt(count.toString())));
 		JRPrintServiceExporter exporter=new JRPrintServiceExporter();
 		exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
 		
