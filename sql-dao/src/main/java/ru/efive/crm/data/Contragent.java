@@ -1,11 +1,6 @@
 package ru.efive.crm.data;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -101,6 +96,19 @@ public class Contragent extends IdentifiedEntity {
 	 * Удален ли документ
 	 */
 	private boolean deleted;
-	
-	private static final long serialVersionUID = 1123233260758669450L;
+
+    /**
+     * для использования в теге e5ui:column
+     */
+    @Transient
+    public Boolean getPropertyDeleted() {
+        return isDeleted();
+    }
+    @Transient
+    public void setPropertyDeleted(Boolean deleted) {
+        setDeleted(deleted);
+    }
+
+
+    private static final long serialVersionUID = 1123233260758669450L;
 }
