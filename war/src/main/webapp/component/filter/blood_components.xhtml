@@ -159,7 +159,10 @@
 							</e5ui:column>
 							<e5ui:column style="min-width:10em">
 								<f:facet name="header">
-			                        <p>Статус</p>
+                                    <h:commandLink action="#{bloodComponentFilterableList.sort('statusId')}">
+			                            Статус
+                                        <f:ajax render="main_data_tbl"/>
+                                    </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.statusName}" />
 							</e5ui:column>
