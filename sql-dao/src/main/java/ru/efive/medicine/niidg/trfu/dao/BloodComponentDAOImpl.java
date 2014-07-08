@@ -1084,7 +1084,9 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 			String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteriaSub = createDetachedCriteriaSub();
 		addNotDeletedCriteria(detachedCriteriaSub);
-		addNotSplittedCriteria(detachedCriteriaSub);
+        if(filter.getStatusId() != 100) {
+            addNotSplittedCriteria(detachedCriteriaSub);
+        }
 		detachedCriteriaSub = getSearchCriteria(detachedCriteriaSub, filter);
 		
 		DetachedCriteria criteria = createDetachedCriteria();
@@ -1153,7 +1155,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 				conjunction.add(Restrictions.eq("history.toStatusId", statusId));
 				if (historyCreatedDateFrom != null || historyCreatedDateTo != null) {
 					addDateSearchCriteria(conjunction, historyCreatedDateFrom, historyCreatedDateTo, "history.created");
-				} 
+				}
 		    }
 	        if (bloodComponentTypeId != BloodComponentsFilter.BLOOD_COMPONENT_TYPE_NULL_VALUE) {
 	        	conjunction.add(Restrictions.eq("componentType.id", bloodComponentTypeId));

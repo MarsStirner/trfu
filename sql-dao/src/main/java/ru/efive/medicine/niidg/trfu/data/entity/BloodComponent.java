@@ -1,12 +1,6 @@
 package ru.efive.medicine.niidg.trfu.data.entity;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -456,6 +450,18 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
 		return result;
 	}
 
+    /**
+     * Добавление в историю компонента еще одной записи, если история пуста, то она создается
+     * @param historyEntry Запись в истории компонента, которую надо добавить
+     * @return  статус добавления (true - успех)
+     */
+    public boolean addToHistory(final HistoryEntry historyEntry) {
+        if(history == null){
+            this.history = new HashSet<HistoryEntry>(1);
+        }
+        return this.history.add(historyEntry);
+    }
+
 	public BloodComponent cloneComponent() {
 		try {
 			return (BloodComponent) super.clone();
@@ -854,4 +860,5 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
 	private int additionalVolume ;
 
 	private static final long serialVersionUID = -7114694453722100437L;
+
 }

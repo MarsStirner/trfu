@@ -98,7 +98,7 @@
 					</div>
 						<div class="defbutton">
 							<e5ui:formPart id="actions_fp">
-								<h:commandLink id="showActions" onclick="actionsModal.clickOpen('actionsModal'); return false;">
+								<h:commandLink id="showActions" onclick="actionsModal.clickOpen('actionsModal'); return false;" rendered="#{bloodComponent.document.id ne 0}">
 									<h:graphicImage value="#{resource['images:button-do.png']}" />
 									Действия
 								</h:commandLink>

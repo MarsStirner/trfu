@@ -1,14 +1,7 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
@@ -452,6 +445,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     			}
     		}
     		if (sum == getDocument().getVolume()) {
+                final Date splitDate = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
     			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
     			for (VolumeEntry volume: volumeList) {
     				BloodComponent component = getDocument().cloneComponent();
@@ -479,22 +473,22 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     				component.setVolume(volume.getVolume());
     				component.setSplit(true);
     				component.setSplitVolume(getDocument().getVolume());
-    				component.setSplitDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
+    				component.setSplitDate(splitDate);
     				component.setPreInactivatedVolume(0);
     				
     				HistoryEntry newEntry = new HistoryEntry();
     				newEntry.setActionId(3);
     				newEntry.setFromStatusId(1);
     				newEntry.setToStatusId(component.getStatusId());
-    				newEntry.setCreated(component.getSplitDate());
-    				newEntry.setStartDate(component.getSplitDate());
+    				newEntry.setCreated(splitDate);
+    				newEntry.setStartDate(splitDate);
     				newEntry.setOwner(sessionManagement.getLoggedUser());
     				newEntry.setDocType(component.getType());
     				newEntry.setParentId(component.getId());
-    				newEntry.setEndDate(component.getSplitDate());
+    				newEntry.setEndDate(splitDate);
     				newEntry.setProcessed(true);
     				StringBuffer sb = new StringBuffer("Получено путем разделения из компонента объемом ").append(component.getSplitVolume()).append(" ")
-    						.append(new java.text.SimpleDateFormat("dd.MM.yyyy HH:mm").format(component.getSplitDate()));
+    						.append(new java.text.SimpleDateFormat("dd.MM.yyyy HH:mm").format(splitDate));
     				newEntry.setCommentary(sb.toString());
     				
     				Set<HistoryEntry> history = new HashSet<HistoryEntry>();
@@ -503,10 +497,40 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     				
     				dao.save(component);
     			}
+
     			BloodComponent component = getDocument();
-    			component.setSplitDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
-    			component.setStatusId(100);
-    			setDocument(dao.save(component));
+    			component.setSplitDate(splitDate);
+
+                //Создание записи в истории о разделении  исходного КК
+                HistoryEntry newEntry = new HistoryEntry();
+                newEntry.setActionId(100);
+                newEntry.setFromStatusId(component.getStatusId());
+                newEntry.setToStatusId(100);
+                newEntry.setCreated(splitDate);
+                newEntry.setStartDate(splitDate);
+                newEntry.setOwner(sessionManagement.getLoggedUser());
+                newEntry.setDocType(component.getType());
+                newEntry.setParentId(component.getId());
+                newEntry.setEndDate(splitDate);
+                newEntry.setProcessed(true);
+                StringBuffer sb = new StringBuffer("Компонент разделен ")
+                        .append(new java.text.SimpleDateFormat("dd.MM.yyyy HH:mm").format(splitDate)).append(" ")
+                        .append("на ").append(volumeList.size()).append(" КК (");
+                final Iterator<VolumeEntry> volumeEntryIterator = volumeList.iterator();
+                while (volumeEntryIterator.hasNext()) {
+                    sb.append(volumeEntryIterator.next().getVolume());
+                    if(volumeEntryIterator.hasNext()){
+                        sb.append(" мл, ");
+                    }  else {
+                        sb.append(" мл)");
+                    }
+                }
+                newEntry.setCommentary(sb.toString());
+                //Добавление записи в историю
+                component.addToHistory(newEntry);
+                component.setStatusId(100);
+                setDocument(dao.save(component));
+
     			hide();
     		}
     		else {

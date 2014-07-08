@@ -280,9 +280,11 @@ public class ReportsManagmentBean {
 		mediaSizeName=MediaSize.findMedia(30.0F, 20.0F, MediaPrintableArea.MM);
 		System.out.println(mediaSizeName);
 
-		printRequestAttributeSet.add(new MediaPrintableArea(0, 0, 26, 37, MediaPrintableArea.MM));
+        //WTF? 26x37 ?!!!?!?!??!
+		//printRequestAttributeSet.add(new MediaPrintableArea(0, 0, 26, 37, MediaPrintableArea.MM));
+        printRequestAttributeSet.add(new MediaPrintableArea(0, 0, 30, 20, MediaPrintableArea.MM));
 
-		//printRequestAttributeSet.add(mediaSizeName);
+        //printRequestAttributeSet.add(mediaSizeName);
 		
 		Object count = propertiesHolder.getProperty("application", "reports.smallLabel.count");
 		if (count == null) {
