@@ -22,10 +22,8 @@ import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.AnalysisType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
-import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentMatchCriteria;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentOrderRequest;
+import ru.efive.medicine.niidg.trfu.data.entity.*;
+import ru.efive.medicine.niidg.trfu.uifaces.converters.ClassifierConverter;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
@@ -37,6 +35,28 @@ import ru.efive.wf.core.util.EngineHelper;
 @Named("bloodComponentOrder")
 @ConversationScoped
 public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<BloodComponentOrderRequest, Integer> {
+
+    @Override
+    public String edit(){
+        final String result = super.edit();
+        final BloodComponentOrderRequest bloodComponentOrder = getDocument();
+        final List<AnalysisType> analysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
+        if(bloodComponentOrder.getPhenotypeList().size() != analysisTypes.size()) {
+            for (AnalysisType currentAnalysisType : analysisTypes) {
+                boolean exists = false;
+                for(BloodComponentOrderPhenotype currentPhenotype : bloodComponentOrder.getPhenotypeList()){
+                    if(currentAnalysisType.equals(currentPhenotype.getPhenotype())){
+                        exists = true;
+                        break;
+                    }
+                }
+                if(!exists) {
+                    bloodComponentOrder.addToPhenotypeList(new BloodComponentOrderPhenotype(bloodComponentOrder, currentAnalysisType, "-"));
+                }
+            }
+        }
+        return result;
+    }
 	
 	@Override
 	protected boolean deleteDocument() {
@@ -79,6 +99,11 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
 		Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
 		bloodComponentOrder.setCreated(created);
 		bloodComponentOrder.setStaffNurse(sessionManagement.getLoggedUser());
+
+        final List<AnalysisType> analysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
+        for(AnalysisType currentAnalysisType : analysisTypes){
+               bloodComponentOrder.addToPhenotypeList(new BloodComponentOrderPhenotype(bloodComponentOrder, currentAnalysisType, "-"));
+        }
 		
 		HistoryEntry historyEntry = new HistoryEntry();
 		historyEntry.setCreated(created);

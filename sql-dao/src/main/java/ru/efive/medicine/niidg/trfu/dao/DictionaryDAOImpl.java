@@ -72,6 +72,26 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
         }
 		return getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
+
+    /**
+     * Поиск справочных данных по значению
+     *
+     * @param value        значение из справочника
+     * @return список документов
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends DictionaryEntity> List<T> findByValueAndCategory(Class<T> persistentClass, String value, String category) {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(persistentClass);
+        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+
+        if (StringUtils.isNotEmpty(value)) {
+            detachedCriteria.add(Restrictions.eq("value", value));
+        }
+        if (StringUtils.isNotEmpty(category)) {
+            detachedCriteria.add(Restrictions.eq("category", category));
+        }
+        return getHibernateTemplate().findByCriteria(detachedCriteria);
+    }
 	
 	/**
      * Поиск справочных данных по категории

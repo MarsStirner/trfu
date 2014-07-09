@@ -82,7 +82,7 @@ public class BloodComponentMatchBean extends AbstractDocumentHolderBean<BloodCom
 		
 		try {
 			List<AnalysisType> types = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
-			List<BloodComponentMatchCriteria> criteriaList = new ArrayList<BloodComponentMatchCriteria>();
+			List<BloodComponentMatchCriteria> criteriaList = new ArrayList<BloodComponentMatchCriteria>(types.size());
 			
 			for (AnalysisType type: types) {
 				Analysis analysis = new Analysis();

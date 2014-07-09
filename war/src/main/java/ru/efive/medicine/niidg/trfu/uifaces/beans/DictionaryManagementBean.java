@@ -2,6 +2,8 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -227,6 +229,18 @@ public class DictionaryManagementBean implements Serializable {
 	public List<Classifier> getByCategory(String category) {
 		return sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByCategory(Classifier.class, category, false);
 	}
+
+    public List<Classifier> getByCategoryOrderAlphabetically(String category) {
+        final List<Classifier> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByCategory(Classifier.class, category, false);
+        Collections.sort(list, new Comparator<Classifier>() {
+                    @Override
+                    public int compare(Classifier o1, Classifier o2) {
+                        return o1.getValue().compareTo(o2.getValue());
+                    }
+                }
+        );
+        return list;
+    }
 	
 	public List<Classifier> getByCategoryWithEmpty(String category) {
 		List<Classifier> result = new ArrayList<Classifier>();
