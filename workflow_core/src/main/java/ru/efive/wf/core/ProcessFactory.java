@@ -1338,6 +1338,12 @@ public final class ProcessFactory {
 				fromStatusActions.add(toStatusAction);
 				
 				statuses.put(waitStatus.getId(), waitStatus);
+
+                Status<T> carantineDefectStatus = new Status<T>();
+                carantineDefectStatus.setId(6);
+                carantineDefectStatus.setName("Брак из карантина");
+                carantineDefectStatus.setProcessedData(t);
+                statuses.put(carantineDefectStatus.getId(), carantineDefectStatus);
 				
 				// В карантине - Брак
 				toStatusAction = new StatusChangeAction(process) {
@@ -1364,9 +1370,9 @@ public final class ProcessFactory {
 				};
 
 				toStatusAction.setId(-2);
-				toStatusAction.setName("Брак");
+				toStatusAction.setName("Брак из карантина");
 				toStatusAction.setInitialStatus(status);
-				toStatusAction.setDestinationStatus(defectStatus);
+				toStatusAction.setDestinationStatus(carantineDefectStatus);
 				
 				activites = new ArrayList<IActivity>();
 				localActivity = new ParametrizedPropertyLocalActivity();
