@@ -737,7 +737,7 @@
 													</h:commandButton>
 												</div>
 											</e5ui-comp:modalWindow>
-		                    	<div class="defbutton">
+                               	<div class="defbutton">
 									<h:outputLink onclick="componentMatchModal.clickOpen('componentMatchModal'); return false;">
                                     <h:graphicImage value="#{resource['images:add_component.png']}" />
 										Подбор компонентов
@@ -886,7 +886,15 @@
 										id="components_list"
 										value="#{bloodComponentList.getDocumentsByOrder(bloodComponentOrder.document.id)}"
 										var="row" grouping="false">
-								<e5ui:row ondblclick="goToDocument('#{row.id}');" />
+								<e5ui:row ondblclick="goToDocument('#{row.id}');"/>
+                                <e5ui:column style="min-width:5em" rendered="#{bloodComponentOrder.document.statusId eq 2}">
+                                    <f:facet name="header">
+                                        <p>Удалить</p>
+                                    </f:facet>
+                                    <h:commandLink action="#{bloodComponentOrder.deleteBloodComponent(row)}">
+                                        <h:graphicImage value="#{resource['images:dell_buttn.png']}" />
+                                    </h:commandLink>
+                                </e5ui:column>
 								<e5ui:column style="min-width:5em">
 									<f:facet name="header">
 				                        <p>Номер</p>
