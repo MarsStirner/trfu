@@ -36,14 +36,11 @@ public class ExtendedProperties {
 
                 if (keySufix.equals("value")) {
                     extendedProperties.get(keyPrefix).setStringValue(value);
-                }
-                if (keySufix.equals("type")) {
+                } else if (keySufix.equals("type")) {
                     extendedProperties.get(keyPrefix).setType(value);
-                }
-                if (keySufix.equals("pattern")) {
+                } else if (keySufix.equals("pattern")) {
                     extendedProperties.get(keyPrefix).setPattern(value);
-                }
-                if (keySufix.equals("alias")) {
+                } else if (keySufix.equals("alias")) {
                     extendedProperties.get(keyPrefix).setAlias(value);
                 }
             } else {

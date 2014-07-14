@@ -1,0 +1,1 @@
+ALTER TABLE `trfu`.`trfu_blood_components` ADD COLUMN `bigLabelPath` VARCHAR(255) NULL AFTER `bloodSystem_id`;

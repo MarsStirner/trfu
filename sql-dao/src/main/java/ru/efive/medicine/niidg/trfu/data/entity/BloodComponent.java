@@ -859,6 +859,20 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
     private Classifier additionalLiquor;
 	private int additionalVolume ;
 
-	private static final long serialVersionUID = -7114694453722100437L;
+    /**
+     * Путь к месту хранения финальной клинической этикетки
+     */
+    @Column(name = "bigLabelPath", nullable = true)
+    private String bigLabelPath;
+
+    public String getBigLabelPath() {
+        return bigLabelPath;
+    }
+
+    public void setBigLabelPath(String bigLabelPath) {
+        this.bigLabelPath = bigLabelPath;
+    }
+
+    private static final long serialVersionUID = -7114694453722100437L;
 
 }
