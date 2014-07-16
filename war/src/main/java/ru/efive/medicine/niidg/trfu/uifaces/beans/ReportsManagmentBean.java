@@ -269,51 +269,29 @@ public class ReportsManagmentBean {
         } finally {
 
         }
-        //if(true){return;};
-        //Configure page printing on found print
-        DocPrintJob job = psZebra.createPrintJob();
+
         PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
-        MediaSizeName mediaSizeName = null;
-        //if(in_printerName==null){
-        //mediaSizeName=MediaSizeName.ISO_A4;
-        //}else{
-        //mediaSizeName=MediaSize.findMedia(
-        //Float.parseFloat(printerProperties.getProperty(in_printerPath+".x")),
-        //Float.parseFloat(printerProperties.getProperty(in_printerPath+".y")),
-        //MediaPrintableArea.MM
-        //);
-        //}
-
-
-        mediaSizeName = MediaSize.findMedia(30.0F, 20.0F, MediaPrintableArea.MM);
-        System.out.println(mediaSizeName);
-
         //WTF? 26x37 ?!!!?!?!??!
         //printRequestAttributeSet.add(new MediaPrintableArea(0, 0, 26, 37, MediaPrintableArea.MM));
-        printRequestAttributeSet.add(new MediaPrintableArea(0, 0, 30, 20, MediaPrintableArea.MM));
-
-        //printRequestAttributeSet.add(mediaSizeName);
-
+        //printRequestAttributeSet.add(new MediaPrintableArea(0, 0, 30, 20, MediaPrintableArea.MM));
         Object count = propertiesHolder.getProperty("application", "reports.smallLabel.count");
         if (count == null) {
             System.out.println("Wrong system configuration. Property reports.smallLabel.count is not set");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""));
             return;
         }
-
         printRequestAttributeSet.add(new Copies(Integer.parseInt(count.toString())));
         JRPrintServiceExporter exporter = new JRPrintServiceExporter();
         exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
 		/* We set the selected service and pass it as a paramenter */
         exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE, psZebra);
-        exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, psZebra.getAttributes());
-        exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);
+        //exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, psZebra.getAttributes());
+        //exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);
         exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
         exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
         exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_X, new Integer(0));
-        //exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_X, new Integer(0));
         exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_Y, new Integer(0));
-        //exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_Y, new Integer(0));
+
 
         try {
             exporter.exportReport();
@@ -389,9 +367,10 @@ public class ReportsManagmentBean {
         if (count == null) {
             System.out.println("Wrong system configuration. Property reports.smallLabel.count is not set");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""));
+        } else {
+            printRequestAttributeSet.add(new Copies(Integer.parseInt(count.toString())));
         }
 
-        printRequestAttributeSet.add(new Copies(Integer.parseInt(count.toString())));
         JRPrintServiceExporter exporter = new JRPrintServiceExporter();
         exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
 

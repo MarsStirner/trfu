@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Barcode4JReport" pageWidth="85" pageHeight="56" columnWidth="85" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
-	<property name="ireport.zoom" value="5.69624750374862"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Barcode4JReport" pageWidth="240" pageHeight="160" columnWidth="240" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" >
+	<property name="ireport.zoom" value="4.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Tahoma" fontName="Tahoma" fontSize="5" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
@@ -26,40 +26,40 @@ request.number=$P{requestNumber}]]>
 	<field name="lastName" class="java.lang.String"/>
 	<field name="firstName" class="java.lang.String"/>
 	<detail>
-		<band height="56" splitType="Stretch">
+		<band height="160" splitType="Stretch">
 			<textField>
-				<reportElement x="1" y="1" width="8" height="32" backcolor="#000000"/>
+				<reportElement x="0" y="0" width="20" height="89" backcolor="#000000" />
 				<textElement verticalAlignment="Middle" rotation="Left">
-					<font fontName="Tahoma" size="6" isBold="false"/>
+					<font fontName="Tahoma" size="15" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["№ "+$F{d_number}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2" y="45" width="80" height="10"/>
+				<reportElement x="0" y="115" width="221" height="45" />
 				<textElement>
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Tahoma" size="24"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{lastName}+" "+
 				(($F{firstName}) != null && !($F{firstName}).isEmpty() ? ($F{firstName}).charAt(0)+"." : " ")+
 				(($F{middleName}) != null && !($F{middleName}).isEmpty() ? ($F{middleName}).charAt(0)+"." : " "))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2" y="34" width="70" height="10"/>
+				<reportElement x="0" y="89" width="221" height="45" />
 				<textElement>
-					<font fontName="Tahoma" size="8"/>
+					<font fontName="Tahoma" size="24"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Донация "+$F{r_number}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="75" y="1" width="8" height="43" backcolor="#000000"/>
+				<reportElement x="221" y="0" width="19" height="130" backcolor="#000000" />
 				<textElement verticalAlignment="Middle" rotation="Left">
-					<font fontName="Tahoma" size="6" isBold="true"/>
+					<font fontName="Tahoma" size="15" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{created}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement style="Tahoma" x="9" y="1" width="71" height="34"/>
-				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="1" textPosition="none">
+				<reportElement style="Tahoma" x="20" y="0" width="201" height="89" />
+				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="2.0" textPosition="none">
 					<jr:codeExpression><![CDATA[$F{r_number}]]></jr:codeExpression>
 				</jr:Code128>
 			</componentElement>
