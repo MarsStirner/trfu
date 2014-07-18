@@ -231,7 +231,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 			}
 			else {
 				if (bloodDonation.getNumber() == null || bloodDonation.getNumber().equals("")) {
-					bloodDonation.setNumber(StringUtils.right("00000" + getDocument().getId(), 5));
+					bloodDonation.setNumber(StringUtils.leftPad(String.valueOf(getDocument().getId()), 5, '0'));
 				}
 				bloodDonation = dao.save(bloodDonation);
 				setDocument(bloodDonation);
