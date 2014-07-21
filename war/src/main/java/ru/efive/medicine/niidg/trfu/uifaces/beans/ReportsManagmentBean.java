@@ -1,20 +1,21 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
+import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.awt.image.RenderedImage;
+import java.awt.print.*;
+import java.io.*;
 import java.lang.Exception;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -22,19 +23,15 @@ import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.print.DocPrintJob;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
+import javax.print.*;
+import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.PrintServiceAttribute;
-import javax.print.attribute.standard.Copies;
-import javax.print.attribute.standard.MediaPrintableArea;
-import javax.print.attribute.standard.MediaSize;
-import javax.print.attribute.standard.MediaSizeName;
-import javax.print.attribute.standard.PrinterName;
+import javax.print.attribute.standard.*;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.jasperreports.components.barcode4j.Code128Component;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRResultSetDataSource;
@@ -46,10 +43,17 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.*;
 import net.sf.jasperreports.engine.query.JRHibernateQueryExecuterFactory;
 
+
+import org.apache.avalon.framework.configuration.DefaultConfiguration;
+import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.krysalis.barcode4j.*;
+import org.krysalis.barcode4j.impl.code128.Code128;
+import org.krysalis.barcode4j.impl.code128.Code128Bean;
+import org.krysalis.barcode4j.output.java2d.Java2DCanvasProvider;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import ru.efive.dao.sql.entity.document.ReportTemplate;
@@ -210,7 +214,6 @@ public class ReportsManagmentBean {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не указано наименование принтера печати этикеток. Обратитесь в техническую поддержку", ""));
             return;
         }
-
         PrintService psZebra = null;
         String sPrinterName = null;
         PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
@@ -230,84 +233,132 @@ public class ReportsManagmentBean {
             return;
         } else {
             System.out.println("Found printer name is >> " + psZebra.getName());
-        }
-        /* Get Data source */
-        JasperReport report = null;
-        JasperPrint print = null;
-        try {
-            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/" + in_reportName);
-            report = JasperCompileManager.compileReport(inputStream);
-            Map<String, Object> in_map = new HashMap<String, Object>();
-            for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
-                System.out.println("_" + entry.getKey());
-                in_map.put("_" + entry.getKey(), entry.getValue());
-                in_map.put(entry.getKey(), entry.getValue());
+            for(Attribute attr : psZebra.getAttributes().toArray()){
+               System.out.println(" * "+attr.getName()+":"+ attr);
             }
-
-            Session session = ((SessionFactory) indexManagement.getContext().getBean("sessionFactory")).openSession();
-            in_map.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION, session);
-            print = JasperFillManager.fillReport(report, in_map);
-
-            //HttpServletResponse response = (HttpServletResponse)FacesContext.getCurrentInstance().getExternalContext().getResponse();
-            //Set reponse content type
-            //response.setContentType("application/pdf");
-            //Export PDF file to browser window
-            //JRPdfExporter exporter = new JRPdfExporter();
-            //exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-            //exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, response.getOutputStream());
-            //exporter.exportReport();
-
-            //JasperExportManager.exportReportToPdfFile(print,"c:/reports/db_big_report.pdf");
-            //ResponseStream response=FacesContext.getCurrentInstance().getExternalContext();//getResponseStream();
-            //report = JasperCompileManager.compileReport(inputStream);
-            //print = JasperFillManager.fillReport(report, new HashMap(), new JREmptyDataSource());
-            //
-            session.close();
-
-        } catch (JRException e) {
-            e.printStackTrace();
-        } finally {
-
         }
-
-        PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
-        //WTF? 26x37 ?!!!?!?!??!
-        //printRequestAttributeSet.add(new MediaPrintableArea(0, 0, 26, 37, MediaPrintableArea.MM));
-        //printRequestAttributeSet.add(new MediaPrintableArea(0, 0, 30, 20, MediaPrintableArea.MM));
         Object count = propertiesHolder.getProperty("application", "reports.smallLabel.count");
         if (count == null) {
             System.out.println("Wrong system configuration. Property reports.smallLabel.count is not set");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""));
             return;
         }
-        printRequestAttributeSet.add(new Copies(Integer.parseInt(count.toString())));
-        JRPrintServiceExporter exporter = new JRPrintServiceExporter();
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-		/* We set the selected service and pass it as a paramenter */
-        exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE, psZebra);
-        //exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, psZebra.getAttributes());
-        //exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);
-        exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
-        exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
-        exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_X, new Integer(0));
-        exporter.setParameter(JRPrintServiceExporterParameter.OFFSET_Y, new Integer(0));
+        Session session = ((SessionFactory) indexManagement.getContext().getBean("sessionFactory")).openSession();
+        final Map<String, Object> in_map = new HashMap<String, Object>();
+        for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
+            System.out.println("_" + entry.getKey());
+            in_map.put("_" + entry.getKey(), entry.getValue());
+            in_map.put(entry.getKey(), entry.getValue());
+        }
+        final List resultList = session.createQuery("select\n" +
+                "request.number as r_number,\n" +
+                "request.created as created,\n" +
+                "request.donor.number as d_number,\n" +
+                "request.donor.middleName as middleName,\n" +
+                "request.donor.lastName as lastName,\n" +
+                "request.donor.firstName as firstName\n" +
+                "from\n" +
+                "ExaminationRequest as request\n" +
+                "where\n" +
+                "request.number=\'" + in_map.get("_requestNumber") + "\'").list();
+        if(resultList.isEmpty()) {
+            return;
+        }
+        Object[] row = (Object[]) resultList.get(0);
+        final String r_number = (String) row[0];
+        final Date created = (Date)row[1];
+        final String d_number = (String) row[2];
+        final String middleName = (String) row[3];
+        final String lastName = (String) row[4];
+        final String firstName = (String) row[5];
+        session.close();
+        final StringBuilder fioStringBuilder = new StringBuilder(lastName);
+        if(firstName != null && !firstName.isEmpty()){
+            fioStringBuilder.append(' ').append(firstName.charAt(0)).append('.');
+        }
+        if(middleName != null && !middleName.isEmpty()){
+            fioStringBuilder.append(' ').append(middleName.charAt(0)).append('.');
+        }
+        System.out.println("Print bufferedImage with Paper settings");
+        final BufferedImage picture_240_160 = createLabel240_160(r_number, new SimpleDateFormat("dd.MM.yyyy").format(created), d_number, fioStringBuilder.toString());
+        printImage240x160withPaper(picture_240_160, psZebra, count);
+    }
 
-
+    private void printImage240x160withPaper(BufferedImage print, PrintService ps, Object count) {
         try {
-            exporter.exportReport();
-            System.out.println("Printed success");
-        } catch (JRException e) {
-            e.printStackTrace();
-            System.out.println("not printed");
-        } finally {
-            // Корректно закрываем соединение с базой
-            try {
-                conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            final PrinterJob job = PrinterJob.getPrinterJob();
+            job.setPrintService(ps);
+            final PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+            aset.add(new PrinterResolution(203, 203, PrinterResolution.DPI));
+            aset.add(new JobName("Little Label printing from java", Locale.getDefault()));
+            aset.add(PrintQuality.HIGH);
+            aset.add(new Copies((Integer) count));
+            PageFormat pf = job.defaultPage();
+            dump(pf);
+            Paper paper = pf.getPaper();
+            //                        30X20mm
+            double width = fromCMToPPI(3.0);
+            double height = fromCMToPPI(2.0);
+            paper.setSize(width, height);
+            paper.setImageableArea(
+                    0,
+                    0,
+                    width,
+                    height);
+            pf.setOrientation(PageFormat.PORTRAIT);
+            pf.setPaper(paper);
+            PageFormat validatePage = job.validatePage(pf);
+            System.out.println("Valid- ");
+            dump(validatePage);
+            job.setPrintable(new ImagePrintable(print), pf);
+            job.print(aset);
+        }catch(Exception e){
+            System.out.println("imagePrint failed:");
         }
     }
+
+    private BufferedImage createLabel240_160(String r_number, String date, String d_number, String fio) {
+        final BufferedImage picture_240_160 = new BufferedImage(240, 160, BufferedImage.TYPE_INT_RGB);
+        final Font mainFont = new Font("Tahoma", Font.PLAIN, 18);
+        final Font edgeFont = new Font("Tahoma",Font.PLAIN, 15);
+        AffineTransform rotationTransform = new AffineTransform();
+        rotationTransform.rotate(Math.toRadians(-90));
+        final Font rotatedFont = edgeFont.deriveFont(rotationTransform);
+        Graphics2D g2d = (Graphics2D) picture_240_160.createGraphics();
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(0,0,240,160);
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(mainFont);
+        g2d.drawString("Донация ".concat(r_number), 0, 120);
+        g2d.drawString(fio,20,138);
+        g2d.setFont(rotatedFont);
+        g2d.drawString("№ ".concat(d_number), 20, 100);
+        g2d.drawString(date,235,120);
+        g2d.translate(20,5);
+        Code128Bean bean = new Code128Bean();
+        bean.doQuietZone(true);
+        bean.setHeight(100);
+        bean.setModuleWidth(2.5);
+        bean.setMsgPosition(HumanReadablePlacement.HRP_NONE);
+        bean.generateBarcode(new Java2DCanvasProvider(g2d,0), r_number);
+        return picture_240_160;
+    }
+
+
+    protected static double fromPPItoCM(double dpi) {
+        return dpi / 72 / 0.393700787;
+    }
+
+    protected static double fromCMToPPI(double cm) {
+        return toPPI(cm * 0.393700787);
+    }
+
+    protected static double toPPI(double inch) {
+        return inch * 72d;
+    }
+
+
+
 
     public void hibernatePrintReportByRequestParams(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
         String in_reportName = requestProperties.get("reportName");
@@ -735,4 +786,67 @@ public class ReportsManagmentBean {
 
     @Inject @Named("sessionManagement")
     private transient SessionManagementBean sessionManagement = new SessionManagementBean();
+
+
+
+    protected String dump(Paper paper) {
+        StringBuilder sb = new StringBuilder(64);
+        sb.append(paper.getWidth()).append("x").append(paper.getHeight())
+                .append("/").append(paper.getImageableX()).append("x").
+                append(paper.getImageableY()).append(" - ").append(paper
+                .getImageableWidth()).append("x").append(paper.getImageableHeight());
+        return sb.toString();
+    }
+
+    protected void dump(PageFormat pf) {
+        Paper paper = pf.getPaper();
+        System.out.println(dump(paper));
+    }
+
+    private class ImagePrintable implements Printable {
+        private final BufferedImage image;
+
+        public ImagePrintable(BufferedImage print) {
+            this.image = print;
+        }
+        @Override
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+           if(pageIndex >= 1){
+               return NO_SUCH_PAGE;
+           }
+            Graphics2D g2d = (Graphics2D) graphics;
+            g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+            if(this.image != null){
+                Double xScaleFactor = 1.0d;
+                Double yScaleFactor = 1.0d;
+
+                if (this.image.getWidth() > pageFormat.getImageableWidth()) {
+                    xScaleFactor = pageFormat.getImageableWidth() / (double) this.image.getWidth();
+                } else if (this.image.getWidth() < pageFormat.getImageableWidth()) {
+                    xScaleFactor = (double) this.image.getWidth() / pageFormat.getImageableWidth();
+                }
+
+                if (this.image.getHeight() > pageFormat.getImageableHeight()) {
+                    yScaleFactor = pageFormat.getImageableHeight() / (double) this.image.getHeight();
+                } else if (this.image.getHeight() < pageFormat.getImageableHeight()) {
+                    yScaleFactor = (double) this.image.getHeight() / pageFormat.getImageableHeight();
+                }
+
+                printImage(g2d, this.image, xScaleFactor, yScaleFactor);
+
+                return Printable.PAGE_EXISTS;
+            } else {
+                return Printable.NO_SUCH_PAGE;
+            }
+        }
+
+        public void printImage(Graphics2D g2d, RenderedImage image, double xScale, double yScale) {
+            if ((image == null) || (g2d == null)) {
+                return;
+            }
+            AffineTransform at = new AffineTransform();
+            g2d.scale(xScale, yScale);
+            g2d.drawRenderedImage(image, at);
+        }
+    }
 }
