@@ -51,7 +51,16 @@ public class ExtendedProperty {
     }
 
     public void setObjectValue(Object objectValue) {
-        this.objectValue = objectValue;
+        if(converter != null && objectValue instanceof String){
+            try {
+                this.objectValue = converter.getAsObject((String) objectValue);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                this.objectValue = objectValue;
+            }
+        } else {
+            this.objectValue = objectValue;
+        }
         if (converter != null)
             stringValue = converter.getAsString(objectValue);
     }

@@ -314,6 +314,7 @@ public class ReportsManagmentBean {
             job.print(aset);
         }catch(Exception e){
             System.out.println("imagePrint failed:");
+            e.printStackTrace();
         }
     }
 

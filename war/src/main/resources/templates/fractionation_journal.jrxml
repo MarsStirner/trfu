@@ -57,7 +57,7 @@ table1.dosa,table1.emVolume,
 count(CASE WHEN ( table1.emVolume<>0) THEN table1.emVolume ELSE 0 END) as emcount,
 table1.em_brak_count, table1.em_brak_volume
 from
-(select comp.parentNumber, comp.bloodGroup_id as bloodGroup, cl.value as rezus,(comp.volume) as emvolume,
+(select comp.parentNumber, comp.bloodGroup_id as bloodGroup, cl.value as rezus,(comp.emVolume) as emvolume,
 	entr.dose as dosa, sum(CASE WHEN ( comp.status_id!=-1) THEN comp.volume ELSE 0 END) as erVzv_volume, (CASE WHEN ( comp.status_id=-1) THEN 1 ELSE 0 END) as em_brak_count,(CASE WHEN ( comp.status_id=-1) THEN comp.volume ELSE 0 END) as em_brak_volume
 	from trfu_blood_components comp inner join trfu_classifiers cl on comp.rhesusFactor_id=cl.id and cl.	category='Резус-фактор'
   inner join trfu_blood_donation_requests req on req.number=comp.parentNumber
