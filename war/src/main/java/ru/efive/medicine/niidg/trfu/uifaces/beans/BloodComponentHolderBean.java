@@ -765,13 +765,14 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 	private VirusinaktivationModalBean virusinaktivationModal = new VirusinaktivationModalBean(){
 
 		public void perfomVirusinaktivation(){
+            System.out.println("VirusInactivation");
 			if(isValid()){
 				BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
 				BloodComponent bloodComponent = getDocument();
 				bloodComponent.setPreInactivatedVolume(bloodComponent.getVolume());
 				bloodComponent.setVolume(Integer.parseInt(getVolume()));
 				bloodComponent.setInactivated(true);
-			
+
 				Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
 				HistoryEntry historyEntry = new HistoryEntry();
 				historyEntry.setCreated(created);
@@ -781,11 +782,10 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 				historyEntry.setParentId(bloodComponent.getId());
 				historyEntry.setActionId(ApplicationHelper.VIRUSINAKTIVATION_ID);
 				historyEntry.setFromStatusId(bloodComponent.getStatusId());
+                historyEntry.setToStatusId(bloodComponent.getStatusId());
 				historyEntry.setCommentary("");
-				Set<HistoryEntry> history = bloodComponent.getHistory();
-				history.add(historyEntry);
-		
-				dao.save(bloodComponent);
+				bloodComponent.addToHistory(historyEntry);
+				bloodComponent = dao.save(bloodComponent);
 				setDocument(bloodComponent);
 				doHide();
 			}else{
@@ -794,7 +794,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 						"Введите целое число!", ""));
 			}
 		}
-			
+
 		public void doHide(){
 			virusinaktivationModal.setModalVisible(false);
 		}
@@ -810,12 +810,28 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 		public void perfomVirusinaktivation(){
 			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
 			BloodComponent bloodComponent = getDocument();
-			bloodComponent.setPreInactivatedVolume(bloodComponent.getVolume());
+
+            Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
+
+            bloodComponent.setPreInactivatedVolume(bloodComponent.getVolume());
 			bloodComponent.setVolume(getVirusinWithResuspensionSolutionVolume());
 			bloodComponent.setInactivated(true);
-			
-			dao.save(bloodComponent);
-			setDocument(bloodComponent);
+            bloodComponent.setVirusInactivationDate(created);
+
+            HistoryEntry historyEntry = new HistoryEntry();
+            historyEntry.setCreated(created);
+            historyEntry.setStartDate(created);
+            historyEntry.setOwner(sessionManagement.getLoggedUser());
+            historyEntry.setDocType(bloodComponent.getType());
+            historyEntry.setParentId(bloodComponent.getId());
+            historyEntry.setActionId(ApplicationHelper.VIRUSINAKTIVATION_ID);
+            historyEntry.setFromStatusId(bloodComponent.getStatusId());
+            historyEntry.setToStatusId(bloodComponent.getStatusId());
+            historyEntry.setCommentary("");
+            bloodComponent.addToHistory(historyEntry);
+            bloodComponent = dao.save(bloodComponent);
+            setDocument(bloodComponent);
+
 			setModalVisible(false);
 			needRefreshVirusinactivationList = true;
 			virusinactivationComponentList.refresh();

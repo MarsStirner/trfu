@@ -8,14 +8,14 @@
 	<parameter name="ConsumableMaterial" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select
-                bdr.number as number, bc.productionDate as productionDate, bc.preInactivatedVolume as preInactivatedVolume, bc.volume as volume
+                bdr.number as number, bc.virusInactivationDate as virusInactivationDate, bc.preInactivatedVolume as preInactivatedVolume, bc.volume as volume
             from trfu_blood_components bc
                 inner join trfu_blood_donation_requests bdr on bc.donationId = bdr.id
             where bc.deleted = 0
-                and bc.productionDate between DATE($P{StartDate}) and  ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)]]>
+                and bc.virusInactivationDate between DATE($P{StartDate}) and  ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)]]>
 	</queryString>
 	<field name="number" class="java.lang.String"/>
-	<field name="productionDate" class="java.util.Date"/>
+	<field name="virusInactivationDate" class="java.util.Date"/>
 	<field name="preInactivatedVolume" class="java.lang.Integer"/>
 	<field name="volume" class="java.lang.Integer"/>
 	<variable name="preInactivatedVolumeSum" class="java.lang.Integer" calculation="Sum">
@@ -196,7 +196,7 @@
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{productionDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{virusInactivationDate}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="203" y="0" width="122" height="20"/>

@@ -32,8 +32,8 @@ import ru.efive.wf.core.ProcessedData;
 @Table(name = "trfu_blood_components")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class BloodComponent extends IdentifiedEntity implements ProcessedData, Cloneable {
-	
-	public void setAuthor(User author) {
+
+    public void setAuthor(User author) {
 		this.author = author;
 	}
 	
@@ -873,6 +873,20 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
         this.bigLabelPath = bigLabelPath;
     }
 
-    private static final long serialVersionUID = -7114694453722100437L;
+    /**
+     * Дата проведения вирусинактивации КК
+     */
+    @Column(name="virusInactivationDate", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date virusInactivationDate;
 
+    public void setVirusInactivationDate(Date virusInactivationDate) {
+        this.virusInactivationDate = virusInactivationDate;
+    }
+
+    public Date getVirusInactivationDate() {
+        return virusInactivationDate;
+    }
+
+    private static final long serialVersionUID = -7114694453722100437L;
 }
