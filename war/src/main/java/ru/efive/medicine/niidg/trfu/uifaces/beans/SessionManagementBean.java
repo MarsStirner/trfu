@@ -353,13 +353,13 @@ public class SessionManagementBean implements Serializable {
 	private String getNavigationRule() {
 		StringBuffer buffer = new StringBuffer("/component/");
 		if (currentRole == null) {
-			buffer.append("donors");
+			buffer.append("filter/donors");
 		}
 		else if (currentRole.getRoleType().equals(RoleType.ENTERPRISE_ADMINISTRATION)) {
     		buffer.append("admin/settings");
     	}
     	else if (currentRole.getRoleType().equals(RoleType.REGISTRATOR)) {
-    		buffer.append("donors");
+    		buffer.append("filter/donors");
     	}
     	else if (currentRole.getRoleType().equals(RoleType.THERAPIST)) {
     		buffer.append("personal_requests");
@@ -395,7 +395,7 @@ public class SessionManagementBean implements Serializable {
     		buffer.append("blood_components_quarantined");
     	}
     	else if (currentRole.getRoleType().equals(RoleType.DIVISION_SUPERINTENDENT)) {
-    		buffer.append("donors");
+    		buffer.append("filter/donors");
     	}
     	else if (currentRole.getRoleType().equals(RoleType.MEDICAL)) {
     		buffer.append("medical/donors");
@@ -404,7 +404,7 @@ public class SessionManagementBean implements Serializable {
     		buffer.append("virusinactivation");
 		}
     	else {
-    		buffer.append("donors");
+    		buffer.append("filter/donors");
     	}
     	return buffer.toString();
 	}

@@ -438,15 +438,7 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
 		if (history != null) {
 			result.addAll(history);
 		}
-		Collections.sort(result, new Comparator<HistoryEntry>() {
-			public int compare(HistoryEntry o1, HistoryEntry o2) {
-				Calendar c1 = Calendar.getInstance(ApplicationHelper.getLocale());
-				c1.setTime(o1.getCreated());
-				Calendar c2 = Calendar.getInstance(ApplicationHelper.getLocale());
-				c2.setTime(o2.getCreated());
-				return c1.compareTo(c2);
-			}
-		});
+		Collections.sort(result);
 		return result;
 	}
 
