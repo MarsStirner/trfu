@@ -28,6 +28,7 @@ public class ObjectFactory {
     private final static QName _SetProcedureResult_QNAME = new QName("http://korus.ru/tmis/ws/transfusion", "setProcedureResult");
     private final static QName _GetDivisions_QNAME = new QName("http://korus.ru/tmis/ws/transfusion", "getDivisions");
     private final static QName _SetOrderIssueResultResponse_QNAME = new QName("http://korus.ru/tmis/ws/transfusion", "setOrderIssueResultResponse");
+    private final static QName _OrderIssueInfo_QNAME = new QName("http://korus.ru/tmis/ws/transfusion", "orderIssueInfo");
     private final static QName _GetDivisionsResponse_QNAME = new QName("http://korus.ru/tmis/ws/transfusion", "getDivisionsResponse");
     private final static QName _SetProcedureResultResponse_QNAME = new QName("http://korus.ru/tmis/ws/transfusion", "setProcedureResultResponse");
 
@@ -36,6 +37,14 @@ public class ObjectFactory {
      * 
      */
     public ObjectFactory() {
+    }
+
+    /**
+     * Create an instance of {@link BloodPhenotype }
+     * 
+     */
+    public BloodPhenotype createBloodPhenotype() {
+        return new BloodPhenotype();
     }
 
     /**
@@ -76,6 +85,14 @@ public class ObjectFactory {
      */
     public GetDivisionsResponse createGetDivisionsResponse() {
         return new GetDivisionsResponse();
+    }
+
+    /**
+     * Create an instance of {@link OrderIssueInfo }
+     * 
+     */
+    public OrderIssueInfo createOrderIssueInfo() {
+        return new OrderIssueInfo();
     }
 
     /**
@@ -135,14 +152,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link OrderIssueInfo }
-     * 
-     */
-    public OrderIssueInfo createOrderIssueInfo() {
-        return new OrderIssueInfo();
-    }
-
-    /**
      * Create an instance of {@link ProcedureInfo }
      * 
      */
@@ -184,6 +193,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://korus.ru/tmis/ws/transfusion", name = "setOrderIssueResultResponse")
     public JAXBElement<SetOrderIssueResultResponse> createSetOrderIssueResultResponse(SetOrderIssueResultResponse value) {
         return new JAXBElement<SetOrderIssueResultResponse>(_SetOrderIssueResultResponse_QNAME, SetOrderIssueResultResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link OrderIssueInfo }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://korus.ru/tmis/ws/transfusion", name = "orderIssueInfo")
+    public JAXBElement<OrderIssueInfo> createOrderIssueInfo(OrderIssueInfo value) {
+        return new JAXBElement<OrderIssueInfo>(_OrderIssueInfo_QNAME, OrderIssueInfo.class, null, value);
     }
 
     /**

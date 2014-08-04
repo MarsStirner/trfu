@@ -1,16 +1,11 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.BloodSystemDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
@@ -27,18 +22,24 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 	private static final long serialVersionUID = 8942121183249792240L;
 	
 	// статусы КК - зарегистрирован, в карантине, готов к выдаче, готов к выдаче из карантина
-	private List<Integer> bloodComponentStatusIdList = Arrays.asList(new Integer[] { 1, 2, 3, 5});
+	private static final List<Integer> bloodComponentStatusIdList = Arrays.asList(1, 2, 3, 5);
 	// статусы донаций КК - донация, получение результатов анализов, паспортизация
-	private List<Integer> donationStatusIdList = Arrays.asList(new Integer[] {2, 3, 4}); 
+	private static final List<Integer> donationStatusIdList = Arrays.asList(2, 3, 4);
+
+   //Форматирование даты
+    private static final DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
 		
 	@Inject @Named("sessionManagement")
 	private SessionManagementBean sessionManagement;
-	
+
+	//Текущая система крови
 	private BloodSystem currentBloodSystem;
+    //Поисковый фильтр
 	private String filter;
-	private BloodSystemSelect bloodSystemTypeSelectModal = new BloodSystemSelect();
+
+  	private BloodSystemSelect bloodSystemTypeSelectModal = new BloodSystemSelect();
 	private ExpirationDateSelect expirationDateSelectModal = new ExpirationDateSelect();
-	
+
 	@Override
 	public Pagination initPagination() {
 		return new Pagination(0, getTotalCount(), 100);
@@ -46,32 +47,30 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 
 	@Override
 	public Sorting initSorting() {
-		return new Sorting("parentNumber,number", true);
+		return new Sorting("created", false);
 	}
 	
 	@Override
 	protected int getTotalCount() {
-		int result = 0;
 		try {
-			result = new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).countDocument(filter, bloodComponentStatusIdList, donationStatusIdList, false, false)).intValue();
+			return new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).countVirusinactivatedDocumentsByFinalBarcode(filter, bloodComponentStatusIdList, donationStatusIdList, false, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+            return 0;
 		}
-		return result;
 	}
 	
 	@Override
 	protected List<BloodComponent> loadDocuments() {
-		List<BloodComponent> result = new ArrayList<BloodComponent>();
 		try {
-			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocuments(filter, bloodComponentStatusIdList, donationStatusIdList, false, false, 
-					getPagination().getOffset(), getPagination().getPageSize(), "created", false);
+			return sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findVirusinactivatedDocumentsByFinalBarcode(filter, bloodComponentStatusIdList, donationStatusIdList, false, false,
+                    getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+            return new ArrayList<BloodComponent>(0);
 		}
-		return result;
 	}
 
 	@Override
@@ -80,10 +79,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 	}
 	
 	public String getCurrentBloodSystemId() {
-		if (currentBloodSystem != null) {
-			return String.valueOf(currentBloodSystem.getId()); 
-		}
-		return "";
+		return currentBloodSystem != null ? String.valueOf(currentBloodSystem.getId()) : "";
 	}
 	
 	public String getFilter() {
@@ -93,8 +89,8 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 	public void setFilter(String filter) {
 		this.filter = filter;
 	}
-	
-	public BloodSystemSelect getBloodSystemTypeSelectModal() {
+
+    public BloodSystemSelect getBloodSystemTypeSelectModal() {
         return bloodSystemTypeSelectModal;
     }
 	
@@ -103,19 +99,16 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 	}
 	
 	public String getConsumableMaterial() {
-		StringBuffer result = new StringBuffer("");
 		if (currentBloodSystem != null) {
-			result.append("Лот: ");
-			result.append(currentBloodSystem.getSystemLot());
-			result.append(". Тип: ");
-			result.append(currentBloodSystem.getType().getValue());
-			result.append(". Годен до: ");
-			DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-			result.append(formatter.format(currentBloodSystem.getExpirationDate()));
-		}
-		return result.toString();
+            final StringBuilder result = new StringBuilder("Лот: ").append(currentBloodSystem.getSystemLot());
+			result.append(". Тип: ").append(currentBloodSystem.getType().getValue());
+			result.append(". Годен до: ").append(formatter.format(currentBloodSystem.getExpirationDate()));
+            return result.toString();
+		}  else {
+            return "";
+        }
 	}
-	
+
 	public class BloodSystemSelect extends ModalWindowHolderBean {
 		private static final long serialVersionUID = 5479346746136426256L;
 		private BloodSystemType selected = null;
@@ -201,7 +194,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
     	}
 		
 		public void validateExpirationDate() {
-			if("".equals(systemLot)){
+			if(systemLot.isEmpty()){
 				setErrorMessage(ERR_MSG_LOT);
 				return;
 			}

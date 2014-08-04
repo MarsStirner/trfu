@@ -2,9 +2,10 @@ package ru.efive.medicine.niidg.trfu.uifaces.ws.medical;
 
 import javax.xml.bind.annotation.*;
 import java.util.Date;
+import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PatientCredentials", propOrder = {"id", "lastName", "firstName", "middleName", "birth", "bloodGroupId", "rhesusFactorId"} )
+@XmlType(name = "PatientCredentials", propOrder = {"id", "lastName", "firstName", "middleName", "birth", "bloodGroupId", "rhesusFactorId", "bloodKell", "bloodPhenotype"} )
 @XmlRootElement(name = "PatientCredentials")
 public class PatientCredentials implements java.io.Serializable {
     @XmlElement(name = "id")
@@ -21,6 +22,10 @@ public class PatientCredentials implements java.io.Serializable {
     private Integer bloodGroupId;
     @XmlElement(name = "rhesusFactorId")
     private Integer rhesusFactorId;
+    @XmlElement(name = "bloodKell")
+    private Boolean bloodKell;
+    @XmlElement(name = "bloodPhenotype", required = false, nillable = true)
+    private List<BloodPhenotype> bloodPhenotype;
 
     public Integer getId() {
         return id;
@@ -76,5 +81,21 @@ public class PatientCredentials implements java.io.Serializable {
 
     public void setRhesusFactorId(Integer rhesusFactorId) {
         this.rhesusFactorId = rhesusFactorId;
+    }
+
+    public Boolean getBloodKell() {
+        return bloodKell;
+    }
+
+    public void setBloodKell(Boolean bloodKell) {
+        this.bloodKell = bloodKell;
+    }
+
+    public List<BloodPhenotype> getBloodPhenotype() {
+        return bloodPhenotype;
+    }
+
+    public void setBloodPhenotype(List<BloodPhenotype> bloodPhenotype) {
+        this.bloodPhenotype = bloodPhenotype;
     }
 }

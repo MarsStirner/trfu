@@ -1,9 +1,11 @@
 
 package ru.korusconsulting.external;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -26,6 +28,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="birth" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0"/>
  *         &lt;element name="bloodGroupId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="rhesusFactorId" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
+ *         &lt;element name="bloodKell" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
+ *         &lt;element name="bloodPhenotype" type="{http://www.korusconsulting.ru}BloodPhenotype" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -34,7 +38,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * 
  * 
  */
-@XmlRootElement(name = "PatientCredentials")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PatientCredentials", namespace = "http://www.korusconsulting.ru", propOrder = {
     "id",
@@ -43,7 +46,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "middleName",
     "birth",
     "bloodGroupId",
-    "rhesusFactorId"
+    "rhesusFactorId",
+    "bloodKell",
+    "bloodPhenotype"
 })
 public class PatientCredentials {
 
@@ -55,6 +60,9 @@ public class PatientCredentials {
     protected XMLGregorianCalendar birth;
     protected Integer bloodGroupId;
     protected Integer rhesusFactorId;
+    protected Boolean bloodKell;
+    @XmlElement(nillable = true)
+    protected List<BloodPhenotype> bloodPhenotype;
 
     /**
      * Gets the value of the id property.
@@ -222,6 +230,59 @@ public class PatientCredentials {
      */
     public void setRhesusFactorId(Integer value) {
         this.rhesusFactorId = value;
+    }
+
+    /**
+     * Gets the value of the bloodKell property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public Boolean isBloodKell() {
+        return bloodKell;
+    }
+
+    /**
+     * Sets the value of the bloodKell property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    public void setBloodKell(Boolean value) {
+        this.bloodKell = value;
+    }
+
+    /**
+     * Gets the value of the bloodPhenotype property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the bloodPhenotype property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getBloodPhenotype().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link BloodPhenotype }
+     * 
+     * 
+     */
+    public List<BloodPhenotype> getBloodPhenotype() {
+        if (bloodPhenotype == null) {
+            bloodPhenotype = new ArrayList<BloodPhenotype>();
+        }
+        return this.bloodPhenotype;
     }
 
 }

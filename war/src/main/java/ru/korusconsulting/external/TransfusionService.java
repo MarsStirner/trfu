@@ -52,18 +52,6 @@ public interface TransfusionService {
 
     /**
      * 
-     * @return
-     *     returns java.util.List<ru.korusconsulting.external.DivisionInfo>
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getDivisions", targetNamespace = "http://korus.ru/tmis/ws/transfusion", className = "ru.korusconsulting.external.GetDivisions")
-    @ResponseWrapper(localName = "getDivisionsResponse", targetNamespace = "http://korus.ru/tmis/ws/transfusion", className = "ru.korusconsulting.external.GetDivisionsResponse")
-    @Action(input = "http://korus.ru/tmis/ws/transfusion/TransfusionService/getDivisionsRequest", output = "http://korus.ru/tmis/ws/transfusion/TransfusionService/getDivisionsResponse")
-    public List<DivisionInfo> getDivisions();
-
-    /**
-     * 
      * @param eritrocyteMass
      * @param finalVolumeList
      * @param patientCredentials
@@ -88,5 +76,17 @@ public interface TransfusionService {
         List<LaboratoryMeasure> measures,
         @WebParam(name = "finalVolumeList", targetNamespace = "http://korus.ru/tmis/ws/transfusion")
         List<FinalVolume> finalVolumeList);
+
+    /**
+     * 
+     * @return
+     *     returns java.util.List<ru.korusconsulting.external.DivisionInfo>
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getDivisions", targetNamespace = "http://korus.ru/tmis/ws/transfusion", className = "ru.korusconsulting.external.GetDivisions")
+    @ResponseWrapper(localName = "getDivisionsResponse", targetNamespace = "http://korus.ru/tmis/ws/transfusion", className = "ru.korusconsulting.external.GetDivisionsResponse")
+    @Action(input = "http://korus.ru/tmis/ws/transfusion/TransfusionService/getDivisionsRequest", output = "http://korus.ru/tmis/ws/transfusion/TransfusionService/getDivisionsResponse")
+    public List<DivisionInfo> getDivisions();
 
 }

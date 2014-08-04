@@ -3,7 +3,6 @@ package ru.korusconsulting.external;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -58,7 +57,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * 
  * 
  */
-@XmlRootElement(name = "ProcedureInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "procedureInfo", propOrder = {
     "acdLoad",

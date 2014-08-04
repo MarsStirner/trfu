@@ -1,202 +1,143 @@
-<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. 
-	RI's version is Metro/2.2.0-1 (tags/2.2.0u1-7139; 2012-06-02T10:55:19+0000) 
-	JAXWS-RI/2.2.6-2 JAXWS/2.2 svn-revision#unknown. -->
-<xs:schema xmlns:tns="http://korus.ru/tmis/ws/transfusion"
-	xmlns:ns1="http://www.korusconsulting.ru" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	version="1.0" targetNamespace="http://korus.ru/tmis/ws/transfusion">
-
-	<xs:import namespace="http://www.korusconsulting.ru" schemaLocation="TransfusionServiceImpl_1.xsd" />
-
-	<xs:element name="getDivisions" type="tns:getDivisions" />
-
-	<xs:element name="getDivisionsResponse" type="tns:getDivisionsResponse" />
-
-	<xs:element name="setOrderIssueResult" type="tns:setOrderIssueResult" />
-
-	<xs:element name="setOrderIssueResultResponse" type="tns:setOrderIssueResultResponse" />
-
-	<xs:element name="setProcedureResult" type="tns:setProcedureResult" />
-
-	<xs:element name="setProcedureResultResponse" type="tns:setProcedureResultResponse" />
-
-	<xs:complexType name="setOrderIssueResult">
-		<xs:sequence>
-			<xs:element name="requestId" type="xs:int" form="qualified"
-				minOccurs="0" />
-			<xs:element name="factDate" type="xs:dateTime" form="qualified"
-				minOccurs="0" />
-			<xs:element name="components" type="tns:orderIssueInfo"
-				form="qualified" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="orderComment" type="xs:string" form="qualified"
-				minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="orderIssueInfo">
-		<xs:sequence>
-			<xs:element name="bloodGroupId" type="xs:int" minOccurs="0" />
-			<xs:element name="componentId" type="xs:int" minOccurs="0" />
-			<xs:element name="componentTypeId" type="xs:int"
-				minOccurs="0" />
-			<xs:element name="donorId" type="xs:int" minOccurs="0" />
-			<xs:element name="doseCount" type="xs:double" minOccurs="0" />
-			<xs:element name="number" type="xs:string" minOccurs="0" />
-			<xs:element name="rhesusFactorId" type="xs:int" minOccurs="0" />
-			<xs:element name="volume" type="xs:int" minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="setOrderIssueResultResponse">
-		<xs:sequence>
-			<xs:element name="return" type="tns:issueResult"
-				minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="issueResult">
-		<xs:sequence>
-			<xs:element name="description" type="xs:string" minOccurs="0" />
-			<xs:element name="requestId" type="xs:int" minOccurs="0" />
-			<xs:element name="result" type="xs:boolean" minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="setProcedureResult">
-		<xs:sequence>
-			<xs:element name="patientCredentials" type="ns1:PatientCredentials"
-				form="qualified" minOccurs="0" />
-			<xs:element name="ProcedureInfo" type="tns:procedureInfo"
-				form="qualified" minOccurs="0" />
-			<xs:element name="EritrocyteMass" type="tns:eritrocyteMass"
-				form="qualified" minOccurs="0" />
-			<xs:element name="Measures" type="tns:laboratoryMeasure"
-				form="qualified" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="finalVolumeList" type="tns:finalVolume"
-				form="qualified" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="procedureInfo">
-		<xs:sequence>
-			<xs:element name="acdLoad" type="xs:string" minOccurs="0" />
-			<xs:element name="afterHemodynamicsArterialPressure" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="afterHemodynamicsPulse" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="afterHemodynamicsTemperature" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="balance" type="xs:string" minOccurs="0" />
-			<xs:element name="beforeHemodynamicsArterialPressure"
-				type="xs:string" minOccurs="0" />
-			<xs:element name="beforeHemodynamicsPulse" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="beforeHemodynamicsTemperature" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="caLoad" type="xs:string" minOccurs="0" />
-			<xs:element name="changeInletAcRatio" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="changeProductVolume" type="xs:double"
-				minOccurs="0" />
-			<xs:element name="changeSpeed" type="xs:string" minOccurs="0" />
-			<xs:element name="changeTbv" type="xs:string" minOccurs="0" />
-			<xs:element name="changeTime" type="xs:string" minOccurs="0" />
-			<xs:element name="changeVolume" type="xs:double"
-				minOccurs="0" />
-			<xs:element name="complications" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="contraindication" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="factDate" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="id" type="xs:int" minOccurs="0" />
-			<xs:element name="initialInletAcRatio" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="initialProductVolume" type="xs:double"
-				minOccurs="0" />
-			<xs:element name="initialSpeed" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="initialTbv" type="xs:string" minOccurs="0" />
-			<xs:element name="initialTime" type="xs:string" minOccurs="0" />
-			<xs:element name="initialVolume" type="xs:double"
-				minOccurs="0" />
-			<xs:element name="naClLoad" type="xs:string" minOccurs="0" />
-			<xs:element name="otherLoad" type="xs:string" minOccurs="0" />
-			<xs:element name="otherRemove" type="xs:string" minOccurs="0" />
-			<xs:element name="packRemove" type="xs:string" minOccurs="0" />
-			<xs:element name="totalLoad" type="xs:string" minOccurs="0" />
-			<xs:element name="totalRemove" type="xs:string" minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="eritrocyteMass">
-		<xs:sequence>
-			<xs:element name="bloodGroupId" type="xs:int" minOccurs="0" />
-			<xs:element name="expirationDate" type="xs:dateTime"
-				minOccurs="0" />
-			<xs:element name="finalHt" type="xs:double" minOccurs="0" />
-			<xs:element name="ht" type="xs:double" minOccurs="0" />
-			<xs:element name="maker" type="xs:string" minOccurs="0" />
-			<xs:element name="number" type="xs:string" minOccurs="0" />
-			<xs:element name="productionDate" type="xs:dateTime"
-				minOccurs="0" />
-			<xs:element name="rhesusFactorId" type="xs:int" minOccurs="0" />
-			<xs:element name="salineVolume" type="xs:double"
-				minOccurs="0" />
-			<xs:element name="volume" type="xs:double" minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="laboratoryMeasure">
-		<xs:sequence>
-			<xs:element name="afterOperation" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="beforeOperation" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="duringOperation" type="xs:string"
-				minOccurs="0" />
-			<xs:element name="id" type="xs:int" minOccurs="0" />
-			<xs:element name="inProduct" type="xs:string" minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="finalVolume">
-		<xs:sequence>
-			<xs:element name="anticoagulantInCollect" type="xs:double"
-				minOccurs="0" />
-			<xs:element name="anticoagulantInPlasma" type="xs:double"
-				minOccurs="0" />
-			<xs:element name="anticoagulantVolume" type="xs:double"
-				minOccurs="0" />
-			<xs:element name="collectVolume" type="xs:double"
-				minOccurs="0" />
-			<xs:element name="inletVolume" type="xs:double" minOccurs="0" />
-			<xs:element name="plasmaVolume" type="xs:double"
-				minOccurs="0" />
-			<xs:element name="time" type="xs:double" minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="setProcedureResultResponse">
-		<xs:sequence>
-			<xs:element name="return" type="tns:issueResult"
-				minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="getDivisions">
-		<xs:sequence />
-	</xs:complexType>
-
-	<xs:complexType name="getDivisionsResponse">
-		<xs:sequence>
-			<xs:element name="return" type="tns:divisionInfo"
-				minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-	</xs:complexType>
-
-	<xs:complexType name="divisionInfo">
-		<xs:sequence>
-			<xs:element name="id" type="xs:int" minOccurs="0" />
-			<xs:element name="name" type="xs:string" minOccurs="0" />
-		</xs:sequence>
-	</xs:complexType>
+<?xml version='1.0' encoding='UTF-8'?><!--
+ Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.2.0-1 (tags/2.2.0u1-7139; 2012-06-02T10:55:19+0000) JAXWS-RI/2.2.6-2 JAXWS/2.2 svn-revision#unknown.
+-->
+<xs:schema xmlns:tns="http://korus.ru/tmis/ws/transfusion" xmlns:ns1="http://www.korusconsulting.ru" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://korus.ru/tmis/ws/transfusion">
+    <xs:import namespace="http://www.korusconsulting.ru" schemaLocation="TransfusionServiceImpl_1.xsd" />/>
+    <xs:element name="getDivisions" type="tns:getDivisions"/>
+    <xs:element name="getDivisionsResponse" type="tns:getDivisionsResponse"/>
+    <xs:element name="orderIssueInfo" type="tns:orderIssueInfo"/>
+    <xs:element name="setOrderIssueResult" type="tns:setOrderIssueResult"/>
+    <xs:element name="setOrderIssueResultResponse" type="tns:setOrderIssueResultResponse"/>
+    <xs:element name="setProcedureResult" type="tns:setProcedureResult"/>
+    <xs:element name="setProcedureResultResponse" type="tns:setProcedureResultResponse"/>
+    <xs:complexType name="setOrderIssueResult">
+        <xs:sequence>
+            <xs:element name="requestId" type="xs:int" form="qualified" minOccurs="0"/>
+            <xs:element name="factDate" type="xs:dateTime" form="qualified" minOccurs="0"/>
+            <xs:element name="components" type="tns:orderIssueInfo" form="qualified" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="orderComment" type="xs:string" form="qualified" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="orderIssueInfo">
+        <xs:sequence>
+            <xs:element name="componentId" type="xs:int" minOccurs="0"/>
+            <xs:element name="number" type="xs:string" minOccurs="0"/>
+            <xs:element name="componentTypeId" type="xs:int" minOccurs="0"/>
+            <xs:element name="bloodGroupId" type="xs:int" minOccurs="0"/>
+            <xs:element name="rhesusFactorId" type="xs:int" minOccurs="0"/>
+            <xs:element name="volume" type="xs:int" minOccurs="0"/>
+            <xs:element name="doseCount" type="xs:double" minOccurs="0"/>
+            <xs:element name="donorId" type="xs:int" minOccurs="0"/>
+            <xs:element name="stickerUrl" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="setOrderIssueResultResponse">
+        <xs:sequence>
+            <xs:element name="return" type="tns:issueResult" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="issueResult">
+        <xs:sequence>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="requestId" type="xs:int" minOccurs="0"/>
+            <xs:element name="result" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="setProcedureResult">
+        <xs:sequence>
+            <xs:element name="patientCredentials" type="ns1:PatientCredentials" form="qualified" minOccurs="0"/>
+            <xs:element name="ProcedureInfo" type="tns:procedureInfo" form="qualified" minOccurs="0"/>
+            <xs:element name="EritrocyteMass" type="tns:eritrocyteMass" form="qualified" minOccurs="0"/>
+            <xs:element name="Measures" type="tns:laboratoryMeasure" form="qualified" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="finalVolumeList" type="tns:finalVolume" form="qualified" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="procedureInfo">
+        <xs:sequence>
+            <xs:element name="acdLoad" type="xs:string" minOccurs="0"/>
+            <xs:element name="afterHemodynamicsArterialPressure" type="xs:string" minOccurs="0"/>
+            <xs:element name="afterHemodynamicsPulse" type="xs:string" minOccurs="0"/>
+            <xs:element name="afterHemodynamicsTemperature" type="xs:string" minOccurs="0"/>
+            <xs:element name="balance" type="xs:string" minOccurs="0"/>
+            <xs:element name="beforeHemodynamicsArterialPressure" type="xs:string" minOccurs="0"/>
+            <xs:element name="beforeHemodynamicsPulse" type="xs:string" minOccurs="0"/>
+            <xs:element name="beforeHemodynamicsTemperature" type="xs:string" minOccurs="0"/>
+            <xs:element name="caLoad" type="xs:string" minOccurs="0"/>
+            <xs:element name="changeInletAcRatio" type="xs:string" minOccurs="0"/>
+            <xs:element name="changeProductVolume" type="xs:double" minOccurs="0"/>
+            <xs:element name="changeSpeed" type="xs:string" minOccurs="0"/>
+            <xs:element name="changeTbv" type="xs:string" minOccurs="0"/>
+            <xs:element name="changeTime" type="xs:string" minOccurs="0"/>
+            <xs:element name="changeVolume" type="xs:double" minOccurs="0"/>
+            <xs:element name="complications" type="xs:string" minOccurs="0"/>
+            <xs:element name="contraindication" type="xs:string" minOccurs="0"/>
+            <xs:element name="factDate" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="id" type="xs:int" minOccurs="0"/>
+            <xs:element name="initialInletAcRatio" type="xs:string" minOccurs="0"/>
+            <xs:element name="initialProductVolume" type="xs:double" minOccurs="0"/>
+            <xs:element name="initialSpeed" type="xs:string" minOccurs="0"/>
+            <xs:element name="initialTbv" type="xs:string" minOccurs="0"/>
+            <xs:element name="initialTime" type="xs:string" minOccurs="0"/>
+            <xs:element name="initialVolume" type="xs:double" minOccurs="0"/>
+            <xs:element name="naClLoad" type="xs:string" minOccurs="0"/>
+            <xs:element name="otherLoad" type="xs:string" minOccurs="0"/>
+            <xs:element name="otherRemove" type="xs:string" minOccurs="0"/>
+            <xs:element name="packRemove" type="xs:string" minOccurs="0"/>
+            <xs:element name="totalLoad" type="xs:string" minOccurs="0"/>
+            <xs:element name="totalRemove" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="eritrocyteMass">
+        <xs:sequence>
+            <xs:element name="bloodGroupId" type="xs:int" minOccurs="0"/>
+            <xs:element name="expirationDate" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="finalHt" type="xs:double" minOccurs="0"/>
+            <xs:element name="ht" type="xs:double" minOccurs="0"/>
+            <xs:element name="maker" type="xs:string" minOccurs="0"/>
+            <xs:element name="number" type="xs:string" minOccurs="0"/>
+            <xs:element name="productionDate" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="rhesusFactorId" type="xs:int" minOccurs="0"/>
+            <xs:element name="salineVolume" type="xs:double" minOccurs="0"/>
+            <xs:element name="volume" type="xs:double" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="laboratoryMeasure">
+        <xs:sequence>
+            <xs:element name="afterOperation" type="xs:string" minOccurs="0"/>
+            <xs:element name="beforeOperation" type="xs:string" minOccurs="0"/>
+            <xs:element name="duringOperation" type="xs:string" minOccurs="0"/>
+            <xs:element name="id" type="xs:int" minOccurs="0"/>
+            <xs:element name="inProduct" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="finalVolume">
+        <xs:sequence>
+            <xs:element name="anticoagulantInCollect" type="xs:double" minOccurs="0"/>
+            <xs:element name="anticoagulantInPlasma" type="xs:double" minOccurs="0"/>
+            <xs:element name="anticoagulantVolume" type="xs:double" minOccurs="0"/>
+            <xs:element name="collectVolume" type="xs:double" minOccurs="0"/>
+            <xs:element name="inletVolume" type="xs:double" minOccurs="0"/>
+            <xs:element name="plasmaVolume" type="xs:double" minOccurs="0"/>
+            <xs:element name="time" type="xs:double" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="setProcedureResultResponse">
+        <xs:sequence>
+            <xs:element name="return" type="tns:issueResult" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getDivisions">
+        <xs:sequence/>
+    </xs:complexType>
+    <xs:complexType name="getDivisionsResponse">
+        <xs:sequence>
+            <xs:element name="return" type="tns:divisionInfo" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="divisionInfo">
+        <xs:sequence>
+            <xs:element name="id" type="xs:int" minOccurs="0"/>
+            <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>
