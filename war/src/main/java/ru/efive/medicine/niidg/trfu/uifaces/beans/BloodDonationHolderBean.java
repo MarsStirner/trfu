@@ -39,13 +39,6 @@ import ru.efive.wf.core.util.EngineHelper;
 public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDonationRequest, Integer> {
 	
 	@Override
-	public String save() {
-		getDocument().setFactDate(new Date());
-		String result = super.save();
-		return result;
-	}
-	
-	@Override
 	public String edit() {
 		String result = super.edit();
 		boolean isStatusGT1 = getDocument().getStatusId() > 1 ? true : false;
