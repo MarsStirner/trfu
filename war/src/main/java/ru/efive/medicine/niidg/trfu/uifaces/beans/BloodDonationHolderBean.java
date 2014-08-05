@@ -41,10 +41,10 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 	@Override
 	public String edit() {
 		String result = super.edit();
-		boolean isStatusGT1 = getDocument().getStatusId() > 1 ? true : false;
+		boolean isStatusGT1 = getDocument().getStatusId() > 1;
 		boolean isEqIds = false;
 		if (getDocument().getTransfusiologist() != null) {
-			isEqIds = sessionManagement.getLoggedUser().getId() == getDocument().getTransfusiologist().getId() ? true : false;
+			isEqIds = sessionManagement.getLoggedUser().getId() == getDocument().getTransfusiologist().getId();
 		}
 		boolean isOperational = sessionManagement.isOperational();
 		if (isOperational) {
@@ -56,7 +56,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 				getDocument().setStaffNurse(operational.getCurrentOperationalSetup().getStaffNurse());
 			}
 		}
-		boolean isSizeZero = getDocument().getFactEntries().size() == 0 ? true : false;
+		boolean isSizeZero = getDocument().getFactEntries().isEmpty();
 		if (isEditState()) {
 			if (isStatusGT1 && (isEqIds || isOperational || isTransfusiologist() || isHeadNurse()) && isSizeZero) {
 				getDocument().addFactEntry();
@@ -122,8 +122,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 
 			if(request.getBloodSystems()==null)
 				request.setBloodSystems(new ArrayList<BloodSystem>());
-		}	
-		
+		}
 		setDocument(request);
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
@@ -244,7 +243,6 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 
 	
 	public boolean isGranulocytePheresis() {
-		boolean result = false;
 		try {
 			if (getDocument().getFactEntries() != null && getDocument().getFactEntries().size() > 0) {
 				for (BloodDonationEntry entry: getDocument().getFactEntries()) {
@@ -270,70 +268,57 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return false;
 	}
 	
 	public boolean isTransfusiologist() {
-		boolean result = false;
-		List<Role> roleList = new ArrayList<Role>();
-		roleList.addAll(sessionManagement.getLoggedUser().getRoles());
-		for (int i = 0; i < roleList.size(); i++) {
-			if (roleList.get(i).getRoleType().equals(RoleType.ENTERPRISE_ADMINISTRATION)) {
-				result = true;
-			}
-			else if (roleList.get(i).getRoleType().equals(RoleType.THERAPIST)) {
-				result = true;
-			}
-		}
-		return result;
+        for (Role currentRole : sessionManagement.getLoggedUser().getRoles()) {
+            if (RoleType.ENTERPRISE_ADMINISTRATION.equals(currentRole.getRoleType())) {
+                return true;
+            } else if (RoleType.THERAPIST.equals(currentRole.getRoleType())) {
+                return true;
+            }
+        }
+		return false;
 	}
 	
 	public boolean isHeadNurse() {
-		boolean result = false;
-		List<Role> roleList = new ArrayList<Role>();
-		roleList.addAll(sessionManagement.getLoggedUser().getRoles());
-		for (int i = 0; i < roleList.size(); i++) {
-			if (roleList.get(i).getRoleType().equals(RoleType.ENTERPRISE_ADMINISTRATION)) {
-				result = true;
-			}
-			else if (roleList.get(i).getRoleType().equals(RoleType.HEAD_NURSE)) {
-				result = true;
-			}
-		}
-		return result;
+        for (Role currentRole : sessionManagement.getLoggedUser().getRoles()) {
+            if (RoleType.ENTERPRISE_ADMINISTRATION.equals(currentRole.getRoleType())) {
+                return true;
+            } else if (RoleType.HEAD_NURSE.equals(currentRole.getRoleType())) {
+                return true;
+            }
+        }
+        return false;
 	}
 	
 	public boolean isRegistrator() {
-		boolean result = false;
-		List<Role> roleList = new ArrayList<Role>();
-		roleList.addAll(sessionManagement.getLoggedUser().getRoles());
-		for (int i = 0; i < roleList.size(); i++) {
-			if (roleList.get(i).getRoleType().equals(RoleType.ENTERPRISE_ADMINISTRATION)) {
-				result = true;
-			}
-			else if (roleList.get(i).getRoleType().equals(RoleType.REGISTRATOR)) {
-				result = true;
-			}
-		}
-		return result;
+        for (Role currentRole : sessionManagement.getLoggedUser().getRoles()) {
+            if (RoleType.ENTERPRISE_ADMINISTRATION.equals(currentRole.getRoleType())) {
+                return true;
+            } else if (RoleType.REGISTRATOR.equals(currentRole.getRoleType())) {
+                return true;
+            }
+        }
+        return false;
 	}
 	
 	/**
 	 * Доступность действия "Брак по операционной"
 	 */
 	public boolean isComponentRejectionAvailable() {
-		boolean result = false;
 		if (getDocument().getStatusId() == 2) {
 			for (BloodDonationEntry entry: getDocument().getFactEntryList()) {
 				if (entry.getDonationType() != null && StringUtils.contains(entry.getDonationType().getValue(), "ферез")) {
-					return result;
+					return false;
 				}
 			}
 			if (getDocument().getFactEntryList() != null && getDocument().getFactEntryList().size() > 0) {
-				result = true;
+				return true;
 			}
 		}
-		return result;
+		return false;
 	}
 	
 	public class RejectionDescriptionHolder extends ModalWindowHolderBean {
