@@ -13,13 +13,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
-import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.hibernate.type.StringType;
 
 import ru.efive.crm.data.Contragent;
@@ -60,15 +54,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
             detachedCriteria.add(Restrictions.eq("deleted", false));
         }
         detachedCriteria.add(Restrictions.ne("statusId", 100));
-
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
+        addOrders(detachedCriteria, orderBy, orderAsc);
 		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 
@@ -110,15 +96,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
         }
-
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
+        addOrders(detachedCriteria, orderBy, orderAsc);
 		return getHibernateTemplate().findByCriteria(getConjunctionSearchCriteria(detachedCriteria, in_map), offset, count);
 	}
 
@@ -167,15 +145,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         else {
         	detachedCriteria.add(Restrictions.ne("statusId", 100));
         }
-
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
+        addOrders(detachedCriteria, orderBy, orderAsc);
 		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 	
@@ -241,15 +211,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         else {
         	detachedCriteria.add(Restrictions.ne("statusId", 100));
         }
-
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
+        addOrders(detachedCriteria, orderBy, orderAsc);
 		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 	
@@ -311,15 +273,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         disjunction.add(Restrictions.eq("statusId", 2));
         disjunction.add(Restrictions.eq("statusId", 3));
         detachedCriteria.add(disjunction);
-        
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
+        addOrders(detachedCriteria, orderBy, orderAsc);
 		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 	
@@ -498,14 +452,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         if (statusId > 0) {
             detachedCriteria.add(Restrictions.eq("statusId", statusId));
         }
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
+        addOrders(detachedCriteria, orderBy, orderAsc);
         return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 	}
 	
@@ -547,15 +494,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         }
         detachedCriteria.add(Restrictions.eq("purchased", true));
         detachedCriteria.add(Restrictions.ne("statusId", 100));
-
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
+        addOrders(detachedCriteria, orderBy, orderAsc);
 		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 	
@@ -599,15 +538,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         }
         detachedCriteria.add(Restrictions.eq("statusId", 2));
         detachedCriteria.add(Restrictions.le("quarantineFinishDate", Calendar.getInstance(ApplicationHelper.getLocale()).getTime()));
-
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
+        addOrders(detachedCriteria, orderBy, orderAsc);
 		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 	
@@ -660,15 +591,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         
         if (list.size() > 0) {
         	detachedCriteria.add(Restrictions.in("id", list));
-            
-    		String[] ords = orderBy == null ? null : orderBy.split(",");
-    		if (ords != null) {
-    			if (ords.length > 1) {
-    				addOrder(detachedCriteria, ords, orderAsc);
-    			} else {
-    				addOrder(detachedCriteria, orderBy, orderAsc);
-    			}
-    		}
+            addOrders(detachedCriteria, orderBy, orderAsc);
     		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
         }
         else {
@@ -725,15 +648,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         
         if (list.size() > 0) {
         	detachedCriteria.add(Restrictions.in("id", list));
-            
-    		String[] ords = orderBy == null ? null : orderBy.split(",");
-    		if (ords != null) {
-    			if (ords.length > 1) {
-    				addOrder(detachedCriteria, ords, orderAsc);
-    			} else {
-    				addOrder(detachedCriteria, orderBy, orderAsc);
-    			}
-    		}
+            addOrders(detachedCriteria, orderBy, orderAsc);
     		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
         }
         else {
@@ -768,13 +683,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	
 	/**
      * Поиск компонентов по номеру донации и номеру компонента
-     *
-     * @param filter          фильтр поиска
      * @param showDeleted     true - show deleted, false - hide deleted
-     * @param offset          смещение
-     * @param count           кол-во результатов
-     * @param orderBy         поле для сортировки
-     * @param orderAsc        направление сортировки
      * @return список компонентов
      */
 	@SuppressWarnings("unchecked")
@@ -831,15 +740,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         
         if (list != null && list.size() > 0) {
         	detachedCriteria.add(Restrictions.in("id", list));
-            
-    		String[] ords = orderBy == null ? null : orderBy.split(",");
-    		if (ords != null) {
-    			if (ords.length > 1) {
-    				addOrder(detachedCriteria, ords, orderAsc);
-    			} else {
-    				addOrder(detachedCriteria, orderBy, orderAsc);
-    			}
-    		}
+    		addOrders(detachedCriteria, orderBy, orderAsc);
             return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
         }
         else {
@@ -858,15 +759,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         }
         detachedCriteria.add(Restrictions.eq("statusId", 3));
         detachedCriteria.add(Restrictions.eq("inControl", true));
+        addOrders(detachedCriteria, orderBy, orderAsc);
 
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
 		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 	
@@ -893,14 +787,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         }
         detachedCriteria.add(Restrictions.eq("statusId", statusId));
         detachedCriteria.add(Restrictions.eq("inControl", false));
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
+		addOrders(detachedCriteria, orderBy, orderAsc);
         return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 	
@@ -1196,16 +1083,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	public List<BloodComponent> findDocuments(String filter, List<Integer> bloodComponentStatusIdList, List<Integer> donationStatusIdList, boolean showExpired, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
 		detachedCriteria = setVirusinaktivationCriteria(detachedCriteria, bloodComponentStatusIdList, donationStatusIdList, showExpired, showDeleted);
-        
-		String[] ords = orderBy == null ? null : orderBy.split(",");
-		if (ords != null) {
-			if (ords.length > 1) {
-				addOrder(detachedCriteria, ords, orderAsc);
-			} else {
-				addOrder(detachedCriteria, orderBy, orderAsc);
-			}
-		}
-		
+        addOrders(detachedCriteria, orderBy, orderAsc);
+
 		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 	
@@ -1275,4 +1154,71 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         
         return detachedCriteria;
 	}
+
+    /**
+     * Поиск КК по ШК (штрихкоду)
+     * @param barcodeFilter  декодированный ШК
+     * @param bloodComponentStatusIdList   список доступных статусов КК
+     * @param donationStatusIdList    список доступных статусов донаций
+     * @param showExpired    показывать с истекшим сроком
+     * @param showDeleted   показывать удаленные
+     * @param offset       смещение
+     * @param count       макс количество возвращаемых строк
+     * @param orderBy    сортировать по списку полей
+     * @param orderAsc  сортировать по возрастанию
+     * @return   список КК, удовлетворяющих условиям
+     */
+    @SuppressWarnings("unchecked")
+    public List<BloodComponent> findVirusinactivatedDocumentsByFinalBarcode(
+            final String barcodeFilter,
+            final List<Integer> bloodComponentStatusIdList,
+            final List<Integer> donationStatusIdList,
+            final boolean showExpired,
+            final boolean showDeleted,
+            final int offset,
+            final int count,
+            final String orderBy,
+            final boolean orderAsc) {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+        detachedCriteria = setVirusinaktivationCriteria(detachedCriteria, bloodComponentStatusIdList, donationStatusIdList, showExpired, showDeleted);
+        if(barcodeFilter != null && barcodeFilter.length() >=7) {
+            final String number = StringUtils.right(barcodeFilter, 2);
+            final String donationNumber = StringUtils.substring(barcodeFilter, barcodeFilter.length() - 7, barcodeFilter.length() - 2);
+            detachedCriteria.add(Restrictions.eq("parentNumber", donationNumber));
+            detachedCriteria.add(Restrictions.eq("number", number));
+        }
+        //Сортировка без добавления JOIN-ов, т.к. со вкалдки вирусинактивации сортировки только по тем вещам, которые уже в условии
+        //TODO переписать сортировку с проверкой дубликации alias и с фактом наличия их
+        if(orderBy.startsWith("componentType")){
+            detachedCriteria.createAlias("componentType", "componentType");
+        }
+        detachedCriteria.addOrder(orderAsc ? Order.asc(orderBy) : Order.desc(orderBy));
+        return getHibernateTemplate().findByCriteria(detachedCriteria,offset, count);
+    }
+
+    /**
+     * Колитчество доступных КК по ШК (штрихкоду)
+     * @param barcodeFilter  декодированный ШК
+     * @param bloodComponentStatusIdList   список доступных статусов КК
+     * @param donationStatusIdList    список доступных статусов донаций
+     * @param showExpired    показывать с истекшим сроком
+     * @param showDeleted   показывать удаленные
+     * @return   общее кол-во КК, удовлетворяющих условиям
+     */
+    public long countVirusinactivatedDocumentsByFinalBarcode(
+            final String barcodeFilter,
+            final List<Integer> bloodComponentStatusIdList,
+            final List<Integer> donationStatusIdList,
+            boolean showExpired,
+            boolean showDeleted) {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+        detachedCriteria = setVirusinaktivationCriteria(detachedCriteria, bloodComponentStatusIdList, donationStatusIdList, showExpired, showDeleted);
+        if(barcodeFilter != null && barcodeFilter.length() >= 7) {
+            final String number = StringUtils.right(barcodeFilter, 2);
+            final String donationNumber = StringUtils.substring(barcodeFilter, barcodeFilter.length() - 7, barcodeFilter.length() - 2);
+            detachedCriteria.add(Restrictions.eq("parentNumber", donationNumber));
+            detachedCriteria.add(Restrictions.eq("number", number));
+        }
+        return getCountOf(detachedCriteria);
+    }
 }

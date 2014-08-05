@@ -200,7 +200,29 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 		});
 	}
 
-	/**
+    /**
+     * Добавление сортировок к поисковым критериям
+     * @param detachedCriteria   критерии, которые надо упорядочить
+     * @param orderBy   перечень полей через запятую по которым ведется сортировка (или одно поле без запятой, или пусто)
+     * @param orderAsc  сортировка по возрастанию?
+     */
+    protected void addOrders(
+            final DetachedCriteria detachedCriteria,
+            final String orderBy,
+            final boolean orderAsc) {
+        if(orderBy == null || orderBy.isEmpty()){
+            return;
+        }
+        final String[] ords = orderBy.split(",");
+        if (ords.length > 1) {
+            addOrder(detachedCriteria, ords, orderAsc);
+        } else {
+            addOrder(detachedCriteria, orderBy, orderAsc);
+        }
+    }
+
+
+    /**
 	 * Устанавливает сортировку по полю Понимает сортировку по вложенному полю
 	 * (вложенность ограничена 2 уровнями)
 	 * 
@@ -223,11 +245,11 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 				String[] parts = StringUtils.split(orderBy, "\\.");
 				int length = parts.length;
 				if (length == 2) {
-					orderingCriteria = detachedCriteria.createCriteria(parts[0], DetachedCriteria.LEFT_JOIN);
+                    orderingCriteria = detachedCriteria.createCriteria(parts[0], DetachedCriteria.LEFT_JOIN);
 					orderBy = parts[1];
 				} else if (length > 2) {
 					orderingCriteria = detachedCriteria.createCriteria(parts[0], DetachedCriteria.LEFT_JOIN)
-							.createCriteria(parts[1], DetachedCriteria.LEFT_JOIN);
+							.createCriteria(parts[1],DetachedCriteria.LEFT_JOIN);
 					orderBy = parts[2];
 				}
 			}
