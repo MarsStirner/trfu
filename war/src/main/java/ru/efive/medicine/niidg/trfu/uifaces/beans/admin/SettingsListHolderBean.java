@@ -428,7 +428,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 	}
 	
 	public boolean selected(DictionaryEntity document){
-		return this.document == null? false: this.document.equals(document);
+		return this.document == null ? false: this.document.equals(document);
 	}
 	
 	public QualityControlBloodComponentTypeSelectModalBean getComponentTypeSelect() {

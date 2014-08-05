@@ -33,7 +33,7 @@ public class Classifier extends DictionaryEntity {
         if( !( obj instanceof Classifier ) ) {
             return false;
         }
-        return getValue().equals( ((Classifier)obj).getValue() ) && getCategory().equals( ((Classifier)obj).getCategory() );
+        return getValue().equals( ((Classifier)obj).getValue() ) && ( (getCategory() != null && getCategory().equals( ((Classifier)obj).getCategory())) || (getCategory() == null && (((Classifier) obj).getCategory() == null )) );
     }
 	
 	@Override
