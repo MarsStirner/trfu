@@ -105,9 +105,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
 		historyEntry.setEndDate(created);
 		historyEntry.setProcessed(true);
 		historyEntry.setCommentary("");
-		Set<HistoryEntry> history = new HashSet<HistoryEntry>();
-		history.add(historyEntry);
-		examination.setHistory(history);
+		examination.addToHistory(historyEntry);
 		
 		setDocument(examination);
 	}
@@ -368,12 +366,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
 		protected void doPostProcess(ActionResult actionResult) {
 			ExaminationRequest request = (ExaminationRequest) actionResult.getProcessedData();
 			if (getSelectedAction().isHistoryAction()) {
-				Set<HistoryEntry> history = request.getHistory();
-				if (history == null) {
-					history = new HashSet<HistoryEntry>();
-				}
-				history.add(getHistoryEntry());
-				request.setHistory(history);
+				request.addToHistory(getHistoryEntry());
 			}
 			setDocument(request);
 			ExaminationHolderBean.this.save();

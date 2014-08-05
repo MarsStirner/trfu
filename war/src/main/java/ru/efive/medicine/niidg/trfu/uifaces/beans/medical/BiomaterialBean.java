@@ -102,10 +102,10 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
 		historyEntry.setEndDate(created);
 		historyEntry.setProcessed(true);
 		historyEntry.setCommentary("");
-		Set<HistoryEntry> history = new HashSet<HistoryEntry>();
-		history.add(historyEntry);
-		biomaterial.setHistory(history);
-		biomaterial.setInitialVolume(biomaterial.getOperation().getVolume());
+
+		biomaterial.addToHistory(historyEntry);
+
+        biomaterial.setInitialVolume(biomaterial.getOperation().getVolume());
 		biomaterial.setVolume(biomaterial.getOperation().getVolume());
 		
 		setDocument(biomaterial);
@@ -480,12 +480,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
 		protected void doPostProcess(ActionResult actionResult) {
 			Biomaterial component = (Biomaterial) actionResult.getProcessedData();
 			if (getSelectedAction().isHistoryAction()) {
-				Set<HistoryEntry> history = component.getHistory();
-				if (history == null) {
-					history = new HashSet<HistoryEntry>();
-				}
-				history.add(getHistoryEntry());
-				component.setHistory(history);
+				component.addToHistory(getHistoryEntry());
 			}
 			System.out.println("commentary: " + getHistoryEntry().getCommentary());
 			setDocument(component);

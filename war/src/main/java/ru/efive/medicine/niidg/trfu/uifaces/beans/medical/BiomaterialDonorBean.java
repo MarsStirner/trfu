@@ -184,12 +184,7 @@ public class BiomaterialDonorBean extends AbstractDocumentHolderBean<Biomaterial
 		protected void doPostProcess(ActionResult actionResult) {
 			BiomaterialDonor donor = (BiomaterialDonor) actionResult.getProcessedData();
 			if (getSelectedAction().isHistoryAction()) {
-				Set<HistoryEntry> history = donor.getHistory();
-				if (history == null) {
-					history = new HashSet<HistoryEntry>();
-				}
-				history.add(getHistoryEntry());
-				donor.setHistory(history);
+				donor.addToHistory(getHistoryEntry());
 			}
 			setDocument(donor);
 			BiomaterialDonorBean.this.save();

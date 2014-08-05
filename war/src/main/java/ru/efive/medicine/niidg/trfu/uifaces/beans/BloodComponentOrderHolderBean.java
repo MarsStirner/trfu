@@ -110,9 +110,8 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
         historyEntry.setEndDate(created);
         historyEntry.setProcessed(true);
         historyEntry.setCommentary("");
-        Set<HistoryEntry> history = new HashSet<HistoryEntry>();
-        history.add(historyEntry);
-        bloodComponentOrder.setHistory(history);
+
+        bloodComponentOrder.addToHistory(historyEntry);
 
         setDocument(bloodComponentOrder);
     }

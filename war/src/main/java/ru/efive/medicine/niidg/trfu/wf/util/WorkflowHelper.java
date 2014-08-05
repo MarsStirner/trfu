@@ -400,12 +400,9 @@ public final class WorkflowHelper {
 				historyEntry.setEndDate(date);
 				historyEntry.setProcessed(true);
 				historyEntry.setCommentary(rejection.getRejectionType().getValue());
-				Set<HistoryEntry> history = donor.getHistory();
-				if (history == null) {
-					history = new HashSet<HistoryEntry>();
-				}
-				history.add(historyEntry);
-				donor.setHistory(history);
+
+				donor.addToHistory(historyEntry);
+
 				donor = dao.save(donor);
 			}
 			result = true;
@@ -446,12 +443,9 @@ public final class WorkflowHelper {
 				historyEntry.setEndDate(date);
 				historyEntry.setProcessed(true);
 				historyEntry.setCommentary(rejection.getRejectionType().getValue());
-				Set<HistoryEntry> history = donor.getHistory();
-				if (history == null) {
-					history = new HashSet<HistoryEntry>();
-				}
-				history.add(historyEntry);
-				donor.setHistory(history);
+
+				donor.addToHistory(historyEntry);
+
 				donor = dao.save(donor);
 			}
 			result = true;
@@ -529,12 +523,9 @@ public final class WorkflowHelper {
 				historyEntry.setEndDate(date);
 				historyEntry.setProcessed(true);
 				historyEntry.setCommentary("");
-				Set<HistoryEntry> history = donor.getHistory();
-				if (history == null) {
-					history = new HashSet<HistoryEntry>();
-				}
-				history.add(historyEntry);
-				donor.setHistory(history);
+
+				donor.addToHistory(historyEntry);
+
 				donor = dao.save(donor);
 			}
 			result = true;

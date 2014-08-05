@@ -161,9 +161,8 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		historyEntry.setEndDate(created);
 		historyEntry.setProcessed(true);
 		historyEntry.setCommentary("");
-		Set<HistoryEntry> history = new HashSet<HistoryEntry>();
-		history.add(historyEntry);
-		bloodDonation.setHistory(history);
+
+        bloodDonation.addToHistory(historyEntry);
 
         bloodDonation.setBloodSystems(new ArrayList<BloodSystem>());
 		setDocument(bloodDonation);
@@ -639,12 +638,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 		protected void doPostProcess(ActionResult actionResult) {
 			BloodDonationRequest request = (BloodDonationRequest) actionResult.getProcessedData();
 			if (getSelectedAction().isHistoryAction()) {
-				Set<HistoryEntry> history = request.getHistory();
-				if (history == null) {
-					history = new HashSet<HistoryEntry>();
-				}
-				history.add(getHistoryEntry());
-				request.setHistory(history);
+				request.addToHistory(getHistoryEntry());
 			}
 			if (request.getStatusId() == 2) {
 				request.setFactDate(new Date());

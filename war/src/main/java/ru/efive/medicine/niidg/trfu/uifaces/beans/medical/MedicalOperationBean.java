@@ -356,12 +356,7 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 		protected void doPostProcess(ActionResult actionResult) {
 			Operation operation = (Operation) actionResult.getProcessedData();
 			if (getSelectedAction().isHistoryAction()) {
-				Set<HistoryEntry> history = operation.getHistory();
-				if (history == null) {
-					history = new HashSet<HistoryEntry>();
-				}
-				history.add(getHistoryEntry());
-				operation.setHistory(history);
+				operation.addToHistory(getHistoryEntry());
 			}
 			setDocument(operation);
 			MedicalOperationBean.this.save();

@@ -1,13 +1,7 @@
 package ru.efive.medicine.niidg.trfu.data.entity;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -434,17 +428,21 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 		if (history != null) {
 			result.addAll(history);
 		}
-		Collections.sort(result, new Comparator<HistoryEntry>() {
-			public int compare(HistoryEntry o1, HistoryEntry o2) {
-				Calendar c1 = Calendar.getInstance(ApplicationHelper.getLocale());
-				c1.setTime(o1.getCreated());
-				Calendar c2 = Calendar.getInstance(ApplicationHelper.getLocale());
-				c2.setTime(o2.getCreated());
-				return c1.compareTo(c2);
-			}
-		});
+		Collections.sort(result);
 		return result;
 	}
+
+    /**
+     * Добавление в историю компонента еще одной записи, если история пуста, то она создается
+     * @param historyEntry Запись в истории компонента, которую надо добавить
+     * @return  статус добавления (true - успех)
+     */
+    public boolean addToHistory(final HistoryEntry historyEntry) {
+        if(history == null){
+            this.history = new HashSet<HistoryEntry>(1);
+        }
+        return this.history.add(historyEntry);
+    }
 
 	public String getExtensionNumber() {
 		return extensionNumber;

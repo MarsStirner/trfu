@@ -108,12 +108,7 @@ public class LaboratoryEntityBean extends AbstractDocumentHolderBean<Examination
 		protected void doPostProcess(ActionResult actionResult) {
 			ExaminationRequest request = (ExaminationRequest) actionResult.getProcessedData();
 			if (getSelectedAction().isHistoryAction()) {
-				Set<HistoryEntry> history = request.getHistory();
-				if (history == null) {
-					history = new HashSet<HistoryEntry>();
-				}
-				history.add(getHistoryEntry());
-				request.setHistory(history);
+				request.addToHistory(getHistoryEntry());
 			}
 			setDocument(request);
 			LaboratoryEntityBean.this.save();

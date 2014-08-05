@@ -1,12 +1,6 @@
 package ru.efive.medicine.niidg.trfu.data.entity.medical;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,419 +32,423 @@ import ru.efive.wf.core.ProcessedData;
 @Entity
 @Table(name = "trfu_medical_donors")
 public class BiomaterialDonor extends Document implements ProcessedData {
-	
-	public int getExternalId() {
-		return externalId;
-	}
 
-	public void setExternalId(int externalId) {
-		this.externalId = externalId;
-	}
+    public int getExternalId() {
+        return externalId;
+    }
 
-	public String getNumber() {
-		return number;
-	}
+    public void setExternalId(int externalId) {
+        this.externalId = externalId;
+    }
 
-	public void setNumber(String number) {
-		this.number = number;
-	}
+    public String getNumber() {
+        return number;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public void setNumber(String number) {
+        this.number = number;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public String getMiddleName() {
-		return middleName;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public void setMiddleName(String middleName) {
-		this.middleName = middleName;
-	}
+    public String getMiddleName() {
+        return middleName;
+    }
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	
-	/**
-	 * полное имя
-	 */
-	@Transient
-	public String getDescription() {
-		return lastName + " " + (firstName != null && !firstName.equals("")? firstName + " ": "") + 
-		(middleName != null && !middleName.equals("")? middleName: "");
-	}
-	
-	/**
-	 * краткая форма полного имени
-	 */
-	@Transient
-	public String getDescriptionShort() {
-		return lastName + " " + (firstName != null && !firstName.equals("")? firstName.substring(0, 1) + ". ": "") + 
-		(middleName != null && !middleName.equals("")? middleName.substring(0, 1) + ".": "");
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public BloodGroup getBloodGroup() {
-		return bloodGroup;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public void setBloodGroup(BloodGroup bloodGroup) {
-		this.bloodGroup = bloodGroup;
-	}
+    /**
+     * полное имя
+     */
+    @Transient
+    public String getDescription() {
+        return lastName + " " + (firstName != null && !firstName.equals("") ? firstName + " " : "") +
+                (middleName != null && !middleName.equals("") ? middleName : "");
+    }
 
-	public Classifier getRhesusFactor() {
-		return rhesusFactor;
-	}
+    /**
+     * краткая форма полного имени
+     */
+    @Transient
+    public String getDescriptionShort() {
+        return lastName + " " + (firstName != null && !firstName.equals("") ? firstName.substring(0, 1) + ". " : "") +
+                (middleName != null && !middleName.equals("") ? middleName.substring(0, 1) + "." : "");
+    }
 
-	public void setRhesusFactor(Classifier rhesusFactor) {
-		this.rhesusFactor = rhesusFactor;
-	}
+    public BloodGroup getBloodGroup() {
+        return bloodGroup;
+    }
 
-	public int getGender() {
-		return gender;
-	}
+    public void setBloodGroup(BloodGroup bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
 
-	public void setGender(int gender) {
-		this.gender = gender;
-	}
+    public Classifier getRhesusFactor() {
+        return rhesusFactor;
+    }
 
-	public Date getBirth() {
-		return birth;
-	}
+    public void setRhesusFactor(Classifier rhesusFactor) {
+        this.rhesusFactor = rhesusFactor;
+    }
 
-	public void setBirth(Date birth) {
-		this.birth = birth;
-	}
-	
-	@Transient
-	public int getAge() {
-		Calendar today = Calendar.getInstance();
-		Calendar birthDate = Calendar.getInstance();
-		
-		int age = 0;
-		
-		birthDate.setTime(birth);
-		if (birthDate.after(today)) {
-			throw new IllegalArgumentException("Can't be born in the future");
-		}
-		age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
-		if ((birthDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR) > 3) || (birthDate.get(Calendar.MONTH) > today.get(Calendar.MONTH))) {
-			age--;
-		}
-		else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH)) && (birthDate.get(Calendar.DAY_OF_MONTH) > today.get(Calendar.DAY_OF_MONTH))) {
-			age--;
-		}
+    public int getGender() {
+        return gender;
+    }
 
-		return age;
-	}
-	
-	@Transient
-	public String getAgeFull() {
-		int age = getAge();
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(age).append(" ").append(age%10==1 && age%100!=11 ? "год" : age%10>=2 && age%10<=4 && (age%100<10 || age%100>=20) ? "года" : "лет");
-		return buffer.toString();
-	}
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
 
-	public String getPassportSeries() {
-		return passportSeries;
-	}
+    public Date getBirth() {
+        return birth;
+    }
 
-	public void setPassportSeries(String passportSeries) {
-		this.passportSeries = passportSeries;
-	}
+    public void setBirth(Date birth) {
+        this.birth = birth;
+    }
 
-	public String getPassportNumber() {
-		return passportNumber;
-	}
+    @Transient
+    public int getAge() {
+        Calendar today = Calendar.getInstance();
+        Calendar birthDate = Calendar.getInstance();
 
-	public void setPassportNumber(String passportNumber) {
-		this.passportNumber = passportNumber;
-	}
+        int age = 0;
 
-	public String getInsuranceSeries() {
-		return insuranceSeries;
-	}
+        birthDate.setTime(birth);
+        if (birthDate.after(today)) {
+            throw new IllegalArgumentException("Can't be born in the future");
+        }
+        age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
+        if ((birthDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR) > 3) || (birthDate.get(Calendar.MONTH) > today.get(Calendar.MONTH))) {
+            age--;
+        } else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH)) && (birthDate.get(Calendar.DAY_OF_MONTH) > today.get(Calendar.DAY_OF_MONTH))) {
+            age--;
+        }
 
-	public void setInsuranceSeries(String insuranceSeries) {
-		this.insuranceSeries = insuranceSeries;
-	}
+        return age;
+    }
 
-	public String getInsuranceNumber() {
-		return insuranceNumber;
-	}
+    @Transient
+    public String getAgeFull() {
+        int age = getAge();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(age).append(" ").append(age % 10 == 1 && age % 100 != 11 ? "год" : age % 10 >= 2 && age % 10 <= 4 && (age % 100 < 10 || age % 100 >= 20) ? "года" : "лет");
+        return buffer.toString();
+    }
 
-	public void setInsuranceNumber(String insuranceNumber) {
-		this.insuranceNumber = insuranceNumber;
-	}
+    public String getPassportSeries() {
+        return passportSeries;
+    }
 
-	public String getEmployment() {
-		return employment;
-	}
+    public void setPassportSeries(String passportSeries) {
+        this.passportSeries = passportSeries;
+    }
 
-	public void setEmployment(String employment) {
-		this.employment = employment;
-	}
+    public String getPassportNumber() {
+        return passportNumber;
+    }
 
-	public String getWorkPhone() {
-		return workPhone;
-	}
+    public void setPassportNumber(String passportNumber) {
+        this.passportNumber = passportNumber;
+    }
 
-	public void setWorkPhone(String workPhone) {
-		this.workPhone = workPhone;
-	}
+    public String getInsuranceSeries() {
+        return insuranceSeries;
+    }
 
-	public String getRegistrationAddress() {
-		return registrationAddress;
-	}
+    public void setInsuranceSeries(String insuranceSeries) {
+        this.insuranceSeries = insuranceSeries;
+    }
 
-	public void setRegistrationAddress(String registrationAddress) {
-		this.registrationAddress = registrationAddress;
-	}
+    public String getInsuranceNumber() {
+        return insuranceNumber;
+    }
 
-	public String getFactAddress() {
-		return factAddress;
-	}
+    public void setInsuranceNumber(String insuranceNumber) {
+        this.insuranceNumber = insuranceNumber;
+    }
 
-	public void setFactAddress(String factAddress) {
-		this.factAddress = factAddress;
-	}
+    public String getEmployment() {
+        return employment;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public void setEmployment(String employment) {
+        this.employment = employment;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public String getWorkPhone() {
+        return workPhone;
+    }
 
-	public String getCommentary() {
-		return commentary;
-	}
+    public void setWorkPhone(String workPhone) {
+        this.workPhone = workPhone;
+    }
 
-	public void setCommentary(String commentary) {
-		this.commentary = commentary;
-	}
+    public String getRegistrationAddress() {
+        return registrationAddress;
+    }
 
-	public String getInfectiousStatus() {
-		return infectiousStatus;
-	}
+    public void setRegistrationAddress(String registrationAddress) {
+        this.registrationAddress = registrationAddress;
+    }
 
-	public void setInfectiousStatus(String infectiousStatus) {
-		this.infectiousStatus = infectiousStatus;
-	}
+    public String getFactAddress() {
+        return factAddress;
+    }
 
-	public String getPregnancy() {
-		return pregnancy;
-	}
+    public void setFactAddress(String factAddress) {
+        this.factAddress = factAddress;
+    }
 
-	public void setPregnancy(String pregnancy) {
-		this.pregnancy = pregnancy;
-	}
-	
-	@Transient
-	public String getType() {
-		return "BiomaterialDonor";
-	}
-	
-	public int getStatusId() {
-		return statusId;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public void setStatusId(int statusId) {
-		this.statusId = statusId;
-	}
-	
-	@Transient
-	public String getStatusName() {
-		return ApplicationHelper.getStatusName("BiomaterialDonor", getStatusId());
-	}
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-	public int getGrouping() {
-		return grouping;
-	}
+    public String getCommentary() {
+        return commentary;
+    }
 
-	public void setGrouping(int grouping) {
-		this.grouping = grouping;
-	}
-	
-	public void setHistory(Set<HistoryEntry> history) {
-		this.history = history;
-	}
-	
-	public Set<HistoryEntry> getHistory() {
-		return history;
-	}
-	
-	@Transient
-	public List<HistoryEntry> getHistoryList() {
-		List<HistoryEntry> result = new ArrayList<HistoryEntry>();
-		if (history != null) {
-			result.addAll(history);
-		}
-		Collections.sort(result, new Comparator<HistoryEntry>() {
-			public int compare(HistoryEntry o1, HistoryEntry o2) {
-				Calendar c1 = Calendar.getInstance(ApplicationHelper.getLocale());
-				c1.setTime(o1.getCreated());
-				Calendar c2 = Calendar.getInstance(ApplicationHelper.getLocale());
-				c2.setTime(o2.getCreated());
-				return c1.compareTo(c2);
-			}
-		});
-		return result;
-	}
-	
+    public void setCommentary(String commentary) {
+        this.commentary = commentary;
+    }
 
-	public boolean isFromMIS() {
-		return fromMIS;
-	}
+    public String getInfectiousStatus() {
+        return infectiousStatus;
+    }
 
-	public void setFromMIS(boolean fromMIS) {
-		this.fromMIS = fromMIS;
-	}
+    public void setInfectiousStatus(String infectiousStatus) {
+        this.infectiousStatus = infectiousStatus;
+    }
+
+    public String getPregnancy() {
+        return pregnancy;
+    }
+
+    public void setPregnancy(String pregnancy) {
+        this.pregnancy = pregnancy;
+    }
+
+    @Transient
+    public String getType() {
+        return "BiomaterialDonor";
+    }
+
+    public int getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
+    }
+
+    @Transient
+    public String getStatusName() {
+        return ApplicationHelper.getStatusName("BiomaterialDonor", getStatusId());
+    }
+
+    public int getGrouping() {
+        return grouping;
+    }
+
+    public void setGrouping(int grouping) {
+        this.grouping = grouping;
+    }
+
+    public void setHistory(Set<HistoryEntry> history) {
+        this.history = history;
+    }
+
+    public Set<HistoryEntry> getHistory() {
+        return history;
+    }
+
+    @Transient
+    public List<HistoryEntry> getHistoryList() {
+        List<HistoryEntry> result = new ArrayList<HistoryEntry>();
+        if (history != null) {
+            result.addAll(history);
+        }
+        Collections.sort(result);
+        return result;
+    }
+
+    /**
+     * Добавление в историю компонента еще одной записи, если история пуста, то она создается
+     *
+     * @param historyEntry Запись в истории компонента, которую надо добавить
+     * @return статус добавления (true - успех)
+     */
+    public boolean addToHistory(final HistoryEntry historyEntry) {
+        if (history == null) {
+            this.history = new HashSet<HistoryEntry>(1);
+        }
+        return this.history.add(historyEntry);
+    }
 
 
-	/**
-	 * Идентификатор донора в МИС
-	 */
-	private int externalId;
-	
-	/**
+    public boolean isFromMIS() {
+        return fromMIS;
+    }
+
+    public void setFromMIS(boolean fromMIS) {
+        this.fromMIS = fromMIS;
+    }
+
+
+    /**
+     * Идентификатор донора в МИС
+     */
+    private int externalId;
+
+    /**
      * Номер донора
      */
     private String number;
-    
+
     /**
-	 * фамилия
-	 */
-	private String lastName;
+     * фамилия
+     */
+    private String lastName;
 
-	/**
-	 * отчество
-	 */
-	private String middleName;
+    /**
+     * отчество
+     */
+    private String middleName;
 
-	/**
-	 * имя
-	 */
-	private String firstName;
-	
-	/**
-	 * Группа крови
-	 */
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-	private BloodGroup bloodGroup;
-	
-	/**
-	 * Резус-фактор
-	 */
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-	private Classifier rhesusFactor;
-	
-	/**
-	 * Пол (0 - female, 1 - male)
-	 */
+    /**
+     * имя
+     */
+    private String firstName;
+
+    /**
+     * Группа крови
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private BloodGroup bloodGroup;
+
+    /**
+     * Резус-фактор
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private Classifier rhesusFactor;
+
+    /**
+     * Пол (0 - female, 1 - male)
+     */
     private int gender;
-	
-	/**
-	 * дата рождения
-	*/
-    @Temporal(value = TemporalType.TIMESTAMP)
-	private Date birth;
-	
-	/**
-	 * Серия паспорта
-	 */
-	private String passportSeries;
-	
-	/**
-	 * Номер паспорта
-	 */
-	private String passportNumber;
-	
-	/**
-	 * Серия страхового полиса ОМС
-	 */
-	private String insuranceSeries;
-	
-	/**
-	 * Номер страхового полиса ОМС
-	 */
-	private String insuranceNumber;
-	
-	/**
-	 * Место работы
-	 */
-	@Column(columnDefinition="text")
-	private String employment;
-	
-	/**
-	 * Рабочий телефон
-	 */
-	private String workPhone;
-	
-	/**
-	 * Адрес регистрации
-	 */
-	private String registrationAddress;
-	
-	/**
-	 * Фактический адрес
-	 */
-	private String factAddress;
-	
-	/**
-	 * Телефон
-	 */
-	private String phone;
-	
-	/**
-	 * Комментарий
-	 */
-	@Column(columnDefinition="text")
-	private String commentary;
-	
-	/**
-	 * Инфекционный статус
-	 */
-	private String infectiousStatus;
-	
-	/**
-	 * Статус беремености
-	 */
-    private String pregnancy;
-	
+
     /**
-	 * Текущий статус документа в процессе
-	 */
-	@Column(name="status_id")
-	private int statusId;
-    
-	/**
-	 * Для группировок в представлениях
-	 */
-	@Transient
-	private int grouping = 100;
-	
-	/**
-	 * История
-	 */
-	@OneToMany
-	@Cascade({ org.hibernate.annotations.CascadeType.ALL })
-	@JoinTable(name = "trfu_medical_donor_history", 
-			joinColumns = { @JoinColumn(name = "donor_id") }, 
-			inverseJoinColumns = { @JoinColumn(name = "history_entry_id") })
-	@LazyCollection(LazyCollectionOption.FALSE)
-	private Set<HistoryEntry> history;
-	
-	private boolean fromMIS;
-	
-	private static final long serialVersionUID = -2649469860128460148L;
+     * дата рождения
+     */
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date birth;
+
+    /**
+     * Серия паспорта
+     */
+    private String passportSeries;
+
+    /**
+     * Номер паспорта
+     */
+    private String passportNumber;
+
+    /**
+     * Серия страхового полиса ОМС
+     */
+    private String insuranceSeries;
+
+    /**
+     * Номер страхового полиса ОМС
+     */
+    private String insuranceNumber;
+
+    /**
+     * Место работы
+     */
+    @Column(columnDefinition = "text")
+    private String employment;
+
+    /**
+     * Рабочий телефон
+     */
+    private String workPhone;
+
+    /**
+     * Адрес регистрации
+     */
+    private String registrationAddress;
+
+    /**
+     * Фактический адрес
+     */
+    private String factAddress;
+
+    /**
+     * Телефон
+     */
+    private String phone;
+
+    /**
+     * Комментарий
+     */
+    @Column(columnDefinition = "text")
+    private String commentary;
+
+    /**
+     * Инфекционный статус
+     */
+    private String infectiousStatus;
+
+    /**
+     * Статус беремености
+     */
+    private String pregnancy;
+
+    /**
+     * Текущий статус документа в процессе
+     */
+    @Column(name = "status_id")
+    private int statusId;
+
+    /**
+     * Для группировок в представлениях
+     */
+    @Transient
+    private int grouping = 100;
+
+    /**
+     * История
+     */
+    @OneToMany
+    @Cascade({org.hibernate.annotations.CascadeType.ALL})
+    @JoinTable(name = "trfu_medical_donor_history",
+            joinColumns = {@JoinColumn(name = "donor_id")},
+            inverseJoinColumns = {@JoinColumn(name = "history_entry_id")})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<HistoryEntry> history;
+
+    private boolean fromMIS;
+
+    private static final long serialVersionUID = -2649469860128460148L;
 }

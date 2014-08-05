@@ -85,9 +85,7 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
 		historyEntry.setEndDate(created);
 		historyEntry.setProcessed(true);
 		historyEntry.setCommentary("");
-		Set<HistoryEntry> history = new HashSet<HistoryEntry>();
-		history.add(historyEntry);
-		donor.setHistory(history);
+		donor.addToHistory(historyEntry);
 		
 		setDocument(donor);
 	}
@@ -233,12 +231,7 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
 		protected void doPostProcess(ActionResult actionResult) {
 			Donor donor = (Donor) actionResult.getProcessedData();
 			if (getSelectedAction().isHistoryAction()) {
-				Set<HistoryEntry> history = donor.getHistory();
-				if (history == null) {
-					history = new HashSet<HistoryEntry>();
-				}
-				history.add(getHistoryEntry());
-				donor.setHistory(history);
+				donor.addToHistory(getHistoryEntry());
 			}
 			setDocument(donor);
 			DonorHolderBean.this.save();
