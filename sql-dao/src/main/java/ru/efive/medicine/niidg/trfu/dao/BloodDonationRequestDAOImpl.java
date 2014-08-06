@@ -401,19 +401,20 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 			boolean orderAsc) {
 		DetachedCriteria detachedCriteriaSub = createDetachedCriteriaSub();
 		addNotDeletedCriteria(detachedCriteriaSub);
+        addOrderCriteria(orderBy, orderAsc, detachedCriteriaSub);
 		detachedCriteriaSub = getSearchCriteria(detachedCriteriaSub, filter);
-		
+
 		DetachedCriteria criteria = createDetachedCriteria();
 		addOrderCriteria(orderBy, orderAsc, criteria);
 		criteria.add(Restrictions.in("id", getHibernateTemplate().findByCriteria(detachedCriteriaSub, offset, count)));
-		
+
 		return getHibernateTemplate().findByCriteria(criteria);
 	}
-	
+
 	protected DetachedCriteria createDetachedCriteriaSub() {
 		DetachedCriteria idsOnlyCriteria = DetachedCriteria.forClass(BloodDonationRequest.class);
 		idsOnlyCriteria.setProjection(Projections.distinct(Projections.id()));
-		
+
 		return idsOnlyCriteria;
 	}
 }

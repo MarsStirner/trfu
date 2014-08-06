@@ -15,6 +15,8 @@ import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 
+import ru.efive.crm.dao.ContragentDAOHibernate;
+import ru.efive.crm.data.Contragent;
 import ru.efive.dao.sql.dao.user.RoleDAOHibernate;
 import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.enums.RoleType;
@@ -23,6 +25,7 @@ import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.*;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.*;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.PropertiesEditorBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListByAppointmentHolderBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListByRoleTypeHolderBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
@@ -348,7 +351,13 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 					editableState = false;
 					return;
 				}
-				ActionResult result = OperationalHelper.operationalReject(getDocument(), description);
+                final String fullNameContragent = (String) propertiesEditorBean.getSelectedProperties().getProperty("reports.institution.name");
+                final Contragent currentContragent = sessionManagement.getDAO(ContragentDAOHibernate.class,
+                        ApplicationHelper.CONTRAGENT_DAO).getByFullName(fullNameContragent);
+                if (currentContragent != null ) {
+                    System.out.println("No one maker founded by:"+fullNameContragent);
+                }
+				ActionResult result = OperationalHelper.operationalReject(getDocument(), description, currentContragent);
 				if (!result.isProcessed()) {
 					description = result.getDescription();
 					editableState = false;
@@ -374,11 +383,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 	 * Доступность действия "Создать компоненты"
 	 */
 	public boolean isComponentRegistrationAvailable() {
-		boolean result = false;
-		if (getDocument().getStatusId() == 2 && getDocument().getReport() != null) {
-			result = true;
-		}
-		return result;
+		return getDocument().getStatusId() == 2 && getDocument().getReport() != null;
 	}
 	
 	/**
@@ -386,7 +391,13 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 	 */
 	public void componentRegister() {
 		try {
-			ActionResult result = OperationalHelper.operationalRegisterComponents(getDocument());
+            final String fullNameContragent = (String) propertiesEditorBean.getSelectedProperties().getProperty("reports.institution.name");
+            final Contragent currentContragent = sessionManagement.getDAO(ContragentDAOHibernate.class,
+                    ApplicationHelper.CONTRAGENT_DAO).getByFullName(fullNameContragent);
+            if (currentContragent != null ) {
+               System.out.println("No one maker founded by:"+fullNameContragent);
+            }
+			ActionResult result = OperationalHelper.operationalRegisterComponents(getDocument(), currentContragent);
 			if (!result.isProcessed()) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, result.getDescription(), ""));
@@ -550,6 +561,8 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
     private transient OperationalSessionBean operational;
     @Inject @Named("bloodDonationOperationalList")
     private transient BloodDonationOperationalListHolderBean bloodDonationOperational;
+    @Inject @Named("propertiesRedactorBean")
+    private transient PropertiesEditorBean propertiesEditorBean;
 
     private DonorSelectModalHolder donorSelectModal = new DonorSelectModalHolder();
     private BloodSystemSelect bloodSystemTypeSelectModal = new BloodSystemSelect();

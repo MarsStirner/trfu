@@ -103,6 +103,10 @@ public class IntegrationHelper {
                 Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
                 calendar.setTime(examination.getAppointment().getCreated());
                 request.setOrderMisDate(calendar);
+                Object department = propertiesHolder.getProperty("application", "reports.division.name");
+                if(department != null){
+                    request.setOrderDepartmentName(department.toString());
+                }
                 request.setOrderDoctorFamily(examination.getAppointment().getAuthor().getLastName());
                 request.setOrderDoctorName(examination.getAppointment().getAuthor().getFirstName());
                 request.setOrderDoctorPatronum(examination.getAppointment().getAuthor().getMiddleName());
@@ -212,6 +216,10 @@ public class IntegrationHelper {
                 request.setOrderMisId(donation.getAppointment().getId());
                 Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
                 calendar.setTime(donation.getAppointment().getCreated());
+                Object department = propertiesHolder.getProperty("application", "reports.division.name");
+                if(department != null){
+                    request.setOrderDepartmentName(department.toString());
+                }
                 request.setOrderMisDate(calendar);
                 request.setOrderDoctorFamily(donation.getAppointment().getAuthor().getLastName());
                 request.setOrderDoctorName(donation.getAppointment().getAuthor().getFirstName());

@@ -51,15 +51,15 @@
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
 	<queryString>
-		<![CDATA[select table1.parentNumber, table1.bloodGroup,table1.rezus, table1.erVzv_volume, table2.plazm_volume, table3.leik_volume,
+		<![CDATA[select table1.parentNumber, table1.bloodGroup, table1.rezus, table1.erVzv_volume, table2.plazm_volume, table3.leik_volume,
 table1.dosa,table1.emVolume,
  count(table1.erVzv_volume), count(table2.plazm_volume), count(table3.leik_volume),
 count(CASE WHEN ( table1.emVolume<>0) THEN table1.emVolume ELSE 0 END) as emcount,
 table1.em_brak_count, table1.em_brak_volume
 from
-(select comp.parentNumber, comp.bloodGroup_id as bloodGroup, cl.value as rezus,(comp.emVolume) as emvolume,
+(select comp.parentNumber, IF(comp.bloodGroup_id < 5, comp.bloodGroup_id, '')  as bloodGroup, cl.value as rezus,(comp.emVolume) as emvolume,
 	entr.dose as dosa, sum(CASE WHEN ( comp.status_id!=-1) THEN comp.volume ELSE 0 END) as erVzv_volume, (CASE WHEN ( comp.status_id=-1) THEN 1 ELSE 0 END) as em_brak_count,(CASE WHEN ( comp.status_id=-1) THEN comp.volume ELSE 0 END) as em_brak_volume
-	from trfu_blood_components comp inner join trfu_classifiers cl on comp.rhesusFactor_id=cl.id and cl.	category='Резус-фактор'
+	from trfu_blood_components comp inner join trfu_classifiers cl on comp.rhesusFactor_id=cl.id and cl.category='Резус-фактор'
   inner join trfu_blood_donation_requests req on req.number=comp.parentNumber
   inner join trfu_blood_component_types type on comp.componentType_id=type.id
   inner join trfu_blood_donation_request_fact_entries fact on fact.donation_id = req.id
@@ -69,7 +69,7 @@ and comp.maker_id='11' and comp.status_id!='100' and comp.deleted = 0 group by c
 join
 (select comp.parentNumber, comp.bloodGroup_id as bloodGroup, cl.value as rezus,sum(comp.volume) as plazm_volume,
 	entr.dose as dosa
-	from trfu_blood_components comp inner join trfu_classifiers cl on comp.rhesusFactor_id=cl.id and cl.	category='Резус-фактор'
+	from trfu_blood_components comp inner join trfu_classifiers cl on comp.rhesusFactor_id=cl.id and cl.category='Резус-фактор'
   inner join trfu_blood_donation_requests req on req.number=comp.parentNumber
   inner join trfu_blood_component_types type on comp.componentType_id=type.id
   inner join trfu_blood_donation_request_fact_entries fact on fact.donation_id = req.id
@@ -79,7 +79,7 @@ and comp.maker_id='11' and comp.status_id!='100'and comp.deleted = 0 group by co
 join
 (select comp.parentNumber, comp.bloodGroup_id as bloodGroup, cl.value as rezus,sum(comp.volume) as leik_volume,
 entr.dose as dosa
-	from trfu_blood_components comp inner join trfu_classifiers cl on comp.rhesusFactor_id=cl.id and cl.	category='Резус-фактор'
+	from trfu_blood_components comp inner join trfu_classifiers cl on comp.rhesusFactor_id=cl.id and cl.category='Резус-фактор'
   inner join trfu_blood_donation_requests req on req.number=comp.parentNumber
   inner join trfu_blood_component_types type on comp.componentType_id=type.id
   inner join trfu_blood_donation_request_fact_entries fact on fact.donation_id = req.id
@@ -90,7 +90,7 @@ on table1.parentNumber = table2.parentNumber and table2.parentNumber=table3.pare
 group by table1.parentNumber]]>
 	</queryString>
 	<field name="parentNumber" class="java.lang.String"/>
-	<field name="bloodGroup" class="java.lang.Integer"/>
+	<field name="bloodGroup" class="java.lang.String"/>
 	<field name="rezus" class="java.lang.String"/>
 	<field name="erVzv_volume" class="java.math.BigDecimal"/>
 	<field name="plazm_volume" class="java.math.BigDecimal"/>

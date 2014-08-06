@@ -65,7 +65,7 @@ import ru.korusconsulting.laboratory.*;
 
 @Named("reports")
 @RequestScoped
-public class ReportsManagmentBean {
+public class ReportsManagmentBean implements Serializable {
     public void getHttpReportByXML() {
         System.out.println("Starting");
         Connection conn = null;

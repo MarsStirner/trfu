@@ -98,7 +98,7 @@ public class BloodDonationFilterableListHolderBean
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<BloodDonationRequest>();
+		return new ArrayList<BloodDonationRequest>(0);
 	}
 
 	@Override
