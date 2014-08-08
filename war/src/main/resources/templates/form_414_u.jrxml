@@ -76,6 +76,7 @@ FROM
      LEFT OUTER JOIN `trfu_donors` trfu_donors ON trfu_blood_donation_requests.`donor_id` = trfu_donors.`id`
 WHERE
  wf_history.`from_status_id` = 2
+ AND wf_history.action_id <> 14
 and trfu_blood_components.id = $P{component_id}]]>
 		</queryString>
 		<field name="issueDate" class="java.sql.Timestamp"/>
@@ -134,9 +135,10 @@ FROM
      LEFT OUTER JOIN `trfu_donors` trfu_donors ON trfu_blood_donation_requests.`donor_id` = trfu_donors.`id`
 WHERE
      DATE(wf_history.`startDate`) = $P{Date}
- AND wf_history.`to_status_id` = 2
-AND trfu_blood_components.deleted = 0
-  AND trfu_donors.deleted = 0
+   AND wf_history.`to_status_id` = 2
+   AND trfu_blood_components.deleted = 0
+   AND trfu_donors.deleted = 0
+   AND wf_history.action_id <> 14
 GROUP BY
      trfu_blood_components_id
 ORDER BY
