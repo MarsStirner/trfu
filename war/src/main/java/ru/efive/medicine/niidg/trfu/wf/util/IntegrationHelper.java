@@ -107,6 +107,8 @@ public class IntegrationHelper {
                 if(department != null){
                     request.setOrderDepartmentName(department.toString());
                 }
+                //TODO лютый харкод (из-за отсутвия справочника)
+                request.setOrderDepartmentMisId("222");
                 request.setOrderDoctorFamily(examination.getAppointment().getAuthor().getLastName());
                 request.setOrderDoctorName(examination.getAppointment().getAuthor().getFirstName());
                 request.setOrderDoctorPatronum(examination.getAppointment().getAuthor().getMiddleName());
@@ -220,6 +222,8 @@ public class IntegrationHelper {
                 if(department != null){
                     request.setOrderDepartmentName(department.toString());
                 }
+                //TODO лютый харкод (из-за отсутвия справочника)
+                request.setOrderDepartmentMisId("222");
                 request.setOrderMisDate(calendar);
                 request.setOrderDoctorFamily(donation.getAppointment().getAuthor().getLastName());
                 request.setOrderDoctorName(donation.getAppointment().getAuthor().getFirstName());

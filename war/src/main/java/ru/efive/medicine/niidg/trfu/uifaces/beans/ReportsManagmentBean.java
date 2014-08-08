@@ -8,6 +8,7 @@ import java.awt.print.*;
 import java.io.*;
 import java.lang.Exception;
 import java.net.URL;
+import java.nio.file.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -233,8 +234,8 @@ public class ReportsManagmentBean implements Serializable {
             return;
         } else {
             System.out.println("Found printer name is >> " + psZebra.getName());
-            for(Attribute attr : psZebra.getAttributes().toArray()){
-               System.out.println(" * "+attr.getName()+":"+ attr);
+            for (Attribute attr : psZebra.getAttributes().toArray()) {
+                System.out.println(" * " + attr.getName() + ":" + attr);
             }
         }
         Object count = propertiesHolder.getProperty("application", "reports.smallLabel.count");
@@ -261,22 +262,22 @@ public class ReportsManagmentBean implements Serializable {
                 "ExaminationRequest as request\n" +
                 "where\n" +
                 "request.number=\'" + in_map.get("_requestNumber") + "\'").list();
-        if(resultList.isEmpty()) {
+        if (resultList.isEmpty()) {
             return;
         }
         Object[] row = (Object[]) resultList.get(0);
         final String r_number = (String) row[0];
-        final Date created = (Date)row[1];
+        final Date created = (Date) row[1];
         final String d_number = (String) row[2];
         final String middleName = (String) row[3];
         final String lastName = (String) row[4];
         final String firstName = (String) row[5];
         session.close();
         final StringBuilder fioStringBuilder = new StringBuilder(lastName);
-        if(firstName != null && !firstName.isEmpty()){
+        if (firstName != null && !firstName.isEmpty()) {
             fioStringBuilder.append(' ').append(firstName.charAt(0)).append('.');
         }
-        if(middleName != null && !middleName.isEmpty()){
+        if (middleName != null && !middleName.isEmpty()) {
             fioStringBuilder.append(' ').append(middleName.charAt(0)).append('.');
         }
         System.out.println("Print bufferedImage with Paper settings");
@@ -312,7 +313,7 @@ public class ReportsManagmentBean implements Serializable {
             dump(validatePage);
             job.setPrintable(new ImagePrintable(print), pf);
             job.print(aset);
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("imagePrint failed:");
             e.printStackTrace();
         }
@@ -321,27 +322,27 @@ public class ReportsManagmentBean implements Serializable {
     private BufferedImage createLabel240_160(String r_number, String date, String d_number, String fio) {
         final BufferedImage picture_240_160 = new BufferedImage(240, 160, BufferedImage.TYPE_INT_RGB);
         final Font mainFont = new Font("Tahoma", Font.PLAIN, 18);
-        final Font edgeFont = new Font("Tahoma",Font.PLAIN, 15);
+        final Font edgeFont = new Font("Tahoma", Font.PLAIN, 15);
         AffineTransform rotationTransform = new AffineTransform();
         rotationTransform.rotate(Math.toRadians(-90));
         final Font rotatedFont = edgeFont.deriveFont(rotationTransform);
         Graphics2D g2d = (Graphics2D) picture_240_160.createGraphics();
         g2d.setColor(Color.WHITE);
-        g2d.fillRect(0,0,240,160);
+        g2d.fillRect(0, 0, 240, 160);
         g2d.setColor(Color.BLACK);
         g2d.setFont(mainFont);
         g2d.drawString("Донация ".concat(r_number), 0, 120);
-        g2d.drawString(fio,20,138);
+        g2d.drawString(fio, 20, 138);
         g2d.setFont(rotatedFont);
         g2d.drawString("№ ".concat(d_number), 20, 100);
-        g2d.drawString(date,235,120);
-        g2d.translate(20,5);
+        g2d.drawString(date, 235, 120);
+        g2d.translate(20, 5);
         Code128Bean bean = new Code128Bean();
         bean.doQuietZone(true);
         bean.setHeight(100);
         bean.setModuleWidth(2.5);
         bean.setMsgPosition(HumanReadablePlacement.HRP_NONE);
-        bean.generateBarcode(new Java2DCanvasProvider(g2d,0), r_number);
+        bean.generateBarcode(new Java2DCanvasProvider(g2d, 0), r_number);
         return picture_240_160;
     }
 
@@ -357,8 +358,6 @@ public class ReportsManagmentBean implements Serializable {
     protected static double toPPI(double inch) {
         return inch * 72d;
     }
-
-
 
 
     public void hibernatePrintReportByRequestParams(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
@@ -456,7 +455,7 @@ public class ReportsManagmentBean implements Serializable {
         FileSystemXmlApplicationContext context = indexManagement.getContext();
         BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
-		
+
 		/* Get Data source */
         JasperReport report = null;
         JasperPrint print = null;
@@ -553,8 +552,8 @@ public class ReportsManagmentBean implements Serializable {
             response.getOutputStream().close();
 
             final File imageFile = exportToImage(print, requestProperties);
-            if(imageFile != null){
-                if(storePictureLinkToDatabase(imageFile, requestProperties)){
+            if (imageFile != null) {
+                if (storePictureLinkToDatabase(imageFile, requestProperties)) {
                     System.out.println("Successful store labelPath");
                 } else {
                     System.out.println("Failed to store labelPath");
@@ -574,11 +573,11 @@ public class ReportsManagmentBean implements Serializable {
 
     private boolean storePictureLinkToDatabase(final File file, final Map<String, String> requestProperties) {
         final String docType = requestProperties.get("docType");
-        if(docType == null || docType.isEmpty()){
+        if (docType == null || docType.isEmpty()) {
             System.out.println("Cannot store PictureImage to Database cause: Undefined docType");
             return false;
         }
-        if("BloodComponent".equalsIgnoreCase(docType)){
+        if ("BloodComponent".equalsIgnoreCase(docType)) {
             return storePictureLinkToBloodComponent(file, requestProperties.get("docId"));
         } // .... other store to database calls
         System.out.println("Unknown docType");
@@ -596,7 +595,7 @@ public class ReportsManagmentBean implements Serializable {
         final float scale = getPictureScaleProperty();
         final String extension = getPictureExtension();
         final File pictureFile = getPictureFile(extension, requestProperties);
-        if(pictureFile != null) {
+        if (pictureFile != null) {
             try {
                 BufferedImage picture = new BufferedImage((int) (print.getPageWidth() * scale) + 1, (int) (print.getPageHeight() * scale) + 1, BufferedImage.TYPE_INT_RGB);
                 JRGraphics2DExporter pictureExporter = new JRGraphics2DExporter();
@@ -605,7 +604,7 @@ public class ReportsManagmentBean implements Serializable {
                 pictureExporter.setParameter(JRGraphics2DExporterParameter.ZOOM_RATIO, scale);
                 pictureExporter.exportReport();
                 if (ImageIO.write(picture, extension, pictureFile)) {
-                    System.out.println("Picture \'" + pictureFile.getAbsolutePath() + "\' Scale:"+scale+" Size: " + picture.getWidth() + 'x' + picture.getHeight() + " and use " + pictureFile.length() / 1024 + "Kb.");
+                    System.out.println("Picture \'" + pictureFile.getAbsolutePath() + "\' Scale:" + scale + " Size: " + picture.getWidth() + 'x' + picture.getHeight() + " and use " + pictureFile.length() / 1024 + "Kb.");
                 } else {
                     System.out.println("Export ot image failed without exception");
                 }
@@ -620,11 +619,12 @@ public class ReportsManagmentBean implements Serializable {
 
     private File getPictureFile(final String extension, final Map<String, String> requestProperties) {
         String storagePath;
+        final String spr = File.separator;
         try {
             storagePath = (String) propertiesHolder.getProperty("application", "reports.storage.path");
         } catch (Exception e) {
             System.out.println("Picture storage path property is empty or invalid use relative path \'..\\pictures\\'");
-            storagePath = "\\..\\pictures\\";
+            storagePath = spr + ".." + spr + "pictures" + spr;
         }
         String donorId;
         if (requestProperties.containsKey("donorId")) {
@@ -639,8 +639,8 @@ public class ReportsManagmentBean implements Serializable {
             fileName = "undefined_".concat(UUID.randomUUID().toString());
         }
         StringBuilder sb = new StringBuilder(storagePath);
-        sb.append('\\').append(donorId)
-                .append('\\').append(fileName)
+        sb.append(spr).append(donorId)
+                .append(spr).append(fileName)
                 .append('.').append(extension);
         final File result = new File(sb.toString());
         result.mkdirs();
@@ -785,9 +785,9 @@ public class ReportsManagmentBean implements Serializable {
     @Named("propertiesHolder")
     private transient ApplicationPropertiesHolder propertiesHolder;
 
-    @Inject @Named("sessionManagement")
+    @Inject
+    @Named("sessionManagement")
     private transient SessionManagementBean sessionManagement = new SessionManagementBean();
-
 
 
     protected String dump(Paper paper) {
@@ -810,14 +810,15 @@ public class ReportsManagmentBean implements Serializable {
         public ImagePrintable(BufferedImage print) {
             this.image = print;
         }
+
         @Override
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-           if(pageIndex >= 1){
-               return NO_SUCH_PAGE;
-           }
+            if (pageIndex >= 1) {
+                return NO_SUCH_PAGE;
+            }
             Graphics2D g2d = (Graphics2D) graphics;
             g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-            if(this.image != null){
+            if (this.image != null) {
                 Double xScaleFactor = 1.0d;
                 Double yScaleFactor = 1.0d;
 

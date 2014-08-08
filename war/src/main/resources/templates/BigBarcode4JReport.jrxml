@@ -178,7 +178,7 @@ comp.inactivated as inactivated, trfu_tests.type_id as type_id, trfu_tests.value
 GROUP_CONCAT(DISTINCT CONCAT(trfu_analysis_types.value,trfu_tests.value) SEPARATOR '')
  as analysisValue,
 donors.lastName as donorslastName,
-(SELECT wf.startDate
+(SELECT max(wf.startDate)
 FROM
 trfu_blood_component_history hist
 inner JOIN wf_history wf
