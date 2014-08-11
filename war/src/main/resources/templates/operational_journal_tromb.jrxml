@@ -481,7 +481,7 @@ inner join trfu_blood_donation_request_fact_entries factDonationEntries on req.i
 inner join trfu_pheresis_reports rep on req.report_id=rep.id)
 inner join trfu_blood_donation_entries factDonationResult on factDonationEntries.entry_id = factDonationResult.id
 
-where factDonationResult.donationType_id = '3' and req.factDate=DATE($P{FactDonationDate}) and req.deleted="0"
+where factDonationResult.donationType_id = '3' and DATE(req.factDate)=DATE($P{FactDonationDate}) and req.deleted="0"
 
 group by req_number]]>
 	</queryString>
