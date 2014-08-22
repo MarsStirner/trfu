@@ -1181,11 +1181,19 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
             final boolean orderAsc) {
         DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
         detachedCriteria = setVirusinaktivationCriteria(detachedCriteria, bloodComponentStatusIdList, donationStatusIdList, showExpired, showDeleted);
-        if(barcodeFilter != null && barcodeFilter.length() >=7) {
-            final String number = StringUtils.right(barcodeFilter, 2);
-            final String donationNumber = StringUtils.substring(barcodeFilter, barcodeFilter.length() - 7, barcodeFilter.length() - 2);
+        if(barcodeFilter != null && barcodeFilter.length() >=5) {
+            //Логика поиска зависит от длины посиковой строки
+            String donationNumber="";
+            if(barcodeFilter.length() >=7) {
+                //Больше или 7 символов - по номеру донации и номеру КК
+                final String number = StringUtils.right(barcodeFilter, 2);
+                detachedCriteria.add(Restrictions.eq("number", number));
+                donationNumber = StringUtils.substring(barcodeFilter, barcodeFilter.length() - 7, barcodeFilter.length() - 2);
+            } else {
+                //5 символов справа - по номеру донации
+                donationNumber = StringUtils.right(barcodeFilter, 5);
+            }
             detachedCriteria.add(Restrictions.eq("parentNumber", donationNumber));
-            detachedCriteria.add(Restrictions.eq("number", number));
         }
         //Сортировка без добавления JOIN-ов, т.к. со вкалдки вирусинактивации сортировки только по тем вещам, которые уже в условии
         //TODO переписать сортировку с проверкой дубликации alias и с фактом наличия их
