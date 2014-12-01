@@ -201,8 +201,10 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
             super.doSave();
             BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
             for (BloodComponent component : components) {
-                component.setOrderId(getDocumentId());
-                dao.save(component);
+                if(component.getOrderId() != getDocumentId()) {
+                    component.setOrderId(getDocumentId());
+                    dao.save(component);
+                }
             }
         }
 
@@ -385,6 +387,10 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
     @Inject
     @Named("bloodComponentList")
     private transient BloodComponentListHolderBean bloodComponentList;
+    @Inject
+    @Named("reports")
+    private transient ReportsManagmentBean reportsManagement = new ReportsManagmentBean();
+
 
     public ProcessorModalBean getProcessorModal() {
         return processorModal;

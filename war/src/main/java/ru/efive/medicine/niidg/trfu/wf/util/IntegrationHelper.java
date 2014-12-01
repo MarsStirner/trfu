@@ -1,19 +1,8 @@
 package ru.efive.medicine.niidg.trfu.wf.util;
 
-import java.io.File;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.faces.context.FacesContext;
-
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.*;
@@ -22,26 +11,18 @@ import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalIndicator;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.OperationReport;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.BloodComponentListHolderBean;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.ReportsManagmentBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ActionResult;
-import ru.korusconsulting.external.DivisionInfo;
-import ru.korusconsulting.external.EritrocyteMass;
-import ru.korusconsulting.external.FinalVolume;
-import ru.korusconsulting.external.IssueResult;
-import ru.korusconsulting.external.LaboratoryMeasure;
-import ru.korusconsulting.external.OrderIssueInfo;
-import ru.korusconsulting.external.PatientCredentials;
-import ru.korusconsulting.external.ProcedureInfo;
-import ru.korusconsulting.external.TransfusionServiceImpl;
-import ru.korusconsulting.laboratory.www.BiomaterialInfo;
-import ru.korusconsulting.laboratory.www.DiagnosticRequestInfo;
-import ru.korusconsulting.laboratory.www.IAcrossIntf_FNKC;
-import ru.korusconsulting.laboratory.www.IAcrossIntf_FNKCservice;
-import ru.korusconsulting.laboratory.www.IAcrossIntf_FNKCserviceLocator;
-import ru.korusconsulting.laboratory.www.OrderInfo;
-import ru.korusconsulting.laboratory.www.PatientInfo;
-import ru.korusconsulting.laboratory.www.Tindicator;
+import ru.korusconsulting.external.*;
+import ru.korusconsulting.laboratory.www.*;
+
+import javax.faces.context.FacesContext;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class IntegrationHelper {
 
@@ -104,7 +85,7 @@ public class IntegrationHelper {
                 calendar.setTime(examination.getAppointment().getCreated());
                 request.setOrderMisDate(calendar);
                 Object department = propertiesHolder.getProperty("application", "reports.division.name");
-                if(department != null){
+                if (department != null) {
                     request.setOrderDepartmentName(department.toString());
                 }
                 //TODO лютый харкод (из-за отсутвия справочника)
@@ -219,7 +200,7 @@ public class IntegrationHelper {
                 Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
                 calendar.setTime(donation.getAppointment().getCreated());
                 Object department = propertiesHolder.getProperty("application", "reports.division.name");
-                if(department != null){
+                if (department != null) {
                     request.setOrderDepartmentName(department.toString());
                 }
                 //TODO лютый харкод (из-за отсутвия справочника)
@@ -351,7 +332,7 @@ public class IntegrationHelper {
 
             FacesContext context = FacesContext.getCurrentInstance();
             ApplicationPropertiesHolder propertiesHolder =
-                    (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
+                    context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
 
             boolean process = true;
             Object enabled = propertiesHolder.getProperty("application", "mis.integration.enabled");
@@ -369,8 +350,9 @@ public class IntegrationHelper {
 
             if (process) {
                 BloodComponentListHolderBean componentsListHolder =
-                        (BloodComponentListHolderBean) context.getApplication().evaluateExpressionGet(context, "#{bloodComponentList}", BloodComponentListHolderBean.class);
+                        context.getApplication().evaluateExpressionGet(context, "#{bloodComponentList}", BloodComponentListHolderBean.class);
                 List<BloodComponent> bloodComponentsList = componentsListHolder.getDocumentsByOrder(orderRequest.getId());
+                ReportsManagmentBean reportsManagement = context.getApplication().evaluateExpressionGet(context, "#{reports}", ReportsManagmentBean.class);
 
                 TransfusionServiceImpl medicalService = new TransfusionServiceImpl(new java.net.URL(serviceAddress.toString()));
 
@@ -378,20 +360,47 @@ public class IntegrationHelper {
                 calendar.setTime(orderRequest.getFactDate());
                 XMLGregorianCalendar factDate = new XMLGregorianCalendarImpl(calendar);
                 List<OrderIssueInfo> components = new ArrayList<OrderIssueInfo>();
-
+                final Map<String,String> requestProperties = new HashMap<String, String>();
+                requestProperties.put("reportName", "BigBarcode4JReport.jrxml");
+                requestProperties.put("docType", "BloodComponent");
+                //TODO Админ или все-таки откуда-то тянуть?
+                requestProperties.put("transfusiologistFullName", "Administrator");
                 for (BloodComponent bloodComponent : bloodComponentsList) {
                     OrderIssueInfo component = new OrderIssueInfo();
                     component.setBloodGroupId(bloodComponent.getBloodGroup().getNumber());
                     component.setComponentTypeId(bloodComponent.getComponentType().getId());
-			        component.setDonorId(orderRequest.getRecipientId());
+                    if (bloodComponent.isPurchased()) {
+                        component.setDonorId(Integer.valueOf(bloodComponent.getDonorCode()));
+                    } else {
+                        component.setDonorId(bloodComponent.getDonation().getDonor().getId());
+                    }
                     component.setDoseCount(bloodComponent.getDoseCount());
                     component.setNumber(bloodComponent.getParentNumber());
                     component.setRhesusFactorId(bloodComponent.getRhesusFactor().getValue().equals("отрицательный") ? 1 : 0);
                     component.setComponentId(bloodComponent.getId());
                     component.setVolume(bloodComponent.getVolume());
-                    if (bloodComponent.getBigLabelPath() != null && !bloodComponent.getBigLabelPath().isEmpty()) {
-                        component.setStickerUrl(new File(bloodComponent.getBigLabelPath()).toURI().toURL().toString());
+                    //Print all components labels and store it as pictures
+                    try {
+                        final Map<String, String> reportProperties = new HashMap<String, String>(requestProperties);
+                        reportProperties.put("docId", String.valueOf(bloodComponent.getId()));
+                        if (bloodComponent.isPurchased()) {
+                            requestProperties.put("donorId", bloodComponent.getDonorCode());
+                        } else {
+                            requestProperties.put("donorId", String.valueOf(bloodComponent.getDonation().getDonor().getId()));
+                        }
+                        final File reportFile = reportsManagement.printBigLabelAndStoreItToFile(reportProperties);
+                        if(reportFile != null){
+                            component.setStickerUrl(reportFile.toURI().toURL().toString());
+                            System.out.println(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), reportFile.toURI().toURL().toString()));
+                        } else if (StringUtils.isNotEmpty(bloodComponent.getBigLabelPath())) {
+                            component.setStickerUrl(new File(bloodComponent.getBigLabelPath()).toURI().toURL().toString());
+                            System.out.println(String.format("BloodComponent[%s] label = %s", bloodComponent.getId(), bloodComponent.getBigLabelPath()));
+                        }
+                    } catch (Exception e){
+                        System.out.println(String.format("Exception in biglabel print to BloodComponent[%s]",bloodComponent.getId()));
+                        e.printStackTrace();
                     }
+
                     components.add(component);
                 }
 

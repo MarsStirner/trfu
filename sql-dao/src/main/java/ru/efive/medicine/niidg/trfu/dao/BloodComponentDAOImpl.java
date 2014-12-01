@@ -433,6 +433,7 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         detachedCriteria.add(Restrictions.eq("deleted", false));
 
         addOrder(detachedCriteria, "parentNumber,number".split(","), true);
+        detachedCriteria.setFetchMode("donation", FetchMode.JOIN);
         
         return getHibernateTemplate().findByCriteria(detachedCriteria);
 	}

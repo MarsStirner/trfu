@@ -1,14 +1,46 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.export.*;
+import net.sf.jasperreports.engine.query.JRHibernateQueryExecuterFactory;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.krysalis.barcode4j.HumanReadablePlacement;
+import org.krysalis.barcode4j.impl.code128.Code128Bean;
+import org.krysalis.barcode4j.output.java2d.Java2DCanvasProvider;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+import ru.efive.dao.sql.entity.document.ReportTemplate;
+import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
+import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+
+import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.imageio.ImageIO;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.print.DocPrintJob;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.attribute.Attribute;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.PrintServiceAttribute;
+import javax.print.attribute.standard.*;
+import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.awt.print.*;
-import java.io.*;
-import java.lang.Exception;
-import java.net.URL;
-import java.nio.file.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,52 +49,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.imageio.ImageIO;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.print.*;
-import javax.print.attribute.Attribute;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.PrintServiceAttribute;
-import javax.print.attribute.standard.*;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.jasperreports.components.barcode4j.Code128Component;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JRResultSetDataSource;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.export.*;
-import net.sf.jasperreports.engine.query.JRHibernateQueryExecuterFactory;
-
-
-import org.apache.avalon.framework.configuration.DefaultConfiguration;
-import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
-import org.apache.commons.dbcp.BasicDataSource;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.krysalis.barcode4j.*;
-import org.krysalis.barcode4j.impl.code128.Code128;
-import org.krysalis.barcode4j.impl.code128.Code128Bean;
-import org.krysalis.barcode4j.output.java2d.Java2DCanvasProvider;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-
-import ru.efive.dao.sql.entity.document.ReportTemplate;
-import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
-import ru.korusconsulting.laboratory.*;
 
 @Named("reports")
 @RequestScoped
@@ -504,6 +490,63 @@ public class ReportsManagmentBean implements Serializable {
             }
         }
     }
+
+    public File printBigLabelAndStoreItToFile(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
+        String in_reportName = requestProperties.get("reportName");
+        FileSystemXmlApplicationContext context = indexManagement.getContext();
+        BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
+        Connection conn = dataSource.getConnection();
+
+		/* Get Data source */
+        JasperReport report = null;
+        JasperPrint print = null;
+        try {
+            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/" + in_reportName);
+            report = JasperCompileManager.compileReport(inputStream);
+            Map<String, Object> in_map = new HashMap<String, Object>();
+            for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
+                System.out.println("_" + entry.getKey());
+
+                if (StringUtils.contains(entry.getKey(), "Date")) {
+                    try {
+                        System.out.println("-" + entry.getValue());
+                        Date date = new SimpleDateFormat("dd.MM.yyyy").parse(entry.getValue());
+                        in_map.put("_" + entry.getKey(), date);
+                        in_map.put(entry.getKey(), date);
+                    } catch (ParseException e) {
+                        System.out.println("Wrong date parameter");
+                        in_map.put("_" + entry.getKey(), entry.getValue());
+                        in_map.put(entry.getKey(), entry.getValue());
+                    }
+                } else {
+                    in_map.put("_" + entry.getKey(), entry.getValue());
+                    in_map.put(entry.getKey(), entry.getValue());
+                }
+            }
+            print = JasperFillManager.fillReport(report, in_map, conn);
+
+            final File imageFile = exportToImage(print, requestProperties);
+            if (imageFile != null) {
+                if (storePictureLinkToDatabase(imageFile, requestProperties)) {
+                    System.out.println("Successful store labelPath");
+                } else {
+                    System.out.println("Failed to store labelPath");
+                }
+            }
+            return imageFile;
+        } catch (JRException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            // Корректно закрываем соединение с базой
+            try {
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     public void sqlPrintReportByRequestParams(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
         String in_reportName = requestProperties.get("reportName");
