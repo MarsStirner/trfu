@@ -371,11 +371,13 @@ public class IntegrationHelper {
                     component.setComponentTypeId(bloodComponent.getComponentType().getId());
                     if (bloodComponent.isPurchased()) {
                         component.setDonorId(Integer.valueOf(bloodComponent.getDonorCode()));
+                        component.setNumber(bloodComponent.getNumber());
                     } else {
                         component.setDonorId(bloodComponent.getDonation().getDonor().getId());
+                        component.setNumber(bloodComponent.getParentNumber());
                     }
                     component.setDoseCount(bloodComponent.getDoseCount());
-                    component.setNumber(bloodComponent.getParentNumber());
+
                     component.setRhesusFactorId(bloodComponent.getRhesusFactor().getValue().equals("отрицательный") ? 1 : 0);
                     component.setComponentId(bloodComponent.getId());
                     component.setVolume(bloodComponent.getVolume());
@@ -400,7 +402,6 @@ public class IntegrationHelper {
                         System.out.println(String.format("Exception in biglabel print to BloodComponent[%s]",bloodComponent.getId()));
                         e.printStackTrace();
                     }
-
                     components.add(component);
                 }
 

@@ -659,12 +659,16 @@
 									<h:panelGroup rendered="#{bloodComponent.document.parentNumber ne null}">
 										<tr class="row">
 											<td class="first">Номер донации</td>
-											<td><h:inputText value="#{bloodComponent.document.parentNumber}" /></td>
+											<td>
+                                                <h:inputText value="#{bloodComponent.document.parentNumber}"/>
+                                            </td>
 										</tr>
 									</h:panelGroup>
 									<tr class="row">
 										<td class="first">Номер компонента</td>
-										<td><h:inputText value="#{bloodComponent.document.number}" /></td>
+										<td>
+                                            <h:inputText value="#{bloodComponent.document.number}"/>
+                                        </td>
 									</tr>
 									<tr class="row">
 										<td class="first">Код донора</td>
