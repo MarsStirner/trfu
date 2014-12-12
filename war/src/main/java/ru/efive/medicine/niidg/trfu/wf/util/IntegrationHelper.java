@@ -395,7 +395,7 @@ public class IntegrationHelper {
                             component.setStickerUrl(reportFile.toURI().toURL().toString());
                             System.out.println(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), reportFile.toURI().toURL().toString()));
                         } else if (StringUtils.isNotEmpty(bloodComponent.getBigLabelPath())) {
-                            component.setStickerUrl(new File(bloodComponent.getBigLabelPath()).toURI().toURL().toString());
+                            component.setStickerUrl(bloodComponent.getBigLabelPath());
                             System.out.println(String.format("BloodComponent[%s] label = %s", bloodComponent.getId(), bloodComponent.getBigLabelPath()));
                         }
                     } catch (Exception e){

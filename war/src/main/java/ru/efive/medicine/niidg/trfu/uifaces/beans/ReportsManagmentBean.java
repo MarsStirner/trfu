@@ -627,7 +627,8 @@ public class ReportsManagmentBean implements Serializable {
         return false;
     }
 
-    private boolean storePictureLinkToBloodComponent(final File file, final String id) {
+    private boolean
+    storePictureLinkToBloodComponent(final File file, final String id) {
         final BloodComponentDAOImpl bloodComponentDAO = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
         final BloodComponent bloodComponent = bloodComponentDAO.get(Integer.parseInt(id));
         bloodComponent.setBigLabelPath(file.getPath());
