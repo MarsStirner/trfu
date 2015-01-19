@@ -23,6 +23,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class IntegrationHelper {
 
@@ -390,13 +392,28 @@ public class IntegrationHelper {
                         } else {
                             requestProperties.put("donorId", String.valueOf(bloodComponent.getDonation().getDonor().getId()));
                         }
+                        final Pattern pattern = Pattern.compile(".*([/\\\\]\\d*[/\\\\]\\d*.*)$");
                         final File reportFile = reportsManagement.printBigLabelAndStoreItToFile(reportProperties);
                         if(reportFile != null){
-                            component.setStickerUrl(reportFile.toURI().toURL().toString());
-                            System.out.println(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), reportFile.toURI().toURL().toString()));
+                            final Matcher matcher = pattern.matcher(reportFile.getAbsolutePath());
+                            if(matcher.find()){
+                                component.setStickerUrl(matcher.group(1));
+                                System.out.println(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), matcher.group(1)));
+                            } else {
+                                component.setStickerUrl(reportFile.getAbsolutePath());
+                                System.out.println(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), reportFile.getAbsolutePath()));
+                            }
+
                         } else if (StringUtils.isNotEmpty(bloodComponent.getBigLabelPath())) {
-                            component.setStickerUrl(bloodComponent.getBigLabelPath());
-                            System.out.println(String.format("BloodComponent[%s] label = %s", bloodComponent.getId(), bloodComponent.getBigLabelPath()));
+                            final Matcher matcher = pattern.matcher(bloodComponent.getBigLabelPath());
+                            if(matcher.find()){
+                                component.setStickerUrl(matcher.group(1));
+                                System.out.println(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), matcher.group(1)));
+                            } else {
+                                component.setStickerUrl(bloodComponent.getBigLabelPath());
+                                System.out.println(String.format("BloodComponent[%s] label = %s", bloodComponent.getId(), bloodComponent.getBigLabelPath()));
+
+                            }
                         }
                     } catch (Exception e){
                         System.out.println(String.format("Exception in biglabel print to BloodComponent[%s]",bloodComponent.getId()));
