@@ -32,7 +32,7 @@
 	        			<div>
 	        				<h:inputSecret value="#{sessionManagement.password}" styleClass="inp" />
 	        			</div>
-	        			<div><h:commandButton styleClass="but" type="submit" action="#{sessionManagement.logIn}" value="Войти" /></div>
+	        			<div><h:commandButton styleClass="but" type="submit" value="Войти" /></div>
 	                    <div class="forget"><a href="/forget/enter_email.xhtml">Забыли пароль?</a></div>
 	        		</h:panelGroup>
 	        		<h:panelGroup rendered="#{sessionManagement.loggedIn}">
