@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
-import org.primefaces.event.DateSelectEvent;
 import org.primefaces.event.SelectEvent;
 
 import ru.efive.dao.sql.entity.user.User;
@@ -93,9 +92,9 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 		this.selectedTimeTableEntries = selectedTimeTableEntries;
 	}
 
-	public void handleDateSelect(DateSelectEvent event) {
+	public void handleDateSelect(SelectEvent event) {
 		try {
-			selectedDate = event.getDate();
+			selectedDate = (Date) event.getObject();
 			refresh();
 		}
 		catch (Exception e) {
