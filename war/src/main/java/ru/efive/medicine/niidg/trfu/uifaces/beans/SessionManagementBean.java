@@ -315,10 +315,10 @@ public class SessionManagementBean implements Serializable {
     	}
     	else if (currentRole.getRoleType().equals(RoleType.OPERATIONAL)) {
     		buffer.append("operational_template.xhtml");
-    		if (operationalSession != null && operationalSession.isExpired()) {
-    			operationalSession.initDocument();
-    		}
-    		operational.update();
+			//TODO
+//    		if (operationalSession != null && operationalSession.isExpired()) {
+//    			operationalSession.initDocument();
+//    		}
     	}
     	else if (currentRole.getRoleType().equals(RoleType.RECTIFICATION)) {
     		buffer.append("rectification_template.xhtml");
@@ -436,8 +436,6 @@ public class SessionManagementBean implements Serializable {
 	private transient IndexManagementBean indexManagement;
 	@Inject @Named("reportTemplateList")
 	private transient ReportTemplateListBean reportList;
-	@Inject @Named("operational")
-	private transient OperationalBean operational;
 	@Inject @Named("operationalSession")
 	private transient OperationalSessionBean operationalSession;
 	

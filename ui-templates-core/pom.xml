@@ -63,7 +63,7 @@
     
 	<!-- Components -->
 	<version.javaee-api>6.0</version.javaee-api>
-	<version.lib.primefaces>3.3</version.lib.primefaces>
+	<version.lib.primefaces>5.1</version.lib.primefaces>
     
     	<!-- Test Environment -->
     	<version.junit>4.4</version.junit>

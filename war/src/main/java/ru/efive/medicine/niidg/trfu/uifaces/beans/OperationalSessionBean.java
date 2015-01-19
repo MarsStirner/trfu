@@ -1,168 +1,223 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.primefaces.context.RequestContext;
+import ru.efive.dao.sql.dao.user.UserDAOHibernate;
+import ru.efive.dao.sql.entity.user.User;
+import ru.efive.medicine.niidg.trfu.dao.BloodSystemTypeDAOImpl;
+import ru.efive.medicine.niidg.trfu.dao.OperationalDaoImpl;
+import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
+import ru.efive.medicine.niidg.trfu.data.entity.operational.OperationalRoom;
+import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import ru.efive.dao.sql.entity.user.User;
-import ru.efive.medicine.niidg.trfu.dao.BloodSystemDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.OperationalCrewDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodSystem;
-import ru.efive.medicine.niidg.trfu.data.entity.OperationalCrew;
-import ru.efive.medicine.niidg.trfu.dictionary.OperationalSetup;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 @Named("operationalSession")
 @SessionScoped
 public class OperationalSessionBean implements java.io.Serializable {
-    private OperationalSetup currentOperationalSetup;
-    private boolean editState = true;
-    @Inject @Named("sessionManagement")
+
+    @Inject
+    @Named("sessionManagement")
     SessionManagementBean sessionManagement;
-    @Inject @Named("operational")
-    OperationalBean operational;
+
+    // Подтвержденный выбор операционной
+    private OperationalRoom currentOperationalRoom;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Диалог выбора операционной
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Сброс выбранной операционной
+     */
+    public void clearSelectedRoom() {
+        currentOperationalRoom = null;
+    }
+
+    public OperationalRoom getCurrentOperationalRoom() {
+       return currentOperationalRoom;
+    }
+
+    public void setCurrentOperationalRoom(OperationalRoom selectedOperationalRoom) {
+        this.currentOperationalRoom = selectedOperationalRoom;
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Получить список текущих операционных на текущую дату
+     *
+     * @return список доступных операционых
+     */
+    public List<OperationalRoom> getRoomList() {
+        return getRoomList(new Date());
+    }
+
+    /**
+     * Получить список текущих операционных на заданную дату
+     *
+     * @return список доступных операционых
+     */
+    public List<OperationalRoom> getRoomList(final Date checkDate) {
+        return sessionManagement.getDAO(OperationalDaoImpl.class, ApplicationHelper.OPERATIONAL_DAO).getRoomList
+                (checkDate);
+    }
+
+
+    public List<BloodSystemType> getOperationalBloodSystemTypes() {
+        return sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_TYPE_DAO)
+                .getByMnem("oper");
+    }
+
+    public List<User> getTransfusiologistList() {
+        final UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+        return userDAO.getUsersByAppointment("Врач-Трансфузиолог", null, false, -1, -1, "lastName", false);
+    }
+
+    public List<User> getOperationalNursesList() {
+        final UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+        return userDAO.getUsersByAppointment("Операционная сестра", null, false, -1, -1, "lastName", false);
+    }
+
+
     private static final long serialVersionUID = 1L;
 
 
-	public OperationalSetup getCurrentOperationalSetup() {
-		return currentOperationalSetup;
-	}
-	
-	public List<BloodSystemType> getCurrentSystems() {
-		if (currentOperationalSetup == null) {
-			Collections.emptyList();
-		}
-		return currentOperationalSetup.getSystemTypes();
-	}
-	
-	public OperationalCrew getCurrentCrew() {
-		if (currentOperationalSetup == null || currentOperationalSetup.getCrew() == null) {
-			initDocument();
-		}
-		return currentOperationalSetup.getCrew();
-	}
-	
-	public User getCurrentDoctor() {
-		return currentOperationalSetup.getDoctor();
-	}
-	
-	public User getCurrentStuffNurse() {
-		return currentOperationalSetup.getStaffNurse();
-	}
-	
-	public void initDocument() {
-		currentOperationalSetup = new OperationalSetup();
-		initOperationalCrew();
+    // Структура для создания новых операционных и временного хранения введенных данных
 
-		currentOperationalSetup.setCreated(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
-		currentOperationalSetup.setUnsaved(true);
-		editState = true;
-	}
+    private OperationalEditor editor = new OperationalEditor();
 
-    private void  initOperationalCrew(){
-        OperationalCrew crew = new OperationalCrew();
-        crew.setAuthor(sessionManagement.getLoggedUser());
-        crew.setDeleted(false);
-        crew.setRegistered(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
-        currentOperationalSetup.setCrew(crew);
+    public OperationalEditor getEditor() {
+        return editor;
     }
-	
-	public boolean saveDocument() {
-		boolean result = false;
-		try {
-			Set<User> staff = new HashSet<User>();
-			if (getCurrentDoctor() != null) {
-				staff.add(getCurrentDoctor());
-			}
-			if (getCurrentStuffNurse() != null) {
-				staff.add(getCurrentStuffNurse());
-			}
-			OperationalCrew crew = null;
-			if (staff.size() > 0) {
-				currentOperationalSetup.getCrew().setStaff(staff);
-				crew = sessionManagement.getDAO(OperationalCrewDAOImpl.class, ApplicationHelper.OPERATIONAL_CREW_DAO).save(currentOperationalSetup.getCrew());
-			}
-			
-			if (crew == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"Невозможно сохранить. Попробуйте повторить позже.", ""));
-			}
-			else {
-				if (currentOperationalSetup.isUnsaved()) {
-					BloodSystem currentBloodSystem = new BloodSystem();
-					currentBloodSystem.setType(currentOperationalSetup.getSystemTypes().get(0));
-					currentBloodSystem.setCount(1);
-					Integer roleId = sessionManagement.getCurrentRole().getId();
-					currentBloodSystem.setRoleId(roleId);
-					Integer userId = sessionManagement.getLoggedUser().getId();
-					currentBloodSystem.setUserId(userId);
-					
-					BloodSystemDAOImpl bloodSystemDAO = sessionManagement.getDAO(BloodSystemDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_DAO);
-					bloodSystemDAO.save(currentBloodSystem);
-					
-					currentOperationalSetup.setBloodSystem(currentBloodSystem);
-					currentOperationalSetup.setUnsaved(false);
-					operational.addOperationalSetup(currentOperationalSetup);
-				}
-				
-				editState = false;
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка.", ""));
-		}
-		return result;
-	}
-	
-	public boolean selected(OperationalSetup operationalSetup) {
-		return currentOperationalSetup != null && currentOperationalSetup.equals(operationalSetup);
-	}
-	
-	public void select(OperationalSetup operationalSetup) {
-		currentOperationalSetup = operationalSetup;
-	}
-	
-	public boolean isExpired() {
-		boolean result = true;
-		try {
-			if (currentOperationalSetup != null&& currentOperationalSetup.getCreated() != null) {
-				Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
-				calendar.setTime(currentOperationalSetup.getCreated());
-				Calendar currentCalendar = Calendar.getInstance(ApplicationHelper.getLocale());
-				if (currentCalendar.get(Calendar.DATE) == calendar.get(Calendar.DATE)) {
-					result = false;
-				}
-			}
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-	
-	public boolean isEditState() {
-		return editState;
-	}
-	
-	public void edit() {
-		editState = true;
-	}
 
-    public boolean isReady(){
-        return  currentOperationalSetup.getName()!= null &&
-                !currentOperationalSetup.getSystemTypes().isEmpty() &&
-                !currentOperationalSetup.getName().isEmpty() &&
-                currentOperationalSetup.getCrew().getStaffList()!=null &&
-                !currentOperationalSetup.getCrew().getStaffList().isEmpty();
+    public void setEditor(OperationalEditor editor) {
+        this.editor = editor;
+    }
+
+    public void createNewEditor() {
+        editor = new OperationalEditor();
+    }
+
+    public void saveNewRoom() {
+        if (editor != null) {
+            if (editor.validate()) {
+                final OperationalRoom toCreate = editor.createRoom(sessionManagement.getLoggedUser());
+                sessionManagement.getDAO(OperationalDaoImpl.class, ApplicationHelper.OPERATIONAL_DAO).save(toCreate);
+                createNewEditor();
+                RequestContext rc = RequestContext.getCurrentInstance();
+                rc.execute("PF('" + OperationalEditor.DIALOG_WIDGET_VAR + "').hide();");
+                currentOperationalRoom = toCreate;
+            } else {
+                System.out.println("Validation fails");
+            }
+        }
+    }
+
+    public class OperationalEditor {
+
+        public static final String DIALOG_WIDGET_VAR = "newOperationalDialogVar";
+        private static final String EDITOR_NAME = "opEditor.name";
+        private static final String EDITOR_DOCTORS = "opEditor.doctors";
+        private static final String EDITOR_NURSES = "opEditor.nurses";
+        private static final String EDITOR_BLOOD_SYS_TYPES = "opEditor.bloodSystemType";
+
+        public OperationalEditor() {
+        }
+
+        //Выбранные типы систем крови
+        private List<BloodSystemType> bloodSystemTypes = new ArrayList<BloodSystemType>(4);
+
+        // Выбранные врачи-трансфузиологи
+        private List<User> doctors = new ArrayList<User>(2);
+
+        // Выбранные медсестры
+        private List<User> nurses = new ArrayList<User>(2);
+
+        // Наименование операционной
+        private String name = "";
+
+        public boolean validate() {
+            boolean result = true;
+            final FacesContext context = FacesContext.getCurrentInstance();
+            if (bloodSystemTypes.isEmpty()) {
+                context.addMessage(EDITOR_BLOOD_SYS_TYPES, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Типы " +
+                        "систем" + " крови не выбраны", null));
+                result = false;
+            }
+            if (doctors.isEmpty()) {
+                context.addMessage(EDITOR_DOCTORS, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Врачи-трансфузиологи не выбраны", null));
+                result = false;
+            }
+            if (nurses.isEmpty()) {
+                context.addMessage(EDITOR_NURSES, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Медсестры не " +
+                        "выбраны", null));
+                result = false;
+            }
+            if (name.isEmpty()) {
+                context.addMessage(EDITOR_NAME, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Имя операционной не "
+                        + "задано", null));
+                result = false;
+            } else {
+                for (OperationalRoom operationalRoom : getRoomList()) {
+                    if (name.equals(operationalRoom.getName())) {
+                        context.addMessage(EDITOR_NAME, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Имя " +
+                                "операционной уже используется", null));
+                        result = false;
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public OperationalRoom createRoom(final User author) {
+            final OperationalRoom newInstance = new OperationalRoom(author, name);
+            newInstance.setBloodTypes(new HashSet<BloodSystemType>(bloodSystemTypes));
+            newInstance.setDoctors(new HashSet<User>(doctors));
+            newInstance.setNurses(new HashSet<User>(nurses));
+            return newInstance;
+        }
+
+        public List<BloodSystemType> getBloodSystemTypes() {
+            return bloodSystemTypes;
+        }
+
+        public void setBloodSystemTypes(List<BloodSystemType> bloodTypes) {
+            this.bloodSystemTypes = bloodTypes;
+        }
+
+        public List<User> getDoctors() {
+            return doctors;
+        }
+
+        public void setDoctors(List<User> doctors) {
+            this.doctors = doctors;
+        }
+
+        public List<User> getNurses() {
+            return nurses;
+        }
+
+        public void setNurses(List<User> nurses) {
+            this.nurses = nurses;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name.trim();
+        }
     }
 }

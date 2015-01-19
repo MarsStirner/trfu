@@ -18,6 +18,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAnalysisResult;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAppointment;
+import ru.efive.medicine.niidg.trfu.data.entity.operational.OperationalRoom;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ProcessedData;
 
@@ -30,6 +31,9 @@ import ru.efive.wf.core.ProcessedData;
 @Table(name = "trfu_blood_donation_requests")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class BloodDonationRequest extends AbstractRequest implements ProcessedData {
+	//TODO
+	//TODO Удалить поле "Врач-Трансфузиолог", наследуемое из AbstractRequest
+	//TODO Удалить поле "Медицинская сестра", наследуемое из AbstractRequest
 
 	public void setNumber(String number) {
 		this.number = number;
@@ -41,7 +45,7 @@ public class BloodDonationRequest extends AbstractRequest implements ProcessedDa
 	
 	@Transient
 	public String getPrintableNumber() {
-		return new StringBuffer().append(getDonor().getBloodGroup().getNumber()).append(StringUtils.right(getNumber(), 5)).toString();
+		return String.valueOf(getDonor().getBloodGroup().getNumber()) + StringUtils.right(getNumber(), 5);
 	}
 
 	public Date getFactDate() {
@@ -197,11 +201,11 @@ public class BloodDonationRequest extends AbstractRequest implements ProcessedDa
 		return factEntries;
 	}
 
-	public void addFactEntry() {
+	public void addToFactEntry(BloodDonationEntry newEntry) {
 		if (factEntries == null || factEntries.isEmpty()) {
-			factEntries = new java.util.HashSet<BloodDonationEntry>();
+			factEntries = new java.util.HashSet<BloodDonationEntry>(1);
 		}
-		factEntries.add(new BloodDonationEntry());
+		factEntries.add(newEntry);
 	}
 	
 	public void removeFactEntry(BloodDonationEntry entry) {
@@ -344,29 +348,12 @@ public class BloodDonationRequest extends AbstractRequest implements ProcessedDa
         return this.history.add(historyEntry);
     }
 
-
-    public String getOperational() {
-		return operational;
-	}
-
-	public void setOperational(String operational) {
-		this.operational = operational;
-	}
-
 	public void setBloodSystems(List<BloodSystem> bloodSystems) {
 		this.bloodSystems = bloodSystems;
 	}
 	
 	public List<BloodSystem> getBloodSystems() {
 		return bloodSystems;
-	}
-
-    public void setOperationalCrew(OperationalCrew operationalCrew) {
-		this.operationalCrew = operationalCrew;
-	}
-	
-	public OperationalCrew getOperationalCrew() {
-		return operationalCrew;
 	}
 	
 	public void setComplications(String complications) {
@@ -393,7 +380,15 @@ public class BloodDonationRequest extends AbstractRequest implements ProcessedDa
         this.additionalResults = additionalResults;
     }
 
-    /**
+	public OperationalRoom getOperationalRoom() {
+		return operationalRoom;
+	}
+
+	public void setOperationalRoom(OperationalRoom operationalRoom) {
+		this.operationalRoom = operationalRoom;
+	}
+
+	/**
 	 * Номер донации
 	 */
 	private String number;
@@ -403,6 +398,10 @@ public class BloodDonationRequest extends AbstractRequest implements ProcessedDa
 	 */
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private Date factDate;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="operationalRoom_id")
+	private OperationalRoom operationalRoom;
 
 	/**
 	 * Врач-трансфузиолог
@@ -502,22 +501,13 @@ public class BloodDonationRequest extends AbstractRequest implements ProcessedDa
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private Set<HistoryEntry> history;
 	
-	/**
-	 * Операционная
-	 */
-	private String operational;
-	
+
 	/**
 	 * Системы крови
 	 */
 	@OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	private List<BloodSystem> bloodSystems;
-	
-	/**
-	 * Бригада операционной
-	 */
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-	private OperationalCrew operationalCrew;
+
 	
 	/**
 	 * Осложнения

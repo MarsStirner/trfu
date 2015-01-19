@@ -65,6 +65,7 @@
                 <value>ru.efive.crm.data</value>
                 <value>ru.efive.dao.sql.wf.entity</value>
                 <value>ru.efive.dao.sql.entity.document</value>
+                <value>ru.efive.medicine.niidg.trfu.data.entity.operational</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -72,7 +73,7 @@
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="format_sql">true</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.hbm2ddl.auto">none</prop>
                 <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
                 <prop key="net.sf.ehcache.configurationResourceName">ehcache.xml</prop>
                 <prop key="hibernate.cache.use_second_level_cache">true</prop>
@@ -313,12 +314,12 @@
         </property>
     </bean>
 
-    <bean id="operationalCrewDao" class="ru.efive.medicine.niidg.trfu.dao.OperationalCrewDAOImpl">
+    <bean id="operationalDao" class="ru.efive.medicine.niidg.trfu.dao.OperationalDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="operationalCrewDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="target" ref="operationalCrewDao"/>
+    <bean id="operationalDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="operationalDao"/>
         <property name="interceptorNames">
             <list>
                 <value>transactionInterceptor</value>

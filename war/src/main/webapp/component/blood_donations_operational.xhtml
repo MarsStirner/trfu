@@ -6,513 +6,390 @@
       xmlns:e5ui="http://efive.ru/uitemplates"
       xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
       xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="#{sessionManagement.templateName}">
 
-<ui:define name="running_head">
-    <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
-    <h:outputScript>
-        jQuery(document).ready(function() {
-        update_content();
-        });
-    </h:outputScript>
-    <h:outputScript>
-        var resizeTimer = null;
-        jQuery(window).bind('resize', function() {
-        if (resizeTimer) clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(update_content, 100);
-        });
-    </h:outputScript>
-    <h:outputScript>
-        function update_content() {
-        var height = document.body.clientHeight - jQuery("#view_header").height() - jQuery("#footer").height() -
-        jQuery("#searchbar").height() - jQuery("#table_paging").height()-26;
-        jQuery("#table_wrap").height(height);
-        jQuery("#table_inner").height(height);
-        };
-    </h:outputScript>
-</ui:define>
+    <ui:define name="running_head">
+        <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+        <h:outputScript>
+            jQuery(document).ready(function () {
+                update_content();
+            });
+        </h:outputScript>
+        <h:outputScript>
+            var resizeTimer = null;
+            jQuery(window).bind('resize', function () {
+                if (resizeTimer) clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(update_content, 100);
+            });
+        </h:outputScript>
+        <h:outputScript>
+            function update_content() {
+                var height = document.body.clientHeight - jQuery("#view_header").height() - jQuery("#footer").height() -
+                        jQuery("#searchbar").height() - jQuery("#table_paging").height() - 26;
+                jQuery("#table_wrap").height(height);
+                jQuery("#table_inner").height(height);
+            }
+        </h:outputScript>
+    </ui:define>
 
-<ui:define name="left_menu"></ui:define>
+    <ui:define name="left_menu"/>
 
-<ui:define name="header">
-    <div id="view_header" style="width:100%;">
-        <div id="header">
-            <div class="menu">
-                <e5ui:formPart id="header_title">
-                    <div id="viewtitle">Операционная</div>
-                </e5ui:formPart>
-                <div class="role">
-                    <div class="top">
-                        <h:commandLink styleClass="top_link" onclick="return false;">
+    <ui:define name="header">
+        <div id="view_header" style="width:100%;">
+            <div id="header">
+                <div class="menu">
+                    <e5ui:formPart id="header_title">
+                        <div id="viewtitle">Операционная</div>
+                    </e5ui:formPart>
+
+                    <div class="role">
+                        <div class="top">
+                            <h:commandLink styleClass="top_link" onclick="return false;">
 		                   		<span>
 									<h:outputText value="#{sessionManagement.currentRole}" converter="RoleConverter"/>
 								</span>
-                        </h:commandLink>
-                        <div class="sub">
-                            <ui:repeat value="#{sessionManagement.availableRoles}" var="element">
-                                <div class="item">
-                                    <h:commandLink action="#{sessionManagement.setCurrentRole(element)}">
-                                        <h:outputText value="#{element}" converter="RoleConverter"/>
-                                    </h:commandLink>
-                                </div>
-                            </ui:repeat>
+                            </h:commandLink>
+
+                            <div class="sub">
+                                <ui:repeat value="#{sessionManagement.availableRoles}" var="element">
+                                    <div class="item">
+                                        <h:commandLink action="#{sessionManagement.setCurrentRole(element)}">
+                                            <h:outputText value="#{element}" converter="RoleConverter"/>
+                                        </h:commandLink>
+                                    </div>
+                                </ui:repeat>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="username">
-                    <div class="top">
-                        <h:commandLink styleClass="top_link" onclick="return false;">
+                    <div class="username">
+                        <div class="top">
+                            <h:commandLink styleClass="top_link" onclick="return false;">
 		                   		<span>
 									<h:outputText value="#{sessionManagement.loggedUser.description}"/>
 								</span>
-                        </h:commandLink>
-                        <div class="sub">
-                            <div class="item">
-                                <h:commandLink action="#{sessionManagement.logOut}">
-                                    Выход
-                                </h:commandLink>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="actionbar">
-            <div class="menu">
-                <div class="defbutton">
-                    <h:outputLink value="#{contextPath}/component/blood_donation.xhtml" target="_blank">
-                        <h:graphicImage value="#{resource['images:newf_buttn_icon.png']}"/>
-                        Новое обращение
-                        <f:param name="docAction" value="create"/>
-                    </h:outputLink>
-                </div>
-                <div class="defbutton">
-                    <h:commandLink action="#{bloodDonationOperationalList.refresh()}">
-                        <h:graphicImage value="#{resource['images:button-refresh.png']}"/>
-                        Обновить
-                        <e5ui:formPartTarget formPart="main_table_part"/>
-                    </h:commandLink>
-                </div>
-                <div class="defbutton">
-                    <h:outputLink onclick="operationalEditorVar.clickOpen('operationalEditorModal'); return false;">
-                        <h:graphicImage value="#{resource['images:button-request.png']}"/>
-                        Изменить настройки операционной
-                        <e5ui:formPartTarget formPart="main_table_part"/>
-                    </h:outputLink>
-                </div>
-                <div class="top">
-                    <h:commandLink styleClass="top_link" onclick="return false;">
-                        <span><h:graphicImage value="#{resource['images:blank.png']}"/>Отчетность</span>
-                    </h:commandLink>
-                    <div class="sub">
-                        <div class="item">
-                            <h:outputLink value="#{contextPath}/component/report/report_template.xhtml" target="_blank">
-                                <h:graphicImage value="#{resource['images:blank.png']}"/>
-                                <f:param name="docAction" value="create"/>
-                                <f:param name="templateName" value="operational_journal_blood.jrxml"/>
-                                Журнал операционной доноры крови
-                            </h:outputLink>
-                        </div>
-                        <div class="item">
-                            <h:outputLink value="#{contextPath}/component/report/report_template.xhtml" target="_blank">
-                                <h:graphicImage value="#{resource['images:blank.png']}"/>
-                                <f:param name="docAction" value="create"/>
-                                <f:param name="templateName" value="operational_journal_tromb.jrxml"/>
-                                Журнал операционной доноры тромбоцитов
-                            </h:outputLink>
-                        </div>
-                        <div class="item">
-                            <h:outputLink value="#{contextPath}/component/report/report_template.xhtml" target="_blank">
-                                <h:graphicImage value="#{resource['images:blank.png']}"/>
-                                <f:param name="docAction" value="create"/>
-                                <f:param name="templateName" value="operational_list.jrxml"/>
-                                Ведомость забора крови у доноров в операционной
-                            </h:outputLink>
-                        </div>
-                        <div class="item">
-                            <h:outputLink value="#{contextPath}/component/report/report_template.xhtml" target="_blank">
-                                <h:graphicImage value="#{resource['images:blank.png']}"/>
-                                <f:param name="docAction" value="create"/>
-                                <f:param name="templateName" value="blood_serum_research_protocol.jrxml"/>
-                                Протокол исследования сыворотки доноров крови (бакт.)
-                            </h:outputLink>
-                        </div>
-                        <div class="item">
-                            <h:outputLink value="#{contextPath}/component/report/report_template.xhtml" target="_blank">
-                                <h:graphicImage value="#{resource['images:blank.png']}"/>
-                                <f:param name="docAction" value="create"/>
-                                <f:param name="templateName" value="blood_serum_research_protocol_molec.jrxml"/>
-                                Протокол исследования сыворотки доноров крови (молек.)
-                            </h:outputLink>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</ui:define>
-
-<ui:define name="content">
-<script type="text/javascript">
-    document.ondblclick = function DoubleClick(evt) {
-    if (window.getSelection)
-    window.getSelection().removeAllRanges();
-    else if (document.selection)
-    document.selection.empty();
-    }
-</script>
-<h:outputScript>
-    function goToDocument(id) {
-    if (id != 0) {
-    window.open('#{facesContext.externalContext.requestContextPath}/component/blood_donation.xhtml?docId=' +
-    id,'_blank');
-    }
-    }
-</h:outputScript>
-<e5ui:formPart id="main_table_part">
-<div id="main_table" style="width:100%;">
-    <div id="searchbar" class="main_searchbar">
-        <h:inputText id="filter_string" value="#{bloodDonationOperationalList.filter}"
-                     style="display:block; float:left; width:60%; margin:2px 10px;" title="Поиск"/>
-        <h:commandButton value=" " action="#{bloodDonationOperationalList.changePageOffset(0)}"
-                         styleClass="searchbutton">
-            <f:ajax execute=":main_content_form:filter_string"
-                    render=":main_content_form:main_data_tbl :main_content_form:main_data_paging"/>
-        </h:commandButton>
-    </div>
-    <div class="wrap_main" id="table_wrap">
-        <div class="inner" id="table_inner">
-            <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl"
-                            value="#{bloodDonationOperationalList.documents}" var="row" grouping="false">
-                <e5ui:row ondblclick="goToDocument('#{row.id}');"/>
-                <e5ui:column style="min-width:5em">
-                    <f:facet name="header">
-                        <h:commandLink action="#{bloodDonationOperationalList.sort('number')}">
-                            Номер
-                            <f:ajax render="main_data_tbl"/>
-                        </h:commandLink>
-                    </f:facet>
-                    <h:outputText value="#{row.number}"/>
-                </e5ui:column>
-                <e5ui:column style="min-width:5em">
-                    <f:facet name="header">
-                        <h:commandLink action="#{bloodDonationOperationalList.sort('created')}">
-                            Дата создания
-                            <f:ajax render="main_data_tbl"/>
-                        </h:commandLink>
-                    </f:facet>
-                    <h:outputText value="#{row.created}">
-                        <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
-                    </h:outputText>
-                </e5ui:column>
-                <e5ui:column style="min-width:10em">
-                    <f:facet name="header">
-                        <h:commandLink
-                                action="#{bloodDonationOperationalList.sort('donor.lastName,donor.firstName,donor.middleName')}">
-                            Донор
-                            <f:ajax render="main_data_tbl"/>
-                        </h:commandLink>
-                    </f:facet>
-                    <h:outputText value="#{row.donor.descriptionShort}"/>
-                </e5ui:column>
-                <e5ui:column style="min-width:9em">
-                    <f:facet name="header">
-                        <p>Вид донорства</p>
-                    </f:facet>
-                    <ui:repeat value="#{row.resultDonationTypeList}" var="element">
-                        <div>
-                            <h:outputText value="#{element}" converter="BloodDonationTypeConverter"/>
-                        </div>
-                    </ui:repeat>
-                </e5ui:column>
-                <e5ui:column style="min-width:12em">
-                    <f:facet name="header">
-                        <p>Комментарии</p>
-                    </f:facet>
-                    <h:outputText value="#{row.commentary}"/>
-                </e5ui:column>
-            </e5ui:dataTable>
-        </div>
-    </div>
-
-    <div id="table_paging">
-        <h:panelGroup id="main_data_paging">
-            <e5ui-comp:tablePager documentListHolder="#{bloodDonationOperationalList}" style="display:inline;"/>
-            <e5ui-comp:tablePageSizeSelector documentListHolder="#{bloodDonationOperationalList}"
-                                             style="display:inline;float:right;" pageSizes="10,25,50,100"/>
-        </h:panelGroup>
-    </div>
-</div>
-
-<e5ui-comp:modalWindow id="operationalEditorModal"
-                       modalWindowHolder="#{bloodDonationOperationalList.operationalEditor}"
-                       showButtons="false"
-                       widgetVar="operationalEditorVar">
-    <div id="op_modal_container" style="margin-top: 0;">
-        <h:panelGroup id="blood_system_edit">
-            <div id="modal_edit_form">
-                <div id="header">
-                    <div class="menu">
-                        <div id="viewtitle">Настройка операционной</div>
-                    </div>
-                </div>
-                <div>
-                    <h:outputText value="#{bloodDonationOperationalList.operationalEditor.message}"/>
-                </div>
-                <div class="actionbar">
-                    <div class="menu">
-                        <div class="defbutton">
-                            <h:commandLink action="#{operationalSession.initDocument}">
-                                <h:graphicImage value="#{resource['images:newf_buttn_icon.png']}"/>
-                                Новая операционная
                             </h:commandLink>
-                        </div>
-                        <div class="defbutton">
-                            <h:commandLink action="#{operationalSession.saveDocument}">
-                                <f:ajax execute="op_name operational_setup_select_table" render="op_edit_bottom"/>
-                                <h:graphicImage value="#{resource['images:save_buttn.png']}"/>
-                                Сохранить
-                            </h:commandLink>
-                        </div>
-                    </div>
-                </div>
 
-                <div>Операционная:
-                    <h:inputText id="op_name" size="25" value="#{operationalSession.currentOperationalSetup.name}"/>
-                </div>
-
-                <div>
-                    <h:outputLink onclick="bloodSystemTypeSelectVar.clickOpen('bloodSystemTypeSelectModal'); return false;">
-                        Тип системы
-                    </h:outputLink>
-                    <h:panelGroup id="blood_system_list">
-                        <div>
-                            <ui:repeat value="#{operationalSession.currentSystems}" var="element">
-                                <h:outputText value="#{element.value}" class="width"/>
-                                <br/>
-                            </ui:repeat>
-                        </div>
-                    </h:panelGroup>
-                    <e5ui-comp:modalWindow id="bloodSystemTypeSelectModal"
-                                           modalWindowHolder="#{bloodDonationOperationalList.bloodSystemTypeSelectModal}"
-                                           render=":main_content_form:operationalEditorModal:blood_system_list :main_content_form:operationalEditorModal:op_editor_bottom"
-                                           execute="blood_select_table" showButtons="false"
-                                           style="width: 500px;" widgetVar="bloodSystemTypeSelectVar">
-                        <div id="title">Выбор типов систем крови</div>
-                        <div id="blood_modal_container" style="margin-top: 0;">
-                            <div class="wrap" style="height: 300px;">
-                                <div class="inner" style="height: 300px;">
-                                    <e5ui:dataTable id="blood_select_table" border="0" cellpadding="0" cellspacing="0"
-                                                    value="#{bloodDonationOperationalList.bloodSystemTypeSelectModal.allTypes}"
-                                                    var="row" grouping="false" width="100%">
-                                        <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
-                                                  styleClass="#{bloodDonationOperationalList.bloodSystemTypeSelectModal.selected(row)? 'grid_row_selected': ''}"/>
-                                        <e5ui:column>
-                                            <f:facet name="header">
-                                                <p>Название</p>
-                                            </f:facet>
-                                            <h:outputText value="#{row.value}"/>
-                                            <h:commandLink id="selectLink" style="display: none;"
-                                                           rendered="#{not bloodDonationOperationalList.bloodSystemTypeSelectModal.selected(row)}"
-                                                           action="#{bloodDonationOperationalList.bloodSystemTypeSelectModal.select(row)}"/>
-                                            <h:commandLink id="unselectLink" style="display: none;"
-                                                           rendered="#{bloodDonationOperationalList.bloodSystemTypeSelectModal.selected(row)}"
-                                                           action="#{bloodDonationOperationalList.bloodSystemTypeSelectModal.unSelect(row)}"/>
-                                        </e5ui:column>
-                                    </e5ui:dataTable>
+                            <div class="sub">
+                                <div class="item">
+                                    <h:commandLink action="#{sessionManagement.logOut}">
+                                        Выход
+                                    </h:commandLink>
                                 </div>
                             </div>
                         </div>
-                        <div class="e5ui-modal-bottombuttons">
-                            <h:button onclick="bloodSystemTypeSelectVar.clickSave(); return false;" value="Выбрать"/>
-                            <h:button onclick="bloodSystemTypeSelectVar.clickClose(); return false;" value="Отмена"/>
-                        </div>
-                    </e5ui-comp:modalWindow>
-                </div>
-
-
-                <div>
-                        Бригада<br/>
-                    <h:outputLink title="Врач"
-                                  onclick="operationalDoctorSelectVar.clickOpen('operationalDoctorSelectModal'); return false;">
-                        Врач
-                    </h:outputLink>
-                    <h:outputText id="doctor" value="#{operationalSession.currentDoctor.description}" class="wide"/>
-                    <br />
-                    <h:outputLink title="медицинская сестра"
-                                  onclick="operationalStaffNurseSelectVar.clickOpen('operationalStaffNurseSelectModal'); return false;">
-                        м/с
-                    </h:outputLink>
-                    <h:outputText id="staffNurse" value="#{operationalSession.currentStuffNurse.description}" class="wide"/>
-                     <br />
-                    <e5ui-comp:modalWindow id="operationalDoctorSelectModal"
-                                       modalWindowHolder="#{bloodDonationOperationalList.operationalDoctorSelectModal}"
-                                       render=":main_content_form:operationalEditorModal:doctor"
-                                       execute="doctor_select_table"
-                                       showButtons="false"
-                                       style="width: 500px;"
-                                       widgetVar="operationalDoctorSelectVar">
-                    <div id="title">Операционная</div>
-                    <div id="doctor_list" style="margin-top:0;">
-                        <div class="searchbar">
-                            <h:inputText id="filter_doctor_string"
-                                         value="#{bloodDonationOperationalList.operationalDoctorSelectModal.userList.filter}"
-                                         style="display:block; float:left; margin-right:10px;" title="Поиск"/>
-                            <h:commandButton value=" "
-                                             action="#{bloodDonationOperationalList.operationalDoctorSelectModal.userList.changePageOffset(0)}"
-                                             styleClass="searchbutton">
-                                <f:ajax execute=":main_content_form:operationalEditorModal:operationalDoctorSelectModal:filter_doctor_string"
-                                        render=":main_content_form:operationalEditorModal:operationalDoctorSelectModal:doctor_select_table :main_content_form:operationalEditorModal:operationalDoctorSelectModal:doctor_paging"/>
-                            </h:commandButton>
-                        </div>
-                        <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
-                            <div class="inner" style="height:300px;">
-                                <e5ui:dataTable id="doctor_select_table" border="0" cellpadding="0" cellspacing="0"
-                                                value="#{bloodDonationOperationalList.operationalDoctorSelectModal.userList.documents}"
-                                                var="row" grouping="false" width="100%">
-                                    <e5ui:row onclick="e5ui_util.clickElement(this, 'selectDoctorLink$');"
-                                              styleClass="#{bloodDonationOperationalList.operationalDoctorSelectModal.selected(row)? 'grid_row_selected': ''}"/>
-                                    <e5ui:column>
-                                        <f:facet name="header">
-                                            <p>Врач</p>
-                                        </f:facet>
-                                        <h:outputText value="#{row.description}"/>
-                                        <h:commandLink id="selectDoctorLink" style="display: none;"
-                                                       rendered="#{not bloodDonationOperationalList.operationalDoctorSelectModal.selected(row)}"
-                                                       action="#{bloodDonationOperationalList.operationalDoctorSelectModal.select(row)}"/>
-                                    </e5ui:column>
-                                </e5ui:dataTable>
-                            </div>
-                        </div>
-                        <div style="clear:both;">
-                            <h:panelGroup id="doctor_paging">
-                                <e5ui-comp:tablePager
-                                        documentListHolder="#{bloodDonationOperationalList.operationalDoctorSelectModal.userList}"/>
-                            </h:panelGroup>
-                        </div>
                     </div>
-                    <div class="e5ui-modal-bottombuttons">
-                        <h:button onclick="operationalDoctorSelectVar.clickSave(); return false;" value="Выбрать"/>
-                        <h:button onclick="operationalDoctorSelectVar.clickClose(); return false;" value="Отмена"/>
-                    </div>
-                </e5ui-comp:modalWindow>
-                
-                <e5ui-comp:modalWindow id="operationalStaffNurseSelectModal"
-                                       modalWindowHolder="#{bloodDonationOperationalList.operationalStaffNurseSelectModal}"
-                                       render=":main_content_form:operationalEditorModal:staffNurse"
-                                       execute="doctor_select_table"
-                                       showButtons="false"
-                                       style="width: 500px;"
-                                       widgetVar="operationalStaffNurseSelectVar">
-                    <div id="title">Операционная</div>
-                    <div id="staff_nurse_list" style="margin-top:0;">
-                        <div class="searchbar">
-                            <h:inputText id="filter_nurse_string"
-                                         value="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.userList.filter}"
-                                         style="display:block; float:left; margin-right:10px;" title="Поиск"/>
-                            <h:commandButton value=" "
-                                             action="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.userList.changePageOffset(0)}"
-                                             styleClass="searchbutton">
-                                <f:ajax execute=":main_content_form:operationalEditorModal:operationalStaffNurseSelectModal:filter_nurse_string"
-                                        render=":main_content_form:operationalEditorModal:operationalStaffNurseSelectModal:staff_nurse_select_table :main_content_form:operationalEditorModal:operationalStaffNurseSelectModal:staff_nurse_paging"/>
-                            </h:commandButton>
-                        </div>
-                        <div class="wrap" style="height:300px; background-color:#fff; clear:both;">
-                            <div class="inner" style="height:300px;">
-                                <e5ui:dataTable id="staff_nurse_select_table" border="0" cellpadding="0" cellspacing="0"
-                                                value="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.userList.documents}"
-                                                var="row" grouping="false" width="100%">
-                                    <e5ui:row onclick="e5ui_util.clickElement(this, 'selectStaffNurseLink$');"
-                                              styleClass="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.selected(row)? 'grid_row_selected': ''}"/>
-                                    <e5ui:column>
-                                        <f:facet name="header">
-                                            <p>Медицинская сестра</p>
-                                        </f:facet>
-                                        <h:outputText value="#{row.description}"/>
-                                        <h:commandLink id="selectStaffNurseLink" style="display: none;"
-                                                       rendered="#{not bloodDonationOperationalList.operationalStaffNurseSelectModal.selected(row)}"
-                                                       action="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.select(row)}"/>
-                                    </e5ui:column>
-                                </e5ui:dataTable>
-                            </div>
-                        </div>
-                        <div style="clear:both;">
-                            <h:panelGroup id="staff_nurse_paging">
-                                <e5ui-comp:tablePager
-                                        documentListHolder="#{bloodDonationOperationalList.operationalStaffNurseSelectModal.userList}"/>
-                            </h:panelGroup>
-                        </div>
-                    </div>
-                    <div class="e5ui-modal-bottombuttons">
-                        <h:button onclick="operationalStaffNurseSelectVar.clickSave(); return false;" value="Выбрать"/>
-                        <h:button onclick="operationalStaffNurseSelectVar.clickClose(); return false;" value="Отмена"/>
-                    </div>
-                </e5ui-comp:modalWindow>
-                
-                </div>
-
-                <div style="margin-top:15px;">
-                    <fieldset>
-                        <legend>
-                            <label><span class="title">Операционные</span> </label>
-                        </legend>
-                        <div class="wrap" style="height:210px; background-color:#fff; clear:both;">
-                            <div class="inner" style="height:210px;">
-                                <e5ui:dataTable id="operational_setup_select_table" border="0" cellpadding="0"
-                                                cellspacing="0"
-                                                value="#{operational.operationalSetupList}" var="row" grouping="false"
-                                                width="100%">
-                                    <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
-                                              styleClass="#{operationalSession.selected(row)? 'grid_row_selected': ''}"/>
-                                    <e5ui:column>
-                                        <f:facet name="header">
-                                            <p>Операционная</p>
-                                        </f:facet>
-                                        <h:outputText value="#{row.name}"/>
-                                        <h:commandLink id="selectLink" style="display: none;"
-                                                       rendered="#{not operationalSession.selected(row)}"
-                                                       action="#{operationalSession.select(row)}"/>
-                                    </e5ui:column>
-                                </e5ui:dataTable>
-                            </div>
-                        </div>
-                    </fieldset>
                 </div>
             </div>
-			<div class="e5ui-modal-bottombuttons" style="margin: 10px 0px; width: 100%;">
-				<h:panelGroup id="op_edit_bottom" layout="block">
-					<div style="float: left; padding-left: 10px;">
-						<h:outputText rendered="#{not operationalSession.isReady()}" value="Заполните все необходимые поля"/>
-					</div>
-					<div style="float: right; padding-right: 10px;">
-						<h:button onclick="operationalEditorVar.clickClose(); return false;" value="Закрыть"/>
-					</div>
-                </h:panelGroup>
+            <div class="actionbar">
+                <div class="menu">
+                    <div class="defbutton">
+                        <h:outputLink value="#{contextPath}/component/blood_donation.xhtml" target="_blank">
+                            <h:graphicImage value="#{resource['images:newf_buttn_icon.png']}"/>
+                            Новое обращение
+                            <f:param name="docAction" value="create"/>
+                        </h:outputLink>
+                    </div>
+                    <div class="defbutton">
+                        <h:commandLink action="#{bloodDonationOperationalList.refresh()}">
+                            <h:graphicImage value="#{resource['images:button-refresh.png']}"/>
+                            Обновить
+                            <e5ui:formPartTarget formPart="main_table_part"/>
+                        </h:commandLink>
+                    </div>
+                    <div class="defbutton">
+                        <h:outputLink onclick="PF('operationalSetupVar').show(); return false;">
+                            <h:graphicImage value="#{resource['images:button-request.png']}"/>
+                            Изменить настройки операционной
+                            <f:ajax render="operationalRoomTable"/>
+                        </h:outputLink>
+                    </div>
+                    <div class="top">
+                        <h:commandLink styleClass="top_link" onclick="return false;">
+                            <span><h:graphicImage value="#{resource['images:blank.png']}"/>Отчетность</span>
+                        </h:commandLink>
+
+                        <div class="sub">
+                            <div class="item">
+                                <h:outputLink value="#{contextPath}/component/report/report_template.xhtml"
+                                              target="_blank">
+                                    <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                    <f:param name="docAction" value="create"/>
+                                    <f:param name="templateName" value="operational_journal_blood.jrxml"/>
+                                    Журнал операционной доноры крови
+                                </h:outputLink>
+                            </div>
+                            <div class="item">
+                                <h:outputLink value="#{contextPath}/component/report/report_template.xhtml"
+                                              target="_blank">
+                                    <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                    <f:param name="docAction" value="create"/>
+                                    <f:param name="templateName" value="operational_journal_tromb.jrxml"/>
+                                    Журнал операционной доноры тромбоцитов
+                                </h:outputLink>
+                            </div>
+                            <div class="item">
+                                <h:outputLink value="#{contextPath}/component/report/report_template.xhtml"
+                                              target="_blank">
+                                    <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                    <f:param name="docAction" value="create"/>
+                                    <f:param name="templateName" value="operational_list.jrxml"/>
+                                    Ведомость забора крови у доноров в операционной
+                                </h:outputLink>
+                            </div>
+                            <div class="item">
+                                <h:outputLink value="#{contextPath}/component/report/report_template.xhtml"
+                                              target="_blank">
+                                    <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                    <f:param name="docAction" value="create"/>
+                                    <f:param name="templateName" value="blood_serum_research_protocol.jrxml"/>
+                                    Протокол исследования сыворотки доноров крови (бакт.)
+                                </h:outputLink>
+                            </div>
+                            <div class="item">
+                                <h:outputLink value="#{contextPath}/component/report/report_template.xhtml"
+                                              target="_blank">
+                                    <h:graphicImage value="#{resource['images:blank.png']}"/>
+                                    <f:param name="docAction" value="create"/>
+                                    <f:param name="templateName" value="blood_serum_research_protocol_molec.jrxml"/>
+                                    Протокол исследования сыворотки доноров крови (молек.)
+                                </h:outputLink>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </ui:define>
 
-        </h:panelGroup>
-    </div>
-</e5ui-comp:modalWindow>
+    <ui:define name="content">
+        <script type="text/javascript">
+            document.ondblclick = function DoubleClick(evt) {
+                if (window.getSelection)
+                    window.getSelection().removeAllRanges();
+                else if (document.selection)
+                    document.selection.empty();
+            }
+        </script>
+        <h:outputScript>
+            function goToDocument(id) {
+            if (id != 0) {
+            window.open('#{facesContext.externalContext.requestContextPath}/component/blood_donation.xhtml?docId=' +
+            id,'_blank');
+            }
+            }
+        </h:outputScript>
+        <e5ui:formPart id="main_table_part">
+            <div id="main_table" style="width:100%;">
+                <div id="searchbar" class="main_searchbar">
+                    <h:inputText id="filter_string" value="#{bloodDonationOperationalList.filter}"
+                                 style="display:block; float:left; width:60%; margin:2px 10px;" title="Поиск"/>
+                    <h:commandButton value=" " action="#{bloodDonationOperationalList.changePageOffset(0)}"
+                                     styleClass="searchbutton">
+                        <f:ajax execute=":main_content_form:filter_string"
+                                render=":main_content_form:main_data_tbl :main_content_form:main_data_paging"/>
+                    </h:commandButton>
+                </div>
+                <div class="wrap_main" id="table_wrap">
+                    <div class="inner" id="table_inner">
+                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl"
+                                        value="#{bloodDonationOperationalList.documents}" var="row" grouping="false">
+                            <e5ui:row ondblclick="goToDocument('#{row.id}');"/>
+                            <e5ui:column style="min-width:5em">
+                                <f:facet name="header">
+                                    <h:commandLink action="#{bloodDonationOperationalList.sort('number')}">
+                                        Номер
+                                        <f:ajax render="main_data_tbl"/>
+                                    </h:commandLink>
+                                </f:facet>
+                                <h:outputText value="#{row.number}"/>
+                            </e5ui:column>
+                            <e5ui:column style="min-width:5em">
+                                <f:facet name="header">
+                                    <h:commandLink action="#{bloodDonationOperationalList.sort('created')}">
+                                        Дата создания
+                                        <f:ajax render="main_data_tbl"/>
+                                    </h:commandLink>
+                                </f:facet>
+                                <h:outputText value="#{row.created}">
+                                    <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
+                                </h:outputText>
+                            </e5ui:column>
+                            <e5ui:column style="min-width:10em">
+                                <f:facet name="header">
+                                    <h:commandLink
+                                            action="#{bloodDonationOperationalList.sort('donor.lastName,donor.firstName,donor.middleName')}">
+                                        Донор
+                                        <f:ajax render="main_data_tbl"/>
+                                    </h:commandLink>
+                                </f:facet>
+                                <h:outputText value="#{row.donor.descriptionShort}"/>
+                            </e5ui:column>
+                            <e5ui:column style="min-width:9em">
+                                <f:facet name="header">
+                                    <p>Вид донорства</p>
+                                </f:facet>
+                                <ui:repeat value="#{row.resultDonationTypeList}" var="element">
+                                    <div>
+                                        <h:outputText value="#{element}" converter="BloodDonationTypeConverter"/>
+                                    </div>
+                                </ui:repeat>
+                            </e5ui:column>
+                            <e5ui:column style="min-width:12em">
+                                <f:facet name="header">
+                                    <p>Комментарии</p>
+                                </f:facet>
+                                <h:outputText value="#{row.commentary}"/>
+                            </e5ui:column>
+                        </e5ui:dataTable>
+                    </div>
+                </div>
 
-</e5ui:formPart>
-</ui:define>
-
-<ui:define name="footer">
-    <e5ui-comp:splashScreen id="splash_screen" timeout="0">
-        <f:facet name="timeoutPanel">
-            <div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
-                Пожалуйста, подождите...
+                <div id="table_paging">
+                    <h:panelGroup id="main_data_paging">
+                        <e5ui-comp:tablePager documentListHolder="#{bloodDonationOperationalList}"
+                                              style="display:inline;"/>
+                        <e5ui-comp:tablePageSizeSelector documentListHolder="#{bloodDonationOperationalList}"
+                                                         style="display:inline;float:right;" pageSizes="10,25,50,100"/>
+                    </h:panelGroup>
+                </div>
             </div>
-        </f:facet>
-    </e5ui-comp:splashScreen>
-    <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
-    <h:outputStylesheet library="css" name="datatable.css"/>
-    <h:outputStylesheet library="css" name="tablePager.css"/>
-    <h:outputStylesheet library="css" name="modalWindow.css"/>
-    <h:outputStylesheet library="css" name="multiMarker.css"/>
-</ui:define>
+        </e5ui:formPart>
+
+
+        <p:dialog id="operationalSetupDialog" widgetVar="operationalSetupVar"
+                  header="Настройки операционной" showHeader="true"
+                  draggable="false" resizable="false"
+                  modal="true" visible="true"
+                  closable="true" closeOnEscape="true"
+                  width="50%"
+                  fitViewport="true"
+                >
+            <div style="margin-top:15px;">
+                <p:dataTable id="operationalRoomTable"
+                             value="#{operationalSession.getRoomList()}"
+                             var="operationalRoom"
+                             selectionMode="single"
+                             selection="#{operationalSession.currentOperationalRoom}"
+                             rowKey="#{operationalRoom.id}"
+                             widgetVar="operationalRoomTableVar"
+                             emptyMessage="Данные отсутсвуют"
+                        >
+                    <p:column headerText="Наименование">
+                        <h:outputText value="#{operationalRoom.name}"/>
+                    </p:column>
+                    <p:column headerText="Типы систем крови">
+                        <ui:repeat value="#{operationalRoom.getBloodTypesList()}"
+                                   var="operationalBloodType">
+                            <h:outputText value="#{operationalBloodType.shortName}"/> <br/>
+                        </ui:repeat>
+                    </p:column>
+                    <p:column headerText="Врач">
+                        <ui:repeat value="#{operationalRoom.getDoctorsList()}" var="operationalDoctor">
+                            <h:outputText value="#{operationalDoctor.getDescriptionShort()}"/> <br/>
+                        </ui:repeat>
+                    </p:column>
+                    <p:column headerText="Медсестры">
+                        <ui:repeat value="#{operationalRoom.getNursesList()}" var="operationalNurse">
+                            <h:outputText value="#{operationalNurse.getDescriptionShort()}"/> <br/>
+                        </ui:repeat>
+                    </p:column>
+                </p:dataTable>
+                <p:panel>
+                    <p:commandButton value="Закрыть" oncomplete="PF('operationalSetupVar').hide();"/>
+                    <p:commandButton value="Сбросить выбор операционной"
+                                     onclick="PF('operationalRoomTableVar').unselectAllRows();"
+                                     oncomplete="PF('operationalSetupVar').hide();"
+                                     action="#{operationalSession.clearSelectedRoom()}"/>
+                    <p:commandButton value="Создать операционную" update="newOpeartionalDialog"
+                                     oncomplete="PF('newOperationalDialogVar').show();"
+                                     action="#{operationalSession.createNewEditor()}"/>
+                    <p:commandButton value="Обновить" update="operationalRoomTable"/>
+                </p:panel>
+
+            </div>
+        </p:dialog>
+
+
+        <p:dialog id="newOpeartionalDialog" widgetVar="newOperationalDialogVar"
+                  header="Создание новой операционной" showHeader="true"
+                  draggable="false" resizable="false"
+                  modal="true" visible="false"
+                  closable="true" closeOnEscape="true"
+                  width="50%"
+                  fitViewport="true"
+                >
+            <p:panelGrid style="width:100%;">
+                <p:row>
+                    <p:column>
+                        <h:outputLabel value="Наименование операционной:"/>
+                        <p:messages for="opEditor.name" closable="true" id="opEditor_messages_name"/>
+                    </p:column>
+                    <p:column>
+                        <p:inputText id="name" value="#{operationalSession.editor.name}" style="width:100%;"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column colspan="2">
+                        <h:outputLabel value="Типы систем крови:"/>
+                        <p:messages for="opEditor.bloodSystemType" closable="true" id="opEditor_messages_blood_types"/>
+                        <p:selectManyMenu id="bloodSystemTypeSelectManyMenu" showCheckbox="true"
+                                          value="#{operationalSession.editor.bloodSystemTypes}"
+                                          converter="BloodSystemTypeConverter" style="width:100%;">
+                            <f:selectItems value="#{operationalSession.getOperationalBloodSystemTypes()}"
+                                           var="bloodSystemType_row" itemLabel="#{bloodSystemType_row.value}"
+                                           itemValue="#{bloodSystemType_row}"/>
+                        </p:selectManyMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column>
+                        <h:outputLabel for="doctors" value="Врачи-трансфузиологи:"/>
+                        <p:messages for="opEditor.doctors" closable="true" id="opEditor_messages_doctors"/>
+                        <p:selectManyMenu id="doctors" showCheckbox="true" value="#{operationalSession.editor.doctors}"
+                                          converter="PersonConverter" style="width:100%;">
+                            <f:selectItems value="#{operationalSession.getTransfusiologistList()}" var="doctor_row"
+                                           itemLabel="#{doctor_row.getDescription()}" itemValue="#{doctor_row}"/>
+                        </p:selectManyMenu>
+                    </p:column>
+                    <p:column>
+                        <h:outputLabel for="nurses" value="Операционные медсестры:"/>
+                        <p:messages for="opEditor.nurses" closable="true" id="opEditor_messages_nurses"/>
+                        <p:selectManyMenu id="nurses" showCheckbox="true" value="#{operationalSession.editor.nurses}"
+                                          converter="PersonConverter" style="width:100%;">
+                            <f:selectItems value="#{operationalSession.getOperationalNursesList()}" var="doctor_row"
+                                           itemLabel="#{doctor_row.getDescription()}" itemValue="#{doctor_row}"/>
+                        </p:selectManyMenu>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:panel>
+                <p:commandButton value="Отмена" type="button" onclick="PF('newOperationalDialogVar').hide();"/>
+                <p:commandButton value="Добавить операционную" action="#{operationalSession.saveNewRoom()}"
+                                 update="opEditor_messages_name opEditor_messages_blood_types opEditor_messages_doctors opEditor_messages_nurses"/>
+            </p:panel>
+            <p:ajax event="close" update="operationalRoomTable"/>
+        </p:dialog>
+
+
+    </ui:define>
+
+    <ui:define name="footer">
+        <e5ui-comp:splashScreen id="splash_screen" timeout="0">
+            <f:facet name="timeoutPanel">
+                <div style="background-color: white; border-top: solid 1px black; border-bottom: solid 1px black; padding: 30px; text-align: center; margin: 200px auto; width: 300px;">
+                    Пожалуйста, подождите...
+                </div>
+            </f:facet>
+        </e5ui-comp:splashScreen>
+        <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
+        <h:outputStylesheet library="css" name="datatable.css"/>
+        <h:outputStylesheet library="css" name="tablePager.css"/>
+        <h:outputStylesheet library="css" name="modalWindow.css"/>
+        <h:outputStylesheet library="css" name="multiMarker.css"/>
+    </ui:define>
 
 </ui:composition>
 

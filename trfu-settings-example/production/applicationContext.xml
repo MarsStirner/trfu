@@ -313,12 +313,12 @@
         </property>
     </bean>
 
-    <bean id="operationalCrewDao" class="ru.efive.medicine.niidg.trfu.dao.OperationalCrewDAOImpl">
+    <bean id="operationalDao" class="ru.efive.medicine.niidg.trfu.dao.OperationalDAOImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="operationalCrewDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
-        <property name="target" ref="operationalCrewDao"/>
+    <bean id="operationalDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="operationalDao"/>
         <property name="interceptorNames">
             <list>
                 <value>transactionInterceptor</value>

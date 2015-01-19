@@ -3,7 +3,8 @@ package ru.efive.medicine.niidg.trfu.util;
 import java.util.Locale;
 
 public final class ApplicationHelper {
-	
+
+
 	private ApplicationHelper() {
 		
 	}
@@ -575,48 +576,48 @@ public final class ApplicationHelper {
     	return result;
     }
     
-    public static String DONOR_DAO = "donorDao";
-    public static String BLOOD_COMPONENT_DAO = "bloodComponentDao";
-    public static String REQUEST_DAO = "requestDao";
-    public static String EXAMINATION_DAO = "examinationDao";
-    public static String DONATION_DAO = "donationDao";
-    public static String COMPONENT_ORDER_DAO = "componentOrderDao";
-    public static String DICTIONARY_DAO = "dictionaryDao";
-    public static String ANAMNESIS_DAO = "anamnesisDao";
-    public static String ANALYSIS_DAO = "analysisDao";
-    public static String EXAMINATION_ENTRY_DAO = "examinationEntryDao";
-    public static String PHERESIS_DAO = "pheresisDao";
-    public static String REJECTION_DAO = "donorRejectionDao";
-    public static String BLOOD_SYSTEM_DAO = "bloodSystemDao";
-    public static String OPERATIONAL_CREW_DAO = "operationalCrewDao";
-    public static String QUARANTINE_TYPE_DAO = "quarantineTypeDao";
-    public static String MATCH_DAO = "matchDao";
-	public static String DIVISION_DAO = "divisionDao";
-	public static String TIMETABLE_DAO = "timeTableDao";
+    public static final String DONOR_DAO = "donorDao";
+    public static final String BLOOD_COMPONENT_DAO = "bloodComponentDao";
+    public static final String REQUEST_DAO = "requestDao";
+    public static final String EXAMINATION_DAO = "examinationDao";
+    public static final String DONATION_DAO = "donationDao";
+    public static final String COMPONENT_ORDER_DAO = "componentOrderDao";
+    public static final String DICTIONARY_DAO = "dictionaryDao";
+    public static final String ANAMNESIS_DAO = "anamnesisDao";
+    public static final String ANALYSIS_DAO = "analysisDao";
+    public static final String EXAMINATION_ENTRY_DAO = "examinationEntryDao";
+    public static final String PHERESIS_DAO = "pheresisDao";
+    public static final String REJECTION_DAO = "donorRejectionDao";
+    public static final String BLOOD_SYSTEM_DAO = "bloodSystemDao";
+ 	public static final String OPERATIONAL_DAO = "operationalDao";
+    public static final String QUARANTINE_TYPE_DAO = "quarantineTypeDao";
+    public static final String MATCH_DAO = "matchDao";
+	public static final String DIVISION_DAO = "divisionDao";
+	public static final String TIMETABLE_DAO = "timeTableDao";
 	
-    public static String MEDICAL_DAO = "medicalDao";
-    public static String BLOOD_SYSTEM_TYPE_DAO = "bloodSystemTypeDao";
+    public static final String MEDICAL_DAO = "medicalDao";
+    public static final String BLOOD_SYSTEM_TYPE_DAO = "bloodSystemTypeDao";
 
-    public static String EMAIL_TEMPLATE_DAO = "emailTemplateDao";
-    public static String TEXT_TEMPLATE_DAO = "textTemplateDao";
+    public static final String EMAIL_TEMPLATE_DAO = "emailTemplateDao";
+    public static final String TEXT_TEMPLATE_DAO = "textTemplateDao";
 
 
-    public static String USER_DAO = "userDao";
-    public static String ROLE_DAO = "roleDao";
-    public static String APPOINTMENT_DAO = "appointmentDao";
-    public static String PATIENT_DAO = "patientDao";
-    public static String CONTRAGENT_DAO = "contragentDao";
+    public static final String USER_DAO = "userDao";
+    public static final String ROLE_DAO = "roleDao";
+    public static final String APPOINTMENT_DAO = "appointmentDao";
+    public static final String PATIENT_DAO = "patientDao";
+    public static final String CONTRAGENT_DAO = "contragentDao";
     
-    public static String HISTORY_DAO = "historyDao";
+    public static final String HISTORY_DAO = "historyDao";
     
-    public static String REPORT_DAO = "reportDao";
+    public static final String REPORT_DAO = "reportDao";
     
-    public static String INFORMATION_DAO = "informationDao";
-    public static String EXTERNAL_APPOINTMENT_DAO = "externalAppointmentDao";
+    public static final String INFORMATION_DAO = "informationDao";
+    public static final String EXTERNAL_APPOINTMENT_DAO = "externalAppointmentDao";
     
-    public static String ANALYSIS_CATEGORY_PRIMARY = "Первичный";
-    public static String ANALYSIS_CATEGORY_SECONDARY = "Вторичный";
-    public static String ANALYSIS_CATEGORY_COMMON = "Общий";
+    public static final String ANALYSIS_CATEGORY_PRIMARY = "Первичный";
+    public static final String ANALYSIS_CATEGORY_SECONDARY = "Вторичный";
+    public static final String ANALYSIS_CATEGORY_COMMON = "Общий";
     
     /**
      * Действие "Вирусинактивация" для компонента крови
@@ -624,14 +625,14 @@ public final class ApplicationHelper {
     public static final String VIRUSINAKTIVATION = "Вирусинактивация";
     public static final Integer VIRUSINAKTIVATION_ID = 14;
     
-    public static String STORE_NAME = "E5 TRANSFUSION";
-	public static String NAMESPACE = "http://www.alfresco.org/model/content/1.0";
-	public static String NAMESPACE_PREFIX = "cm";
-	public static String TYPE_CONTENT = "content";
+    public static final String STORE_NAME = "E5 TRANSFUSION";
+	public static final String NAMESPACE = "http://www.alfresco.org/model/content/1.0";
+	public static final String NAMESPACE_PREFIX = "cm";
+	public static final String TYPE_CONTENT = "content";
     
     
     public static final int MAX_FRAGMENT_LEN = 180;
     
-    private static Locale locale = new Locale("ru", "RU");
+    private static final Locale locale = new Locale("ru", "RU");
     
 }
