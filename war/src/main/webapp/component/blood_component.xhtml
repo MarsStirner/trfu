@@ -20,16 +20,12 @@
 			var oldtValOnClick;
 			var actions;
 			var isVisibleHistory = false;
-			
+
 			function changeVisibleHistory() {
-				if (isVisibleHistory) {
-					isVisibleHistory = false;
-				} else {
-					isVisibleHistory = true;
-				}
+				isVisibleHistory = !isVisibleHistory;
 				hideShowHistory();
 			}
-			
+
 			function hideShowHistory() {
 				var blockHistory = $("[id*='history']");
 				if (isVisibleHistory) {
@@ -38,12 +34,12 @@
 					blockHistory.hide();
 				}
 			}
-			
+
 			function setCursor(typeCursor) {
 				var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
 				$("[id*='history']").prev().find("a").attr("style", styleTitle);
 			}
-		
+
 			function checkBloodComponent() {
 				var componentType = $("[id='main_content_form:componentType']");
 				if (componentType.val() != " ") {
@@ -53,8 +49,8 @@
 					alert("Необходимо выбрать компонент крови!");
 				}
 			}
-			
-			jQuery(function(){
+
+			jQuery(function () {
 				hideShowHistory();
 				actions = $("[id='main_content_form:showActions']");
 				oldtValOnClick = actions.attr("onclick");
@@ -66,7 +62,7 @@
 		</h:outputScript>
 	</ui:define>
 	
-	<ui:define name="left_menu"></ui:define>
+	<ui:define name="left_menu"/>
 	
 	<ui:define name="header">
 		<h:panelGroup rendered="#{bloodComponent.refreshVirusinactivationList}">
@@ -266,16 +262,16 @@
 											</div>
 										</div>
 									</div>
-									<div class="wrap" style="width:100%; margin:0px">
+									<div class="wrap" style="width:100%; margin:0">
 										<div class="inner">
 											<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
 														id="volume_list" style="width:100%;"
-														value="#{bloodComponent.splitModal.volumeList}" var="row">
+														value="#{bloodComponent.splitModal.volumeList}" var="split_volume">
 												<e5ui:column>
 													<f:facet name="header">
 														<p>Разделить на</p>
 													</f:facet>
-													<h:inputText value="#{row.volume}" immediate="true">
+													<h:inputText value="#{split_volume.volume}" immediate="true">
 														<f:ajax />
 													</h:inputText>
 												</e5ui:column>
@@ -402,7 +398,7 @@
 										<td class="first">Донор:</td>
 										<td>
 											<h:outputText value="#{bloodComponent.donor.description}" class="wide" />
-											<h:outputLink style="margin-left:5px;" value="#{contextPath}/component/donor.xhtml" target="_blank">
+											<h:outputLink style="margin-left:5px;" value="/component/donor.xhtml" target="_blank">
 												<h:graphicImage value="#{resource['images:link.png']}" />
 								            	<f:param name="docId" value="#{bloodComponent.donor.id}" />
 								           	</h:outputLink>
@@ -414,7 +410,7 @@
 										<td class="first">Обращение на донацию:</td>
 										<td>
 											<h:outputText value="#{bloodComponent.donation.number}" class="wide" />
-											<h:outputLink style="margin-left:5px;" value="#{contextPath}/component/blood_donation.xhtml" target="_blank">
+											<h:outputLink style="margin-left:5px;" value="/component/blood_donation.xhtml" target="_blank">
 												<h:graphicImage value="#{resource['images:link.png']}" />
 								            	<f:param name="docId" value="#{bloodComponent.donation.id}" />
 								           	</h:outputLink>
@@ -425,7 +421,7 @@
 									<td class="first">Изготовитель:</td>
 									<td>
 										<h:outputText value="#{bloodComponent.document.maker.fullName}" class="wide" />
-										<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="#{contextPath}/component/contragent.xhtml" target="_blank">
+										<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
 											<h:graphicImage value="#{resource['images:link.png']}" />
 								            <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
 								        </h:outputLink>
@@ -562,31 +558,27 @@
 														<h:panelGroup rendered="#{bloodComponent.haveConsumableMaterial}">
 															<h:outputScript>
 																var isVisibleText = false;
-			
+
 																function changeVisibleText() {
-																	if (isVisibleText) {
-																		isVisibleText = false;
-																	} else {
-																		isVisibleText = true;
-																	}
+																	isVisibleText = !isVisibleText;
 																	hideShowText();
 																}
-			
+
 																function hideShowText() {
 																	var blockText = $("[id*='consumableMaterialContent']");
-																	if (isVisibleText) {	
+																	if (isVisibleText) {
 																		blockText.show();
 																	} else {
 																		blockText.hide();
 																	}
 																}
-																
+
 																function setCursorMaterial(typeCursor) {
 																	var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
 																	$("[id*='consumableMaterialContent']").prev().attr("style", styleTitle);
 																}
-															
-																jQuery(function() {
+
+																jQuery(function () {
 																	hideShowText();
 																});
 															</h:outputScript>
@@ -684,7 +676,7 @@
 										<td class="first">Донор:</td>
 										<td>
 											<h:outputText value="#{bloodComponent.donor.description}" class="wide" />
-											<h:outputLink style="margin-left:5px;" value="#{contextPath}/component/donor.xhtml" target="_blank">
+											<h:outputLink style="margin-left:5px;" value="/component/donor.xhtml" target="_blank">
 												<h:graphicImage value="#{resource['images:link.png']}" />
 								            	<f:param name="docId" value="#{bloodComponent.donor.id}" />
 								           	</h:outputLink>
@@ -696,7 +688,7 @@
 										<td class="first">Обращение на донацию:</td>
 										<td>
 											<h:outputText value="#{bloodComponent.donation.number}" class="wide" />
-											<h:outputLink style="margin-left:5px;" value="#{contextPath}/component/blood_donation.xhtml" target="_blank">
+											<h:outputLink style="margin-left:5px;" value="/component/blood_donation.xhtml" target="_blank">
 												<h:graphicImage value="#{resource['images:link.png']}" />
 								            	<f:param name="docId" value="#{bloodComponent.donation.id}" />
 								           	</h:outputLink>
@@ -707,7 +699,7 @@
 									<td class="first">Изготовитель:</td>
 									<td>
 										<h:outputText value="#{bloodComponent.document.maker.fullName}" class="wide" />
-										<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="#{contextPath}/component/contragent.xhtml" target="_blank">
+										<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
 											<h:graphicImage value="#{resource['images:link.png']}" />
 								            <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
 								        </h:outputLink>
@@ -724,7 +716,7 @@
 											<h:panelGroup id="maker_info">
 												<h:outputText id="maker" value="#{bloodComponent.document.maker.fullName}" 
 											 	class="wide" />
-												<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="#{contextPath}/component/contragent.xhtml" target="_blank">
+												<h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
 													<h:graphicImage value="#{resource['images:link.png']}" />
 									            	<f:param name="docId" value="#{bloodComponent.document.maker.id}" />
 									        	</h:outputLink>
@@ -751,17 +743,17 @@
 														<div class="inner" style="height:300px;">
 															<e5ui:dataTable id="contragent_select_table" border="0" cellpadding="0" cellspacing="0"
 																	value="#{bloodComponent.contragentSelectModal.contragentList.documents}"
-																	var="row" grouping="false" width="100%">
+																	var="contragent_row" grouping="false" width="100%">
 																<e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
-																		styleClass="#{bloodComponent.contragentSelectModal.selected(row)? 'grid_row_selected': ''}" />
+																		styleClass="#{bloodComponent.contragentSelectModal.selected(contragent_row)? 'grid_row_selected': ''}" />
 																<e5ui:column>
 																	<f:facet name="header">
 				                        								<p>Контрагент</p>
 				                    								</f:facet>
-				                                                	<h:outputText value="#{row.fullName}" />
+				                                                	<h:outputText value="#{contragent_row.fullName}" />
 				                                                	<h:commandLink id="selectLink" style="display: none;"
-				                                                			rendered="#{not bloodComponent.contragentSelectModal.selected(row)}"
-				                                                     		action="#{bloodComponent.contragentSelectModal.select(row)}"/>
+				                                                			rendered="#{not bloodComponent.contragentSelectModal.selected(contragent_row)}"
+				                                                     		action="#{bloodComponent.contragentSelectModal.select(contragent_row)}"/>
 																</e5ui:column>
 															</e5ui:dataTable>
 														</div>
@@ -928,31 +920,27 @@
 														<h:panelGroup rendered="#{bloodComponent.haveConsumableMaterial}">
 															<h:outputScript>
 																var isVisibleText = false;
-			
+
 																function changeVisibleText() {
-																	if (isVisibleText) {
-																		isVisibleText = false;
-																	} else {
-																		isVisibleText = true;
-																	}
+																	isVisibleText = !isVisibleText;
 																	hideShowText();
 																}
-			
+
 																function hideShowText() {
 																	var blockText = $("[id*='consumableMaterialContent']");
-																	if (isVisibleText) {	
+																	if (isVisibleText) {
 																		blockText.show();
 																	} else {
 																		blockText.hide();
 																	}
 																}
-																
+
 																function setCursorMaterial(typeCursor) {
 																	var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
 																	$("[id*='consumableMaterialContent']").prev().attr("style", styleTitle);
 																}
-															
-																jQuery(function() {
+
+																jQuery(function () {
 																	hideShowText();
 																});
 															</h:outputScript>
@@ -1036,34 +1024,34 @@
 								<div class="inner">
 									<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
 												value="#{bloodComponent.document.appointment.tests}"
-												style="width:100%;" var="row" grouping="false">
+												style="width:100%;" var="test_row" grouping="false">
 										<e5ui:column style="width:220px;">
 											<f:facet name="header">
 												<p>Показатель</p>
 											</f:facet>
-											<h:outputText value="#{row.type.value}" />
+											<h:outputText value="#{test_row.type.value}" />
 										</e5ui:column>
 										<e5ui:column>
 											<f:facet name="header">
 												<p>Результат</p>
 											</f:facet>
 											<h:panelGroup rendered="#{bloodComponent.editState and bloodComponent.document.inControl}">
-												<h:panelGroup rendered="#{row.type.fieldType eq 0}">
-													<h:inputText class="wide" value="#{row.value}" />
+												<h:panelGroup rendered="#{test_row.type.fieldType eq 0}">
+													<h:inputText class="wide" value="#{test_row.value}" />
 												</h:panelGroup>
-												<h:panelGroup rendered="#{row.type.fieldType eq 1}">
-												    <h:selectOneMenu value="#{row.value}">
-														<f:selectItems value="#{dictionaryManagement.getValuesByCategory(row.type.value)}" />
+												<h:panelGroup rendered="#{test_row.type.fieldType eq 1}">
+												    <h:selectOneMenu value="#{test_row.value}">
+														<f:selectItems value="#{dictionaryManagement.getValuesByCategory(test_row.type.value)}" />
 													</h:selectOneMenu>
 												</h:panelGroup>
-												<h:panelGroup rendered="#{row.type.fieldType eq 2}">
-													<h:selectOneRadio layout="lineDirection" value="#{row.value}">
-														<f:selectItems value="#{dictionaryManagement.getValuesByCategory(row.type.value)}" />
+												<h:panelGroup rendered="#{test_row.type.fieldType eq 2}">
+													<h:selectOneRadio layout="lineDirection" value="#{test_row.value}">
+														<f:selectItems value="#{dictionaryManagement.getValuesByCategory(test_row.type.value)}" />
 													</h:selectOneRadio>
 												</h:panelGroup>
 											</h:panelGroup>
 											<h:panelGroup rendered="#{bloodComponent.viewState or not (bloodComponent.document.inControl)}">
-												<h:outputText value="#{row.value}" class="wide" />
+												<h:outputText value="#{test_row.value}" class="wide" />
 											</h:panelGroup>
 										</e5ui:column>
 									</e5ui:dataTable>
@@ -1078,17 +1066,17 @@
 							<a onmouseout="setCursor('default')" onmouseover="setCursor('pointer')" 
 							onclick="changeVisibleHistory();" style="color: #4581c0">История</a> 
 						</legend>
-						<div id="history" class="wrap" style="width: 100%; margin: 0px">
+						<div id="history" class="wrap" style="width: 100%; margin: 0">
 							<div class="inner">
 								<e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
 											id="history_list"
 											value="#{bloodComponent.document.historyList}"
-											var="row" grouping="false">
+											var="history_row" grouping="false">
 									<e5ui:column style="min-width:7em">
 					            		<f:facet name="header">
 					                        <p>Дата</p>
 					                    </f:facet>
-					                	<h:outputText value="#{row.startDate}">
+					                	<h:outputText value="#{history_row.startDate}">
 					                		<f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
 					                	</h:outputText>
 					                </e5ui:column>
@@ -1096,31 +1084,31 @@
 					            		<f:facet name="header">
 					                        <p>Со статуса</p>
 					                    </f:facet>
-					                	<h:outputText value="#{row.fromStatusName}" />
+					                	<h:outputText value="#{history_row.fromStatusName}" />
 					                </e5ui:column>
 					                <e5ui:column style="min-width:8em">
 					            		<f:facet name="header">
 					                        <p>Действие</p>
 					                    </f:facet>
-					                	<h:outputText value="#{row.actionName}" />
+					                	<h:outputText value="#{history_row.actionName}" />
 					                </e5ui:column>
 					                <e5ui:column style="min-width:8em">
 					            		<f:facet name="header">
 					                        <p>На статус</p>
 					                    </f:facet>
-					                	<h:outputText value="#{row.toStatusName}" />
+					                	<h:outputText value="#{history_row.toStatusName}" />
 					                </e5ui:column>
 					                <e5ui:column style="min-width:12em">
 					            		<f:facet name="header">
 					                        <p>Автор</p>
 					                    </f:facet>
-					                	<h:outputText value="#{row.owner.descriptionShort}" />
+					                	<h:outputText value="#{history_row.owner.descriptionShort}" />
 					                </e5ui:column>
 					                <e5ui:column style="min-width:10em">
 					            		<f:facet name="header">
 					                        <p>Комментарий</p>
 					                    </f:facet>
-					                	<h:outputText value="#{row.commentary}" />
+					                	<h:outputText value="#{history_row.commentary}" />
 					                </e5ui:column>
 								</e5ui:dataTable>
 							</div>

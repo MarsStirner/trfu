@@ -22,8 +22,7 @@ public class SessionListener implements HttpSessionListener {
 			catch (Exception e) {
 				System.out.println("Invalidate session issue: " + e.getMessage());
 			}
-			SessionManagementBean sessionManagement = (SessionManagementBean) 
-			context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
+			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
 			if (sessionManagement != null && sessionManagement.isLoggedIn()) {
 				sessionManagement.logOut();
 			}
