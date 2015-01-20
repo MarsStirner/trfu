@@ -1146,10 +1146,10 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         	disjunction.add(Restrictions.isNull("expirationDate"));
         	detachedCriteria.add(disjunction);
         }
-        if (bloodComponentStatusIdList.size() != 0) {
+        if (!bloodComponentStatusIdList.isEmpty()) {
         	detachedCriteria.add(Restrictions.in("statusId", bloodComponentStatusIdList));
         }
-        if (donationStatusIdList.size() != 0) {
+        if (!donationStatusIdList.isEmpty()) {
         	detachedCriteria.add(Restrictions.in("donation.statusId", donationStatusIdList));
         }
         
