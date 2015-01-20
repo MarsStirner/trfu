@@ -115,14 +115,14 @@
 						</h:commandLink>
                         <div class="sub">
                         	<div class="item">
-						        <h:outputLink value="#{contextPath}/component/print/medical_operation.xhtml" target="_blank">
+						        <h:outputLink value="/component/print/medical_operation.xhtml" target="_blank">
 							        <h:graphicImage value="#{resource['images:blank.png']}" />
 							        <f:param name="docId" value="#{medicalOperation.document.id}" />
 							        Процедурный лист
 						        </h:outputLink>
 					        </div>
                         	<div class="item">
-						        <h:outputLink value="#{contextPath}/component/print/medical_operation2.xhtml" target="_blank">
+						        <h:outputLink value="/component/print/medical_operation2.xhtml" target="_blank">
 							        <h:graphicImage value="#{resource['images:blank.png']}" />
 							        <f:param name="docId" value="#{medicalOperation.document.id}" />
 							        Процедурный лист для истории болезни
@@ -198,7 +198,7 @@
 										<td class="first">Донор:</td>
 										<td>
 											<h:outputText value="#{medicalOperation.document.donor.description}" style="font-weight:bold;" class="wide" />
-											<h:outputLink rendered="#{medicalOperation.document.donor ne null}" style="margin-left:5px;" value="#{contextPath}/component/medical/donor.xhtml" target="_blank">
+											<h:outputLink rendered="#{medicalOperation.document.donor ne null}" style="margin-left:5px;" value="/component/medical/donor.xhtml" target="_blank">
 												<h:graphicImage value="#{resource['images:link.png']}" />
 										        <f:param name="docId" value="#{medicalOperation.document.donor.id}" />
 										    </h:outputLink>
@@ -335,7 +335,7 @@
 										<td>
 											<h:panelGroup id="donor_info">
 												<h:outputText id="donor" value="#{medicalOperation.document.donor.description}" style="font-weight:bold;" class="wide" />
-												<h:outputLink rendered="#{medicalOperation.document.donor ne null}" style="margin-left:5px;" value="#{contextPath}/component/medical/donor.xhtml" target="_blank">
+												<h:outputLink rendered="#{medicalOperation.document.donor ne null}" style="margin-left:5px;" value="/component/medical/donor.xhtml" target="_blank">
 													<h:graphicImage value="#{resource['images:link.png']}" />
 											        <f:param name="docId" value="#{medicalOperation.document.donor.id}" />
 											    </h:outputLink>
@@ -674,7 +674,7 @@
 						    	<div class="actionbar">
 						        	<div class="menu">
 						        		<div class="defbutton">
-											<h:outputLink value="#{contextPath}/component/medical/biomaterial.xhtml" target="_blank">
+											<h:outputLink value="/component/medical/biomaterial.xhtml" target="_blank">
 												<f:param name="docAction" value="create" />
 												<f:param name="parentId" value="#{medicalOperation.document.id}" />
 												<h:graphicImage value="#{resource['images:newf_buttn_icon.png']}" />

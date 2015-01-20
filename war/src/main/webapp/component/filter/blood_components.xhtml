@@ -20,7 +20,7 @@
 	
 	<ui:define name="header_buttons">
 		<div class="defbutton">
-			<h:outputLink value="#{contextPath}/component/purchased_component_reg.xhtml" target="_blank">
+			<h:outputLink value="/component/purchased_component_reg.xhtml" target="_blank">
 				<h:graphicImage value="#{resource['images:add_component.png']}" />
             	Зарегистрировать закупленный КК
 			</h:outputLink>
@@ -38,13 +38,13 @@
 			</h:commandLink>
 			<div class="sub">
             	<div class="item">
-					<h:outputLink value="#{contextPath}/component/print/blood_components.xhtml" target="_blank">
+					<h:outputLink value="/component/print/blood_components.xhtml" target="_blank">
 		            	<h:graphicImage value="#{resource['images:blank.png']}" />
 						Печать из браузера
 					</h:outputLink>	
 				</div>
 				<div class="item">
-					<h:outputLink value="#{contextPath}/filter-results-export">
+					<h:outputLink value="/filter-results-export">
 						<h:graphicImage value="#{resource['images:button-export.png']}" />
 						<f:param name="bean" value="bloodComponentFilterableList" />
 						<f:param name="ext" value="docx" />
@@ -52,7 +52,7 @@
 					</h:outputLink>	
 				</div>
 				<div class="item">
-					<h:outputLink value="#{contextPath}/filter-results-export">
+					<h:outputLink value="/filter-results-export">
 						<h:graphicImage value="#{resource['images:button-export.png']}" />
 						<f:param name="bean" value="bloodComponentFilterableList" />
 						<f:param name="ext" value="xlsx" />

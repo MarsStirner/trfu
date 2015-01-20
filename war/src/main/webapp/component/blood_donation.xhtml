@@ -163,7 +163,7 @@
 
                         <div class="sub">
                             <div class="item">
-                                <h:outputLink value="#{contextPath}/component/print/appointment_card_all2.xhtml"
+                                <h:outputLink value="/component/print/appointment_card_all2.xhtml"
                                               target="_blank">
                                     <h:graphicImage value="#{resource['images:blank.png']}"/>
                                     <f:param name="docId" value="#{bloodDonation.document.id}"/>
@@ -171,7 +171,7 @@
                                 </h:outputLink>
                             </div>
                             <div class="item">
-                                <h:outputLink value="#{contextPath}/component/print/donation_appointment2.xhtml"
+                                <h:outputLink value="/component/print/donation_appointment2.xhtml"
                                               target="_blank">
                                     <h:graphicImage value="#{resource['images:blank.png']}"/>
                                     <f:param name="docId" value="#{bloodDonation.document.id}"/>
@@ -180,7 +180,7 @@
                             </div>
                             <h:panelGroup rendered="#{not (bloodDonation.document.report eq null)}">
                                 <div class="item">
-                                    <h:outputLink value="#{contextPath}/component/print/citaferez.xhtml"
+                                    <h:outputLink value="/component/print/citaferez.xhtml"
                                                   target="_blank">
                                         <h:graphicImage value="#{resource['images:blank.png']}"/>
                                         <f:param name="docId" value="#{bloodDonation.document.id}"/>
@@ -191,7 +191,7 @@
                             <h:panelGroup rendered="#{bloodDonation.editState or bloodDonation.viewState}">
                                 <div class="item">
                                     <h:outputLink
-                                            value="#{contextPath}/component/print/blood_donation_information2.xhtml"
+                                            value="/component/print/blood_donation_information2.xhtml"
                                             target="_blank">
                                         <h:graphicImage value="#{resource['images:blank.png']}"/>
                                         <f:param name="docId" value="#{bloodDonation.document.id}"/>
@@ -200,7 +200,7 @@
                                 </div>
                                 <div class="item">
                                     <h:outputLink
-                                            value="#{contextPath}/component/print/external_appointment_card2.xhtml"
+                                            value="/component/print/external_appointment_card2.xhtml"
                                             target="_blank">
                                         <h:graphicImage value="#{resource['images:blank.png']}"/>
                                         <f:param name="docId" value="#{bloodDonation.document.id}"/>
@@ -208,7 +208,7 @@
                                     </h:outputLink>
                                 </div>
                                 <div class="item">
-                                    <h:outputLink value="#{contextPath}/component/print/donor405_2.xhtml"
+                                    <h:outputLink value="/component/print/donor405_2.xhtml"
                                                   target="_blank">
                                         <h:graphicImage value="#{resource['images:blank.png']}"/>
                                         <f:param name="docId" value="#{bloodDonation.document.id}"/>
@@ -216,7 +216,7 @@
                                     </h:outputLink>
                                 </div>
                                 <div class="item">
-                                    <h:outputLink value="#{contextPath}/component/print/information2.xhtml"
+                                    <h:outputLink value="/component/print/information2.xhtml"
                                                   target="_blank">
                                         <h:graphicImage value="#{resource['images:blank.png']}"/>
                                         <f:param name="docId" value="#{bloodDonation.document.id}"/>
@@ -400,7 +400,7 @@
                                                           class="wide"/>
                                             <h:outputLink rendered="#{bloodDonation.document.donor ne null}"
                                                           style="margin-left:5px;"
-                                                          value="#{contextPath}/component/donor.xhtml" target="_blank">
+                                                          value="/component/donor.xhtml" target="_blank">
                                                 <h:graphicImage value="#{resource['images:link.png']}"/>
                                                 <f:param name="docId" value="#{bloodDonation.document.donor.id}"/>
                                             </h:outputLink>
@@ -668,7 +668,7 @@
                                                               class="wide"/>
                                                 <h:outputLink rendered="#{bloodDonation.document.donor ne null}"
                                                               style="margin-left:5px;"
-                                                              value="#{contextPath}/component/donor.xhtml"
+                                                              value="/component/donor.xhtml"
                                                               target="_blank">
                                                     <h:graphicImage value="#{resource['images:link.png']}"/>
                                                     <f:param name="docId" value="#{bloodDonation.document.donor.id}"/>
@@ -1290,7 +1290,7 @@
                                 <div class="menu">
                                     <h:panelGroup rendered="#{bloodDonation.document.statusId gt 3}">
                                         <div class="defbutton">
-                                            <h:outputLink value="#{contextPath}/component/blood_component.xhtml"
+                                            <h:outputLink value="/component/blood_component.xhtml"
                                                           target="_blank">
                                                 <h:graphicImage value="#{resource['images:newf_buttn_icon.png']}"/>
                                                 Новый компонент

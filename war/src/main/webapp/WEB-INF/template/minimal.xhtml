@@ -34,7 +34,7 @@
 							<e5ui:menuItem selected="#{currentView eq '/component/filter/donors.xhtml'}">
 	                    		<f:facet name="content">
 	                    			<h:commandLink action="#{donorFilterableList.openResetFilterPanel()}">
-	                    				<f:param name="url" value="#{contextPath}/component/filter/donors.xhtml" />
+	                    				<f:param name="url" value="/component/filter/donors.xhtml" />
 										<h:graphicImage value="#{resource['images:leaf.gif']}" />
             							Доноры
            							</h:commandLink>
@@ -43,7 +43,7 @@
 <!--  							
 							<e5ui:menuItem selected="#{currentView eq '/component/donors.xhtml'}">
 	                    		<f:facet name="content">
-	                    			<h:outputLink value="#{contextPath}/component/donors.xhtml">
+	                    			<h:outputLink value="/component/donors.xhtml">
 	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
 	                    				По фамилии
 	                    			</h:outputLink>

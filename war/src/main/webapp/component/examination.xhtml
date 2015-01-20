@@ -166,7 +166,7 @@
                     </h:commandLink>
                     <div class="sub">
                         <div class="item">
-                            <h:outputLink value="#{contextPath}/component/print/appointment_card_all.xhtml"
+                            <h:outputLink value="/component/print/appointment_card_all.xhtml"
                                           target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
@@ -174,7 +174,7 @@
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="#{contextPath}/component/print/appointment_card_protocol.xhtml"
+                            <h:outputLink value="/component/print/appointment_card_protocol.xhtml"
                                           target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
@@ -182,7 +182,7 @@
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="#{contextPath}/component/print/donation_appointment.xhtml"
+                            <h:outputLink value="/component/print/donation_appointment.xhtml"
                                           target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
@@ -190,7 +190,7 @@
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="#{contextPath}/component/print/blood_donation_information.xhtml"
+                            <h:outputLink value="/component/print/blood_donation_information.xhtml"
                                           target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
@@ -198,7 +198,7 @@
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="#{contextPath}/component/print/external_appointment_card.xhtml"
+                            <h:outputLink value="/component/print/external_appointment_card.xhtml"
                                           target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
@@ -206,21 +206,21 @@
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="#{contextPath}/component/print/donor405.xhtml" target="_blank">
+                            <h:outputLink value="/component/print/donor405.xhtml" target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
                                 Форма 405У
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="#{contextPath}/component/print/donor405plain.xhtml" target="_blank">
+                            <h:outputLink value="/component/print/donor405plain.xhtml" target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
                                 Форма 405У - История
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="#{contextPath}/component/print/information.xhtml" target="_blank">
+                            <h:outputLink value="/component/print/information.xhtml" target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
                                 Справка об обследовании
@@ -309,7 +309,7 @@
                     <h:outputText value="#{examination.document.donor.description}" style="font-weight:bold;"
                                   class="wide"/>
                     <h:outputLink rendered="#{examination.document.donor ne null}" style="margin-left:5px;"
-                                  value="#{contextPath}/component/donor.xhtml" target="_blank">
+                                  value="/component/donor.xhtml" target="_blank">
                         <h:graphicImage value="#{resource['images:link.png']}"/>
                         <f:param name="docId" value="#{examination.document.donor.id}"/>
                     </h:outputLink>
@@ -383,7 +383,7 @@
             <h:outputText id="donor" value="#{examination.document.donor.description}" style="font-weight:bold;"
                           class="wide"/>
             <h:outputLink rendered="#{examination.document.donor ne null}" style="margin-left:5px;"
-                          value="#{contextPath}/component/donor.xhtml" target="_blank">
+                          value="/component/donor.xhtml" target="_blank">
                 <h:graphicImage value="#{resource['images:link.png']}"/>
                 <f:param name="docId" value="#{examination.document.donor.id}"/>
             </h:outputLink>

@@ -33,7 +33,7 @@
 							<e5ui:menuItem selected="#{currentView eq '/component/filter/donors.xhtml'}">
 	                    		<f:facet name="content">
 	                    			<h:commandLink action="#{donorFilterableList.openResetFilterPanel()}">
-	                    				<f:param name="url" value="#{contextPath}/component/filter/donors.xhtml" />
+	                    				<f:param name="url" value="/component/filter/donors.xhtml" />
 										<h:graphicImage value="#{resource['images:leaf.gif']}" />
             							Доноры
            							</h:commandLink>
@@ -42,7 +42,7 @@
 <!--  						
 						<e5ui:menuItem selected="#{currentView eq '/component/donors_quarantine_finish_invite.xhtml'}">
 	                    	<f:facet name="content">
-	                    		<h:outputLink value="#{contextPath}/component/donors_quarantine_finish_invite.xhtml">
+	                    		<h:outputLink value="/component/donors_quarantine_finish_invite.xhtml">
 	                    			<h:graphicImage value="#{resource['images:leaf.gif']}" />
 	                    			Для приглашения на повторную донацию
 	                    		</h:outputLink>
@@ -58,7 +58,7 @@
 							<e5ui:menuItem selected="#{currentView eq '/component/filter/blood_components.xhtml'}">
 	                    		<f:facet name="content">
 	                    			<h:commandLink action="#{bloodComponentFilterableList.openResetFilterPanel()}">
-	                    				<f:param name="url" value="#{contextPath}/component/filter/blood_components.xhtml" />
+	                    				<f:param name="url" value="/component/filter/blood_components.xhtml" />
 										<h:graphicImage value="#{resource['images:leaf.gif']}" />
             							Компоненты крови
            							</h:commandLink>
@@ -66,7 +66,7 @@
 	                   		</e5ui:menuItem>
 	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_in_quarantine.xhtml'}">
 	                    		<f:facet name="content">
-	                    			<h:outputLink value="#{contextPath}/component/blood_components_in_quarantine.xhtml">
+	                    			<h:outputLink value="/component/blood_components_in_quarantine.xhtml">
 	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
 	                    				В карантине
 	                    			</h:outputLink>
@@ -74,7 +74,7 @@
 	                   		</e5ui:menuItem>
 	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_quarantine_finish.xhtml'}">
 	                    		<f:facet name="content">
-	                    			<h:outputLink value="#{contextPath}/component/blood_components_quarantine_finish.xhtml">
+	                    			<h:outputLink value="/component/blood_components_quarantine_finish.xhtml">
 	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
 	                    				Срок карантинизации завершен
 	                    			</h:outputLink>
@@ -82,7 +82,7 @@
 	                   		</e5ui:menuItem>
 	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_quarantined_ready.xhtml'}">
 	                    		<f:facet name="content">
-	                    			<h:outputLink value="#{contextPath}/component/blood_components_quarantined_ready.xhtml">
+	                    			<h:outputLink value="/component/blood_components_quarantined_ready.xhtml">
 	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
 	                    				Готовы к выдаче
 	                    			</h:outputLink>
@@ -90,7 +90,7 @@
 	                   		</e5ui:menuItem>
 	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_quarantined_defect.xhtml'}">
 	                    		<f:facet name="content">
-	                    			<h:outputLink value="#{contextPath}/component/blood_components_quarantined_defect.xhtml">
+	                    			<h:outputLink value="/component/blood_components_quarantined_defect.xhtml">
 	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
 	                    				Забракованные
 	                    			</h:outputLink>
@@ -98,7 +98,7 @@
 	                   		</e5ui:menuItem>
 	                   		<e5ui:menuItem selected="#{currentView eq '/component/blood_components_expired.xhtml'}">
 	                    		<f:facet name="content">
-	                    			<h:outputLink value="#{contextPath}/component/blood_components_expired.xhtml">
+	                    			<h:outputLink value="/component/blood_components_expired.xhtml">
 	                    				<h:graphicImage value="#{resource['images:leaf.gif']}" />
 	                    				Истек срок хранения
 	                    			</h:outputLink>
@@ -108,7 +108,7 @@
 					
 					<e5ui:menuItem selected="#{currentView eq '/component/report/report_templates.xhtml'}">
 	                    <f:facet name="content">
-	                    	<h:outputLink value="#{contextPath}/component/report/report_templates.xhtml">
+	                    	<h:outputLink value="/component/report/report_templates.xhtml">
 	                    		<h:graphicImage value="#{resource['images:leaf.gif']}" />
 	                    		Отчеты
 	                    	</h:outputLink>

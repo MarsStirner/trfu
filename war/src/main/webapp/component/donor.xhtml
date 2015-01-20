@@ -137,21 +137,21 @@
 						</h:commandLink>
                         <div class="sub">
                         	<div class="item">
-						        <h:outputLink value="#{contextPath}/component/print/donor.xhtml" target="_blank" rendered="#{donor.editState or donor.viewState}">
+						        <h:outputLink value="/component/print/donor.xhtml" target="_blank" rendered="#{donor.editState or donor.viewState}">
 							        <h:graphicImage value="#{resource['images:blank.png']}" />
 							        <f:param name="docId" value="#{donor.document.id}" />
 							        Карточка и анкета донора
 						        </h:outputLink>
 					        </div>
 					        <div class="item">
-						        <h:outputLink value="#{contextPath}/component/print/donor_agreement_medical.xhtml" target="_blank" rendered="#{donor.editState or donor.viewState}">
+						        <h:outputLink value="/component/print/donor_agreement_medical.xhtml" target="_blank" rendered="#{donor.editState or donor.viewState}">
 							        <h:graphicImage value="#{resource['images:blank.png']}" />
 							        <f:param name="docId" value="#{donor.document.id}" />
 							        Информированное согласие
 						        </h:outputLink>
 					        </div>
 					         <div class="item">
-						        <h:outputLink value="#{contextPath}/component/print/inquirer_donor.xhtml" target="_blank" rendered="#{donor.editState or donor.viewState}">
+						        <h:outputLink value="/component/print/inquirer_donor.xhtml" target="_blank" rendered="#{donor.editState or donor.viewState}">
 							        <h:graphicImage value="#{resource['images:blank.png']}" />
 							        <f:param name="docId" value="#{donor.document.id}" />
 							        Опросник для донора
@@ -683,7 +683,7 @@
 				        		<div class="menu">
 				        			<h:panelGroup rendered="#{donor.requestCreationAvailable}" id="examination_button" >
 				        				<div class="defbutton">
-											<h:outputLink value="#{contextPath}/component/examination.xhtml" target="_blank" rendered="#{not donor.donationToday}">
+											<h:outputLink value="/component/examination.xhtml" target="_blank" rendered="#{not donor.donationToday}">
 												<f:param name="docAction" value="create" />
 											    <f:param name="parentId" value="#{donor.document.id}" />
 												<span>

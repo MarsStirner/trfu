@@ -276,7 +276,7 @@
 										<td>
 											<h:outputText value="#{biomaterial.document.operation.operationForm}" converter="ClassifierConverter" />
 											<h:outputText value="#{biomaterial.document.operation.number}" style="margin:0 5px;" />
-											<h:outputLink rendered="#{biomaterial.document.operation ne null}" value="#{contextPath}/component/medical/medical_operation.xhtml" target="_blank">
+											<h:outputLink rendered="#{biomaterial.document.operation ne null}" value="/component/medical/medical_operation.xhtml" target="_blank">
 												<h:graphicImage value="#{resource['images:link.png']}" />
 										        <f:param name="docId" value="#{biomaterial.document.operation.id}" />
 										    </h:outputLink>
@@ -376,7 +376,7 @@
 										<td>
 											<h:outputText value="#{biomaterial.document.operation.operationForm}" converter="ClassifierConverter" />
 											<h:outputText value="#{biomaterial.document.operation.number}" style="margin:0 5px;" />
-											<h:outputLink rendered="#{biomaterial.document.operation ne null}" value="#{contextPath}/component/medical/medical_operation.xhtml" target="_blank">
+											<h:outputLink rendered="#{biomaterial.document.operation ne null}" value="/component/medical/medical_operation.xhtml" target="_blank">
 												<h:graphicImage value="#{resource['images:link.png']}" />
 										        <f:param name="docId" value="#{biomaterial.document.operation.id}" />
 										    </h:outputLink>

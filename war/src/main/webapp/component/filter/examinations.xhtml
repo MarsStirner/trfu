@@ -20,7 +20,7 @@
 	
 	<ui:define name="header_buttons">
 		<div class="defbutton">
-			<h:outputLink value="#{contextPath}/component/examination.xhtml" target="_blank">
+			<h:outputLink value="/component/examination.xhtml" target="_blank">
 				<h:graphicImage value="#{resource['images:newf_buttn_icon.png']}" />
             	Новое обращение
             	<f:param name="docAction" value="create" />
@@ -39,13 +39,13 @@
 			</h:commandLink>
 			<div class="sub">
             	<div class="item">
-					<h:outputLink value="#{contextPath}/component/print/examinations.xhtml" target="_blank">
+					<h:outputLink value="/component/print/examinations.xhtml" target="_blank">
 		            	<h:graphicImage value="#{resource['images:blank.png']}" />
 						Печать из браузера
 					</h:outputLink>	
 				</div>
 				<div class="item">
-					<h:outputLink value="#{contextPath}/filter-results-export">
+					<h:outputLink value="/filter-results-export">
 						<h:graphicImage value="#{resource['images:button-export.png']}" />
 						<f:param name="bean" value="examinationRequestFilterableList" />
 						<f:param name="ext" value="docx" />
@@ -53,7 +53,7 @@
 					</h:outputLink>	
 				</div>
 				<div class="item">
-					<h:outputLink value="#{contextPath}/filter-results-export">
+					<h:outputLink value="/filter-results-export">
 						<h:graphicImage value="#{resource['images:button-export.png']}" />
 						<f:param name="bean" value="examinationRequestFilterableList" />
 						<f:param name="ext" value="xlsx" />
