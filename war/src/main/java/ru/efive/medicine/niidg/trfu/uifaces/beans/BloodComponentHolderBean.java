@@ -107,9 +107,9 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         bloodComponent.setDoseCount(1);
         bloodComponent.setAuthor(sessionManagement.getLoggedUser());
         try {
-            String externalNumber = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
+            final String externalNumber = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
 					.get("purchasedNumber");
-            if (externalNumber != null && !externalNumber.equals("")) {
+            if (StringUtils.isNotEmpty(externalNumber)) {
                 try {
                     bloodComponent.setPurchased(true);
                     System.out.println("External number: " + externalNumber);
@@ -124,10 +124,9 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                     if (bloodGroupNumber != 0) {
                         bloodComponent.setBloodGroup(dictionaryManagement.getBloodGroupByNumber(bloodGroupNumber));
                     }
-                    String stateCode = StringUtils.substring(externalNumber, 1, 3);
-                    String organizationCode = StringUtils.substring(externalNumber, 3, 5);
-                    if (stateCode != null && !stateCode.equals("") && organizationCode != null && !organizationCode
-							.equals("")) {
+                    final String stateCode = StringUtils.substring(externalNumber, 1, 3);
+                    final String organizationCode = StringUtils.substring(externalNumber, 3, 5);
+                    if (StringUtils.isNotEmpty(stateCode) && StringUtils.isNotEmpty(organizationCode)) {
                         System.out.println("stateCode: " + stateCode + ", organizationCode: " + organizationCode);
                         Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class,
 								ApplicationHelper.CONTRAGENT_DAO).
@@ -151,9 +150,9 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                 if (currentContragent != null) {
                     bloodComponent.setMaker(currentContragent);
                 }
-                String donationId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
+                final String donationId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
 						.get("donationId");
-                if (donationId != null && !donationId.equals("")) {
+                if (StringUtils.isNotEmpty(donationId)) {
                     int id = Integer.parseInt(donationId);
                     bloodComponent.setDonationId(id);
                     BloodDonationRequest donation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class,
@@ -194,15 +193,13 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     protected boolean saveDocument() {
         boolean result = false;
         try {
-            BloodComponentDAOImpl dao = (BloodComponentDAOImpl) sessionManagement.getDAO(BloodComponentDAOImpl.class,
-					ApplicationHelper.BLOOD_COMPONENT_DAO);
-            BloodComponent bloodComponent = getDocument();
+            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
 
             if (!validate()) {
                 return false;
             }
 
-            bloodComponent = dao.update(getDocument());
+            final BloodComponent bloodComponent = dao.update(getDocument());
             if (bloodComponent == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 						"Невозможно сохранить документ. Попробуйте повторить позже.", ""));
@@ -223,8 +220,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     protected boolean saveNewDocument() {
         boolean result = false;
         try {
-            BloodComponentDAOImpl dao = (BloodComponentDAOImpl) sessionManagement.getDAO(BloodComponentDAOImpl.class,
-					ApplicationHelper.BLOOD_COMPONENT_DAO);
+            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
             BloodComponent bloodComponent = getDocument();
 
             if (bloodComponent.getExpirationDate() == null && expirationDays > 1) {
@@ -330,7 +326,6 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     }
 
     public boolean isLeukoConcentrate() {
-        boolean result = false;
         try {
             if (getDocument().getComponentType() != null && getDocument().getComponentType().getValue() != null) {
                 if (StringUtils.containsIgnoreCase(getDocument().getComponentType().getValue(), "Лейкоцитный " +
@@ -341,7 +336,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return false;
     }
 
     public boolean isInControl() {
@@ -373,7 +368,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         }
 
         public boolean selected(Contragent contragent) {
-            return this.contragent == null ? false : this.contragent.equals(contragent);
+            return this.contragent != null && this.contragent.equals(contragent);
         }
 
         @Override
