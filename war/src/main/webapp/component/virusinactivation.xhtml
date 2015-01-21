@@ -134,7 +134,7 @@
         var param = '&amp;bloodSystemId=';
         var url;
         if (id != 0) {
-        url = '#{facesContext.externalContext.requestContextPath}/component/blood_component.xhtml?docId=' + id;
+        url = '/component/blood_component.xhtml?docId=' + id;
         var bloodSystemId = $("[id*='bloodSystemId']").text();
         if (bloodSystemId != '') {
         url += param + bloodSystemId;

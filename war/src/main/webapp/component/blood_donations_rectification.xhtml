@@ -14,7 +14,7 @@
 		<h:outputScript library="js" name="views.js" target="head" />
 	</ui:define>
 	
-	<ui:define name="left_menu"></ui:define>
+	<ui:define name="left_menu"/>
 	
 	<ui:define name="header">
 		<div id="view_header" style="width:100%;">
@@ -107,7 +107,7 @@
 		<h:outputScript>
         	function goToDocument(id) {
         		if (id != 0) {
-        			window.open('#{facesContext.externalContext.requestContextPath}/component/blood_donation.xhtml?docId=' + id,'_blank');
+        			window.open('/component/blood_donation.xhtml?docId=' + id,'_blank');
 				}
 			}
         </h:outputScript>

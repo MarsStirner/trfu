@@ -25,7 +25,7 @@
 											<f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
 										</h:outputText>
 									</span>
-									<h:outputLink styleClass="news-header" value="#{request.contextPath}/component/external/topic.xhtml">
+									<h:outputLink styleClass="news-header" value="/component/external/topic.xhtml">
 						            	<h:outputText value="#{row.title}" />
 						            	<f:param name="docId" value="#{row.id}" />
 									</h:outputLink>
@@ -33,7 +33,7 @@
 									<p><h:outputText value="#{row.shortDescription}" /></p>
 								</div>
 								<div class="asset-metadata">
-									<h:outputLink styleClass="read-more-link" value="#{request.contextPath}/component/external/topic.xhtml">
+									<h:outputLink styleClass="read-more-link" value="/component/external/topic.xhtml">
 						            	читать дальше
 						            	<f:param name="docId" value="#{row.id}" />
 									</h:outputLink>
