@@ -32,7 +32,7 @@ public class DonorListHolderBean extends AbstractDocumentListHolderBean<Donor> {
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			long count = sessionManagement.getDAO(DonorDAOImpl.class, "donorDao").countDocument(filter, false);
+			long count = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).countDocument(filter, false);
 			return new Long(count).intValue();
 		}
 		catch (Exception e) {
@@ -45,7 +45,7 @@ public class DonorListHolderBean extends AbstractDocumentListHolderBean<Donor> {
 	protected List<Donor> loadDocuments() {
 		List<Donor> result = new ArrayList<Donor>();
 		try {
-			result = sessionManagement.getDAO(DonorDAOImpl.class, "donorDao").findDocuments(filter, false,
+			result = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).findDocuments(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {

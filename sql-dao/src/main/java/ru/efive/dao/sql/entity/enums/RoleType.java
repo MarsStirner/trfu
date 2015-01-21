@@ -50,7 +50,7 @@ public enum RoleType {
 	/** предметное администрирование */
 	ENTERPRISE_ADMINISTRATION,
 	
-	/** АРМ Вирусинактивация */
-	VIRUSINACTIVATION
+	/** АРМ Вторичная переработка */
+	SECONDARY_PROCESSING
 	
 }
