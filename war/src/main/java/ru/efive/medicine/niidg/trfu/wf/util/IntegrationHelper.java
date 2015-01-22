@@ -392,7 +392,7 @@ public class IntegrationHelper {
                         } else {
                             requestProperties.put("donorId", String.valueOf(bloodComponent.getDonation().getDonor().getId()));
                         }
-                        final Pattern pattern = Pattern.compile(".*([/\\\\]\\d*[/\\\\]\\d*.*)$");
+                        final Pattern pattern = Pattern.compile(".*([/\\\\].*[/\\\\]\\d*.*)$");
                         final File reportFile = reportsManagement.printBigLabelAndStoreItToFile(reportProperties);
                         if(reportFile != null){
                             final Matcher matcher = pattern.matcher(reportFile.getAbsolutePath());
@@ -440,8 +440,7 @@ public class IntegrationHelper {
         ActionResult result = new ActionResult();
 
         FacesContext context = FacesContext.getCurrentInstance();
-        ApplicationPropertiesHolder propertiesHolder =
-                (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
+        ApplicationPropertiesHolder propertiesHolder = context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
 
         boolean process = true;
         Object enabled = propertiesHolder.getProperty("application", "mis.integration.enabled");
@@ -631,7 +630,7 @@ public class IntegrationHelper {
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             ApplicationPropertiesHolder propertiesHolder =
-                    (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
+                    context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
 
             boolean process = true;
             Object enabled = propertiesHolder.getProperty("application", "mis.integration.enabled");
