@@ -21,11 +21,7 @@
             var isVisibleHistory = false;
 
             function changeVisibleHistory() {
-            if (isVisibleHistory) {
-            isVisibleHistory = false;
-            } else {
-            isVisibleHistory = true;
-            }
+            isVisibleHistory=!isVisibleHistory;
             hideShowHistory();
             }
 
@@ -48,10 +44,7 @@
             headContent = $("[id='header_content']").find("div:first");
             if (headContent.text() == '404 - Донация не найдена') {
             $("[id='form_header']").hide();
-            headContent.html('
-            <div class="name">Обращение отменено</div>
-            <button onclick="window.close()">Закрыть форму</button>
-            ');
+            headContent.html('<div class="name">Обращение отменено</div><button onclick="window.close()">Закрыть форму</button>');
             }
             });
         </h:outputScript>
@@ -356,7 +349,7 @@
                         </h:outputText>
                     </div>
                 </div>
-                <div class="title">
+                <div class="title" style="float:none;">
                     <div>
                         <h:outputText value="#{bloodDonation.document.statusName}"/>
                     </div>
@@ -436,7 +429,7 @@
                                                     <legend>
                                                         <label><span class="title">Системы крови</span> </label>
                                                     </legend>
-                                                    <div class="wrap" style="width:100%; margin:0px">
+                                                    <div class="wrap" style="width:100%; margin:0">
                                                         <div class="inner">
                                                             <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
                                                                             var="blood_system"
@@ -729,7 +722,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="wrap" style="width:100%; margin:0px">
+                                                        <div class="wrap" style="width:100%; margin:0">
                                                             <div class="inner">
                                                                 <e5ui:dataTable border="0" cellpadding="0"
                                                                                 cellspacing="0"
@@ -914,7 +907,7 @@
                                                             <label><span class="title">Рекомендуемый</span> </label>
                                                         </legend>
                                                         <div class="row">
-                                                            <div class="wrap" style="width:100%; margin:0px">
+                                                            <div class="wrap" style="width:100%; margin:0">
                                                                 <div class="inner">
                                                                     <e5ui:dataTable border="0" cellpadding="0"
                                                                                     cellspacing="0" style="width:100%;"
@@ -1279,10 +1272,10 @@
                             </script>
                             <h:outputScript>
                                 function goToDocument(id) {
-                                if (id != "") {
-                                window.open('/component/blood_component.xhtml?docId='
-                                + id,'_blank');
-                                }
+                                    if (id != "") {
+                                        window.open('/component/blood_component.xhtml?docId='
+                                        + id,'_blank');
+                                    }
                                 }
                             </h:outputScript>
 
@@ -1436,7 +1429,7 @@
                             <a onmouseout="setCursor('default')" onmouseover="setCursor('pointer')"
                                onclick="changeVisibleHistory();" style="color: #4581c0">История</a>
                         </legend>
-                        <div id="history" class="wrap" style="width: 100%; margin: 0px">
+                        <div id="history" class="wrap" style="width: 100%; margin: 0">
                             <div class="inner">
                                 <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
                                                 id="history_list"
@@ -1894,7 +1887,7 @@
                                                 </td>
                                             </tr>
                                             <tr class="row">
-                                                <td class="first"><b>Общий объем обработанной крови, мл:</b></td>
+                                                <td class="first"><strong>Общий объем обработанной крови, мл:</strong></td>
                                                 <td>
                                                     <h:outputText value="#{bloodDonation.document.report.totalVolume}"/>
                                                 </td>
@@ -2083,7 +2076,7 @@
                                                 </td>
                                             </tr>
                                             <tr class="row">
-                                                <td class="first"><b>Общий объем обработанной крови, мл:</b></td>
+                                                <td class="first"><strong>Общий объем обработанной крови, мл:</strong></td>
                                                 <td>
                                                     <h:inputText value="#{bloodDonation.document.report.totalVolume}"/>
                                                 </td>
