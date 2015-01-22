@@ -2,35 +2,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:p="http://primefaces.org/ui">
 <h:head>
-	<e5ui-comp:userSessionUpdate interval="300" />
-	<e5ui-comp:outputUtilScript />
-	<h:outputScript>
-		function setMessage(color, message) {
-			$("[id='resultMessage']").attr("style", color).text(message);
-		}
-		
-		jQuery(function(){
-			var result = $("[id='main_content:result']");
-			if (result.val() == "sent") {
-				setMessage("color:#00a000", "Письмо отправлено.");
-			}
-			if (result.val() == "not_sent") {
-				setMessage("color:#ff0000", "Письмо не отправлено. Проверьте ваш e-mail.");
-			}	
-			if (result.val() == "enter_email") {
-				setMessage("color:#ff0000", "Введите e-mail.");
-			}	
-			if (result.val() == "app_error") {
-				setMessage("color:#ff0000", "Ошибка при отправлении почты. Обратитесь к администратору.");
-			}	
-		});
-	</h:outputScript>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<h:outputStylesheet library="css" name="style.css" />
 	<title>Трансфузиология</title>
 </h:head>
@@ -43,25 +18,23 @@
 				<h2>ФГБУ «Федеральный научно-клинический центр детской гематологии, онкологии и иммунологии»</h2>
 				<h1>Трансфузиология</h1>
 			</div>
-			
+
 			<h:form id="main_content">
 				<div class="main_content">
-        			<h:panelGroup rendered="true">
-	        			<div>Ваш email</div>
-	        			<div>
-	        				<h:inputText value="#{forgetPass.email}" styleClass="inp" />
-	        			</div>
-	        			<h:inputHidden id="result" value="#{forgetPass.result}"></h:inputHidden>
-	        			<div><h:commandButton styleClass="but" type="submit" action="#{forgetPass.sendMail}" value="Отправить" /></div>
-	                    <div class="forget"><a href="../../index.xhtml">Вернуться назад</a></div>
-	                    <div id="resultMessage" ></div>
-	        		</h:panelGroup>
-	        		<div>
-	                	<h:messages errorClass="e5ui-error" layout="table" globalOnly="true" showSummary="true" showDetail="false" />
-	            	</div>
-	        	</div>
-        	</h:form>
-        </div>
+					<h:panelGroup rendered="true">
+						<div>Ваш email</div>
+						<div>
+							<p:inputText value="#{forgetPass.email}" styleClass="inp" />
+						</div>
+						<div>
+							<p:commandButton styleClass="but" type="submit" action="#{forgetPass.sendMail}" value="Отправить" update="messages"/>
+						</div>
+						<p:link outcome="/index.xhtml" value="Вернуться назад" />
+						<p:messages id = "messages" for="forget_mail" closable="true"/>
+					</h:panelGroup>
+				</div>
+			</h:form>
+		</div>
 	</div>
 </h:body>
 

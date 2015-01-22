@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.view.facelets.FaceletContext;
 import javax.inject.Named;
 import javax.inject.Inject;
 import javax.mail.Authenticator;
@@ -12,15 +17,17 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 
+import org.apache.axis.utils.StringUtils;
 import ru.efive.dao.sql.dao.GenericDAO;
 import ru.efive.dao.sql.dao.user.UserDAO;
 import ru.efive.dao.sql.entity.user.User;
+import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.activity.SendMailActivity;
 import ru.efive.wf.core.activity.MailMessage;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
 
-@Named("forgetPass")
-@ConversationScoped
+@ManagedBean( name = "forgetPass")
+@ViewScoped
 public class ForgetPasswordBean implements Serializable {
 	private static final long serialVersionUID = 381779623328037514L;
 	private static final String MAIL_ACCOUNT_USERNAME = "mail.account.username";
@@ -30,17 +37,30 @@ public class ForgetPasswordBean implements Serializable {
 	private static final String MAIL_SMTP_HOST = "mail.smtp.host";
 	private static final String MAIL_SMTP_SSL_TRUST = "mail.smtp.ssl.trust";
 	private static final String MAIL_SMTP_PORT = "mail.smtp.port";
+
+	//Формат почтового сообщения
+	private static final String FORGET_MESSAGE_BODY =  "Здравствуйте, %s. Ваш пароль - \"%s\"";
+	private static final String FORGET_MESSAGE_SUBJECT = "Восстановление пароля в системе ТРФУ";
+	private static final String FORGET_MESSAGE_CONTENT_TYPE = "text/html";
+
+	//Сообщения
+	private static final FacesMessage FORGET_MAIL_MAIL_NOT_SET = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Введите e-mail", null);
+	private static final FacesMessage FORGET_MAIL_USER_NOT_FOUND = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Письмо не отправлено", null);
+	private static final FacesMessage FORGET_MAIL_MAIL_SEND_FAILURE = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Ошибка при отправлении почты. Обратитесь к администратору", null);
+	private static final FacesMessage FORGET_MAIL_MAIL_SENDED = new FacesMessage(FacesMessage.SEVERITY_INFO, "Письмо с паролем было отправлено. Проверьте почту", null);
+
+
+
 	@Inject
 	private transient IndexManagementBean indexManagement;
 	@Inject
 	private transient ApplicationPropertiesHolder propertiesHolder = new ApplicationPropertiesHolder();
-	private String result = "";
+
 	private String email = "";
 
 	public void sendMail() {
-		result = "sent";
-		if (!email.isEmpty()) {
-			UserDAO dao = getDAO(UserDAO.class, "userDao");
+		if (!StringUtils.isEmpty(email)) {
+			UserDAO dao = getDAO(UserDAO.class, ApplicationHelper.USER_DAO);
 			User user = dao.getByEmail(email);
 			if (user != null) {
 				MailMessage message = setupMessage(user);
@@ -49,15 +69,16 @@ public class ForgetPasswordBean implements Serializable {
 				try {
 					Session session = getMailSession();
 					sendMail.executeBySession(session);
+					FacesContext.getCurrentInstance().addMessage("forget_mail", FORGET_MAIL_MAIL_SENDED);
 				} catch (MessagingException e) {
-					result = "app_error";
+					FacesContext.getCurrentInstance().addMessage("forget_mail", FORGET_MAIL_MAIL_SEND_FAILURE);
 					e.printStackTrace();
 				}
 			} else {
-				result = "not_sent";
+				FacesContext.getCurrentInstance().addMessage("forget_mail", FORGET_MAIL_USER_NOT_FOUND);
 			}
 		} else {
-			result = "enter_email";
+			FacesContext.getCurrentInstance().addMessage("forget_mail", FORGET_MAIL_MAIL_NOT_SET);
 		}
 	}
 	
@@ -66,14 +87,7 @@ public class ForgetPasswordBean implements Serializable {
     	return (T) indexManagement.getContext().getBean(beanName);
     }
 	
-	public String getResult() {
-		return result;
-	}
 
-	public void setResult(String result) {
-		this.result = result;
-	}
-	
 	public String getEmail() {
 		return email;
 	}
@@ -83,10 +97,10 @@ public class ForgetPasswordBean implements Serializable {
 	}
 	
 	private MailMessage setupMessage(User user) {
-		MailMessage message = new MailMessage(new ArrayList<String>(), new ArrayList<String>(), "Восстановление пароля", null);
+		MailMessage message = new MailMessage(new ArrayList<String>(), new ArrayList<String>(), FORGET_MESSAGE_SUBJECT, null);
         message.getSendTo().add(email);
-        message.setBody("Здравствуйте " + user.getFirstName() + ". Ваш пароль - " + user.getPassword());
-        message.setContentType("text/html");
+        message.setBody(String.format(FORGET_MESSAGE_BODY, user.getFirstName(), user.getPassword()));
+        message.setContentType(FORGET_MESSAGE_CONTENT_TYPE);
 		return message;
 	}
 	
@@ -95,15 +109,13 @@ public class ForgetPasswordBean implements Serializable {
 		final String password = (String)getAppProperty(MAIL_ACCOUNT_PASSWORD);
  
 		Properties props = getMailSMPTProperties();
- 
-		Session session = Session.getInstance(props,
+
+		return Session.getInstance(props,
 		  new Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(username, password);
 			}
 		});
-		
-		return session;
 	}
 	
 	private Object getAppProperty(String key) {
@@ -117,7 +129,6 @@ public class ForgetPasswordBean implements Serializable {
 		props.put(MAIL_SMTP_HOST, getAppProperty(MAIL_SMTP_HOST));
 		props.put(MAIL_SMTP_SSL_TRUST, getAppProperty(MAIL_SMTP_SSL_TRUST));
 		props.put(MAIL_SMTP_PORT, getAppProperty(MAIL_SMTP_PORT));
-		
 		return props;
 	}
 }
