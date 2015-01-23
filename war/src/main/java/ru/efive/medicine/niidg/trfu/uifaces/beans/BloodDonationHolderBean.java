@@ -10,6 +10,7 @@ import ru.efive.dao.sql.entity.user.Role;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.*;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
+import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.data.entity.*;
 import ru.efive.medicine.niidg.trfu.data.entity.operational.OperationalRoom;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.PropertiesEditorBean;
@@ -37,6 +38,9 @@ import java.util.List;
 @Named("bloodDonation")
 @ConversationScoped
 public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDonationRequest, Integer> {
+    //TODO hardcode
+    private static final String DEFAULT_DONOR_TYPE = "110 - безвозмездный донор крови";
+    private static final String CLASSIFIER_DONOR_CATEGORY = "Тип донора";
     //TODO logger
 
     @Override
@@ -155,14 +159,14 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
     protected void initNewDocument() {
         final BloodDonationRequest document = new BloodDonationRequest();
         document.setStatusId(1);
-        Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
+        final Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
         document.setCreated(created);
         document.setTherapist(sessionManagement.getLoggedUser());
         final String parentId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("parentId");
         if (StringUtils.isNotEmpty(parentId)) {
             document.setDonor(sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).get(Integer.parseInt(parentId)));
         }
-        String examinationId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("examinationID");
+        final String examinationId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("examinationID");
         if (StringUtils.isNotEmpty(examinationId)) {
             final ExaminationRequest examination = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).get(Integer.parseInt(examinationId));
             if (examination != null) {
@@ -170,6 +174,13 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
                 document.setDonor(examination.getDonor());
                 document.setNumber(examination.getNumber());
             }
+        }
+        //TRFU-16 Установка типа донора по-умолчанию в "110 - безвозмездный донор крови"
+        final List<Classifier> defaultDonorType = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class,
+                ApplicationHelper.DICTIONARY_DAO).findByValueAndCategory(Classifier.class, DEFAULT_DONOR_TYPE,
+                CLASSIFIER_DONOR_CATEGORY);
+        if(!defaultDonorType.isEmpty()){
+            document.setDonorType(defaultDonorType.get(0));
         }
 
         HistoryEntry historyEntry = new HistoryEntry();
