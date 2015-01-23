@@ -376,7 +376,6 @@
             <div class="#{bloodDonation.document.statusId eq 1? '': 'tileleft'}">
                 <div>
                     <fieldset>
-
                         <legend>
                             <label>
                                 <span class="title">Общая информация</span>
@@ -419,6 +418,12 @@
                                         <tr class="row">
                                             <td class="first">Первичный осмотр:</td>
                                             <td>
+                                                <h:panelGroup rendered="#{bloodDonation.document.examination ne null}">
+                                                    <h:outputLink value="/component/examination.xhtml" target="_blank">
+                                                        <f:param name="docId" value="#{bloodDonation.document.examination.id}"/>
+                                                        <h:outputText value="#{bloodDonation.document.examination.examinationType eq 0? 'Первичное': 'Повторное'} обследование #{bloodDonation.document.examination.number} "/>
+                                                    </h:outputLink>
+                                                </h:panelGroup>
                                                 <h:outputText value="#{bloodDonation.document.therapist.description}"
                                                               class="wide"/>
                                             </td>
@@ -2263,15 +2268,6 @@
             </f:facet>
         </e5ui-comp:splashScreen>
         <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
-
-        <e5ui:multiMarker id="main_form_marker" rendered="true" hintWindowStyleClass="e5ui-marker-hintWindow"
-                          hintWindowInfoStyleClass="e5ui-marker-hintWindow-info"
-                          hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
-                          hintWindowErrorStyleClass="e5ui-marker-hintWindow-error"
-                          hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal" displayMode="window">
-            <h:button onclick="e5ui_multiMarker.remove('main_form_marker'); return false;" value="ОК"/>
-        </e5ui:multiMarker>
-
         <e5ui-comp:ajaxStatusGlobal timeout="300">
             <f:facet name="waitPanel">
                 <div
@@ -2283,7 +2279,6 @@
 
         <h:outputStylesheet library="css" name="datatable.css"/>
         <h:outputStylesheet library="css" name="modalWindow.css"/>
-        <h:outputStylesheet library="css" name="multiMarker.css"/>
     </ui:define>
 
 </ui:composition>
