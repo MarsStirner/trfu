@@ -526,5 +526,19 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         addOrderCriteria(orderBy, orderAsc, detachedCriteria);
 		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, donorsFilter), offset, count);
 	}
-    
+
+	public List<Donor> findDonorsByBloodGroupAndRh(boolean useBloodGroup, String bloodGroup, boolean useRhesus, String rhesusFactor, String orderBy, boolean orderAsc) {
+		DetachedCriteria detachedCriteria = createDetachedCriteria();
+		addNotDeletedCriteria(detachedCriteria);
+		if(useBloodGroup){
+			detachedCriteria.createAlias("bloodGroup", "bloodGroup");
+			detachedCriteria.add(Restrictions.eq("bloodGroup.value", bloodGroup));
+		}
+		if(useRhesus){
+			detachedCriteria.createAlias("rhesusFactor", "rhesusFactor");
+			detachedCriteria.add(Restrictions.eq("rhesusFactor.value", rhesusFactor));
+		}
+		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
+		return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+	}
 }

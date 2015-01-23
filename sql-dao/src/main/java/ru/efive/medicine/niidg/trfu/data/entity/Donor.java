@@ -205,7 +205,7 @@ public class Donor extends IdentifiedEntity implements ProcessedData {
 		if (age == 0) {
 			return "";
 		}
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		buffer.append(age).append(" ").append(age%10==1 && age%100!=11 ? "год" : age%10>=2 && age%10<=4 && (age%100<10 || age%100>=20) ? "года" : "лет");
 		return buffer.toString();
 	}

@@ -28,23 +28,7 @@ public class DonorMatchBean extends AbstractDocumentHolderBean<DonorMatch, Integ
 	
 	@Override
 	protected boolean deleteDocument() {
-		boolean result = false;
-		try {
-			/*result = sessionManagement.getDAO(BloodComponentMatchDAOImpl.class, ApplicationHelper.MATCH_DAO).delete(getDocumentId());
-			if (!result) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Невозможно удалить документ. Попробуйте повторить позже.", ""));
-			}*/
-			result = true;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Внутренняя ошибка.", ""));
-		}
-		return result;
+		return true;
 	}
 	
 	@Override
@@ -59,18 +43,6 @@ public class DonorMatchBean extends AbstractDocumentHolderBean<DonorMatch, Integ
 	
 	@Override
 	protected void initDocument(Integer id) {
-		/*try {
-			setDocument(sessionManagement.getDAO(BloodComponentMatchDAOImpl.class, ApplicationHelper.MATCH_DAO).get(id));
-			if (getDocument() == null) {
-				setState(STATE_NOT_FOUND);
-			}
-		}
-		catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Внутренняя ошибка.", ""));
-			e.printStackTrace();
-		}*/
 	}
 	
 	@Override
@@ -108,43 +80,12 @@ public class DonorMatchBean extends AbstractDocumentHolderBean<DonorMatch, Integ
 	
 	@Override
 	protected boolean saveDocument() {
-		boolean result = false;
-		try {
-			/*BloodComponentMatch match = sessionManagement.getDAO(BloodComponentMatchDAOImpl.class, ApplicationHelper.MATCH_DAO).save(getDocument());
-			if (match == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Документ не может быть сохранен. Попробуйте повторить позже.", ""));
-			}*/
-			result = true;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Внутренняя ошибка.", ""));
-		}
-		return result;
+		return true;
 	}
 	
 	@Override
 	protected boolean saveNewDocument() {
-		boolean result = false;
-		try {
-			/*BloodComponentMatch match = sessionManagement.getDAO(BloodComponentMatchDAOImpl.class, ApplicationHelper.MATCH_DAO).save(getDocument());
-			if (match == null) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Документ не может быть сохранен. Попробуйте повторить позже.", ""));
-			}*/
-			result = true;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка.", ""));
-		}
-		return result;
+		return true;
 	}
 	
 	public void setMatchResultList(List<Donor> matchResultList) {
@@ -167,7 +108,8 @@ public class DonorMatchBean extends AbstractDocumentHolderBean<DonorMatch, Integ
 	}
 
 	public boolean selected(Donor donor) {
-		return getDocument().getDonors() == null || getDocument().getDonors().size() == 0? false: getDocument().getDonors().contains(donor);
+		return !(getDocument().getDonors() == null || getDocument().getDonors().size() == 0) && getDocument()
+				.getDonors().contains(donor);
 	}
 	
 	public void search() {
