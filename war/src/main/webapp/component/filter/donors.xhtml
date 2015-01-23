@@ -30,6 +30,7 @@
 		<div class="defbutton">
 			<h:commandLink action="#{donorFilterableList.pressRefresh()}">
 				<h:graphicImage value="#{resource['images:button-refresh.png']}" />
+				<f:ajax render="main_data_tbl main_data_paging"/>
             	Обновить
            	</h:commandLink>
 		</div>
@@ -66,14 +67,12 @@
 		<div class="defbutton" id="hide_filter_div" style="display: none;">
 			<h:commandLink action="#{donorFilterableList.hideFilterPanel()}" onclick="hideFilter();">
 				<h:graphicImage value="#{resource['images:filter-delete-icon_16.png']}" />
-				<f:ajax />
             	Скрыть фильтр
            	</h:commandLink>
 		</div>
 		<div class="defbutton" id="show_filter_div" style="display: none;">
 			<h:commandLink action="#{donorFilterableList.showFilterPanel()}" onclick="showFilter();">
 				<h:graphicImage value="#{resource['images:filter-add-icon_16.png']}" />
-				<f:ajax />
             	Показать фильтр
            	</h:commandLink>
 		</div>
@@ -106,7 +105,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{donorFilterableList.sort('lastName,firstName,middleName')}">
 			                        	ФИО
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging"/>
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.descriptionShort}" />
@@ -115,7 +114,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{donorFilterableList.sort('number')}">
 			                        	Номер
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging"/>
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.number}" />
@@ -124,7 +123,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{donorFilterableList.sort('category')}">
 			                        	Категория
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging"/>
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.category eq 0? 'Первичный': row.category eq 1? 'Кадровый': 'Повторный'}" />
