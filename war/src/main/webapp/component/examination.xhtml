@@ -19,51 +19,47 @@
     <h:outputScript library="js" name="forms.js" target="head"/>
     <e5ui-comp:outputUtilScript/>
     <h:outputScript>
-   			var isVisibleHistory = false;
-			
-			function changeVisibleHistory() {
-				if (isVisibleHistory) {
-					isVisibleHistory = false;
-				} else {
-					isVisibleHistory = true;
-				}
-				hideShowHistory();
-			}
-			
-			function hideShowHistory() {
-				var blockHistory = $("[id*='history']");
-				if (isVisibleHistory) {
-					blockHistory.show();
-				} else {
-					blockHistory.hide();
-				}
-			}
-			
-			function setCursor(typeCursor) {
-				var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
-				$("[id*='history']").prev().find("a").attr("style", styleTitle);
-			}
-			
-			function setDefaultRadio() {
-				if ($("[type='radio']").size() != 0) {
-					var firstExam = $("[type='radio']:first");
-					var secondExam = $("[type='radio']:last");
-					if (!firstExam.is(":checked")) {
-						if (!secondExam.is(":checked")) {
-							firstExam.attr("checked", "true");
-						}
-					}
-				}
-			}
-    
-			jQuery(function(){
-				hideShowHistory();
-				setDefaultRadio();
-			});
-		</h:outputScript>
+        var isVisibleHistory = false;
+
+        function changeVisibleHistory() {
+            isVisibleHistory = !isVisibleHistory;
+            hideShowHistory();
+        }
+
+        function hideShowHistory() {
+            var blockHistory = $("[id*='history']");
+            if (isVisibleHistory) {
+                blockHistory.show();
+            } else {
+                blockHistory.hide();
+            }
+        }
+
+        function setCursor(typeCursor) {
+            var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
+            $("[id*='history']").prev().find("a").attr("style", styleTitle);
+        }
+
+        function setDefaultRadio() {
+            if ($("[type='radio']").size() != 0) {
+                var firstExam = $("[type='radio']:first");
+                var secondExam = $("[type='radio']:last");
+                if (!firstExam.is(":checked")) {
+                    if (!secondExam.is(":checked")) {
+                        firstExam.attr("checked", "true");
+                    }
+                }
+            }
+        }
+
+        jQuery(function () {
+            hideShowHistory();
+            setDefaultRadio();
+        });
+    </h:outputScript>
 </ui:define>
 
-<ui:define name="left_menu"></ui:define>
+<ui:define name="left_menu"/>
 
 <ui:define name="header">
     <div id="form_header">
@@ -167,40 +163,35 @@
                     </h:commandLink>
                     <div class="sub">
                         <div class="item">
-                            <h:outputLink value="/component/print/appointment_card_all.xhtml"
-                                          target="_blank">
+                            <h:outputLink value="/component/print/appointment_card_all.xhtml" target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
                                 Направления на исследование
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="/component/print/appointment_card_protocol.xhtml"
-                                          target="_blank">
+                            <h:outputLink value="/component/print/appointment_card_protocol.xhtml" target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
                                 Протоколы исследований
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="/component/print/donation_appointment.xhtml"
-                                          target="_blank">
+                            <h:outputLink value="/component/print/donation_appointment.xhtml" target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
                                 Кроводача, осмотр врача
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="/component/print/blood_donation_information.xhtml"
-                                          target="_blank">
+                            <h:outputLink value="/component/print/blood_donation_information.xhtml" target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
                                 Справка о кроводаче
                             </h:outputLink>
                         </div>
                         <div class="item">
-                            <h:outputLink value="/component/print/external_appointment_card.xhtml"
-                                          target="_blank">
+                            <h:outputLink value="/component/print/external_appointment_card.xhtml" target="_blank">
                                 <h:graphicImage value="#{resource['images:blank.png']}"/>
                                 <f:param name="docId" value="#{examination.document.id}"/>
                                 Направление в поликлинику
@@ -292,7 +283,9 @@
 <div>
 <fieldset>
 <legend>
-    <label><span class="title">Общая информация</span> </label>
+    <label>
+        <span class="title">Общая информация</span>
+    </label>
 </legend>
 <h:panelGroup rendered="#{examination.viewState}">
     <div class="row">
@@ -747,16 +740,18 @@
 <div>
 <fieldset>
 <legend>
-    <label><span class="title">
-									Результаты анализов
-									<h:panelGroup
-                                            rendered="#{sessionManagement.admin and (examination.document.appointment ne null)}">
-                                        <h:commandLink style="margin-left:3px;"
-                                                       action="#{applicationSetup.initializeExternalAnalysisHistoryModal(examination.document.appointment)}">
-                                            ...
-                                        </h:commandLink>
-                                    </h:panelGroup>
-								</span></label>
+    <label>
+        <span class="title">
+            Результаты анализов
+            <h:panelGroup
+                    rendered="#{sessionManagement.admin and (examination.document.appointment ne null)}">
+                <h:commandLink style="margin-left:3px;"
+                               action="#{applicationSetup.initializeExternalAnalysisHistoryModal(examination.document.appointment)}">
+                    ...
+                </h:commandLink>
+            </h:panelGroup>
+        </span>
+    </label>
 </legend>
 <e5ui-comp:modalWindow id="externalAnalysisHistoryModal"
                        modalWindowHolder="#{applicationSetup.externalAnalysisHistoryModal}"
@@ -824,45 +819,45 @@
     <div class="inner" style="height:246px;">
         <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
                         value="#{examination.document.testList}"
-                        style="width:100%;" var="row" grouping="false">
+                        style="width:100%;" var="test_entry_row" grouping="false">
             <e5ui:column style="min-width: 3em; max-width: 120px; word-wrap: break-word;">
                 <f:facet name="header">
                     <p>Анализ</p>
                 </f:facet>
-                <h:outputText value="#{row.type.value}"/>
+                <h:outputText value="#{test_entry_row.type.value}"/>
             </e5ui:column>
             <e5ui:column style="min-width:10em;">
                 <f:facet name="header">
                     <p>Результат</p>
                 </f:facet>
-                <h:panelGroup rendered="#{row.valueType eq 2}">
-                    <h:commandLink action="#{applicationSetup.initializeAnalysisValueListModal(row)}">
-                        <h:outputText value="#{row.valueShort}"/>
+                <h:panelGroup rendered="#{test_entry_row.valueType eq 2}">
+                    <h:commandLink action="#{applicationSetup.initializeAnalysisValueListModal(test_entry_row)}">
+                        <h:outputText value="#{test_entry_row.valueShort}"/>
                     </h:commandLink>
                 </h:panelGroup>
-                <h:panelGroup rendered="#{row.valueType ne 2}">
+                <h:panelGroup rendered="#{test_entry_row.valueType ne 2}">
                     <h:panelGroup rendered="#{examination.anamnesisEditable and examination.editState}">
-                        <h:panelGroup rendered="#{row.type.fieldType eq 0}">
-                            <h:inputText class="wide" value="#{row.value}"/>
+                        <h:panelGroup rendered="#{test_entry_row.type.fieldType eq 0}">
+                            <h:inputText class="wide" value="#{test_entry_row.value}"/>
                         </h:panelGroup>
-                        <h:panelGroup rendered="#{row.type.fieldType eq 1}">
-                            <h:inputTextarea class="wide" value="#{row.value}"/>
+                        <h:panelGroup rendered="#{test_entry_row.type.fieldType eq 1}">
+                            <h:inputTextarea class="wide" value="#{test_entry_row.value}"/>
                         </h:panelGroup>
-                        <h:panelGroup rendered="#{row.type.fieldType eq 3}">
-                            <h:selectOneMenu value="#{row.value}">
+                        <h:panelGroup rendered="#{test_entry_row.type.fieldType eq 3}">
+                            <h:selectOneMenu value="#{test_entry_row.value}">
                                 <f:selectItems
-                                        value="#{dictionaryManagement.getValuesByCategoryWithEmpty(row.type.value)}"/>
+                                        value="#{dictionaryManagement.getValuesByCategoryWithEmpty(test_entry_row.type.value)}"/>
                             </h:selectOneMenu>
                         </h:panelGroup>
-                        <h:panelGroup rendered="#{row.type.fieldType eq 4}">
-                            <h:selectOneRadio layout="lineDirection" value="#{row.value}">
+                        <h:panelGroup rendered="#{test_entry_row.type.fieldType eq 4}">
+                            <h:selectOneRadio layout="lineDirection" value="#{test_entry_row.value}">
                                 <f:selectItems
-                                        value="#{dictionaryManagement.getValuesByCategoryWithEmpty(row.type.value)}"/>
+                                        value="#{dictionaryManagement.getValuesByCategoryWithEmpty(test_entry_row.type.value)}"/>
                             </h:selectOneRadio>
                         </h:panelGroup>
                     </h:panelGroup>
                     <h:panelGroup rendered="#{not (examination.anamnesisEditable and examination.editState)}">
-                        <h:outputText value="#{row.value}" class="wide"/>
+                        <h:outputText value="#{test_entry_row.value}" class="wide"/>
                     </h:panelGroup>
                 </h:panelGroup>
             </e5ui:column>
@@ -870,12 +865,12 @@
                 <f:facet name="header">
                     <p>Ед.измерения</p>
                 </f:facet>
-                <h:panelGroup rendered="#{row.type.fieldType lt 2}">
+                <h:panelGroup rendered="#{test_entry_row.type.fieldType lt 2}">
                     <h:panelGroup rendered="#{examination.anamnesisEditable and examination.editState}">
-                        <h:inputText value="#{row.unit}" size="3"/>
+                        <h:inputText value="#{test_entry_row.unit}" size="3"/>
                     </h:panelGroup>
                     <h:panelGroup rendered="#{not (examination.anamnesisEditable and examination.editState)}">
-                        <h:outputText value="#{row.unit}"/>
+                        <h:outputText value="#{test_entry_row.unit}"/>
                     </h:panelGroup>
                 </h:panelGroup>
             </e5ui:column>
@@ -883,12 +878,12 @@
                 <f:facet name="header">
                     <p>Норма</p>
                 </f:facet>
-                <h:panelGroup rendered="#{row.type.fieldType lt 2}">
+                <h:panelGroup rendered="#{test_entry_row.type.fieldType lt 2}">
                     <h:panelGroup rendered="#{examination.anamnesisEditable and examination.editState}">
-                        <h:inputText value="#{row.normValue}" size="3"/>
+                        <h:inputText value="#{test_entry_row.normValue}" size="3"/>
                     </h:panelGroup>
                     <h:panelGroup rendered="#{not (examination.anamnesisEditable and examination.editState)}">
-                        <h:outputText value="#{row.normValue}"/>
+                        <h:outputText value="#{test_entry_row.normValue}"/>
                     </h:panelGroup>
                 </h:panelGroup>
             </e5ui:column>
@@ -1045,17 +1040,17 @@
             <a onmouseout="setCursor('default')" onmouseover="setCursor('pointer')" 
 			onclick="changeVisibleHistory();" style="color: #4581c0">История</a> 
         </legend>
-        <div id="history" class="wrap" style="width: 100%; margin: 0px">
+        <div id="history" class="wrap" style="width: 100%; margin: 0">
             <div class="inner">
                 <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
                                 id="history_list"
                                 value="#{examination.document.historyList}"
-                                var="row" grouping="false">
+                                var="history_row" grouping="false">
                     <e5ui:column style="min-width:3em">
                         <f:facet name="header">
                             <p>Дата</p>
                         </f:facet>
-                        <h:outputText value="#{row.startDate}">
+                        <h:outputText value="#{history_row.startDate}">
                             <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
                         </h:outputText>
                     </e5ui:column>
@@ -1063,31 +1058,31 @@
                         <f:facet name="header">
                             <p>Со cтатуса</p>
                         </f:facet>
-                        <h:outputText value="#{row.fromStatusName}"/>
+                        <h:outputText value="#{history_row.fromStatusName}"/>
                     </e5ui:column>
                     <e5ui:column style="min-width:5em">
                         <f:facet name="header">
                             <p>Действие</p>
                         </f:facet>
-                        <h:outputText value="#{row.actionName}"/>
+                        <h:outputText value="#{history_row.actionName}"/>
                     </e5ui:column>
                     <e5ui:column style="min-width:5em">
 					    <f:facet name="header">
 					     	<p>На статус</p>
 					   	</f:facet>
-						<h:outputText value="#{row.toStatusName}" />
+						<h:outputText value="#{history_row.toStatusName}" />
 					</e5ui:column>
                     <e5ui:column style="min-width:6em">
                         <f:facet name="header">
                             <p>Автор</p>
                         </f:facet>
-                        <h:outputText value="#{row.owner.descriptionShort}"/>
+                        <h:outputText value="#{history_row.owner.descriptionShort}"/>
                     </e5ui:column>
                     <e5ui:column style="min-width:7em">
                         <f:facet name="header">
                             <p>Комментарий</p>
                         </f:facet>
-                        <h:outputText value="#{row.commentary}"/>
+                        <h:outputText value="#{history_row.commentary}"/>
                     </e5ui:column>
                 </e5ui:dataTable>
             </div>
@@ -1234,16 +1229,8 @@
         </f:facet>
     </e5ui-comp:splashScreen>
     <script>e5ui_splashScreen.startShowOnSubmit('splash_screen', ['main_content_form']);</script>
-    <e5ui:multiMarker id="main_form_marker" rendered="true" hintWindowStyleClass="e5ui-marker-hintWindow"
-                      hintWindowInfoStyleClass="e5ui-marker-hintWindow-info"
-                      hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
-                      hintWindowErrorStyleClass="e5ui-marker-hintWindow-error"
-                      hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal" displayMode="window">
-        <h:button onclick="e5ui_multiMarker.remove('main_form_marker'); return false;" value="ОК"/>
-    </e5ui:multiMarker>
     <h:outputStylesheet library="css" name="datatable.css"/>
     <h:outputStylesheet library="css" name="modalWindow.css"/>
-    <h:outputStylesheet library="css" name="multiMarker.css"/>
 </ui:define>
 
 </ui:composition>
