@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -12,8 +14,8 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
-@Named("controlledReadyBloodComponentList")
-@SessionScoped
+@ManagedBean(name = "controlledReadyBloodComponentList")
+@ViewScoped
 public class ControlledReadyBloodComponentsBean extends AbstractDocumentListHolderBean<BloodComponent> {
 
 	@Override
