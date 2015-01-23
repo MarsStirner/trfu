@@ -30,6 +30,7 @@
 			<h:commandLink action="#{examinationRequestFilterableList.pressRefresh()}">
 				<h:graphicImage value="#{resource['images:button-refresh.png']}" />
             	Обновить
+				<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
            	</h:commandLink>
 		</div>
 		<div class="top" style="height: 27px;">
@@ -65,14 +66,12 @@
 		<div class="defbutton" id="hide_filter_div" style="display: none;">
 			<h:commandLink action="#{examinationRequestFilterableList.hideFilterPanel()}" onclick="hideFilter();">
 				<h:graphicImage value="#{resource['images:filter-delete-icon_16.png']}" />
-				<f:ajax />
             	Скрыть фильтр
            	</h:commandLink>
 		</div>
 		<div class="defbutton" id="show_filter_div" style="display: none;">
 			<h:commandLink action="#{examinationRequestFilterableList.showFilterPanel()}" onclick="showFilter();">
 				<h:graphicImage value="#{resource['images:filter-add-icon_16.png']}" />
-				<f:ajax />
             	Показать фильтр
            	</h:commandLink>
 		</div>
@@ -106,7 +105,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{examinationRequestFilterableList.sort('number')}">
 			                        	Номер
-			                        	<f:ajax render="main_data_tbl"/>
+										<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.number}" />
@@ -115,7 +114,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{examinationRequestFilterableList.sort('created')}">
 			                        	Дата создания
-			                        	<f:ajax render="main_data_tbl"/>
+										<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.created}">
@@ -126,7 +125,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{examinationRequestFilterableList.sort('donor.lastName,donor.firstName,donor.middleName')}">
 			                        	Донор
-			                        	<f:ajax render="main_data_tbl"/>
+										<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.donor.descriptionShort}" />
@@ -135,7 +134,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{examinationRequestFilterableList.sort('examinationType')}">
 			                        	Обследование
-			                        	<f:ajax render="main_data_tbl"/>
+										<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.examinationType eq 0? 'Первичное': 'Повторное'}" />
@@ -144,7 +143,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{examinationRequestFilterableList.sort('planDate')}">
 			                        	Планируемая дата
-			                        	<f:ajax render="main_data_tbl"/>
+										<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.planDate}">
