@@ -69,7 +69,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{donorAvailableList.sort('lastName,firstName,middleName')}">
 			                        	ФИО
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.descriptionShort}" />
@@ -78,7 +78,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{donorAvailableList.sort('number')}">
 			                        	Номер
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.number}" />
@@ -87,7 +87,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{donorAvailableList.sort('category')}">
 			                        	Категория
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.category eq 0? 'Первичный': row.category eq 1? 'Кадровый': 'Повторный'}" />

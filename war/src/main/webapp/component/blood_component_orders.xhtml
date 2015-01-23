@@ -95,7 +95,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{bloodComponentOrderList.sort('transfusionType')}">
 			                        	Вид трансфузии
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.transfusionType eq 0? 'Плановая': 'Экстренная'}" />

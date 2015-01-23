@@ -162,7 +162,7 @@
                             <f:facet name="header">
                                 <h:commandLink action="#{virusinactivationComponentList.sort('parentNumber,number')}">
                                     Номер
-                                    <f:ajax render="main_data_tbl"/>
+                                    <f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
                                 </h:commandLink>
                             </f:facet>
                             <h:outputText value="#{row.fullNumber}" />
@@ -171,7 +171,7 @@
                             <f:facet name="header">
                                 <h:commandLink action="#{virusinactivationComponentList.sort('created')}">
                                     Дата создания
-                                    <f:ajax render="main_data_tbl"/>
+                                    <f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
                                 </h:commandLink>
                             </f:facet>
                             <h:outputText value="#{row.created}">
@@ -182,7 +182,7 @@
                             <f:facet name="header">
                                 <h:commandLink action="#{virusinactivationComponentList.sort('donation.number')}">
                                     Номер донации
-                                    <f:ajax render="main_data_tbl"/>
+                                    <f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
                                 </h:commandLink>
                             </f:facet>
                             <h:outputText value="#{row.donation.number}"/>
@@ -191,7 +191,7 @@
                             <f:facet name="header">
                                 <h:commandLink action="#{virusinactivationComponentList.sort('componentType.value')}">
                                     Тип компонента
-                                    <f:ajax render="main_data_tbl"/>
+                                    <f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
                                 </h:commandLink>
                             </f:facet>
                             <h:outputText value="#{row.componentType}" converter="BloodComponentTypeConverter" />
@@ -200,7 +200,7 @@
                             <f:facet name="header">
                                 <h:commandLink action="#{virusinactivationComponentList.sort('donation.commentary')}">
                                     Комментарий
-                                    <f:ajax render="main_data_tbl"/>
+                                    <f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
                                 </h:commandLink>
                             </f:facet>
                             <h:outputText value="#{row.donation.commentary}"/>

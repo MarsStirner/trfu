@@ -100,7 +100,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{medicalOperationByDateList.sort('created')}">
 			                        	Дата создания
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.created}">
@@ -111,7 +111,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{medicalOperationByDateList.sort('number')}">
 			                        	Номер
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.number}" />
@@ -120,7 +120,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{medicalOperationByDateList.sort('donor.lastName,donor.firstName,donor.middleName')}">
 			                        	Донор
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.donor.descriptionShort}" />
@@ -129,7 +129,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{medicalOperationByDateList.sort('operationForm.value')}">
 			                        	Вид процедуры
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.operationForm}" converter="ClassifierConverter" />
@@ -138,7 +138,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{medicalOperationByDateList.sort('operationType')}">
 			                        	Тип процедуры
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.operationType eq 0? 'Ауто': 'Алло'}" />
@@ -147,7 +147,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{medicalOperationByDateList.sort('operationType')}">
 			                        	Родственная
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText rendered="#{row.operationType eq 1}" value="#{row.related? 'Да': 'Нет'}" />
@@ -156,7 +156,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{medicalOperationByDateList.sort('recipient')}">
 			                        	Реципиент
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.fromMIS? row.recipientDescription: row.recipient}" />

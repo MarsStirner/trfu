@@ -62,7 +62,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{inQuarantineBloodComponentList.sort('parentNumber,number')}">
 			                        	Номер
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.fullNumber}" />
@@ -71,7 +71,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{inQuarantineBloodComponentList.sort('componentType.value')}">
 			                        	Компонент
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.componentType}" converter="BloodComponentTypeConverter" />
@@ -80,7 +80,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{inQuarantineBloodComponentList.sort('volume')}">
 			                        	Объем
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.volume}" />
@@ -89,7 +89,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{inQuarantineBloodComponentList.sort('anticoagulant.value')}">
 			                        	Антикоагулянт
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.anticoagulant}" converter="AnticoagulantConverter" />
@@ -98,7 +98,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{inQuarantineBloodComponentList.sort('bloodGroup.id,rhesusFactor.id')}">
 			                        	Группа крови
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.bloodGroup}" converter="BloodGroupConverter" />
@@ -108,7 +108,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{inQuarantineBloodComponentList.sort('quarantineStartDate')}">
 			                        	Начало карантина
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.quarantineStartDate}">
@@ -119,7 +119,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{quarantineFinishBloodComponentList.sort('quarantineFinishDate')}">
 			                        	Завершение карантина
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.quarantineFinishDate}">
@@ -130,7 +130,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{inQuarantineBloodComponentList.sort('expirationDate')}">
 			                        	Срок хранения
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.expirationDate}">

@@ -94,7 +94,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{userList.sort('lastName,firstName,middleName')}">
 			                        	ФИО
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.description}" />
@@ -103,7 +103,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{userList.sort('login')}">
 			                        	Имя пользователя
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.login}" />
@@ -118,7 +118,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{userList.sort('email')}">
 			                        	Адрес электронной почты
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.email}" />

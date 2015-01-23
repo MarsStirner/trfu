@@ -63,7 +63,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{informationList.sort('created')}">
 			                        	Дата создания
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.created}">
@@ -74,7 +74,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{informationList.sort('published')}">
 			                        	Опубликована
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.published? 'Да': 'Нет'}" />
@@ -83,7 +83,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{informationList.sort('publishDate')}">
 			                        	Дата публикации
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.publishDate}">
@@ -94,7 +94,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{informationList.sort('title')}">
 			                        	Заголовок
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.title}" />
@@ -103,7 +103,7 @@
 								<f:facet name="header">
 									<h:commandLink action="#{informationList.sort('shortDescription')}">
 			                        	Краткое содержание
-			                        	<f:ajax render="main_data_tbl"/>
+			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
 			                        </h:commandLink>
 			                    </f:facet>
 								<h:outputText value="#{row.shortDescription}" />

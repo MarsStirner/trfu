@@ -201,7 +201,7 @@
                                 <f:facet name="header">
                                     <h:commandLink action="#{bloodDonationOperationalList.sort('number')}">
                                         Номер
-                                        <f:ajax render="main_data_tbl"/>
+                                        <f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
                                     </h:commandLink>
                                 </f:facet>
                                 <h:outputText value="#{row.number}"/>
@@ -210,7 +210,7 @@
                                 <f:facet name="header">
                                     <h:commandLink action="#{bloodDonationOperationalList.sort('created')}">
                                         Дата создания
-                                        <f:ajax render="main_data_tbl"/>
+                                        <f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
                                     </h:commandLink>
                                 </f:facet>
                                 <h:outputText value="#{row.created}">
@@ -222,7 +222,7 @@
                                     <h:commandLink
                                             action="#{bloodDonationOperationalList.sort('donor.lastName,donor.firstName,donor.middleName')}">
                                         Донор
-                                        <f:ajax render="main_data_tbl"/>
+                                        <f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
                                     </h:commandLink>
                                 </f:facet>
                                 <h:outputText value="#{row.donor.descriptionShort}"/>
