@@ -799,7 +799,8 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         	detachedCriteria.add(Restrictions.eq("deleted", false));
         }
         detachedCriteria.add(Restrictions.eq("statusId", statusId));
-        detachedCriteria.add(Restrictions.isNotEmpty("qualityControlList"));
+		// TODO какую роль должно играть это ограничение, почему этого условия нет в основном запросе?
+        // detachedCriteria.add(Restrictions.isNotEmpty("qualityControlList"));
         detachedCriteria.add(Restrictions.eq("inControl", false));
         return getCountOf(getSearchCriteria(detachedCriteria, filter));
 	}
