@@ -416,14 +416,18 @@
                                             </td>
                                         </tr>
                                         <tr class="row">
+                                            <td class="first">Обследование:</td>
+                                            <td>
+                                                <h:outputText value="#{bloodDonation.document.examination.examinationType eq 0? 'Первичное': 'Повторное'} обследование #{bloodDonation.document.examination.number}" class="wide"/>
+                                                <h:outputLink value="/component/examination.xhtml" target="_blank">
+                                                    <f:param name="docId" value="#{bloodDonation.document.examination.id}"/>
+                                                    <h:graphicImage value="#{resource['images:link.png']}"/>
+                                                </h:outputLink>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
                                             <td class="first">Первичный осмотр:</td>
                                             <td>
-                                                <h:panelGroup rendered="#{bloodDonation.document.examination ne null}">
-                                                    <h:outputLink value="/component/examination.xhtml" target="_blank">
-                                                        <f:param name="docId" value="#{bloodDonation.document.examination.id}"/>
-                                                        <h:outputText value="#{bloodDonation.document.examination.examinationType eq 0? 'Первичное': 'Повторное'} обследование #{bloodDonation.document.examination.number} "/>
-                                                    </h:outputLink>
-                                                </h:panelGroup>
                                                 <h:outputText value="#{bloodDonation.document.therapist.description}"
                                                               class="wide"/>
                                             </td>
@@ -693,6 +697,16 @@
                                                 <h:outputText value="#{bloodDonation.document.created}" class="wide">
                                                     <f:convertDateTime type="date" pattern="dd.MM.yyyy HH:mm"/>
                                                 </h:outputText>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="first">Обследование:</td>
+                                            <td>
+                                                <h:outputText value="#{bloodDonation.document.examination.examinationType eq 0? 'Первичное': 'Повторное'} обследование #{bloodDonation.document.examination.number}" class="wide"/>
+                                                <h:outputLink value="/component/examination.xhtml" target="_blank">
+                                                    <f:param name="docId" value="#{bloodDonation.document.examination.id}"/>
+                                                    <h:graphicImage value="#{resource['images:link.png']}"/>
+                                                </h:outputLink>
                                             </td>
                                         </tr>
                                         <tr class="row">

@@ -246,7 +246,7 @@
     <h:panelGroup rendered="#{examination.editState or examination.viewState}">
         <div class="name">
             <div>
-                <h:outputText value="#{examination.document.examinationType eq 0? 'Первичное': 'Повторное'}"/>
+                <h:outputText value="#{examination.document.examinationType eq 0 ? 'Первичное': 'Повторное'}"/>
                 <span style="margin:0 5px;">обследование</span>
                 <h:outputText value="#{examination.document.number}"/>
                 <span style="margin:0 5px;">от</span>
@@ -335,6 +335,18 @@
                     <h:outputText value="#{examination.document.staffNurse.description}" class="wide"/>
                 </td>
             </tr>
+            <h:panelGroup id = "donation" rendered="#{examination.donation ne null}">
+            <tr class="row">
+                <td class="first">Донация:</td>
+                <td>
+                    <h:outputText value="Донация №#{examination.donation.number}" class="wide"/>
+                    <h:outputLink value="/component/blood_donation.xhtml" target="_blank">
+                        <f:param name="docId" value="#{examination.donation.id}"/>
+                        <h:graphicImage value="#{resource['images:link.png']}"/>
+                    </h:outputLink>
+                </td>
+            </tr>
+            </h:panelGroup>
             <tr class="row">
                 <td class="first">Комментарии:</td>
                 <td>

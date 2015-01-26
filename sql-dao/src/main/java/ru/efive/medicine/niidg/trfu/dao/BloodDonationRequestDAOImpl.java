@@ -417,4 +417,11 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 
 		return idsOnlyCriteria;
 	}
+
+	public List<BloodDonationRequest> findDocumentsByExaminationId(int examinationId) {
+		final DetachedCriteria criteria = createDetachedCriteria();
+		addNotDeletedCriteria(criteria);
+		criteria.add(Restrictions.eq("examination.id", examinationId));
+		return getHibernateTemplate().findByCriteria(criteria);
+	}
 }
