@@ -35,12 +35,9 @@ public class Role extends IdentifiedEntity {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) return false;
-        if( !( obj instanceof Role ) ) {
-            return false;
-        }
-        return getName().equals( ((Role)obj).getName() ) && getRoleType().equals(((Role)obj).getRoleType());
-    }
+		return obj != null && obj instanceof Role && getName().equals(((Role) obj).getName()) && getRoleType().equals(
+				((Role) obj).getRoleType());
+	}
 	
 	@Override
     public int hashCode() {

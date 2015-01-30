@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -120,31 +121,12 @@ public class DivisionHolderBean extends AbstractDocumentHolderBean<Division, Int
 		}
 		return result;
 	}
-	
-	@Override
-    protected String doAfterCreate() {
-		divisionList.markNeedRefresh();
-        return super.doAfterCreate();
-    }
-    
-    @Override
-    protected String doAfterDelete() {
-    	divisionList.markNeedRefresh();
-        return super.doAfterDelete();
-    }
-    
-    @Override
-    protected String doAfterSave() {
-    	divisionList.markNeedRefresh();
-        return super.doAfterSave();
-    }
+
 	
     
 	@Inject @Named("sessionManagement")
 	private transient SessionManagementBean sessionManagement = new SessionManagementBean();
-	@Inject @Named("divisionList")
-	private transient DivisionListHolderBean divisionList = new DivisionListHolderBean();
-	
+
 	
 	private static final long serialVersionUID = 1L;
 }

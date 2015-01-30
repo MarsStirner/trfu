@@ -30,7 +30,7 @@
     			jQuery("#table_inner").height(height);
     			jQuery("#split").height(document.body.clientHeight);
     			jQuery(".e5ui-menu").height(document.body.clientHeight-30);
-			};
+			}
         </h:outputScript>
 	</ui:define>
 	
@@ -50,7 +50,7 @@
 			<h:commandLink action="#{roleList.refresh()}">
 				<h:graphicImage value="#{resource['images:button-refresh.png']}" />
             	Обновить
-            	<e5ui:formPartTarget formPart="main_table_part"/>
+                <f:ajax render="main_data_tbl :main_content_form:main_data_paging" />
            	</h:commandLink>
 		</div>
 	</ui:define>
@@ -71,7 +71,6 @@
 				}
 			}
         </h:outputScript>
-		<e5ui:formPart id="main_table_part">
 			<div id="main_table">
 				<div class="wrap_main" id="table_wrap">
 					<div class="inner" id="table_inner">
@@ -98,11 +97,12 @@
 					</div>
 				</div>
 				<div id="table_paging">
+                    <h:panelGroup id="main_data_paging">
 					<e5ui-comp:tablePager documentListHolder="#{roleList}" style="display:inline;" />
 					<e5ui-comp:tablePageSizeSelector documentListHolder="#{roleList}" style="display:inline;float:right;" pageSizes="10,25,50,100" />
+                    </h:panelGroup>
 				</div>
 			</div>
-		</e5ui:formPart>
 	</ui:define>
 	
 </ui:composition>

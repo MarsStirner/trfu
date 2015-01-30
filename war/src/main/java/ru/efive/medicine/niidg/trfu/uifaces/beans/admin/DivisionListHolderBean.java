@@ -3,8 +3,9 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,11 +13,12 @@ import javax.inject.Named;
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.Division;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
+import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
-@Named("divisionList")
-@SessionScoped
+@ManagedBean(name="divisionList")
+@ViewScoped
 public class DivisionListHolderBean extends AbstractDocumentListHolderBean<Division> {
 	
 	@Override
@@ -26,22 +28,20 @@ public class DivisionListHolderBean extends AbstractDocumentListHolderBean<Divis
 
 	@Override
 	protected int getTotalCount() {
-		int result = 0;
 		try {
-			long count = sessionManagement.getDAO(DivisionDAOImpl.class, "divisionDao").countDocument(false);
-			return new Long(count).intValue();
+            return new Long(sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).countDocument(false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+            return 0;
 		}
-		return result;
 	}
 
 	@Override
 	protected List<Division> loadDocuments() {
 		List<Division> result = new ArrayList<Division>();
 		try {
-			result = sessionManagement.getDAO(DivisionDAOImpl.class, "divisionDao").findDocuments(false, -1, -1, getSorting().getColumnId(), getSorting().isAsc());
+			result = sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findDocuments(false, -1, -1, getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -70,7 +70,7 @@ public class DivisionListHolderBean extends AbstractDocumentListHolderBean<Divis
 		refresh();
 	}
 	
-	
+	//TODO учитывать поисковую строку
 	private String filter;
 
 	@Inject @Named("sessionManagement")
