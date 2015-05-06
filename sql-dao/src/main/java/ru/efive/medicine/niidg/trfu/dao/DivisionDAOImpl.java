@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
@@ -18,20 +19,30 @@ public class DivisionDAOImpl extends GenericDAOHibernate<Division> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Division> findByName(String name, boolean showDeleted) {
+	public List<Division> findByName(String name, boolean showDeleted, final String sortingColumn, final boolean sortingOrder) {
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
-        
         if (!showDeleted) {
         	detachedCriteria.add(Restrictions.eq("deleted", false));
         }
-        
+        if (StringUtils.isNotEmpty(name)) {
+            detachedCriteria.add(Restrictions.ilike("name", name,  MatchMode.ANYWHERE));
+        }
+        addOrder(detachedCriteria, sortingColumn, sortingOrder);
+		return getHibernateTemplate().findByCriteria(detachedCriteria);
+	}
+
+    public List<Division> findByName(String name, boolean showDeleted) {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+        detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+        if (!showDeleted) {
+            detachedCriteria.add(Restrictions.eq("deleted", false));
+        }
         if (StringUtils.isNotEmpty(name)) {
             detachedCriteria.add(Restrictions.ilike("name", name));
         }
-        
-		return getHibernateTemplate().findByCriteria(detachedCriteria);
-	}
+        return getHibernateTemplate().findByCriteria(detachedCriteria);
+    }
 	
 	@SuppressWarnings("unchecked")
 	public Division findByExternalId(Serializable id) {

@@ -41,7 +41,7 @@ public class DivisionListHolderBean extends AbstractDocumentListHolderBean<Divis
 	protected List<Division> loadDocuments() {
 		List<Division> result = new ArrayList<Division>();
 		try {
-			result = sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findDocuments(false, -1, -1, getSorting().getColumnId(), getSorting().isAsc());
+			result = sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findByName(filter, false, getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -70,7 +70,6 @@ public class DivisionListHolderBean extends AbstractDocumentListHolderBean<Divis
 		refresh();
 	}
 	
-	//TODO учитывать поисковую строку
 	private String filter;
 
 	@Inject @Named("sessionManagement")

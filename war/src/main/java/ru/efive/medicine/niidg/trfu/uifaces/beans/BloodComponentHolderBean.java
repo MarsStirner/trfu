@@ -8,11 +8,10 @@ import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.BloodSystemDAOImpl;
+import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.dictionary.AnalysisType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodSystem;
-import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.medicine.niidg.trfu.data.entity.*;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.PropertiesEditorBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
@@ -35,6 +34,111 @@ import java.util.*;
 @ConversationScoped
 public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodComponent, Integer> {
 
+    private static final long serialVersionUID = 1L;
+    private Donor donor;
+    private BloodDonationRequest donation;
+    private int expirationDays;
+    private boolean haveConsumableMaterial = false;
+    private boolean needRefreshVirusinactivationList = false;
+    @Inject
+    @Named("virusinactivationComponentList")
+    private VirusinactivationBloodComponetsBean virusinactivationComponentList;
+    @Inject
+    @Named("propertiesRedactorBean")
+    private transient PropertiesEditorBean propertiesEditorBean;
+    @Inject
+    @Named("sessionManagement")
+    private transient SessionManagementBean sessionManagement = new SessionManagementBean();
+    private ProcessorModalBean processorModal = new ProcessorModalBean() {
+        @Override
+        protected void doInit() {
+            if (getDocumentId() == null || getDocumentId() == 0) {
+                saveNewDocument();
+            }
+            setProcessedData(getDocument());
+        }
+
+        @Override
+        protected void doPostProcess(ActionResult actionResult) {
+            BloodComponent component = (BloodComponent) actionResult.getProcessedData();
+            if (getSelectedAction().isHistoryAction()) {
+                Set<HistoryEntry> history = component.getHistory();
+                if (history == null) {
+                    history = new HashSet<HistoryEntry>();
+                }
+                history.add(getHistoryEntry());
+                component.setHistory(history);
+            }
+            System.out.println("commentary: " + getHistoryEntry().getCommentary());
+            setDocument(component);
+            BloodComponentHolderBean.this.save();
+        }
+
+        @Override
+        protected void doProcessException(ActionResult actionResult) {
+            if (getSelectedAction() != null) {
+                for (EditableProperty property : getSelectedAction().getProperties()) {
+                    if (property.getName().equals(EngineHelper.PROP_WF_RESULT_DESCRIPTION) && property.getValue() != null) {
+                        setActionResult(property.getValue().toString());
+                    }
+                }
+            }
+        }
+    };
+    private VirusinaktivationModalBean virusinaktivationModal = new VirusinaktivationModalBean() {
+
+        public void perfomVirusinaktivation() {
+            System.out.println("VirusInactivation");
+            if (isValid()) {
+                BloodComponentDAOImpl dao = sessionManagement.getDAO(
+                        BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO
+                );
+                BloodComponent bloodComponent = getDocument();
+                bloodComponent.setPreInactivatedVolume(bloodComponent.getVolume());
+                bloodComponent.setVolume(Integer.parseInt(getVolume()));
+                bloodComponent.setInactivated(true);
+
+                Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
+                HistoryEntry historyEntry = new HistoryEntry();
+                historyEntry.setCreated(created);
+                historyEntry.setStartDate(created);
+                historyEntry.setOwner(sessionManagement.getLoggedUser());
+                historyEntry.setDocType(bloodComponent.getType());
+                historyEntry.setParentId(bloodComponent.getId());
+                historyEntry.setActionId(ApplicationHelper.VIRUSINAKTIVATION_ID);
+                historyEntry.setFromStatusId(bloodComponent.getStatusId());
+                historyEntry.setToStatusId(bloodComponent.getStatusId());
+                historyEntry.setCommentary("");
+                bloodComponent.addToHistory(historyEntry);
+                bloodComponent = dao.save(bloodComponent);
+                setDocument(bloodComponent);
+                doHide();
+            } else {
+                FacesContext.getCurrentInstance().addMessage(
+                        null, new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR, "Введите целое число!", ""
+                        )
+                );
+            }
+        }
+
+        public void doHide() {
+            virusinaktivationModal.setModalVisible(false);
+        }
+    };
+    @Inject
+    @Named("contragentList")
+    private transient ContragentListHolderBean contragentList;
+    @Inject
+    @Named("dictionaryManagement")
+    private transient DictionaryManagementBean dictionaryManagement;
+    @Inject
+    @Named("reports")
+    private transient ReportsManagmentBean reportsManagement = new ReportsManagmentBean();
+    private VirusinWithResuspensionSolutionModalBean virusinWithResuspensionSolutionModal = new VirusinWithResuspensionSolutionModalBean();
+    private ContragentSelectModalHolder contragentSelectModal = new ContragentSelectModalHolder();
+    private SplitModalHolder splitModal = new SplitModalHolder();
+
     @Override
     protected boolean deleteDocument() {
         boolean result = false;
@@ -42,8 +146,11 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).delete(getDocument());
             result = true;
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Невозможно удалить документ. Попробуйте повторить позже.", ""));
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR, "Невозможно удалить документ. Попробуйте повторить позже.", ""
+                    )
+            );
         }
         return result;
     }
@@ -51,51 +158,6 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     @Override
     protected Integer getDocumentId() {
         return getDocument().getId();
-    }
-
-    @Override
-    protected FromStringConverter<Integer> getIdConverter() {
-        return FromStringConverter.INTEGER_CONVERTER;
-    }
-
-    @Override
-    protected void initDocument(Integer id) {
-        try {
-            needRefreshVirusinactivationList = false;
-            setDocument(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO)
-					.get(id));
-            if (getDocument() == null) {
-                setState(STATE_NOT_FOUND);
-            }
-
-            // блок выполняется только при открытии КК из АРМ Вирусинактивация
-            if (StringUtils.isNotEmpty(getBloodSystemId())) {
-                haveConsumableMaterial = true;
-                Integer bloodSystemId = Integer.valueOf(getBloodSystemId());
-                BloodSystemDAOImpl bloodSystemDAO = sessionManagement.getDAO(BloodSystemDAOImpl.class,
-						ApplicationHelper.BLOOD_SYSTEM_DAO);
-                BloodSystem bloodSystem = bloodSystemDAO.get(bloodSystemId);
-                getDocument().setBloodSystem(bloodSystem);
-                saveDocument();
-                if (getDocument().getAdditionalVolume() == 0) {
-                    if (getDocument().getDirAdditionalLiquor() != null) {
-                        int additionalVolume = getDocument().getDirAdditionalLiquor().getAdditionalVolume();
-                        getDocument().setAdditionalVolume(additionalVolume);
-                    }
-                }
-
-                if (getDocument().getAdditionalLiquor() == null) {
-                    if (getDocument().getDirAdditionalLiquor() != null) {
-                        Classifier additionalLiquor = getDocument().getDirAdditionalLiquor().getAdditionalLiquor();
-                        getDocument().setAdditionalLiquor(additionalLiquor);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Внутренняя ошибка при загрузке", ""));
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -107,19 +169,17 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         bloodComponent.setDoseCount(1);
         bloodComponent.setAuthor(sessionManagement.getLoggedUser());
         try {
-            final String externalNumber = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-					.get("purchasedNumber");
+            final String externalNumber = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("purchasedNumber");
+            //Закупленный ли КК
             if (StringUtils.isNotEmpty(externalNumber)) {
                 try {
                     bloodComponent.setPurchased(true);
                     System.out.println("External number: " + externalNumber);
                     bloodComponent.setNumber(StringUtils.right(externalNumber, 2));
                     System.out.println("New component number: " + bloodComponent.getNumber());
-                    bloodComponent.setParentNumber(StringUtils.substring(externalNumber, externalNumber.length() - 7,
-							externalNumber.length() - 2));
+                    bloodComponent.setParentNumber(StringUtils.substring(externalNumber, externalNumber.length() - 7, externalNumber.length() - 2));
                     System.out.println("New component parent number: " + bloodComponent.getParentNumber());
-                    int bloodGroupNumber = Integer.parseInt(String.valueOf(externalNumber.charAt(externalNumber
-							.length() - 8)));
+                    int bloodGroupNumber = Integer.parseInt(String.valueOf(externalNumber.charAt(externalNumber.length() - 8)));
                     System.out.println("New component blood group number: " + bloodGroupNumber);
                     if (bloodGroupNumber != 0) {
                         bloodComponent.setBloodGroup(dictionaryManagement.getBloodGroupByNumber(bloodGroupNumber));
@@ -128,35 +188,92 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                     final String organizationCode = StringUtils.substring(externalNumber, 3, 5);
                     if (StringUtils.isNotEmpty(stateCode) && StringUtils.isNotEmpty(organizationCode)) {
                         System.out.println("stateCode: " + stateCode + ", organizationCode: " + organizationCode);
-                        Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class,
-								ApplicationHelper.CONTRAGENT_DAO).
-                                getByStateAndOrganizationCode(Integer.parseInt(stateCode), Integer.parseInt
-										(organizationCode));
+                        Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO)
+                                .getByStateAndOrganizationCode(Integer.parseInt(stateCode), Integer.parseInt(organizationCode));
                         if (contragent != null) {
                             bloodComponent.setMaker(contragent);
                         }
                     }
-                    System.out.println("New component blood group: " + bloodComponent.getBloodGroup().getValue());
+                    //Добавление результатов тестов (иммуносерология + 5 тестов на вич, сифилис, гепатиты)
+                    final List<AnalysisType> allAnalysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO)
+                            .findAnalysisTypes("Иммуносерология", false);
+                    allAnalysisTypes.addAll(
+                            sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                                    "Гепатит B", "Донация", false
+                            )
+                    );
+                    allAnalysisTypes.addAll(
+                            sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                                    "Гепатит C", "Донация", false
+                            )
+                    );
+                    allAnalysisTypes.addAll(
+                            sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                                    "ВИЧ 1", "Донация", false
+                            )
+                    );
+                    allAnalysisTypes.addAll(
+                            sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                                    "ВИЧ 2", "Донация", false
+                            )
+                    );
+                    allAnalysisTypes.addAll(
+                            sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                                    "Сифилис (RW)", "Донация", false
+                            )
+                    );
+                    final List<Analysis> bctl = bloodComponent.getTestList();
+                    if (bctl == null || bctl.isEmpty()) {
+                        bloodComponent.setTestList(new ArrayList<Analysis>(11));
+                    }
+                    for (AnalysisType currentType : allAnalysisTypes) {
+                        boolean exists = false;
+                        for (Analysis currentTest : bloodComponent.getTestList()) {
+                            if (currentTest.getType().equals(currentType)) {
+                                exists = true;
+                                break;
+                            }
+                        }
+                        if (!exists) {
+                            final Analysis analysis = new Analysis();
+                            analysis.setType(currentType);
+                            if (currentType.getCategory().equals("Донация")) {
+                                analysis.setValue("Отрицательный");
+                            } else {
+                                analysis.setValue("-");
+                            }
+                            bloodComponent.getTestList().add(analysis);
+                        }
+                    }
+                    if(bloodComponent.getFactEntry()== null){
+                        final BloodDonationEntry currentFactEntry = new BloodDonationEntry();
+                        currentFactEntry.setDonationType(sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodDonationTypes(false,null,false).get(0));
+                        currentFactEntry.setDose(450);
+                        bloodComponent.setFactEntry(currentFactEntry);
+                    }
+
                 } catch (Exception e) {
                     System.out.println("Некорректный номер закупленного компонента");
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Некорректный номер закупленного компонента", ""));
+                    FacesContext.getCurrentInstance().addMessage(
+                            null, new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR, "Некорректный номер закупленного компонента", ""
+                            )
+                    );
                 }
             } else {
-                String fullNameContragent = (String) propertiesEditorBean.getSelectedProperties().getProperty
-						("reports.institution.name");
-                Contragent currentContragent = sessionManagement.getDAO(ContragentDAOHibernate.class,
-						ApplicationHelper.CONTRAGENT_DAO).getByFullName(fullNameContragent);
+                String fullNameContragent = (String) propertiesEditorBean.getSelectedProperties().getProperty("reports.institution.name");
+                Contragent currentContragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).getByFullName(
+                        fullNameContragent
+                );
                 if (currentContragent != null) {
                     bloodComponent.setMaker(currentContragent);
                 }
-                final String donationId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
-						.get("donationId");
+                final String donationId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("donationId");
                 if (StringUtils.isNotEmpty(donationId)) {
                     int id = Integer.parseInt(donationId);
                     bloodComponent.setDonationId(id);
-                    BloodDonationRequest donation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class,
-							ApplicationHelper.DONATION_DAO).get(id);
+                    BloodDonationRequest donation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO)
+                            .get(id);
                     if (donation != null && donation.getId() == id) {
                         bloodComponent.setBloodGroup(donation.getDonor().getBloodGroup());
                         bloodComponent.setRhesusFactor(donation.getDonor().getRhesusFactor());
@@ -190,30 +307,42 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     }
 
     @Override
-    protected boolean saveDocument() {
-        boolean result = false;
+    protected void initDocument(Integer id) {
         try {
-            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
-
-            if (!validate()) {
-                return false;
+            needRefreshVirusinactivationList = false;
+            setDocument(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).get(id));
+            if (getDocument() == null) {
+                setState(STATE_NOT_FOUND);
             }
 
-            final BloodComponent bloodComponent = dao.update(getDocument());
-            if (bloodComponent == null) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"Невозможно сохранить документ. Попробуйте повторить позже.", ""));
-            } else {
-                setDocument(bloodComponent);
-                result = true;
+            // блок выполняется только при открытии КК из АРМ Вирусинактивация
+            if (StringUtils.isNotEmpty(getBloodSystemId())) {
+                haveConsumableMaterial = true;
+                Integer bloodSystemId = Integer.valueOf(getBloodSystemId());
+                BloodSystemDAOImpl bloodSystemDAO = sessionManagement.getDAO(
+                        BloodSystemDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_DAO
+                );
+                BloodSystem bloodSystem = bloodSystemDAO.get(bloodSystemId);
+                getDocument().setBloodSystem(bloodSystem);
+                saveDocument();
+                if (getDocument().getAdditionalVolume() == 0) {
+                    if (getDocument().getDirAdditionalLiquor() != null) {
+                        int additionalVolume = getDocument().getDirAdditionalLiquor().getAdditionalVolume();
+                        getDocument().setAdditionalVolume(additionalVolume);
+                    }
+                }
+
+                if (getDocument().getAdditionalLiquor() == null) {
+                    if (getDocument().getDirAdditionalLiquor() != null) {
+                        Classifier additionalLiquor = getDocument().getDirAdditionalLiquor().getAdditionalLiquor();
+                        getDocument().setAdditionalLiquor(additionalLiquor);
+                    }
+                }
             }
         } catch (Exception e) {
-            result = false;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка " +
-					"при сохранении документа.", ""));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка при загрузке", ""));
             e.printStackTrace();
         }
-        return result;
     }
 
     @Override
@@ -240,25 +369,132 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             if (bloodComponent.getDonationId() != 0) {
                 int count = new Long(dao.countComponentsByDonation(bloodComponent.getDonationId())).intValue() + 1;
                 bloodComponent.setNumber(StringUtils.right("0" + count, 2));
-                BloodDonationRequest donation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class,
-						ApplicationHelper.DONATION_DAO).get(bloodComponent.getDonationId());
+                BloodDonationRequest donation = sessionManagement.getDAO(
+                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                ).get(bloodComponent.getDonationId());
                 if (donation != null) {
                     bloodComponent.setParentNumber(donation.getNumber());
                 }
             }
             bloodComponent = dao.save(getDocument());
             if (bloodComponent == null) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"Невозможно сохранить документ. Попробуйте повторить позже.", ""));
+                FacesContext.getCurrentInstance().addMessage(
+                        null, new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR, "Невозможно сохранить документ. Попробуйте повторить позже.", ""
+                        )
+                );
             } else {
                 setDocument(bloodComponent);
                 result = true;
             }
         } catch (Exception e) {
             result = false;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка " +
-					"при сохранении документа.", ""));
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR, "Ошибка " + "при сохранении документа.", ""
+                    )
+            );
             e.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    protected boolean saveDocument() {
+        boolean result = false;
+        try {
+            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+
+            if (!validate()) {
+                return false;
+            }
+
+            final BloodComponent bloodComponent = dao.update(getDocument());
+            if (bloodComponent == null) {
+                FacesContext.getCurrentInstance().addMessage(
+                        null, new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR, "Невозможно сохранить документ. Попробуйте повторить позже.", ""
+                        )
+                );
+            } else {
+                setDocument(bloodComponent);
+                result = true;
+            }
+        } catch (Exception e) {
+            result = false;
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR, "Ошибка " + "при сохранении документа.", ""
+                    )
+            );
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    protected FromStringConverter<Integer> getIdConverter() {
+        return FromStringConverter.INTEGER_CONVERTER;
+    }
+
+    @Override
+    public String edit() {
+        final String result = super.edit();
+        BloodComponent bloodComponent = getDocument();
+        if (bloodComponent.isPurchased()) {
+            //Добавление результатов тестов (иммуносерология + 5 тестов на вич, сифилис, гепатиты)
+            final List<AnalysisType> allAnalysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO)
+                    .findAnalysisTypes("Иммуносерология", false);
+            allAnalysisTypes.addAll(
+                    sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                            "Гепатит B", "Донация", false
+                    )
+            );
+            allAnalysisTypes.addAll(
+                    sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                            "Гепатит C", "Донация", false
+                    )
+            );
+            allAnalysisTypes.addAll(
+                    sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("ВИЧ 1", "Донация", false)
+            );
+            allAnalysisTypes.addAll(
+                    sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("ВИЧ 2", "Донация", false)
+            );
+            allAnalysisTypes.addAll(
+                    sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                            "Сифилис (RW)", "Донация", false
+                    )
+            );
+            final List<Analysis> bctl = bloodComponent.getTestList();
+            if (bctl == null || bctl.isEmpty()) {
+                bloodComponent.setTestList(new ArrayList<Analysis>(11));
+            }
+            for (AnalysisType currentType : allAnalysisTypes) {
+                boolean exists = false;
+                for (Analysis currentTest : bloodComponent.getTestList()) {
+                    if (currentTest.getType().equals(currentType)) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    final Analysis analysis = new Analysis();
+                    analysis.setType(currentType);
+                    if (currentType.getCategory().equals("Донация")) {
+                        analysis.setValue("Отрицательный");
+                    } else {
+                        analysis.setValue("-");
+                    }
+                    bloodComponent.getTestList().add(analysis);
+                }
+            }
+            if(bloodComponent.getFactEntry()== null){
+                final BloodDonationEntry currentFactEntry = new BloodDonationEntry();
+                currentFactEntry.setDonationType(sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodDonationTypes(false,null,false).get(0));
+                currentFactEntry.setDose(450);
+                bloodComponent.setFactEntry(currentFactEntry);
+            }
         }
         return result;
     }
@@ -270,26 +506,38 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             if (bloodComponent != null) {
                 if (bloodComponent.isPurchased() && StringUtils.isEmpty(bloodComponent.getNumber())) {
                     result = false;
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Не указан номер компонента", ""));
+                    FacesContext.getCurrentInstance().addMessage(
+                            null, new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR, "Не указан номер компонента", ""
+                            )
+                    );
                 }
                 if (bloodComponent.getComponentType() == null) {
                     result = false;
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Не указан тип компонента", ""));
+                    FacesContext.getCurrentInstance().addMessage(
+                            null, new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR, "Не указан тип компонента", ""
+                            )
+                    );
                 }
                 if (bloodComponent.getComponentType() != null && !bloodComponent.getComponentType().isLite() &&
-						bloodComponent.getExpirationDate() == null) {
+                        bloodComponent.getExpirationDate() == null) {
                     result = false;
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Не указана дата окончания срока хранения", ""));
+                    FacesContext.getCurrentInstance().addMessage(
+                            null, new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR, "Не указана дата окончания срока хранения", ""
+                            )
+                    );
                 }
 
             }
         } catch (Exception e) {
             result = false;
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Внутренняя ошибка", ""));
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка", ""
+                    )
+            );
             e.printStackTrace();
         }
         return result;
@@ -298,9 +546,12 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     public Donor getDonor() {
         try {
             if (getDocument().getDonationId() > 0 && donor == null) {
-                donation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper
-						.DONATION_DAO).get(getDocument().getDonationId());
-                if (donation != null) donor = donation.getDonor();
+                donation = sessionManagement.getDAO(
+                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                ).get(getDocument().getDonationId());
+                if (donation != null) {
+                    donor = donation.getDonor();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -311,9 +562,12 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     public BloodDonationRequest getDonation() {
         try {
             if (getDocument().getDonationId() > 0 && donation == null) {
-                donation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper
-						.DONATION_DAO).get(getDocument().getDonationId());
-                if (donation != null) donor = donation.getDonor();
+                donation = sessionManagement.getDAO(
+                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                ).get(getDocument().getDonationId());
+                if (donation != null) {
+                    donor = donation.getDonor();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -328,8 +582,9 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     public boolean isLeukoConcentrate() {
         try {
             if (getDocument().getComponentType() != null && getDocument().getComponentType().getValue() != null) {
-                if (StringUtils.containsIgnoreCase(getDocument().getComponentType().getValue(), "Лейкоцитный " +
-						"концентрат")) {
+                if (StringUtils.containsIgnoreCase(
+                        getDocument().getComponentType().getValue(), "Лейкоцитный " + "концентрат"
+                )) {
                     return true;
                 }
             }
@@ -343,18 +598,227 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         boolean result = false;
         try {
             result = getDocument().getAppointment() != null && getDocument().getAppointment().getTests() != null &&
-					getDocument().getAppointment().getTests().size() > 0 && sessionManagement.getCurrentRole()
-					.getRoleType().equals(RoleType.IN_CONTROL);
+                    getDocument().getAppointment().getTests().size() > 0 && sessionManagement.getCurrentRole().getRoleType()
+                    .equals(RoleType.IN_CONTROL);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    private Donor donor;
-    private BloodDonationRequest donation;
+    public void componentTypeListener(AjaxBehaviorEvent event) {
+        System.out.println("component type change listener");
+    }
+
+    public void inactivatedListener(AjaxBehaviorEvent event) {
+        System.out.println("inactivated state change listener");
+        if (getDocument().getPreInactivatedVolume() == 0) {
+            System.out.println("Pre inactivated volume - " + getDocument().getVolume());
+            getDocument().setPreInactivatedVolume(getDocument().getVolume());
+        }
+    }
+
+    public ProcessorModalBean getProcessorModal() {
+        return processorModal;
+    }
+
+    public boolean isProcessingAvailable() {
+        boolean result = true;
+        try {
+            if (getDocument().getDonationId() != 0) {
+                BloodDonationRequest request = sessionManagement.getDAO(
+                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                ).get(getDocument().getDonationId());
+                if (request != null && request.getStatusId() == 21 && getDocument().getComponentType() != null &&
+                        !getDocument().getComponentType().isLite()) {
+                    result = false;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public boolean isErComponent() {
+        boolean result = false;
+        try {
+            if (getDocument().getDonationId() != 0) {
+                BloodDonationRequest request = sessionManagement.getDAO(
+                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                ).get(getDocument().getDonationId());
+                if (request != null && request.getStatusId() > 3 && getDocument().getComponentType() != null &&
+                        (StringUtils.contains(getDocument().getComponentType().getValue(), "Эритроцитная") || StringUtils.contains(
+                                getDocument().getComponentType().getValue(), "Эритроцитарная"
+                        ))) {
+                    result = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public boolean isPersonificationAvailable() {
+        boolean result = false;
+        try {
+            if (getDocument().getComponentType() != null && !getDocument().getComponentType().getValue().toLowerCase().contains("ауто")) {
+                result = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public boolean isRectification() {
+        boolean result = false;
+        try {
+            if (getDocument().getDonationId() > 0) {
+                BloodDonationRequest donation = sessionManagement.getDAO(
+                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                ).get(getDocument().getDonationId());
+                if (donation != null && donation.getStatusId() == 21) {
+                    result = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public boolean isHaveConsumableMaterial() {
+        return haveConsumableMaterial;
+    }
+
+    public String getConsumableMaterialLot() {
+        return getDocument().getBloodSystem().getSystemLot();
+    }
+
+    public String getConsumableMaterialType() {
+        return getDocument().getBloodSystem().getType().getValue();
+    }
+
+    public Date getConsumableMaterialExpirationDate() {
+        return getDocument().getBloodSystem().getExpirationDate();
+    }
+
+    private String getBloodSystemId() {
+        return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("bloodSystemId");
+    }
+
+    public void previewBigLabel() {
+        try {
+            if (getDocument().getBloodGroup() == null || StringUtils.isEmpty(
+                    getDocument().getBloodGroup().getValue()
+            ) ||
+                    StringUtils.containsIgnoreCase(getDocument().getBloodGroup().getValue(), "не определен")) {
+                FacesContext.getCurrentInstance().addMessage(
+                        null, new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR, "Не " + "указана группа крови", ""
+                        )
+                );
+                return;
+            }
+            if (getDocument().getRhesusFactor() == null || StringUtils.isEmpty(
+                    getDocument().getRhesusFactor().getValue()
+            ) ||
+                    StringUtils.containsIgnoreCase(getDocument().getRhesusFactor().getValue(), "не определен")) {
+                FacesContext.getCurrentInstance().addMessage(
+                        null, new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR, "Не " + "указан резус-фактор", ""
+                        )
+                );
+                return;
+            }
+            Map<String, String> requestProperties = new HashMap<String, String>();
+            requestProperties.put("reportName", "BigBarcode4JReport.jrxml");
+            requestProperties.put("docId", Integer.toString(getDocument().getId()));
+            requestProperties.put("docType", getDocument().getType());
+            if (donor != null) {
+                requestProperties.put("donorId", Integer.toString(donor.getId()));
+            }
+            requestProperties.put(
+                    "transfusiologistFullName", sessionManagement.getLoggedUser() == null ? "" : sessionManagement.getLoggedUser().getDescription()
+            );
+            reportsManagement.sqlPrintReportByRequestParams(requestProperties);
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR, "Ошибка " + "при формировании этикетки компонента", ""
+                    )
+            );
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isExpeditionEditAvailable() {
+        boolean result = true;
+        try {
+            if (sessionManagement.getCurrentRole().getRoleType().equals(RoleType.EXPEDITION) && getDocument().getStatusId() != 1) {
+                result = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public boolean isRefreshVirusinactivationList() {
+        return needRefreshVirusinactivationList;
+    }
+
+    /**
+     * Метод возвращает модальное окно Вирусинактивации
+     *
+     * @return VirusinaktivationModalBean
+     */
+    public VirusinaktivationModalBean getVirusinaktivationModal() {
+        return virusinaktivationModal;
+    }
+
+    public VirusinWithResuspensionSolutionModalBean getVirusinWithResuspensionSolutionModal() {
+        return virusinWithResuspensionSolutionModal;
+    }
+
+    public boolean isVirusinaktivation() {
+        boolean result = false;
+        if (processorModal.getSelectedAction() != null) {
+            if (processorModal.getSelectedAction().getName().equals(ApplicationHelper.VIRUSINAKTIVATION)) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    public ContragentSelectModalHolder getContragentSelectModal() {
+        return contragentSelectModal;
+    }
+
+    public SplitModalHolder getSplitModal() {
+        return splitModal;
+    }
+
+    public int getExpirationDays() {
+        return expirationDays;
+    }
+
+    public void setExpirationDays(int expirationDays) {
+        this.expirationDays = expirationDays;
+    }
+
+    public String getInstitutionName() {
+        String result;
+        result = (String) propertiesEditorBean.getSelectedProperties().getExtendedProperties().get("reports.institution.name").getObjectValue();
+        return result;
+    }
 
     public class ContragentSelectModalHolder extends ModalWindowHolderBean {
+        private static final long serialVersionUID = 686982749044631899L;
+        private Contragent contragent;
+
         public ContragentListHolderBean getContragentList() {
             return contragentList;
         }
@@ -369,9 +833,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 
         public boolean selected(Contragent contragent) {
             return this.contragent != null && this.contragent.equals(contragent);
-        }
-
-        @Override
+        }        @Override
         protected void doShow() {
             List<Contragent> contragents = contragentList.getDocuments();
             for (Contragent contragent : contragents) {
@@ -383,13 +845,6 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         }
 
         @Override
-        protected void doHide() {
-            contragentList.setFilter("");
-            contragentList.markNeedRefresh();
-            contragent = null;
-        }
-
-        @Override
         protected void doSave() {
             super.doSave();
             if (contragent != null) {
@@ -397,26 +852,28 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             }
         }
 
-        private Contragent contragent;
+        @Override
+        protected void doHide() {
+            contragentList.setFilter("");
+            contragentList.markNeedRefresh();
+            contragent = null;
+        }
 
-        private static final long serialVersionUID = 686982749044631899L;
+
+
+
     }
 
     public class SplitModalHolder extends ModalWindowHolderBean {
 
+        private static final long serialVersionUID = -5600215387042330919L;
+        private List<VolumeEntry> volumeList = new ArrayList<VolumeEntry>();
+        private boolean invalid = false;
+        private String message = "";
+
         public List<VolumeEntry> getVolumeList() {
             return volumeList;
-        }
-
-        public void setVolumeList(List<VolumeEntry> volumeList) {
-            this.volumeList = volumeList;
-        }
-
-        public void addVolumeEntry() {
-            volumeList.add(new VolumeEntry(0));
-        }
-
-        @Override
+        }        @Override
         protected void doShow() {
             super.doShow();
             invalid = false;
@@ -426,7 +883,13 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             volumeList.add(new VolumeEntry(0));
         }
 
-        @Override
+        public void setVolumeList(List<VolumeEntry> volumeList) {
+            this.volumeList = volumeList;
+        }
+
+        public void addVolumeEntry() {
+            volumeList.add(new VolumeEntry(0));
+        }        @Override
         protected void doSave() {
             super.doSave();
         }
@@ -449,8 +912,9 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             if (sum == getDocument().getVolume()) {
                 //TODO тикет на дубликаты номеров при разделении
                 final Date splitDate = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
-                BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper
-						.BLOOD_COMPONENT_DAO);
+                BloodComponentDAOImpl dao = sessionManagement.getDAO(
+                        BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO
+                );
                 for (VolumeEntry volume : volumeList) {
                     BloodComponent component = getDocument().cloneComponent();
                     component.setId(0);
@@ -492,9 +956,13 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                     newEntry.setParentId(component.getId());
                     newEntry.setEndDate(splitDate);
                     newEntry.setProcessed(true);
-                    StringBuilder sb = new StringBuilder("Получено путем разделения из компонента объемом ").append
-							(component.getSplitVolume()).append(" ").append(new java.text.SimpleDateFormat("dd.MM" +
-                            ".yyyy" + " HH:mm").format(splitDate));
+                    StringBuilder sb = new StringBuilder("Получено путем разделения из компонента объемом ").append(component.getSplitVolume())
+                            .append(" ").append(
+                                    new java.text.SimpleDateFormat(
+                                            "dd.MM" +
+                                                    ".yyyy" + " HH:mm"
+                                    ).format(splitDate)
+                            );
                     newEntry.setCommentary(sb.toString());
 
                     Set<HistoryEntry> history = new HashSet<HistoryEntry>();
@@ -519,9 +987,11 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                 newEntry.setParentId(component.getId());
                 newEntry.setEndDate(splitDate);
                 newEntry.setProcessed(true);
-                StringBuilder sb = new StringBuilder("Компонент разделен ").append(new java.text.SimpleDateFormat("dd" +
-						".MM.yyyy HH:mm").format(splitDate)).append(" ").append("на ").append(volumeList.size())
-						.append(" КК (");
+                StringBuilder sb = new StringBuilder("Компонент разделен ").append(
+                        new java.text.SimpleDateFormat(
+                                "dd" + ".MM.yyyy HH:mm"
+                        ).format(splitDate)
+                ).append(" ").append("на ").append(volumeList.size()).append(" КК (");
                 final Iterator<VolumeEntry> volumeEntryIterator = volumeList.iterator();
                 while (volumeEntryIterator.hasNext()) {
                     sb.append(volumeEntryIterator.next().getVolume());
@@ -562,21 +1032,18 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             return message;
         }
 
-        private List<VolumeEntry> volumeList = new ArrayList<VolumeEntry>();
 
-        private boolean invalid = false;
-        private String message = "";
 
-        private static final long serialVersionUID = -5600215387042330919L;
+
+
+
     }
 
     public class VolumeEntry {
 
-        public VolumeEntry(int volume) {
-            this.volume = volume;
-        }
+        private int volume;
 
-        public void setVolume(int volume) {
+        public VolumeEntry(int volume) {
             this.volume = volume;
         }
 
@@ -584,228 +1051,10 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             return volume;
         }
 
-        private int volume;
-    }
-
-    public void componentTypeListener(AjaxBehaviorEvent event) {
-        System.out.println("component type change listener");
-    }
-
-    public void inactivatedListener(AjaxBehaviorEvent event) {
-        System.out.println("inactivated state change listener");
-        if (getDocument().getPreInactivatedVolume() == 0) {
-            System.out.println("Pre inactivated volume - " + getDocument().getVolume());
-            getDocument().setPreInactivatedVolume(getDocument().getVolume());
+        public void setVolume(int volume) {
+            this.volume = volume;
         }
     }
-
-
-    public ProcessorModalBean getProcessorModal() {
-        return processorModal;
-    }
-
-    public boolean isProcessingAvailable() {
-        boolean result = true;
-        try {
-            if (getDocument().getDonationId() != 0) {
-                BloodDonationRequest request = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class,
-						ApplicationHelper.DONATION_DAO).get(getDocument().getDonationId());
-                if (request != null && request.getStatusId() == 21 && getDocument().getComponentType() != null &&
-						!getDocument().getComponentType().isLite()) {
-                    result = false;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public boolean isErComponent() {
-        boolean result = false;
-        try {
-            if (getDocument().getDonationId() != 0) {
-                BloodDonationRequest request = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class,
-						ApplicationHelper.DONATION_DAO).get(getDocument().getDonationId());
-                if (request != null && request.getStatusId() > 3 && getDocument().getComponentType() != null &&
-						(StringUtils.contains(getDocument().getComponentType().getValue(), "Эритроцитная") ||
-								StringUtils.contains(getDocument().getComponentType().getValue(), "Эритроцитарная"))) {
-                    result = true;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public boolean isPersonificationAvailable() {
-        boolean result = false;
-        try {
-            if (getDocument().getComponentType() != null && !getDocument().getComponentType().getValue().toLowerCase
-					().contains("ауто")) {
-                result = true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public boolean isRectification() {
-        boolean result = false;
-        try {
-            if (getDocument().getDonationId() > 0) {
-                BloodDonationRequest donation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class,
-						ApplicationHelper.DONATION_DAO).get(getDocument().getDonationId());
-                if (donation != null && donation.getStatusId() == 21) {
-                    result = true;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    public boolean isHaveConsumableMaterial() {
-        return haveConsumableMaterial;
-    }
-
-    public String getConsumableMaterialLot() {
-        return getDocument().getBloodSystem().getSystemLot();
-    }
-
-    public String getConsumableMaterialType() {
-        return getDocument().getBloodSystem().getType().getValue();
-    }
-
-    public Date getConsumableMaterialExpirationDate() {
-        return getDocument().getBloodSystem().getExpirationDate();
-    }
-
-    private String getBloodSystemId() {
-        return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("bloodSystemId");
-    }
-
-    public void previewBigLabel() {
-        try {
-            if (getDocument().getBloodGroup() == null || StringUtils.isEmpty(getDocument().getBloodGroup().getValue()
-			) ||
-                    StringUtils.containsIgnoreCase(getDocument().getBloodGroup().getValue(), "не определен")) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не " +
-						"указана группа крови", ""));
-                return;
-            }
-            if (getDocument().getRhesusFactor() == null || StringUtils.isEmpty(getDocument().getRhesusFactor()
-					.getValue()) ||
-                    StringUtils.containsIgnoreCase(getDocument().getRhesusFactor().getValue(), "не определен")) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не " +
-						"указан резус-фактор", ""));
-                return;
-            }
-            Map<String, String> requestProperties = new HashMap<String, String>();
-            requestProperties.put("reportName", "BigBarcode4JReport.jrxml");
-            requestProperties.put("docId", Integer.toString(getDocument().getId()));
-            requestProperties.put("docType", getDocument().getType());
-            if (donor != null) {
-                requestProperties.put("donorId", Integer.toString(donor.getId()));
-            }
-            requestProperties.put("transfusiologistFullName", sessionManagement.getLoggedUser() == null ? "" :
-					sessionManagement.getLoggedUser().getDescription());
-            reportsManagement.sqlPrintReportByRequestParams(requestProperties);
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка " +
-					"при формировании этикетки компонента", ""));
-            e.printStackTrace();
-        }
-    }
-
-    public boolean isExpeditionEditAvailable() {
-        boolean result = true;
-        try {
-            if (sessionManagement.getCurrentRole().getRoleType().equals(RoleType.EXPEDITION) && getDocument()
-					.getStatusId() != 1) {
-                result = false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    private ProcessorModalBean processorModal = new ProcessorModalBean() {
-        @Override
-        protected void doInit() {
-            if (getDocumentId() == null || getDocumentId() == 0) saveNewDocument();
-            setProcessedData(getDocument());
-        }
-
-        @Override
-        protected void doPostProcess(ActionResult actionResult) {
-            BloodComponent component = (BloodComponent) actionResult.getProcessedData();
-            if (getSelectedAction().isHistoryAction()) {
-                Set<HistoryEntry> history = component.getHistory();
-                if (history == null) {
-                    history = new HashSet<HistoryEntry>();
-                }
-                history.add(getHistoryEntry());
-                component.setHistory(history);
-            }
-            System.out.println("commentary: " + getHistoryEntry().getCommentary());
-            setDocument(component);
-            BloodComponentHolderBean.this.save();
-        }
-
-        @Override
-        protected void doProcessException(ActionResult actionResult) {
-            if (getSelectedAction() != null) {
-                for (EditableProperty property : getSelectedAction().getProperties()) {
-                    if (property.getName().equals(EngineHelper.PROP_WF_RESULT_DESCRIPTION) && property.getValue() !=
-							null) {
-                        setActionResult(property.getValue().toString());
-                    }
-                }
-            }
-        }
-    };
-    private VirusinaktivationModalBean virusinaktivationModal = new VirusinaktivationModalBean() {
-
-        public void perfomVirusinaktivation() {
-            System.out.println("VirusInactivation");
-            if (isValid()) {
-                BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper
-						.BLOOD_COMPONENT_DAO);
-                BloodComponent bloodComponent = getDocument();
-                bloodComponent.setPreInactivatedVolume(bloodComponent.getVolume());
-                bloodComponent.setVolume(Integer.parseInt(getVolume()));
-                bloodComponent.setInactivated(true);
-
-                Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
-                HistoryEntry historyEntry = new HistoryEntry();
-                historyEntry.setCreated(created);
-                historyEntry.setStartDate(created);
-                historyEntry.setOwner(sessionManagement.getLoggedUser());
-                historyEntry.setDocType(bloodComponent.getType());
-                historyEntry.setParentId(bloodComponent.getId());
-                historyEntry.setActionId(ApplicationHelper.VIRUSINAKTIVATION_ID);
-                historyEntry.setFromStatusId(bloodComponent.getStatusId());
-                historyEntry.setToStatusId(bloodComponent.getStatusId());
-                historyEntry.setCommentary("");
-                bloodComponent.addToHistory(historyEntry);
-                bloodComponent = dao.save(bloodComponent);
-                setDocument(bloodComponent);
-                doHide();
-            } else {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"Введите целое число!", ""));
-            }
-        }
-
-        public void doHide() {
-            virusinaktivationModal.setModalVisible(false);
-        }
-    };
 
     public class VirusinWithResuspensionSolutionModalBean extends ModalWindowHolderBean {
         public VirusinWithResuspensionSolutionModalBean() {
@@ -861,83 +1110,4 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             return value;
         }
     }
-
-    public boolean isRefreshVirusinactivationList() {
-        return needRefreshVirusinactivationList;
-    }
-
-    /**
-     * Метод возвращает модальное окно Вирусинактивации
-     *
-     * @return VirusinaktivationModalBean
-     */
-    public VirusinaktivationModalBean getVirusinaktivationModal() {
-        return virusinaktivationModal;
-    }
-
-    public VirusinWithResuspensionSolutionModalBean getVirusinWithResuspensionSolutionModal() {
-        return virusinWithResuspensionSolutionModal;
-    }
-
-    public boolean isVirusinaktivation() {
-        boolean result = false;
-        if (processorModal.getSelectedAction() != null) {
-            if (processorModal.getSelectedAction().getName().equals(ApplicationHelper.VIRUSINAKTIVATION)) {
-                result = true;
-            }
-        }
-        return result;
-    }
-
-    public ContragentSelectModalHolder getContragentSelectModal() {
-        return contragentSelectModal;
-    }
-
-    public SplitModalHolder getSplitModal() {
-        return splitModal;
-    }
-
-    public int getExpirationDays() {
-        return expirationDays;
-    }
-
-    public void setExpirationDays(int expirationDays) {
-        this.expirationDays = expirationDays;
-    }
-
-    public String getInstitutionName() {
-        String result;
-        result = (String) propertiesEditorBean.getSelectedProperties().getExtendedProperties().get("reports.institution.name").getObjectValue();
-        return result;
-    }
-
-    private int expirationDays;
-    private boolean haveConsumableMaterial = false;
-    private boolean needRefreshVirusinactivationList = false;
-
-    @Inject
-    @Named("virusinactivationComponentList")
-    private VirusinactivationBloodComponetsBean virusinactivationComponentList;
-    @Inject
-    @Named("propertiesRedactorBean")
-    private transient PropertiesEditorBean propertiesEditorBean;
-    @Inject
-    @Named("sessionManagement")
-    private transient SessionManagementBean sessionManagement = new SessionManagementBean();
-    @Inject
-    @Named("contragentList")
-    private transient ContragentListHolderBean contragentList;
-    @Inject
-    @Named("dictionaryManagement")
-    private transient DictionaryManagementBean dictionaryManagement;
-    @Inject
-    @Named("reports")
-    private transient ReportsManagmentBean reportsManagement = new ReportsManagmentBean();
-
-    private VirusinWithResuspensionSolutionModalBean virusinWithResuspensionSolutionModal = new VirusinWithResuspensionSolutionModalBean();
-    private ContragentSelectModalHolder contragentSelectModal = new ContragentSelectModalHolder();
-    private SplitModalHolder splitModal = new SplitModalHolder();
-
-
-    private static final long serialVersionUID = 1L;
 }
