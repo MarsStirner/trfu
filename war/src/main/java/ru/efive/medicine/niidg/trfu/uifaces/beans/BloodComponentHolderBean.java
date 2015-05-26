@@ -734,7 +734,11 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                 return;
             }
             Map<String, String> requestProperties = new HashMap<String, String>();
-            requestProperties.put("reportName", "BigBarcode4JReport.jrxml");
+            if(getDocument().isPurchased() && getDocument().getMaker().getId() == 13){
+                requestProperties.put("reportName", "BigBarcode4JReport_fmba.jrxml");
+            } else {
+                requestProperties.put("reportName", "BigBarcode4JReport.jrxml");
+            }
             requestProperties.put("docId", Integer.toString(getDocument().getId()));
             requestProperties.put("docType", getDocument().getType());
             if (donor != null) {
