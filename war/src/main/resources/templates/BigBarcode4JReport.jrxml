@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Barcode4JReport" pageWidth="310" pageHeight="288" columnWidth="306" leftMargin="2" rightMargin="2" topMargin="2" bottomMargin="2">
+<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
+<!-- 2015-06-09T16:20:05 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Barcode4JReport" pageWidth="310" pageHeight="288" columnWidth="306" leftMargin="2" rightMargin="2" topMargin="2" bottomMargin="2" uuid="93f39c65-ce41-45b8-b2ec-cdc943ee78f6">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Tahoma" fontName="Tahoma" fontSize="8"/>
 	<style name="Barcode" fontSize="10"/>
 	<style name="ResusInvertionRectangle" mode="Opaque" forecolor="#000000" backcolor="#FFFFFF" pattern="">
@@ -73,7 +76,7 @@
 			<style mode="Opaque" forecolor="#000000" backcolor="#FFFFFF"/>
 		</conditionalStyle>
 	</style>
-	<subDataset name="Brak">
+	<subDataset name="Brak" uuid="dc3cdd2c-fee6-468f-baba-64e4d7871d3c">
 		<parameter name="docId" class="java.lang.String">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
@@ -96,7 +99,7 @@ WHERE comp.id=$P{docId}]]>
 			<initialValueExpression><![CDATA["Может передать инфекционные агенты"]]></initialValueExpression>
 		</variable>
 	</subDataset>
-	<subDataset name="DonationAnalisys">
+	<subDataset name="DonationAnalisys" uuid="51541622-0eef-4ce7-9883-71a7a99464a4">
 		<parameter name="docId" class="java.lang.String">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
@@ -140,7 +143,7 @@ AND comp.purchased]]>
 		</queryString>
 		<field name="donation_analysisValue" class="java.lang.String"/>
 	</subDataset>
-	<subDataset name="DonationPhenotypes">
+	<subDataset name="DonationPhenotypes" uuid="8c9048a5-be47-4558-b3ed-2868df9a9539">
 		<parameter name="docId" class="java.lang.String">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
@@ -162,7 +165,7 @@ AND comp.purchased]]>
 		</queryString>
 		<field name="donation_phenotypes" class="java.lang.String"/>
 	</subDataset>
-	<subDataset name="BRAK">
+	<subDataset name="BRAK" uuid="0eaf2056-915c-492e-8c07-9c9f2d466aea">
 		<parameter name="docId" class="java.lang.String">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
@@ -277,13 +280,13 @@ where comp.id=$P{docId} and trfu_analysis_types.category="Иммуносерол
 	<field name="wf_commentary" class="java.lang.String"/>
 	<field name="donorsfirstName" class="java.lang.String"/>
 	<field name="donorsmiddleName" class="java.lang.String"/>
-    <variable name="antValue" class="java.lang.String">
+	<variable name="antValue" class="java.lang.String">
 		<initialValueExpression><![CDATA["Антикоагулянт "+$F{ant_value}+" "+String.valueOf($F{anticoagulantVolume})+" мл"]]></initialValueExpression>
 	</variable>
-    <variable name="preservativeValueWithVolume" class="java.lang.String">
+	<variable name="preservativeValueWithVolume" class="java.lang.String">
 		<initialValueExpression><![CDATA[$F{preservativeVolume}==0?(""):(" + "+$F{preservativeValue}+" "+$F{preservativeVolume}.toString()+" мл")]]></initialValueExpression>
 	</variable>
-    <variable name="additionalValueWithVolume" class="java.lang.String">
+	<variable name="additionalValueWithVolume" class="java.lang.String">
 		<initialValueExpression><![CDATA[$F{additionalVolume}==0?(""):(" + "+$F{additionalValue}+" "+$F{additionalVolume}.toString()+" мл")]]></initialValueExpression>
 	</variable>
 	<variable name="shortInstructionForEritr" class="java.lang.String">
@@ -298,181 +301,181 @@ where comp.id=$P{docId} and trfu_analysis_types.category="Иммуносерол
 	<title>
 		<band height="284">
 			<rectangle radius="0">
-				<reportElement style="ResusInvertionRectangle" x="159" y="0" width="148" height="58" forecolor="#FFFFFF"/>
+				<reportElement style="ResusInvertionRectangle" x="159" y="0" width="148" height="58" forecolor="#FFFFFF" uuid="36d2c92c-1bcc-419d-991e-f44a7d971a88"/>
 			</rectangle>
 			<line>
-				<reportElement x="158" y="0" width="1" height="284"/>
+				<reportElement x="158" y="0" width="1" height="284" uuid="cc52fd70-38b9-49dd-a251-9c957939ee75"/>
 				<graphicElement>
 					<pen lineWidth="1.0"/>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement x="1" y="252" width="157" height="1"/>
+				<reportElement x="1" y="252" width="157" height="1" uuid="3be2ea12-ca4e-4fbb-9528-bb73e7f1f3cb"/>
 			</line>
 			<line>
-				<reportElement x="2" y="130" width="157" height="1"/>
+				<reportElement x="2" y="130" width="157" height="1" uuid="adb0bd12-048b-4ff6-aa0c-6a31f5365a2d"/>
 			</line>
 			<componentElement>
-				<reportElement x="5" y="15" width="137" height="42"/>
+				<reportElement x="5" y="15" width="137" height="42" uuid="f0229130-ba4d-49e5-9375-58a8dd916800"/>
 				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="1.2" textPosition="none">
 					<jr:codeExpression><![CDATA["74599"+(new SimpleDateFormat("yy").format(new java.util.Date()))+$F{bloodGroupNumber}+$F{req_number}+$F{comp_number}]]></jr:codeExpression>
 				</jr:Code128>
 			</componentElement>
 			<line>
-				<reportElement x="158" y="120" width="148" height="1" forecolor="#666666" backcolor="#666666"/>
+				<reportElement x="158" y="120" width="148" height="1" forecolor="#666666" backcolor="#666666" uuid="ebb41895-63be-4880-9d8f-91456bb6c54f"/>
 				<graphicElement>
 					<pen lineStyle="Solid"/>
 				</graphicElement>
 			</line>
 			<textField>
-				<reportElement style="Tahoma" x="42" y="0" width="68" height="25"/>
+				<reportElement style="Tahoma" x="42" y="0" width="68" height="25" uuid="071e975f-3793-4e7f-9a9a-30acc2b30198"/>
 				<textElement textAlignment="Center">
 					<font size="13" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{purchased}==false?$F{req_number}:$F{comp_number}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="5" y="121" width="152" height="9"/>
+				<reportElement stretchType="RelativeToBandHeight" x="5" y="121" width="152" height="9" uuid="ed8bfcdc-555d-44e8-9fe0-f068f513feeb"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cont_shortName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Tahoma" x="0" y="131" width="157" height="69"/>
+				<reportElement style="Tahoma" x="0" y="131" width="157" height="69" uuid="1b14e6d8-eb53-4cbc-aef0-d215a1b8bdfc"/>
 				<textElement textAlignment="Center">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{comp_type}.contains("Карантинизовано") & $F{purchased}.equals(false)?$F{comp_type}+" ("+new SimpleDateFormat("dd.MM.yyyy").format($F{startDate}) +")":$F{comp_type}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="5" y="205" width="22" height="8"/>
+				<reportElement stretchType="RelativeToBandHeight" x="5" y="205" width="22" height="8" uuid="1b77fb0c-e383-4047-8610-569e9475c3ca"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Объем "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="32" y="200" width="54" height="16"/>
+				<reportElement stretchType="RelativeToBandHeight" x="32" y="200" width="54" height="16" uuid="3dca34b7-8591-48be-8071-c2f52eb53653"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{comp_volume}+" мл"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="5" y="213" width="152" height="8"/>
+				<reportElement stretchType="RelativeToBandHeight" x="5" y="213" width="152" height="8" uuid="2da040a0-998f-431d-9bc1-34593bac9610"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{purchased}==false?($F{donation_type}==1?"из "+$F{factDonationResult_dose}+" мл цельной крови":"из "+$F{factDonationResult_dose}+" мл переработанной крови"):""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="5" y="221" width="152" height="8"/>
+				<reportElement stretchType="RelativeToBandHeight" x="5" y="221" width="152" height="8" uuid="f99c3f2e-ab52-467b-94af-42608850c1e7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Хранить при t от "+$F{lowerStorageTemperature}+" до "+$F{higherStorageTemperature} +" °С"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="5" y="243" width="30" height="10"/>
+				<reportElement stretchType="RelativeToBandHeight" x="5" y="243" width="30" height="10" uuid="ca777e7b-7961-40bc-b496-bd4fb045f7ac"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Годен до "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="43" y="241" width="114" height="13"/>
+				<reportElement stretchType="RelativeToBandHeight" x="43" y="241" width="114" height="13" uuid="f295747e-b141-49b0-a65f-a455b3c94d05"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{expirationDate}==null?"":(new SimpleDateFormat("dd.MM.yyyy")).format($F{expirationDate})]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement stretchType="RelativeToBandHeight" x="162" y="107" width="141" height="10"/>
+				<reportElement stretchType="RelativeToBandHeight" x="162" y="107" width="141" height="10" uuid="b62775f1-2983-4cf9-97a0-98d1525e3ac8"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Дата донации:"+(new SimpleDateFormat("dd.MM.yyyy")).format($F{donationDate})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="5" y="229" width="152" height="8"/>
+				<reportElement stretchType="RelativeToBandHeight" x="5" y="229" width="152" height="8" uuid="c2745228-d389-4911-a127-82a6fbd0b442"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{preservativeValueWithVolume}.length()==0?($V{antValue}+$V{additionalValueWithVolume}):($V{antValue}+$V{preservativeValueWithVolume})]]></textFieldExpression>
 			</textField>
-            <textField>
-				<reportElement stretchType="RelativeToBandHeight" x="5" y="234" width="152" height="8"/>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="5" y="234" width="152" height="8" uuid="ad1d4c82-cf5d-4af0-a58d-83ff9a88780f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{preservativeValueWithVolume}.length()==0?(""):($V{additionalValueWithVolume})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="210" y="272" width="89" height="10"/>
+				<reportElement stretchType="RelativeToBandHeight" x="210" y="272" width="89" height="10" uuid="ca41911c-7a71-4110-a77e-b47af954ada7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["ГОСТ Р 52938-2008"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="162" y="95" width="141" height="10"/>
+				<reportElement stretchType="RelativeToBandHeight" x="162" y="95" width="141" height="10" uuid="5b286c56-80d2-470e-9671-0ad6454e4371"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{purchased}==false?("Код донора: "+("00000"+String.valueOf($F{donor_id})).substring(("00000"+String.valueOf($F{donor_id})).length()-5)):($F{donorCode}==null?"Код донора: ":("Код донора: "+$F{donorCode}))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="ResusInvertionText" x="160" y="2" width="124" height="30"/>
+				<reportElement style="ResusInvertionText" x="160" y="2" width="124" height="30" uuid="a6438976-3017-4481-aac9-062383466d03"/>
 				<textElement textAlignment="Center">
 					<font size="22" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{bloodGroupValue}+" "+$F{resusFactor}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement stretchType="RelativeToBandHeight" x="5" y="111" width="152" height="10"/>
+				<reportElement stretchType="RelativeToBandHeight" x="5" y="111" width="152" height="10" uuid="1ab45d3f-53a7-47b9-b1fe-f4b4a313e527"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Произведен "+(new SimpleDateFormat("dd.MM.yyyy")).format($F{productionDate})+" в"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="ResusInvertionText" x="160" y="32" width="141" height="25"/>
+				<reportElement style="ResusInvertionText" x="160" y="32" width="141" height="25" uuid="602de7a5-befe-4a6b-ae4c-76b72742a6b7"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Rh "+$F{resusFactor}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="162" y="121" width="143" height="10"/>
+				<reportElement stretchType="RelativeToBandHeight" x="162" y="121" width="143" height="10" uuid="45800467-aa2c-492a-a9a0-637855a9503b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Тесты"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement stretchType="RelativeToBandHeight" x="162" y="181" width="143" height="29"/>
+				<reportElement stretchType="RelativeToBandHeight" x="162" y="181" width="143" height="29" uuid="6caa53a0-4521-453b-bc6f-e7881645a98a"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="7" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{irradiated}.booleanValue()==true?"Облучение 25 гр."+System.getProperty("line.separator"):"")+($F{leukoFiltered}.booleanValue()==true?"Лейкофильтрация"+System.getProperty("line.separator"):"")+($F{inactivated}.booleanValue()==true?"Вирусинактивация":"")]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" x="162" y="68" width="141" height="24">
+				<reportElement key="table" x="162" y="68" width="141" height="24" uuid="c810c585-6174-4291-a728-f005cd226b8b">
 					<printWhenExpression><![CDATA[$F{purchased}.equals( false )]]></printWhenExpression>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="DonationPhenotypes">
+					<datasetRun subDataset="DonationPhenotypes" uuid="562df4ce-ac11-4ce0-a70f-624616977cf8">
 						<datasetParameter name="docId">
 							<datasetParameterExpression><![CDATA[$P{docId}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="141">
+					<jr:column width="141" uuid="b147db17-c9d2-498c-87d0-726a2a135246">
 						<jr:tableFooter height="0" rowSpan="1"/>
 						<jr:detailCell height="16" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="141" height="16"/>
+								<reportElement x="0" y="0" width="141" height="16" uuid="cad16c23-c467-4c21-a960-133ec16fa60f"/>
 								<textElement>
 									<font fontName="Tahoma" size="12" isBold="true"/>
 								</textElement>
@@ -483,43 +486,43 @@ where comp.id=$P{docId} and trfu_analysis_types.category="Иммуносерол
 				</jr:table>
 			</componentElement>
 			<textField>
-				<reportElement x="11" y="58" width="40" height="17"/>
+				<reportElement x="11" y="58" width="40" height="17" uuid="2a3abf94-c59e-4f9b-ba11-ab639de9c957"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA["74599"+(new SimpleDateFormat("yy").format(new java.util.Date()))+$F{bloodGroupNumber}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["74599"+(new SimpleDateFormat("yy").format(new java.util.Date()))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="162" y="223" width="145" height="15"/>
+				<reportElement x="162" y="223" width="145" height="15" uuid="3841d8b1-1d5e-47b6-8117-ce69a80d57f0"/>
 				<textElement>
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{transfusiologistFullName}==null?"":$P{transfusiologistFullName}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="158" y="105" width="148" height="1"/>
+				<reportElement x="158" y="105" width="148" height="1" uuid="cd121577-0e39-4429-a4f0-29342391e1fd"/>
 			</line>
 			<textField>
-				<reportElement x="162" y="210" width="100" height="13"/>
+				<reportElement x="162" y="210" width="100" height="13" uuid="0e4e3807-174f-4e30-b6d8-9db7c99cdcac"/>
 				<textElement>
 					<font fontName="Tahoma" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cellCount}==0?"":($F{comp_type}.contains("Лейкоцитный")?(($F{doseCount}+" д.д.="+$F{cellCount}+"·10"+"\u2079")):($F{doseCount}+" д.д.="+$F{cellCount}+"·10¹¹"))]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table" x="162" y="131" width="139" height="50"/>
+				<reportElement key="table" x="162" y="131" width="139" height="50" uuid="b88cf181-e890-40e9-b82d-23898acaff70"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="DonationAnalisys">
+					<datasetRun subDataset="DonationAnalisys" uuid="9230aff1-77ce-4bbf-a6e2-6975a6ccdbb1">
 						<datasetParameter name="docId">
 							<datasetParameterExpression><![CDATA[$P{docId}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="128">
+					<jr:column width="128" uuid="3b0b87fe-4a49-4129-a08c-7d982cf5c55f">
 						<jr:tableFooter height="0" rowSpan="1"/>
 						<jr:detailCell height="10" rowSpan="1">
 							<textField>
-								<reportElement x="0" y="0" width="128" height="10"/>
+								<reportElement x="0" y="0" width="128" height="10" uuid="ec9fb2ba-b46b-4315-bc9a-8c0cafea80ff"/>
 								<textElement>
 									<font fontName="Tahoma" size="7"/>
 								</textElement>
@@ -530,18 +533,18 @@ where comp.id=$P{docId} and trfu_analysis_types.category="Иммуносерол
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 1" x="5" y="253" width="152" height="28"/>
+				<reportElement key="table 1" x="5" y="253" width="152" height="28" uuid="02865b8c-139f-4a61-ac14-41974861eed0"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Brak">
+					<datasetRun subDataset="Brak" uuid="ddc15a8e-cf29-413f-ad55-5021453049e3">
 						<datasetParameter name="docId">
 							<datasetParameterExpression><![CDATA[$P{docId}]]></datasetParameterExpression>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="152">
+					<jr:column width="152" uuid="40f9c573-9811-4d2d-adde-d91806c5986f">
 						<jr:tableFooter height="26" rowSpan="1">
 							<textField>
-								<reportElement style="ResusInvertionForBrak" x="0" y="0" width="152" height="26" forecolor="#000000" backcolor="#FFFFFF"/>
+								<reportElement style="ResusInvertionForBrak" x="0" y="0" width="152" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="da66a8ea-b781-4f8b-a5a4-0193d144a43a"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -553,16 +556,16 @@ where comp.id=$P{docId} and trfu_analysis_types.category="Иммуносерол
 				</jr:table>
 			</componentElement>
 			<textField>
-				<reportElement style="ResusInvertionTextForBrak" mode="Opaque" x="6" y="78" width="151" height="33"/>
+				<reportElement style="ResusInvertionTextForBrak" mode="Opaque" x="6" y="78" width="151" height="33" uuid="7f64aabe-e3a3-4b33-9fbd-81281c9c003a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[(($F{comp_type}).toLowerCase().indexOf("эритроцит")>-1)&($F{comp_status_id}!=-1)?$V{shortInstructionForEritr}:$F{comp_status_id}==2?$V{shortInstructionForSZP}:($F{comp_status_id}==-1?$V{shortInstructionForSZP}:$V{shortInstructionForOthers})]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement x="27" y="66" width="257" height="130"/>
+				<reportElement x="27" y="66" width="257" height="130" uuid="9d575d8f-aa0a-4286-9969-cf08f5d65c6e"/>
 				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
-					<datasetRun subDataset="BRAK">
+					<datasetRun subDataset="BRAK" uuid="26861119-7ce3-49c0-9ad1-8dfbf1384208">
 						<datasetParameter name="docId">
 							<datasetParameterExpression><![CDATA[$P{docId}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -570,7 +573,7 @@ where comp.id=$P{docId} and trfu_analysis_types.category="Иммуносерол
 					</datasetRun>
 					<jr:listContents height="130" width="257">
 						<textField>
-							<reportElement x="8" y="26" width="238" height="104"/>
+							<reportElement x="8" y="26" width="238" height="104" uuid="878ec34e-d670-406d-b0cb-884c12eb6b64"/>
 							<textElement textAlignment="Center" verticalAlignment="Middle">
 								<font fontName="Tahoma" size="30" isBold="true"/>
 							</textElement>
@@ -580,21 +583,21 @@ where comp.id=$P{docId} and trfu_analysis_types.category="Иммуносерол
 				</jr:list>
 			</componentElement>
 			<textField>
-				<reportElement x="51" y="58" width="59" height="17"/>
+				<reportElement x="51" y="58" width="59" height="17" uuid="bb9ebb87-af1c-44c5-ac92-f229e9c84710"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="13" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{purchased}==false?$F{req_number}:$F{comp_number}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{purchased}==false?$F{req_number}: "000000".substring($F{comp_number}.length()).concat($F{comp_number})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="110" y="58" width="25" height="17"/>
+				<reportElement style="table_TD" x="110" y="58" width="25" height="17" uuid="5b247958-fffb-4bec-a472-c86a40dd5767"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{purchased}==false?$F{comp_number}:""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="AutoInvertionText" mode="Transparent" x="160" y="240" width="146" height="30" backcolor="#000000"/>
+				<reportElement style="AutoInvertionText" mode="Transparent" x="160" y="240" width="146" height="30" backcolor="#000000" uuid="264dbd2a-7a00-4813-b722-2affab659ba0"/>
 				<box leftPadding="3"/>
 				<textElement>
 					<font size="10" isBold="true"/>

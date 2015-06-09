@@ -2,6 +2,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
@@ -112,40 +113,14 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 	public void setFilter(String filter) {
 		this.filter = filter;
 	}
+
 	
-	public void setFullNumber(String fullNumber) {
-		this.fullNumber = fullNumber;
-	}
-	
-	public String getFullNumber() {
-		return fullNumber;
-	}
-	
-	public void composePurchasedComponent() {
-		try {
-			String componentNumber = StringUtils.right(fullNumber, 2);
-			String parentNumber = StringUtils.substring(fullNumber, fullNumber.length() - 7, fullNumber.length() - 2);
-			if (componentNumber != null && !componentNumber.equals("") && parentNumber != null && !parentNumber.equals("")) {
-				if (sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocumentsByFullNumber(parentNumber, componentNumber, false).size() > 0) {
-					System.out.println("Компонент с таким номером уже зарегистрирован");
-					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, "Компонент с таким номером уже зарегистрирован", ""));
-					return;
-				}
-			}
-			FacesContext.getCurrentInstance().getExternalContext().redirect("blood_component.xhtml?docAction=create&purchasedNumber=" + fullNumber);
-			fullNumber = "";
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
 	
 	
 	private String filter;
-	
-	private String fullNumber;
-	
+
+
 
 	@Inject @Named("sessionManagement")
 	SessionManagementBean sessionManagement = new SessionManagementBean();

@@ -5,7 +5,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:e5ui="http://efive.ru/uitemplates"
-      xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
+      xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+      xmlns:p = "http://primefaces.org/ui">
 
 <ui:composition template="#{sessionManagement.templateName}">
 
@@ -15,6 +16,7 @@
         <h:outputScript library="js" name="datepicker_init_ru.js" target="head" />
         <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
         <h:outputScript library="js" name="forms.js" target="head" />
+        <h:outputScript library="js" name="primefacesLocale_ru.js" target="head"/>
         <e5ui-comp:outputUtilScript />
         <h:outputScript>
             var oldtValOnClick;
@@ -22,42 +24,42 @@
             var isVisibleHistory = false;
 
             function changeVisibleHistory() {
-                isVisibleHistory = !isVisibleHistory;
-                hideShowHistory();
+            isVisibleHistory = !isVisibleHistory;
+            hideShowHistory();
             }
 
             function hideShowHistory() {
-                var blockHistory = $("[id*='history']");
-                if (isVisibleHistory) {
-                    blockHistory.show();
-                } else {
-                    blockHistory.hide();
-                }
+            var blockHistory = $("[id*='history']");
+            if (isVisibleHistory) {
+            blockHistory.show();
+            } else {
+            blockHistory.hide();
+            }
             }
 
             function setCursor(typeCursor) {
-                var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
-                $("[id*='history']").prev().find("a").attr("style", styleTitle);
+            var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
+            $("[id*='history']").prev().find("a").attr("style", styleTitle);
             }
 
             function checkBloodComponent() {
-                var componentType = $("[id='main_content_form:componentType']");
-                if (componentType.val() != " ") {
-                    actions.attr("onclick", oldtValOnClick);
-                    actions.click();
-                } else {
-                    alert("Необходимо выбрать компонент крови!");
-                }
+            var componentType = $("[id='main_content_form:componentType']");
+            if (componentType.val() != " ") {
+            actions.attr("onclick", oldtValOnClick);
+            actions.click();
+            } else {
+            alert("Необходимо выбрать компонент крови!");
+            }
             }
 
             jQuery(function () {
-                hideShowHistory();
-                actions = $("[id='main_content_form:showActions']");
-                oldtValOnClick = actions.attr("onclick");
-                actions.attr("onclick", "checkBloodComponent()");
-                if ($("[id*='purchasedComponent']").size() > 0) {
-                    $("[id*='purchasedComponent']").attr("checked", "true");
-                }
+            hideShowHistory();
+            actions = $("[id='main_content_form:showActions']");
+            oldtValOnClick = actions.attr("onclick");
+            actions.attr("onclick", "checkBloodComponent()");
+            if ($("[id*='purchasedComponent']").size() > 0) {
+            $("[id*='purchasedComponent']").attr("checked", "true");
+            }
             });
         </h:outputScript>
     </ui:define>
@@ -383,65 +385,123 @@
                     <h:panelGroup rendered="#{bloodComponent.viewState or not (bloodComponent.expeditionEditAvailable)}">
                         <div class="row">
                             <table class="form_grid">
-                                <h:panelGroup rendered="#{bloodComponent.document.purchased and not (bloodComponent.document.componentType.lite)}">
+                                <!-- Для заупленного КК-->
+                                <h:panelGroup rendered="#{bloodComponent.document.purchased}">
                                     <tr class="row">
-                                        <td class="first">Код донора</td>
-                                        <td><h:outputText value="#{bloodComponent.document.donorCode}" /></td>
+                                        <td class="first">Дата поступления:</td>
+                                        <td>
+                                            <h:outputText value="#{bloodComponent.document.receivedDate}" class="wide">
+                                                <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+                                            </h:outputText>
+                                        </td>
                                     </tr>
                                     <tr class="row">
                                         <td class="first">Номер накладной</td>
                                         <td><h:outputText value="#{bloodComponent.document.invoiceNumber}" /></td>
                                     </tr>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{bloodComponent.donor ne null}">
                                     <tr class="row">
-                                        <td class="first">Донор:</td>
+                                        <td class="first">Номер донации</td>
                                         <td>
-                                            <h:outputText value="#{bloodComponent.donor.description}" class="wide" />
-                                            <h:outputLink style="margin-left:5px;" value="/component/donor.xhtml" target="_blank">
+                                            <h:outputText value="#{bloodComponent.document.parentNumber}"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Номер компонента</td>
+                                        <td>
+                                            <h:outputText value="#{bloodComponent.document.number}"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Изготовитель:</td>
+                                        <td>
+                                            <h:outputText value="#{bloodComponent.document.maker.fullName}" class="wide" />
+                                            <h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
                                                 <h:graphicImage value="#{resource['images:link.png']}" />
-                                                <f:param name="docId" value="#{bloodComponent.donor.id}" />
+                                                <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
                                             </h:outputLink>
                                         </td>
                                     </tr>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{bloodComponent.donation ne null}">
                                     <tr class="row">
-                                        <td class="first">Обращение на донацию:</td>
-                                        <td>
-                                            <h:outputText value="#{bloodComponent.donation.number}" class="wide" />
-                                            <h:outputLink style="margin-left:5px;" value="/component/blood_donation.xhtml" target="_blank">
-                                                <h:graphicImage value="#{resource['images:link.png']}" />
-                                                <f:param name="docId" value="#{bloodComponent.donation.id}" />
-                                            </h:outputLink>
+                                        <td class="first">Код донора</td>
+                                        <td><h:outputText value="#{bloodComponent.document.donorCode}" /></td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Компонент:</td>
+                                        <td><h:outputText value="#{bloodComponent.document.componentType}" converter="BloodComponentTypeConverter" class="wide" style="font-weight:bold;" /></td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Объем компонента:</td>
+                                        <td><h:outputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" /></td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first" colspan="2">
+                                            <fieldset style="width:30%;">
+                                                <legend>
+                                                    <span class="title">Полученный объем</span>
+                                                </legend>
+                                                <div class="wrap" style="width:100%; margin:0px">
+                                                    <div class="inner">
+                                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" style="width:100%;"
+                                                                        value="#{bloodComponent.document.factEntry}" var="row">
+                                                            <e5ui:column style="width:10em;">
+                                                                <f:facet name="header">
+                                                                    <p>Вид донорства</p>
+                                                                </f:facet>
+                                                                <h:outputText value="#{row.donationType}" class="wide"
+                                                                              converter="BloodDonationTypeConverter"/>
+                                                            </e5ui:column>
+                                                            <e5ui:column>
+                                                                <f:facet name="header">
+                                                                    <p>Объем донации</p>
+                                                                </f:facet>
+                                                                <h:outputText value="#{row.dose} мл" style="margin-right:3px;"/>
+                                                            </e5ui:column>
+                                                        </e5ui:dataTable>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
                                         </td>
                                     </tr>
-                                </h:panelGroup>
-                                <tr class="row">
-                                    <td class="first">Изготовитель:</td>
-                                    <td>
-                                        <h:outputText value="#{bloodComponent.document.maker.fullName}" class="wide" />
-                                        <h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
-                                            <h:graphicImage value="#{resource['images:link.png']}" />
-                                            <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
-                                        </h:outputLink>
-                                    </td>
-                                </tr>
-                                <h:panelGroup rendered="#{bloodComponent.personificationAvailable and bloodComponent.document.personal}">
                                     <tr class="row">
-                                        <td class="first">ФИО реципиента:</td>
-                                        <td><h:outputText value="#{bloodComponent.document.recipient}" class="wide" /></td>
+                                        <td class="first">Антикоагулянт:</td>
+                                        <td>
+                                            <h:outputText value="#{bloodComponent.document.anticoagulant.value}" />
+                                            <span style="margin:0 5px;">Объем, мл:</span>
+                                            <h:outputText value="#{bloodComponent.document.anticoagulantVolume}" />
+                                        </td>
                                     </tr>
-                                </h:panelGroup>
-                                <tr class="row">
-                                    <td class="first">Группа крови:</td>
-                                    <td><h:outputText value="#{bloodComponent.document.bloodGroup.value}" class="wide" /></td>
-                                </tr>
-                                <tr class="row">
-                                    <td class="first">Резус-принадлежность:</td>
-                                    <td><h:outputText value="#{bloodComponent.document.rhesusFactor}" converter="ClassifierConverter" /></td>
-                                </tr>
-                                <h:panelGroup rendered="#{bloodComponent.document.purchased and not (bloodComponent.document.componentType.lite)}">
+                                    <tr class="row">
+                                        <td class="first"><h:outputText value="#{bloodComponent.leukoConcentrate ? 'Седиментирующий раствор:': 'Ресуспендирующий раствор:'}" /></td>
+                                        <td>
+                                            <h:outputText value="#{bloodComponent.document.preservative}" converter="ClassifierConverter" />
+                                            <span style="margin:0 5px;">Объем, мл:</span>
+                                            <h:outputText value="#{bloodComponent.document.preservativeVolume}" />
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Дата донации:</td>
+                                        <td>
+                                            <h:outputText value="#{bloodComponent.document.donationDate}" class="wide">
+                                                <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+                                            </h:outputText>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Дата производства:</td>
+                                        <td>
+                                            <h:outputText value="#{bloodComponent.document.productionDate}" class="wide">
+                                                <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+                                            </h:outputText>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Группа крови:</td>
+                                        <td><h:outputText value="#{bloodComponent.document.bloodGroup.value}" class="wide" /></td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Резус-принадлежность:</td>
+                                        <td><h:outputText value="#{bloodComponent.document.rhesusFactor}" converter="ClassifierConverter" /></td>
+                                    </tr>
                                     <tr class="row">
                                         <td class="first" colspan="2">
                                             <fieldset style="width:30%;">
@@ -474,94 +534,6 @@
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first" colspan="2">
-                                            <fieldset style="width:30%;">
-                                                <legend>
-                                                    <span class="title">Результаты анализов</span>
-                                                </legend>
-                                                <div class="wrap">
-                                                    <div class="inner">
-                                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
-                                                                        value="#{bloodComponent.document.testDonationList}"
-                                                                        var="row" grouping="false">
-                                                            <e5ui:column style="width:10em;">
-                                                                <f:facet name="header">
-                                                                    <p>Анализ</p>
-                                                                </f:facet>
-                                                                <h:outputText value="#{row.type.value}"/>
-                                                            </e5ui:column>
-                                                            <e5ui:column>
-                                                                <f:facet name="header">
-                                                                    <p>Результат</p>
-                                                                </f:facet>
-                                                                <strong>
-                                                                    <h:outputText value="#{row.value}"/>
-                                                                </strong>
-                                                            </e5ui:column>
-                                                        </e5ui:dataTable>
-                                                    </div>
-                                                </div>
-                                            </fieldset>
-                                        </td>
-                                    </tr>
-                                    <tr class="row">
-                                        <td class="first" colspan="2">
-                                            <fieldset style="width:30%;">
-                                                <legend>
-                                                    <span class="title">Полученный объем</span>
-                                                </legend>
-                                                <div class="wrap" style="width:100%; margin:0px">
-                                                    <div class="inner">
-                                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" style="width:100%;"
-                                                                        value="#{bloodComponent.document.factEntry}" var="row">
-                                                            <e5ui:column style="width:10em;">
-                                                                <f:facet name="header">
-                                                                    <p>Вид донорства</p>
-                                                                </f:facet>
-                                                                <h:outputText value="#{row.donationType}" class="wide"
-                                                                              converter="BloodDonationTypeConverter"/>
-                                                            </e5ui:column>
-                                                            <e5ui:column>
-                                                                <f:facet name="header">
-                                                                    <p>Объем донации</p>
-                                                                </f:facet>
-                                                                <h:outputText value="#{row.dose} мл" style="margin-right:3px;"/>
-                                                            </e5ui:column>
-                                                        </e5ui:dataTable>
-                                                    </div>
-                                                </div>
-                                            </fieldset>
-                                        </td>
-                                    </tr>
-                                </h:panelGroup>
-                                <tr class="row">
-                                    <td class="first">Дата донации:</td>
-                                    <td>
-                                        <h:outputText value="#{bloodComponent.document.donationDate}" class="wide">
-                                            <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
-                                        </h:outputText>
-                                    </td>
-                                </tr>
-                                <h:panelGroup rendered="#{not(bloodComponent.document.componentType.lite)}">
-                                    <tr class="row">
-                                        <td class="first">Дата производства:</td>
-                                        <td>
-                                            <h:outputText value="#{bloodComponent.document.productionDate}" class="wide">
-                                                <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
-                                            </h:outputText>
-                                        </td>
-                                    </tr>
-                                    <h:panelGroup rendered="#{bloodComponent.document.purchased}">
-                                        <tr class="row">
-                                            <td class="first">Дата поступления:</td>
-                                            <td>
-                                                <h:outputText value="#{bloodComponent.document.receivedDate}" class="wide">
-                                                    <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
-                                                </h:outputText>
-                                            </td>
-                                        </tr>
-                                    </h:panelGroup>
-                                    <tr class="row">
                                         <td class="first">Дата окончания срока хранения:</td>
                                         <td>
                                             <h:outputText value="#{bloodComponent.document.expirationDate}" class="wide">
@@ -570,114 +542,53 @@
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Антикоагулянт:</td>
+                                        <td class="first">Температура хранения:</td>
                                         <td>
-                                            <h:outputText value="#{bloodComponent.document.anticoagulant.value}" />
-                                            <span style="margin:0 5px;">Объем, мл:</span>
-                                            <h:outputText value="#{bloodComponent.document.anticoagulantVolume}" />
+                                            <span >от</span> <h:outputText style="margin:0 5px;" value="#{bloodComponent.document.lowerStorageTemperature}" />
+                                            <span>до</span> <h:outputText style="margin:0 5px;" value="#{bloodComponent.document.higherStorageTemperature}" />
                                         </td>
                                     </tr>
-                                </h:panelGroup>
-                                <tr class="row">
-                                    <td class="first">Компонент:</td>
-                                    <td><h:outputText value="#{bloodComponent.document.componentType}" converter="BloodComponentTypeConverter" class="wide" style="font-weight:bold;" /></td>
-                                </tr>
-                                <h:panelGroup rendered="#{bloodComponent.erComponent}">
                                     <tr class="row">
-                                        <td class="first">Вес ЭМ до фильтрации:</td>
-                                        <td><h:outputText value="#{bloodComponent.document.emVolume}" /></td>
-                                    </tr>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{bloodComponent.document.inactivated}">
-                                    <tr class="row">
-                                        <td class="first">Объем до вирусинактивации, мл:</td>
-                                        <td>
-                                            <h:panelGroup rendered="#{bloodComponent.viewState}">
-                                                <h:outputText value="#{bloodComponent.document.preInactivatedVolume}" style="font-weight:bold;" />
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{bloodComponent.editState}">
-                                                <h:inputText value="#{bloodComponent.document.preInactivatedVolume}" style="font-weight:bold;" />
-                                            </h:panelGroup>
-                                        </td>
-                                    </tr>
-                                </h:panelGroup>
-                                <tr class="row">
-                                    <td class="first">Объем компонента, мл:</td>
-                                    <td>
-                                        <h:panelGroup rendered="#{bloodComponent.viewState}">
-                                            <h:outputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" />
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{bloodComponent.editState}">
-                                            <h:inputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" />
-                                        </h:panelGroup>
-                                    </td>
-                                </tr>
-                                <h:panelGroup rendered="#{not(bloodComponent.document.componentType.lite)}">
-                                    <h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
-                                        <tr class="row">
-                                            <td class="first">Количество донорских доз:</td>
-                                            <td>
-                                                <h:panelGroup rendered="#{bloodComponent.viewState}">
-                                                    <h:outputText value="#{bloodComponent.document.doseCount}" />
-                                                </h:panelGroup>
-                                                <h:panelGroup rendered="#{bloodComponent.editState}">
-                                                    <h:inputText value="#{bloodComponent.document.doseCount}" />
-                                                </h:panelGroup>
-                                            </td>
-                                        </tr>
-                                    </h:panelGroup>
-                                    <tr class="row">
-                                        <td class="first">Количество клеток (х10<span style="vertical-align:super;font-size:11px;"><h:outputText value="#{bloodComponent.leukoConcentrate? '9': '11'}" /></span>):</td>
-                                        <td><h:outputText value="#{bloodComponent.document.cellCount}" /></td>
-                                    </tr>
-                                    <h:panelGroup rendered="#{bloodComponent.leukoConcentrate}">
-                                        <tr class="row">
-                                            <td class="first">Доза на кг массы тела (х10<span style="vertical-align:super;font-size:11px;">8</span>/кг)</td>
-                                            <td><h:outputText value="#{bloodComponent.document.dosePerKg}" /></td>
-                                        </tr>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{not (bloodComponent.rectification)}">
-                                        <tr class="row">
-                                            <td class="first" colspan="2">
-                                                <fieldset>
-                                                    <legend>
-                                                        <label><span class="title">Обработка</span> </label>
-                                                    </legend>
-                                                    <div style="border: 2px groove threedface;">
-                                                        <h:selectBooleanCheckbox value="#{bloodComponent.document.inactivated}" disabled="true">
-                                                            <f:ajax event="click" listener="#{bloodComponent.inactivatedListener}" render="main_content_form" execute="main_content_form" />
-                                                        </h:selectBooleanCheckbox>
-                                                        <h:outputText value="Вирусинактивация" />
-                                                        <h:panelGroup rendered="#{bloodComponent.haveConsumableMaterial}">
-                                                            <h:outputScript>
-                                                                var isVisibleText = false;
+                                        <td class="first" colspan="2">
+                                            <fieldset>
+                                                <legend>
+                                                    <label><span class="title">Обработка</span> </label>
+                                                </legend>
+                                                <div style="border: 2px groove threedface;">
+                                                    <h:selectBooleanCheckbox value="#{bloodComponent.document.inactivated}" disabled="true">
+                                                        <f:ajax event="click" listener="#{bloodComponent.inactivatedListener}" render="main_content_form" execute="main_content_form" />
+                                                    </h:selectBooleanCheckbox>
+                                                    <h:outputText value="Вирусинактивация" />
+                                                    <h:panelGroup rendered="#{bloodComponent.haveConsumableMaterial}">
+                                                        <h:outputScript>
+                                                            var isVisibleText = false;
 
-                                                                function changeVisibleText() {
-                                                                isVisibleText = !isVisibleText;
-                                                                hideShowText();
-                                                                }
+                                                            function changeVisibleText() {
+                                                            isVisibleText = !isVisibleText;
+                                                            hideShowText();
+                                                            }
 
-                                                                function hideShowText() {
-                                                                var blockText = $("[id*='consumableMaterialContent']");
-                                                                if (isVisibleText) {
-                                                                blockText.show();
-                                                                } else {
-                                                                blockText.hide();
-                                                                }
-                                                                }
+                                                            function hideShowText() {
+                                                            var blockText = $("[id*='consumableMaterialContent']");
+                                                            if (isVisibleText) {
+                                                            blockText.show();
+                                                            } else {
+                                                            blockText.hide();
+                                                            }
+                                                            }
 
-                                                                function setCursorMaterial(typeCursor) {
-                                                                var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
-                                                                $("[id*='consumableMaterialContent']").prev().attr("style", styleTitle);
-                                                                }
+                                                            function setCursorMaterial(typeCursor) {
+                                                            var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
+                                                            $("[id*='consumableMaterialContent']").prev().attr("style", styleTitle);
+                                                            }
 
-                                                                jQuery(function () {
-                                                                hideShowText();
-                                                                });
-                                                            </h:outputScript>
-                                                            <span> </span>
-                                                            <a onmouseout="setCursorMaterial('default')" onmouseover="setCursorMaterial('pointer')"
-                                                               onclick="changeVisibleText();" style="color: #4581c0">Расходный материал</a>
+                                                            jQuery(function () {
+                                                            hideShowText();
+                                                            });
+                                                        </h:outputScript>
+                                                        <span> </span>
+                                                        <a onmouseout="setCursorMaterial('default')" onmouseover="setCursorMaterial('pointer')"
+                                                           onclick="changeVisibleText();" style="color: #4581c0">Расходный материал</a>
 															<span id="consumableMaterialContent">
 																<span>ЛОТ: </span>
 																<h:outputText value="#{bloodComponent.consumableMaterialLot}"/>
@@ -688,67 +599,304 @@
                                                                     <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
                                                                 </h:outputText>
 					                						</span>
-                                                            <div>
-                                                                <span>Добавочный раствор: </span>
-                                                                <h:outputText style="font-weight:bold;" value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter" />
-                                                                <span>. Объем, мл: </span>
-                                                                <h:outputText style="font-weight:bold;" value="#{bloodComponent.document.additionalVolume}" />
-                                                            </div>
-                                                        </h:panelGroup>
-                                                    </div>
-                                                    <div style="margin-top: 10px;border: 2px groove threedface;">
-                                                        <h:selectBooleanCheckbox value="#{bloodComponent.document.irradiated}" disabled="#{bloodComponent.viewState}" />
-                                                        <h:outputText value="Облучение" />
-                                                    </div>
-                                                    <h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
-                                                        <div style="margin-top: 10px;border: 2px groove threedface;">
-                                                            <h:selectBooleanCheckbox value="#{bloodComponent.document.leukoFiltered}" disabled="#{bloodComponent.viewState}" />
-                                                            <h:outputText value="Лейкофильтрация" />
+                                                        <div>
+                                                            <span>Добавочный раствор: </span>
+                                                            <h:outputText style="font-weight:bold;" value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter" />
+                                                            <span>. Объем, мл: </span>
+                                                            <h:outputText style="font-weight:bold;" value="#{bloodComponent.document.additionalVolume}" />
                                                         </div>
                                                     </h:panelGroup>
+                                                </div>
+                                                <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                    <h:selectBooleanCheckbox value="#{bloodComponent.document.irradiated}" disabled="#{bloodComponent.viewState}" />
+                                                    <h:outputText value="Облучение" />
+                                                </div>
+                                                <h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
                                                     <div style="margin-top: 10px;border: 2px groove threedface;">
-                                                        <h:selectBooleanCheckbox value="#{bloodComponent.document.pooling}" disabled="#{bloodComponent.viewState}" />
-                                                        <h:outputText value="Пулирование" />
+                                                        <h:selectBooleanCheckbox value="#{bloodComponent.document.leukoFiltered}" disabled="#{bloodComponent.viewState}" />
+                                                        <h:outputText value="Лейкофильтрация" />
                                                     </div>
-                                                    <div style="margin-top: 10px;border: 2px groove threedface;">
-                                                        <h:selectBooleanCheckbox value="#{bloodComponent.document.washing}" disabled="#{bloodComponent.viewState}" />
-                                                        <h:outputText value="Отмывание" />
-                                                    </div>
-                                                </fieldset>
+                                                </h:panelGroup>
+                                                <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                    <h:selectBooleanCheckbox value="#{bloodComponent.document.pooling}" disabled="#{bloodComponent.viewState}" />
+                                                    <h:outputText value="Пулирование" />
+                                                </div>
+                                                <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                    <h:selectBooleanCheckbox value="#{bloodComponent.document.washing}" disabled="#{bloodComponent.viewState}" />
+                                                    <h:outputText value="Отмывание" />
+                                                </div>
+                                            </fieldset>
+                                        </td>
+                                    </tr>
+                                </h:panelGroup>
+                                <!-- Конец закупленного-->
+                                <!-- Обычные КК-->
+                                <h:panelGroup rendered="#{not bloodComponent.document.purchased}">
+                                    <h:panelGroup rendered="#{bloodComponent.donor ne null}">
+                                        <tr class="row">
+                                            <td class="first">Донор:</td>
+                                            <td>
+                                                <h:outputText value="#{bloodComponent.donor.description}" class="wide" />
+                                                <h:outputLink style="margin-left:5px;" value="/component/donor.xhtml" target="_blank">
+                                                    <h:graphicImage value="#{resource['images:link.png']}" />
+                                                    <f:param name="docId" value="#{bloodComponent.donor.id}" />
+                                                </h:outputLink>
+                                            </td>
+                                        </tr>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{bloodComponent.donation ne null}">
+                                        <tr class="row">
+                                            <td class="first">Обращение на донацию:</td>
+                                            <td>
+                                                <h:outputText value="#{bloodComponent.donation.number}" class="wide" />
+                                                <h:outputLink style="margin-left:5px;" value="/component/blood_donation.xhtml" target="_blank">
+                                                    <h:graphicImage value="#{resource['images:link.png']}" />
+                                                    <f:param name="docId" value="#{bloodComponent.donation.id}" />
+                                                </h:outputLink>
                                             </td>
                                         </tr>
                                     </h:panelGroup>
                                     <tr class="row">
-                                        <td class="first">Температура хранения:</td>
+                                        <td class="first">Изготовитель:</td>
                                         <td>
-                                            <span >от</span> <h:outputText style="margin:0 5px;" value="#{bloodComponent.document.lowerStorageTemperature}" />
-                                            <span>до</span> <h:outputText style="margin:0 5px;" value="#{bloodComponent.document.higherStorageTemperature}" />
+                                            <h:outputText value="#{bloodComponent.document.maker.fullName}" class="wide" />
+                                            <h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
+                                                <h:graphicImage value="#{resource['images:link.png']}" />
+                                                <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
+                                            </h:outputLink>
                                         </td>
+                                    </tr>
+                                    <h:panelGroup rendered="#{bloodComponent.personificationAvailable and bloodComponent.document.personal}">
+                                        <tr class="row">
+                                            <td class="first">ФИО реципиента:</td>
+                                            <td><h:outputText value="#{bloodComponent.document.recipient}" class="wide" /></td>
+                                        </tr>
+                                    </h:panelGroup>
+                                    <tr class="row">
+                                        <td class="first">Группа крови:</td>
+                                        <td><h:outputText value="#{bloodComponent.document.bloodGroup.value}" class="wide" /></td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first"><h:outputText value="#{bloodComponent.leukoConcentrate? 'Седиментирующий раствор:': 'Ресуспендирующий раствор:'}" /></td>
+                                        <td class="first">Резус-принадлежность:</td>
+                                        <td><h:outputText value="#{bloodComponent.document.rhesusFactor}" converter="ClassifierConverter" /></td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Дата донации:</td>
                                         <td>
-                                            <h:outputText value="#{bloodComponent.document.preservative}" converter="ClassifierConverter" />
-                                            <span style="margin:0 5px;">Объем, мл:</span>
-                                            <h:outputText value="#{bloodComponent.document.preservativeVolume}" />
+                                            <h:outputText value="#{bloodComponent.document.donationDate}" class="wide">
+                                                <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+                                            </h:outputText>
                                         </td>
                                     </tr>
+                                    <h:panelGroup rendered="#{not(bloodComponent.document.componentType.lite)}">
+                                        <tr class="row">
+                                            <td class="first">Дата производства:</td>
+                                            <td>
+                                                <h:outputText value="#{bloodComponent.document.productionDate}" class="wide">
+                                                    <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+                                                </h:outputText>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="first">Дата окончания срока хранения:</td>
+                                            <td>
+                                                <h:outputText value="#{bloodComponent.document.expirationDate}" class="wide">
+                                                    <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+                                                </h:outputText>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="first">Антикоагулянт:</td>
+                                            <td>
+                                                <h:outputText value="#{bloodComponent.document.anticoagulant.value}" />
+                                                <span style="margin:0 5px;">Объем, мл:</span>
+                                                <h:outputText value="#{bloodComponent.document.anticoagulantVolume}" />
+                                            </td>
+                                        </tr>
+                                    </h:panelGroup>
+                                    <tr class="row">
+                                        <td class="first">Компонент:</td>
+                                        <td><h:outputText value="#{bloodComponent.document.componentType}" converter="BloodComponentTypeConverter" class="wide" style="font-weight:bold;" /></td>
+                                    </tr>
+                                    <h:panelGroup rendered="#{bloodComponent.erComponent}">
+                                        <tr class="row">
+                                            <td class="first">Вес ЭМ до фильтрации:</td>
+                                            <td><h:outputText value="#{bloodComponent.document.emVolume}" /></td>
+                                        </tr>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{bloodComponent.document.inactivated}">
+                                        <tr class="row">
+                                            <td class="first">Объем до вирусинактивации, мл:</td>
+                                            <td>
+                                                <h:panelGroup rendered="#{bloodComponent.viewState}">
+                                                    <h:outputText value="#{bloodComponent.document.preInactivatedVolume}" style="font-weight:bold;" />
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{bloodComponent.editState}">
+                                                    <h:inputText value="#{bloodComponent.document.preInactivatedVolume}" style="font-weight:bold;" />
+                                                </h:panelGroup>
+                                            </td>
+                                        </tr>
+                                    </h:panelGroup>
+                                    <tr class="row">
+                                        <td class="first">Объем компонента, мл:</td>
+                                        <td>
+                                            <h:panelGroup rendered="#{bloodComponent.viewState}">
+                                                <h:outputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" />
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{bloodComponent.editState}">
+                                                <h:inputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" />
+                                            </h:panelGroup>
+                                        </td>
+                                    </tr>
+                                    <h:panelGroup rendered="#{not(bloodComponent.document.componentType.lite)}">
+                                        <h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
+                                            <tr class="row">
+                                                <td class="first">Количество донорских доз:</td>
+                                                <td>
+                                                    <h:panelGroup rendered="#{bloodComponent.viewState}">
+                                                        <h:outputText value="#{bloodComponent.document.doseCount}" />
+                                                    </h:panelGroup>
+                                                    <h:panelGroup rendered="#{bloodComponent.editState}">
+                                                        <h:inputText value="#{bloodComponent.document.doseCount}" />
+                                                    </h:panelGroup>
+                                                </td>
+                                            </tr>
+                                        </h:panelGroup>
+                                        <tr class="row">
+                                            <td class="first">Количество клеток (х10<span style="vertical-align:super;font-size:11px;"><h:outputText value="#{bloodComponent.leukoConcentrate? '9': '11'}" /></span>):</td>
+                                            <td><h:outputText value="#{bloodComponent.document.cellCount}" /></td>
+                                        </tr>
+                                        <h:panelGroup rendered="#{bloodComponent.leukoConcentrate}">
+                                            <tr class="row">
+                                                <td class="first">Доза на кг массы тела (х10<span style="vertical-align:super;font-size:11px;">8</span>/кг)</td>
+                                                <td><h:outputText value="#{bloodComponent.document.dosePerKg}" /></td>
+                                            </tr>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{not (bloodComponent.rectification)}">
+                                            <tr class="row">
+                                                <td class="first" colspan="2">
+                                                    <fieldset>
+                                                        <legend>
+                                                            <label><span class="title">Обработка</span> </label>
+                                                        </legend>
+                                                        <div style="border: 2px groove threedface;">
+                                                            <h:selectBooleanCheckbox value="#{bloodComponent.document.inactivated}" disabled="true">
+                                                                <f:ajax event="click" listener="#{bloodComponent.inactivatedListener}" render="main_content_form" execute="main_content_form" />
+                                                            </h:selectBooleanCheckbox>
+                                                            <h:outputText value="Вирусинактивация" />
+                                                            <h:panelGroup rendered="#{bloodComponent.haveConsumableMaterial}">
+                                                                <h:outputScript>
+                                                                    var isVisibleText = false;
+
+                                                                    function changeVisibleText() {
+                                                                    isVisibleText = !isVisibleText;
+                                                                    hideShowText();
+                                                                    }
+
+                                                                    function hideShowText() {
+                                                                    var blockText = $("[id*='consumableMaterialContent']");
+                                                                    if (isVisibleText) {
+                                                                    blockText.show();
+                                                                    } else {
+                                                                    blockText.hide();
+                                                                    }
+                                                                    }
+
+                                                                    function setCursorMaterial(typeCursor) {
+                                                                    var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
+                                                                    $("[id*='consumableMaterialContent']").prev().attr("style", styleTitle);
+                                                                    }
+
+                                                                    jQuery(function () {
+                                                                    hideShowText();
+                                                                    });
+                                                                </h:outputScript>
+                                                                <span> </span>
+                                                                <a onmouseout="setCursorMaterial('default')" onmouseover="setCursorMaterial('pointer')"
+                                                                   onclick="changeVisibleText();" style="color: #4581c0">Расходный материал</a>
+															<span id="consumableMaterialContent">
+																<span>ЛОТ: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialLot}"/>
+																<span>.ТИП: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialType}"/>
+																<span>.ГОДЕН ДО: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialExpirationDate}">
+                                                                    <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+                                                                </h:outputText>
+					                						</span>
+                                                                <div>
+                                                                    <span>Добавочный раствор: </span>
+                                                                    <h:outputText style="font-weight:bold;" value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter" />
+                                                                    <span>. Объем, мл: </span>
+                                                                    <h:outputText style="font-weight:bold;" value="#{bloodComponent.document.additionalVolume}" />
+                                                                </div>
+                                                            </h:panelGroup>
+                                                        </div>
+                                                        <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                            <h:selectBooleanCheckbox value="#{bloodComponent.document.irradiated}" disabled="true" />
+                                                            <h:outputText value="Облучение" />
+                                                        </div>
+                                                        <h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
+                                                            <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                                <h:selectBooleanCheckbox value="#{bloodComponent.document.leukoFiltered}" disabled="true" />
+                                                                <h:outputText value="Лейкофильтрация" />
+                                                            </div>
+                                                        </h:panelGroup>
+                                                        <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                            <h:selectBooleanCheckbox value="#{bloodComponent.document.pooling}" disabled="true" />
+                                                            <h:outputText value="Пулирование" />
+                                                        </div>
+                                                        <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                            <h:selectBooleanCheckbox value="#{bloodComponent.document.washing}" disabled="true" />
+                                                            <h:outputText value="Отмывание" />
+                                                        </div>
+                                                    </fieldset>
+                                                </td>
+                                            </tr>
+                                        </h:panelGroup>
+                                        <tr class="row">
+                                            <td class="first">Температура хранения:</td>
+                                            <td>
+                                                <span >от</span> <h:outputText style="margin:0 5px;" value="#{bloodComponent.document.lowerStorageTemperature}" />
+                                                <span>до</span> <h:outputText style="margin:0 5px;" value="#{bloodComponent.document.higherStorageTemperature}" />
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="first"><h:outputText value="#{bloodComponent.leukoConcentrate? 'Седиментирующий раствор:': 'Ресуспендирующий раствор:'}" /></td>
+                                            <td>
+                                                <h:outputText value="#{bloodComponent.document.preservative}" converter="ClassifierConverter" />
+                                                <span style="margin:0 5px;">Объем, мл:</span>
+                                                <h:outputText value="#{bloodComponent.document.preservativeVolume}" />
+                                            </td>
+                                        </tr>
+                                    </h:panelGroup>
+
                                 </h:panelGroup>
+                                <!-- Конец не закупленного-->
                             </table>
                         </div>
                     </h:panelGroup>
                     <h:panelGroup rendered="#{(bloodComponent.createState or bloodComponent.editState) and bloodComponent.expeditionEditAvailable}">
                         <div class="row">
                             <table class="form_grid">
-                                <h:panelGroup rendered="#{bloodComponent.document.purchased and not (bloodComponent.document.componentType.lite)}">
-                                    <h:panelGroup rendered="#{bloodComponent.document.parentNumber ne null}">
-                                        <tr class="row">
-                                            <td class="first">Номер донации</td>
-                                            <td>
-                                                <h:inputText value="#{bloodComponent.document.parentNumber}"/>
-                                            </td>
-                                        </tr>
-                                    </h:panelGroup>
+                                <!-- Для заупленного КК-->
+                                <h:panelGroup rendered="#{bloodComponent.document.purchased}">
+                                    <tr class="row">
+                                        <td class="first">Дата поступления:</td>
+                                        <td>
+                                            <p:calendar id="receivedDatePurchased" value="#{bloodComponent.document.receivedDate}" lang="ru" locale="ru" mode="popup" showOn="both"  mask="true" pattern="dd.MM.yyyy" />
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Номер накладной</td>
+                                        <td><h:inputText value="#{bloodComponent.document.invoiceNumber}" /></td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Номер донации</td>
+                                        <td>
+                                            <h:inputText value="#{bloodComponent.document.parentNumber}"/>
+                                        </td>
+                                    </tr>
                                     <tr class="row">
                                         <td class="first">Номер компонента</td>
                                         <td>
@@ -756,67 +904,23 @@
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Код донора</td>
-                                        <td><h:inputText value="#{bloodComponent.document.donorCode}" /></td>
-                                    </tr>
-                                    <tr class="row">
-                                        <td class="first">Номер накладной</td>
-                                        <td><h:inputText value="#{bloodComponent.document.invoiceNumber}" /></td>
-                                    </tr>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{bloodComponent.donor ne null}">
-                                    <tr class="row">
-                                        <td class="first">Донор:</td>
-                                        <td>
-                                            <h:outputText value="#{bloodComponent.donor.description}" class="wide" />
-                                            <h:outputLink style="margin-left:5px;" value="/component/donor.xhtml" target="_blank">
-                                                <h:graphicImage value="#{resource['images:link.png']}" />
-                                                <f:param name="docId" value="#{bloodComponent.donor.id}" />
-                                            </h:outputLink>
-                                        </td>
-                                    </tr>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{bloodComponent.donation ne null}">
-                                    <tr class="row">
-                                        <td class="first">Обращение на донацию:</td>
-                                        <td>
-                                            <h:outputText value="#{bloodComponent.donation.number}" class="wide" />
-                                            <h:outputLink style="margin-left:5px;" value="/component/blood_donation.xhtml" target="_blank">
-                                                <h:graphicImage value="#{resource['images:link.png']}" />
-                                                <f:param name="docId" value="#{bloodComponent.donation.id}" />
-                                            </h:outputLink>
-                                        </td>
-                                    </tr>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{bloodComponent.donor ne null}">
-                                    <td class="first">Изготовитель:</td>
-                                    <td>
-                                        <h:outputText value="#{bloodComponent.document.maker.fullName}" class="wide" />
-                                        <h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
-                                            <h:graphicImage value="#{resource['images:link.png']}" />
-                                            <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
-                                        </h:outputLink>
-                                    </td>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{bloodComponent.donor eq null}">
-                                    <tr class="row">
                                         <td class="first">
                                             <h:outputLink onclick="contragentSelectVar.clickOpen('contragentSelectModal'); return false;">
                                                 Изготовитель:
                                             </h:outputLink>
                                         </td>
                                         <td>
-                                            <h:panelGroup id="maker_info">
-                                                <h:outputText id="maker" value="#{bloodComponent.document.maker.fullName}"
+                                            <h:panelGroup id="maker_info_purchased">
+                                                <h:outputText id="makerPurchased" value="#{bloodComponent.document.maker.fullName}"
                                                               class="wide" />
                                                 <h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
                                                     <h:graphicImage value="#{resource['images:link.png']}" />
                                                     <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
                                                 </h:outputLink>
                                             </h:panelGroup>
-                                            <e5ui-comp:modalWindow id="contragentSelectModal"
+                                            <e5ui-comp:modalWindow id="contragentSelectModalPurchased"
                                                                    modalWindowHolder="#{bloodComponent.contragentSelectModal}"
-                                                                   render=":main_content_form:maker_info"
+                                                                   render=":main_content_form:maker_info_purchased"
                                                                    execute="contragent_select_table"
                                                                    showButtons="false"
                                                                    style="width:500px;"
@@ -864,30 +968,102 @@
                                             </e5ui-comp:modalWindow>
                                         </td>
                                     </tr>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{bloodComponent.personificationAvailable and bloodComponent.document.personal}">
                                     <tr class="row">
-                                        <td class="first">ФИО реципиента:</td>
-                                        <td><h:inputText value="#{bloodComponent.document.recipient}" class="wide" /></td>
+                                        <td class="first">Код донора</td>
+                                        <td><h:inputText value="#{bloodComponent.document.donorCode}" /></td>
                                     </tr>
-                                </h:panelGroup>
-                                <tr class="row">
-                                    <td class="first">Группа крови:</td>
-                                    <td>
-                                        <h:selectOneMenu id="bloodGroup" value="#{bloodComponent.document.bloodGroup}" converter="BloodGroupConverter">
-                                            <f:selectItems value="#{dictionaryManagement.bloodGroups}" />
-                                        </h:selectOneMenu>
-                                    </td>
-                                </tr>
-                                <tr class="row">
-                                    <td class="first">Резус-принадлежность:</td>
-                                    <td>
-                                        <h:selectOneMenu id="rhesusFactor" value="#{bloodComponent.document.rhesusFactor}" converter="ClassifierConverter">
-                                            <f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
-                                        </h:selectOneMenu>
-                                    </td>
-                                </tr>
-                                <h:panelGroup rendered="#{bloodComponent.document.purchased and not (bloodComponent.document.componentType.lite)}">
+                                    <tr class="row">
+                                        <td class="first">Компонент:</td>
+                                        <td>
+                                            <p:autoComplete id="componentTypeListPurchasedAC" value="#{bloodComponent.document.componentType}"  converter="BloodComponentTypeConverter" completeMethod="#{dictionaryManagement.getBloodComponentTypes}" scrollHeight="250"  dropdown="true" size="100">
+                                                <p:ajax event="itemSelect" listener="#{bloodComponent.componentTypeListener}" update="storageTemperatureLow storageTemperatureHigh" />
+                                            </p:autoComplete>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Объем компонента:</td>
+                                        <td><h:inputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" /></td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first" colspan="2">
+                                            <fieldset style="width:30%;">
+                                                <legend>
+                                                    <span class="title">Полученный объем</span>
+                                                </legend>
+                                                <div class="wrap" style="width:100%; margin:0">
+                                                    <div class="inner">
+                                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" style="width:100%;"
+                                                                        value="#{bloodComponent.document.factEntry}" var="row">
+                                                            <e5ui:column style="min-width:12em;">
+                                                                <f:facet name="header">
+                                                                    <p>Вид донорства</p>
+                                                                </f:facet>
+                                                                <h:selectOneMenu value="#{row.donationType}" converter="BloodDonationTypeConverter">
+                                                                    <f:selectItems value="#{dictionaryManagement.bloodDonationTypes}"/>
+                                                                </h:selectOneMenu>
+                                                            </e5ui:column>
+                                                            <e5ui:column style="min-width:5em;">
+                                                                <f:facet name="header">
+                                                                    <p>Объем донации</p>
+                                                                </f:facet>
+                                                                <h:inputText value="#{row.dose}" size="4" style="margin-right:3px;"/> мл
+                                                            </e5ui:column>
+                                                        </e5ui:dataTable>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Антикоагулянт:</td>
+                                        <td>
+                                            <h:selectOneMenu id="anticoagulantPurchased" value="#{bloodComponent.document.anticoagulant}" converter="AnticoagulantConverter">
+                                                <f:selectItems value="#{dictionaryManagement.anticoagulants}" />
+                                            </h:selectOneMenu>
+                                            <span style="margin:0 5px;">Объем, мл:</span>
+                                            <h:inputText value="#{bloodComponent.document.anticoagulantVolume}" />
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first"><h:outputText value="#{bloodComponent.leukoConcentrate? 'Седиментирующий раствор:': 'Ресуспендирующий раствор:'}" /></td>
+                                        <td>
+                                            <h:selectOneMenu id="preservativePurchased" value="#{bloodComponent.document.preservative}" converter="ClassifierConverter">
+                                                <f:selectItems value="#{dictionaryManagement.getByCategory(bloodComponent.leukoConcentrate? 'Седиментирующий раствор': 'Ресуспендирующий раствор')}" />
+                                            </h:selectOneMenu>
+                                            <span style="margin:0 5px;">Объем, мл:</span>
+                                            <h:inputText value="#{bloodComponent.document.preservativeVolume}" />
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Дата донации:</td>
+                                        <td>
+                                            <p:calendar id="donationDatePurchased" value="#{bloodComponent.document.donationDate}" lang="ru" locale="ru" mode="popup" showOn="both"  mask="true" pattern="dd.MM.yyyy">
+                                                <p:ajax event="dateSelect" listener="#{bloodComponent.handleDateSelect}" update="productionDatePurchased expirationDatePurchased expirationDatePurchased" />
+                                            </p:calendar>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Дата производства:</td>
+                                        <td>
+                                            <p:calendar id="productionDatePurchased" value="#{bloodComponent.document.productionDate}" lang="ru" locale="ru" mode="popup" showOn="both" mask="true" pattern="dd.MM.yyyy HH:mm"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Группа крови:</td>
+                                        <td>
+                                            <h:selectOneMenu id="bloodGroupPurchased" value="#{bloodComponent.document.bloodGroup}" converter="BloodGroupConverter">
+                                                <f:selectItems value="#{dictionaryManagement.bloodGroups}" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Резус-принадлежность:</td>
+                                        <td>
+                                            <h:selectOneMenu id="rhesusFactorPurchased" value="#{bloodComponent.document.rhesusFactor}" converter="ClassifierConverter">
+                                                <f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                    </tr>
                                     <tr class="row">
                                         <td class="first" colspan="2">
                                             <fieldset style="width:30%;">
@@ -920,220 +1096,367 @@
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first" colspan="2">
-                                            <fieldset style="width:30%;">
-                                                <legend>
-                                                    <span class="title">Результаты анализов</span>
-                                                </legend>
-                                                <div class="wrap">
-                                                    <div class="inner">
-                                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
-                                                                        value="#{bloodComponent.document.testDonationList}"
-                                                                        var="row" grouping="false">
-                                                            <e5ui:column style="width:10em;">
-                                                                <f:facet name="header">
-                                                                    <p>Анализ</p>
-                                                                </f:facet>
-                                                                <h:outputText value="#{row.type.value}"/>
-                                                            </e5ui:column>
-                                                            <e5ui:column>
-                                                                <f:facet name="header">
-                                                                    <p>Результат</p>
-                                                                </f:facet>
-                                                                <h:selectOneMenu value="#{row.value}">
-                                                                    <f:selectItems	value="#{dictionaryManagement.getValuesByCategory(row.type.value)}"/>
-                                                                </h:selectOneMenu>
-                                                            </e5ui:column>
-                                                        </e5ui:dataTable>
-                                                    </div>
-                                                </div>
-                                            </fieldset>
+                                        <td class="first">Дата окончания срока хранения:</td>
+                                        <td>
+                                            <p:calendar id="expirationDatePurchased" value="#{bloodComponent.document.expirationDate}" lang="ru" locale="ru" mode="popup" showOn="both" mask="true" pattern="dd.MM.yyyy HH:mm"/>
                                         </td>
                                     </tr>
                                     <tr class="row">
+                                        <h:panelGroup id = "storageTemperature">
+                                        <td class="first">Температура хранения:</td>
+                                        <td>
+                                            <span >от</span> <h:inputText id = "storageTemperatureLow" style="margin:0 5px;" value="#{bloodComponent.document.lowerStorageTemperature}" />
+                                            <span>до</span> <h:inputText id = "storageTemperatureHigh" style="margin:0 5px;" value="#{bloodComponent.document.higherStorageTemperature}" />
+                                        </td>
+                                        </h:panelGroup>
+                                    </tr>
+                                    <tr class="row">
                                         <td class="first" colspan="2">
-                                            <fieldset style="width:30%;">
+                                            <fieldset>
                                                 <legend>
-                                                    <span class="title">Полученный объем</span>
+                                                    <label><span class="title">Обработка</span> </label>
                                                 </legend>
-                                                <div class="wrap" style="width:100%; margin:0px">
-                                                    <div class="inner">
-                                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" style="width:100%;"
-                                                                        value="#{bloodComponent.document.factEntry}" var="row">
-                                                            <e5ui:column style="min-width:12em;">
-                                                                <f:facet name="header">
-                                                                    <p>Вид донорства</p>
-                                                                </f:facet>
-                                                                <h:selectOneMenu value="#{row.donationType}" converter="BloodDonationTypeConverter">
-                                                                    <f:selectItems value="#{dictionaryManagement.bloodDonationTypes}"/>
-                                                                </h:selectOneMenu>
-                                                            </e5ui:column>
-                                                            <e5ui:column style="min-width:5em;">
-                                                                <f:facet name="header">
-                                                                    <p>Объем донации</p>
-                                                                </f:facet>
-                                                                <h:inputText value="#{row.dose}" size="4" style="margin-right:3px;"/> мл
-                                                            </e5ui:column>
-                                                        </e5ui:dataTable>
+                                                <div style="border: 2px groove threedface;">
+                                                    <h:selectBooleanCheckbox value="#{bloodComponent.document.inactivated}" disabled="true">
+                                                        <f:ajax event="click" listener="#{bloodComponent.inactivatedListener}" render="main_content_form" execute="main_content_form" />
+                                                    </h:selectBooleanCheckbox>
+                                                    <h:outputText value="Вирусинактивация" />
+                                                    <h:panelGroup rendered="#{bloodComponent.haveConsumableMaterial}">
+                                                        <h:outputScript>
+                                                            var isVisibleText = false;
+
+                                                            function changeVisibleText() {
+                                                                isVisibleText = !isVisibleText;
+                                                                hideShowText();
+                                                            }
+
+                                                            function hideShowText() {
+                                                                var blockText = $("[id*='consumableMaterialContentPurchased']");
+                                                                if (isVisibleText) {
+                                                                    blockText.show();
+                                                                } else {
+                                                                    blockText.hide();
+                                                                }
+                                                            }
+
+                                                            function setCursorMaterial(typeCursor) {
+                                                                var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
+                                                                $("[id*='consumableMaterialContentPurchased']").prev().attr("style", styleTitle);
+                                                            }
+
+                                                            jQuery(function () {
+                                                                hideShowText();
+                                                            });
+                                                        </h:outputScript>
+                                                        <span> </span>
+                                                        <a onmouseout="setCursorMaterial('default')" onmouseover="setCursorMaterial('pointer')"
+                                                           onclick="changeVisibleText();" style="color: #4581c0">Расходный материал</a>
+															<span id="consumableMaterialContentPurchased">
+																<span>ЛОТ: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialLot}"/>
+																<span>.ТИП: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialType}"/>
+																<span>.ГОДЕН ДО: </span>
+																<h:outputText value="#{bloodComponent.consumableMaterialExpirationDate}">
+                                                                    <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
+                                                                </h:outputText>
+					                						</span>
+                                                        <div>
+                                                            <span>Добавочный раствор: </span>
+                                                            <h:outputText style="font-weight:bold;" value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter" />
+                                                            <span>. Объем, мл: </span>
+                                                            <h:outputText style="font-weight:bold;" value="#{bloodComponent.document.additionalVolume}" />
+                                                        </div>
+                                                    </h:panelGroup>
+                                                </div>
+                                                <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                    <h:selectBooleanCheckbox value="#{bloodComponent.document.irradiated}" disabled="true" />
+                                                    <h:outputText value="Облучение" />
+                                                </div>
+                                                <h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
+                                                    <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                        <h:selectBooleanCheckbox value="#{bloodComponent.document.leukoFiltered}" disabled="true" />
+                                                        <h:outputText value="Лейкофильтрация" />
                                                     </div>
+                                                </h:panelGroup>
+                                                <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                    <h:selectBooleanCheckbox value="#{bloodComponent.document.pooling}" disabled="true" />
+                                                    <h:outputText value="Пулирование" />
+                                                </div>
+                                                <div style="margin-top: 10px;border: 2px groove threedface;">
+                                                    <h:selectBooleanCheckbox value="#{bloodComponent.document.washing}" disabled="true" />
+                                                    <h:outputText value="Отмывание" />
                                                 </div>
                                             </fieldset>
                                         </td>
                                     </tr>
                                 </h:panelGroup>
-                                <tr class="row">
-                                    <td class="first">Дата донации:</td>
-                                    <td>
-                                        <h:panelGroup rendered="#{bloodComponent.document.purchased}">
-                                            <e5ui-comp:inputDate id="donationDate" value="#{bloodComponent.document.donationDate}" lang="ru" />
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{not (bloodComponent.document.purchased)}">
+                                <!-- Конец закупленного-->
+                                <!-- Для Обычных КК-->
+                                <h:panelGroup rendered="#{not bloodComponent.document.purchased}" >
+                                    <h:panelGroup rendered="#{bloodComponent.donor ne null}">
+                                        <tr class="row">
+                                            <td class="first">Донор:</td>
+                                            <td>
+                                                <h:outputText value="#{bloodComponent.donor.description}" class="wide" />
+                                                <h:outputLink style="margin-left:5px;" value="/component/donor.xhtml" target="_blank">
+                                                    <h:graphicImage value="#{resource['images:link.png']}" />
+                                                    <f:param name="docId" value="#{bloodComponent.donor.id}" />
+                                                </h:outputLink>
+                                            </td>
+                                        </tr>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{bloodComponent.donation ne null}">
+                                        <tr class="row">
+                                            <td class="first">Обращение на донацию:</td>
+                                            <td>
+                                                <h:outputText value="#{bloodComponent.donation.number}" class="wide" />
+                                                <h:outputLink style="margin-left:5px;" value="/component/blood_donation.xhtml" target="_blank">
+                                                    <h:graphicImage value="#{resource['images:link.png']}" />
+                                                    <f:param name="docId" value="#{bloodComponent.donation.id}" />
+                                                </h:outputLink>
+                                            </td>
+                                        </tr>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{bloodComponent.donor ne null}">
+                                        <td class="first">Изготовитель:</td>
+                                        <td>
+                                            <h:outputText value="#{bloodComponent.document.maker.fullName}" class="wide" />
+                                            <h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
+                                                <h:graphicImage value="#{resource['images:link.png']}" />
+                                                <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
+                                            </h:outputLink>
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{bloodComponent.donor eq null}">
+                                        <tr class="row">
+                                            <td class="first">
+                                                <h:outputLink onclick="contragentSelectVar.clickOpen('contragentSelectModal'); return false;">
+                                                    Изготовитель:
+                                                </h:outputLink>
+                                            </td>
+                                            <td>
+                                                <h:panelGroup id="maker_info">
+                                                    <h:outputText id="maker" value="#{bloodComponent.document.maker.fullName}"
+                                                                  class="wide" />
+                                                    <h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
+                                                        <h:graphicImage value="#{resource['images:link.png']}" />
+                                                        <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
+                                                    </h:outputLink>
+                                                </h:panelGroup>
+                                                <e5ui-comp:modalWindow id="contragentSelectModal"
+                                                                       modalWindowHolder="#{bloodComponent.contragentSelectModal}"
+                                                                       render=":main_content_form:maker_info"
+                                                                       execute="contragent_select_table"
+                                                                       showButtons="false"
+                                                                       style="width:500px;"
+                                                                       widgetVar="contragentSelectVar">
+                                                    <div id="title">Выбор изготовителя</div>
+                                                    <div id="modal_container" style="margin-top: 0;">
+                                                        <div class="searchbar">
+                                                            <h:inputText id="filter_string" value="#{bloodComponent.contragentSelectModal.contragentList.filter}"
+                                                                         style="display:block; float:left; margin-right:10px;" title="Поиск" />
+                                                            <h:commandButton value=" " action="#{bloodComponent.contragentSelectModal.contragentList.changePageOffset(0)}"
+                                                                             styleClass="searchbutton">
+                                                                <f:ajax execute=":main_content_form:contragentSelectModal:filter_string"
+                                                                        render=":main_content_form:contragentSelectModal:contragent_select_table :main_content_form:contragentSelectModal:contragent_paging" />
+                                                            </h:commandButton>
+                                                        </div>
+                                                        <div class="wrap" style="height:300px;">
+                                                            <div class="inner" style="height:300px;">
+                                                                <e5ui:dataTable id="contragent_select_table" border="0" cellpadding="0" cellspacing="0"
+                                                                                value="#{bloodComponent.contragentSelectModal.contragentList.documents}"
+                                                                                var="contragent_row" grouping="false" width="100%">
+                                                                    <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
+                                                                              styleClass="#{bloodComponent.contragentSelectModal.selected(contragent_row)? 'grid_row_selected': ''}" />
+                                                                    <e5ui:column>
+                                                                        <f:facet name="header">
+                                                                            <p>Контрагент</p>
+                                                                        </f:facet>
+                                                                        <h:outputText value="#{contragent_row.fullName}" />
+                                                                        <h:commandLink id="selectLink" style="display: none;"
+                                                                                       rendered="#{not bloodComponent.contragentSelectModal.selected(contragent_row)}"
+                                                                                       action="#{bloodComponent.contragentSelectModal.select(contragent_row)}"/>
+                                                                    </e5ui:column>
+                                                                </e5ui:dataTable>
+                                                            </div>
+                                                        </div>
+                                                        <div style="clear:both;">
+                                                            <h:panelGroup id="contragent_paging">
+                                                                <e5ui-comp:tablePager id="pager" documentListHolder="#{bloodComponent.contragentSelectModal.contragentList}" />
+                                                            </h:panelGroup>
+                                                        </div>
+                                                    </div>
+                                                    <div class="e5ui-modal-bottombuttons">
+                                                        <h:button onclick="contragentSelectVar.clickSave(); return false;" value="Выбрать" />
+                                                        <h:button onclick="contragentSelectVar.clickClose(); return false;" value="Отмена" />
+                                                    </div>
+                                                </e5ui-comp:modalWindow>
+                                            </td>
+                                        </tr>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{bloodComponent.personificationAvailable and bloodComponent.document.personal}">
+                                        <tr class="row">
+                                            <td class="first">ФИО реципиента:</td>
+                                            <td><h:inputText value="#{bloodComponent.document.recipient}" class="wide" /></td>
+                                        </tr>
+                                    </h:panelGroup>
+                                    <tr class="row">
+                                        <td class="first">Группа крови:</td>
+                                        <td>
+                                            <h:selectOneMenu id="bloodGroup" value="#{bloodComponent.document.bloodGroup}" converter="BloodGroupConverter">
+                                                <f:selectItems value="#{dictionaryManagement.bloodGroups}" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Резус-принадлежность:</td>
+                                        <td>
+                                            <h:selectOneMenu id="rhesusFactor" value="#{bloodComponent.document.rhesusFactor}" converter="ClassifierConverter">
+                                                <f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
+                                            </h:selectOneMenu>
+                                        </td>
+                                    </tr>
+                                    <tr class="row">
+                                        <td class="first">Дата донации:</td>
+                                        <td>
                                             <h:outputText value="#{bloodComponent.document.donationDate}" class="wide">
                                                 <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
                                             </h:outputText>
-                                        </h:panelGroup>
-                                    </td>
-                                </tr>
-                                <h:panelGroup rendered="#{not(bloodComponent.document.componentType.lite)}">
-                                    <tr class="row">
-                                        <td class="first">Дата производства:</td>
-                                        <td>
-                                            <e5ui-comp:inputDate id="productionDate" value="#{bloodComponent.document.productionDate}" lang="ru" />
                                         </td>
                                     </tr>
-                                    <h:panelGroup rendered="#{bloodComponent.document.purchased}">
+                                    <h:panelGroup rendered="#{not(bloodComponent.document.componentType.lite)}">
                                         <tr class="row">
-                                            <td class="first">Дата поступления:</td>
+                                            <td class="first">Дата производства:</td>
                                             <td>
-                                                <e5ui-comp:inputDate id="receivedDate" value="#{bloodComponent.document.receivedDate}" lang="ru" />
+                                                <p:calendar id="productionDate" value="#{bloodComponent.document.productionDate}" lang="ru" locale="ru" mode="popup" showOn="both"  mask="true" pattern="dd.MM.yyyy" />
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="first">Дата окончания срока хранения:</td>
+                                            <td>
+                                                <p:calendar id="expirationDate" value="#{bloodComponent.document.expirationDate}" lang="ru" locale="ru" mode="popup" showOn="both"  mask="true" pattern="dd.MM.yyyy" />
+                                                <h:panelGroup rendered="#{bloodComponent.createState}">
+                                                    <span style="margin:0 5px 0 10px;">Количество дней:</span>
+                                                    <h:inputText value="#{bloodComponent.expirationDays}" size="4" />
+                                                </h:panelGroup>
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="first">Антикоагулянт:</td>
+                                            <td>
+                                                <h:selectOneMenu id="anticoagulant" value="#{bloodComponent.document.anticoagulant}" converter="AnticoagulantConverter">
+                                                    <f:selectItems value="#{dictionaryManagement.anticoagulants}" />
+                                                </h:selectOneMenu>
+                                                <span style="margin:0 5px;">Объем, мл:</span>
+                                                <h:inputText value="#{bloodComponent.document.anticoagulantVolume}" />
                                             </td>
                                         </tr>
                                     </h:panelGroup>
                                     <tr class="row">
-                                        <td class="first">Дата окончания срока хранения:</td>
+                                        <td class="first">Компонент:</td>
                                         <td>
-                                            <e5ui-comp:inputDate id="expirationDate" value="#{bloodComponent.document.expirationDate}" lang="ru" />
-                                            <h:panelGroup rendered="#{bloodComponent.createState}">
-                                                <span style="margin:0 5px 0 10px;">Количество дней:</span>
-                                                <h:inputText value="#{bloodComponent.expirationDays}" size="4" />
-                                            </h:panelGroup>
-                                        </td>
-                                    </tr>
-                                    <tr class="row">
-                                        <td class="first">Антикоагулянт:</td>
-                                        <td>
-                                            <h:selectOneMenu id="anticoagulant" value="#{bloodComponent.document.anticoagulant}" converter="AnticoagulantConverter">
-                                                <f:selectItems value="#{dictionaryManagement.anticoagulants}" />
-                                            </h:selectOneMenu>
-                                            <span style="margin:0 5px;">Объем, мл:</span>
-                                            <h:inputText value="#{bloodComponent.document.anticoagulantVolume}" />
-                                        </td>
-                                    </tr>
-                                </h:panelGroup>
-                                <tr class="row">
-                                    <td class="first">Компонент:</td>
-                                    <td>
-                                        <h:outputScript>
-                                            function setComponentType() {
-                                                var listVal = $("[id*='componentTypeList']").val();
-                                                $("[id*='componentType']").val(listVal);
-                                            }
-
-                                            jQuery(function(){
-                                                var componentType = $("[id*='componentType']").val();
-                                                $("[id*='componentTypeList']").val(componentType);
-                                                if ($("[id*='componentTypeList']").val().length == 1) {
-                                                    if (componentType.length > 0) {
-                                                        $("[id*='componentTypeList']").hide();
-                                                        $("[id*='componentTypeNotUsed']").text(componentType);
-                                                    }
+                                            <h:outputScript>
+                                                function setComponentType() {
+                                                    var listVal = $("[id*='componentTypeList']").val();
+                                                    $("[id*='componentType']").val(listVal);
                                                 }
-                                            });
-                                        </h:outputScript>
-                                        <h:inputHidden id="componentType" value="#{bloodComponent.document.componentType}" converter="BloodComponentTypeConverter" />
-                                        <h:selectOneMenu id="componentTypeList"  onchange="setComponentType()"
-                                                         converter="BloodComponentTypeConverter" style="font-weight:bold;">
-                                            <f:selectItems value="#{dictionaryManagement.usedBloodComponentTypesWithEmpty}" />
-                                            <f:ajax listener="#{bloodComponent.componentTypeListener}" execute="main_content_form" render="main_content_form" />
-                                        </h:selectOneMenu>
-                                        <h:outputText id="componentTypeNotUsed" class="wide" style="font-weight:bold;" />
-                                    </td>
-                                </tr>
-                                <h:panelGroup id="er_volume" rendered="#{bloodComponent.erComponent}">
-                                    <tr class="row">
-                                        <td class="first">Вес ЭМ до фильтрации:</td>
-                                        <td><h:inputText value="#{bloodComponent.document.emVolume}" /></td>
+
+                                                jQuery(function(){
+                                                    var componentType = $("[id*='componentType']").val();
+                                                    $("[id*='componentTypeList']").val(componentType);
+                                                    if ($("[id*='componentTypeList']").val().length == 1) {
+                                                        if (componentType.length > 0) {
+                                                            $("[id*='componentTypeList']").hide();
+                                                            $("[id*='componentTypeNotUsed']").text(componentType);
+                                                        }
+                                                    }
+                                                });
+                                            </h:outputScript>
+                                            <h:inputHidden id="componentType" value="#{bloodComponent.document.componentType}" converter="BloodComponentTypeConverter" />
+                                            <h:selectOneMenu id="componentTypeList"  onchange="setComponentType()"
+                                                             converter="BloodComponentTypeConverter" style="font-weight:bold;">
+                                                <f:selectItems value="#{dictionaryManagement.usedBloodComponentTypesWithEmpty}" />
+                                                <f:ajax listener="#{bloodComponent.componentTypeListener}" execute="main_content_form" render="main_content_form" />
+                                            </h:selectOneMenu>
+                                            <h:outputText id="componentTypeNotUsed" class="wide" style="font-weight:bold;" />
+                                        </td>
                                     </tr>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{bloodComponent.document.inactivated}">
-                                    <tr class="row">
-                                        <td class="first">Объем до вирусинактивации, мл:</td>
-                                        <td><h:inputText value="#{bloodComponent.document.preInactivatedVolume}" style="font-weight:bold;" /></td>
-                                    </tr>
-                                </h:panelGroup>
-                                <tr class="row">
-                                    <td class="first">Объем компонента, мл:</td>
-                                    <td><h:inputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" /></td>
-                                </tr>
-                                <h:panelGroup rendered="#{not(bloodComponent.document.componentType.lite)}">
-                                    <h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
+                                    <h:panelGroup id="er_volume" rendered="#{bloodComponent.erComponent}">
                                         <tr class="row">
-                                            <td class="first">Количество донорских доз:</td>
-                                            <td><h:inputText value="#{bloodComponent.document.doseCount}" /></td>
+                                            <td class="first">Вес ЭМ до фильтрации:</td>
+                                            <td><h:inputText value="#{bloodComponent.document.emVolume}" /></td>
+                                        </tr>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{bloodComponent.document.inactivated}">
+                                        <tr class="row">
+                                            <td class="first">Объем до вирусинактивации, мл:</td>
+                                            <td><h:inputText value="#{bloodComponent.document.preInactivatedVolume}" style="font-weight:bold;" /></td>
                                         </tr>
                                     </h:panelGroup>
                                     <tr class="row">
-                                        <td class="first">Количество клеток (х10<span style="vertical-align:super;font-size:11px;"><h:outputText value="#{bloodComponent.leukoConcentrate? '9': '11'}" /></span>):</td>
-                                        <td><h:inputText value="#{bloodComponent.document.cellCount}" /></td>
+                                        <td class="first">Объем компонента, мл:</td>
+                                        <td><h:inputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" /></td>
                                     </tr>
-                                    <h:panelGroup rendered="#{bloodComponent.leukoConcentrate}">
+                                    <h:panelGroup rendered="#{not(bloodComponent.document.componentType.lite)}">
+                                        <h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
+                                            <tr class="row">
+                                                <td class="first">Количество донорских доз:</td>
+                                                <td><h:inputText value="#{bloodComponent.document.doseCount}" /></td>
+                                            </tr>
+                                        </h:panelGroup>
                                         <tr class="row">
-                                            <td class="first">Доза на кг массы тела (х10<span style="vertical-align:super;font-size:11px;">8</span>/кг)</td>
-                                            <td><h:inputText value="#{bloodComponent.document.dosePerKg}" /></td>
+                                            <td class="first">Количество клеток (х10<span style="vertical-align:super;font-size:11px;"><h:outputText value="#{bloodComponent.leukoConcentrate? '9': '11'}" /></span>):</td>
+                                            <td><h:inputText value="#{bloodComponent.document.cellCount}" /></td>
                                         </tr>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{not (bloodComponent.rectification)}">
-                                        <tr class="row">
-                                            <td class="first" colspan="2">
-                                                <fieldset>
-                                                    <legend>
-                                                        <label><span class="title">Обработка</span> </label>
-                                                    </legend>
-                                                    <div>
-                                                        <h:selectBooleanCheckbox value="#{bloodComponent.document.inactivated}" disabled="true">
-                                                            <f:ajax event="click" listener="#{bloodComponent.inactivatedListener}" render="main_content_form" execute="main_content_form" />
-                                                        </h:selectBooleanCheckbox>
-                                                        <h:outputText value="Вирусинактивация" />
-                                                        <h:panelGroup rendered="#{bloodComponent.haveConsumableMaterial}">
-                                                            <h:outputScript>
-                                                                var isVisibleText = false;
+                                        <h:panelGroup rendered="#{bloodComponent.leukoConcentrate}">
+                                            <tr class="row">
+                                                <td class="first">Доза на кг массы тела (х10<span style="vertical-align:super;font-size:11px;">8</span>/кг)</td>
+                                                <td><h:inputText value="#{bloodComponent.document.dosePerKg}" /></td>
+                                            </tr>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{not (bloodComponent.rectification)}">
+                                            <tr class="row">
+                                                <td class="first" colspan="2">
+                                                    <fieldset>
+                                                        <legend>
+                                                            <label><span class="title">Обработка</span> </label>
+                                                        </legend>
+                                                        <div>
+                                                            <h:selectBooleanCheckbox value="#{bloodComponent.document.inactivated}" disabled="true">
+                                                                <f:ajax event="click" listener="#{bloodComponent.inactivatedListener}" render="main_content_form" execute="main_content_form" />
+                                                            </h:selectBooleanCheckbox>
+                                                            <h:outputText value="Вирусинактивация" />
+                                                            <h:panelGroup rendered="#{bloodComponent.haveConsumableMaterial}">
+                                                                <h:outputScript>
+                                                                    var isVisibleText = false;
 
-                                                                function changeVisibleText() {
-                                                                    isVisibleText = !isVisibleText;
-                                                                    hideShowText();
-                                                                }
-
-                                                                function hideShowText() {
-                                                                    var blockText = $("[id*='consumableMaterialContent']");
-                                                                    if (isVisibleText) {
-                                                                        blockText.show();
-                                                                    } else {
-                                                                        blockText.hide();
+                                                                    function changeVisibleText() {
+                                                                        isVisibleText = !isVisibleText;
+                                                                        hideShowText();
                                                                     }
-                                                                }
 
-                                                                function setCursorMaterial(typeCursor) {
-                                                                    var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
-                                                                    $("[id*='consumableMaterialContent']").prev().attr("style", styleTitle);
-                                                                }
+                                                                    function hideShowText() {
+                                                                        var blockText = $("[id*='consumableMaterialContent']");
+                                                                        if (isVisibleText) {
+                                                                            blockText.show();
+                                                                        } else {
+                                                                            blockText.hide();
+                                                                        }
+                                                                    }
 
-                                                                jQuery(function () {
-                                                                    hideShowText();
-                                                                });
-                                                            </h:outputScript>
-                                                            <span> </span>
-                                                            <a onmouseout="setCursorMaterial('default')" onmouseover="setCursorMaterial('pointer')"
-                                                               onclick="changeVisibleText();" style="color: #4581c0">Расходный материал</a>
+                                                                    function setCursorMaterial(typeCursor) {
+                                                                        var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
+                                                                        $("[id*='consumableMaterialContent']").prev().attr("style", styleTitle);
+                                                                    }
+
+                                                                    jQuery(function () {
+                                                                        hideShowText();
+                                                                    });
+                                                                </h:outputScript>
+                                                                <span> </span>
+                                                                <a onmouseout="setCursorMaterial('default')" onmouseover="setCursorMaterial('pointer')"
+                                                                   onclick="changeVisibleText();" style="color: #4581c0">Расходный материал</a>
 															<span id="consumableMaterialContent">
 																<span>ЛОТ: </span>
 																<h:outputText value="#{bloodComponent.consumableMaterialLot}"/>
@@ -1144,57 +1467,59 @@
                                                                     <f:convertDateTime type="date" pattern="dd.MM.yyyy"/>
                                                                 </h:outputText>
 					                						</span>
-                                                            <div>
-                                                                <span>Добавочный раствор: </span>
-                                                                <h:outputText value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter" />
-                                                                <h:selectOneMenu style="font-weight:bold;" id="additionalLiquor" value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter">
-                                                                    <f:selectItems value="#{dictionaryManagement.getByCategoryWithEmpty('Ресуспендирующий раствор')}" />
-                                                                </h:selectOneMenu>
-                                                                <span>. Объем, мл: </span>
-                                                                <h:inputText style="font-weight:bold;" value="#{bloodComponent.document.additionalVolume}" />
+                                                                <div>
+                                                                    <span>Добавочный раствор: </span>
+                                                                    <h:outputText value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter" />
+                                                                    <h:selectOneMenu style="font-weight:bold;" id="additionalLiquor" value="#{bloodComponent.document.additionalLiquor}" converter="ClassifierConverter">
+                                                                        <f:selectItems value="#{dictionaryManagement.getByCategoryWithEmpty('Ресуспендирующий раствор')}" />
+                                                                    </h:selectOneMenu>
+                                                                    <span>. Объем, мл: </span>
+                                                                    <h:inputText style="font-weight:bold;" value="#{bloodComponent.document.additionalVolume}" />
+                                                                </div>
+                                                            </h:panelGroup>
+                                                        </div>
+                                                        <div style="margin-top: 10px;">
+                                                            <h:selectBooleanCheckbox value="#{bloodComponent.document.irradiated}" disabled="#{bloodComponent.viewState}" />
+                                                            <h:outputText value="Облучение" />
+                                                        </div>
+                                                        <h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
+                                                            <div style="margin-top: 10px;">
+                                                                <h:selectBooleanCheckbox value="#{bloodComponent.document.leukoFiltered}" disabled="#{bloodComponent.viewState}" />
+                                                                <h:outputText value="Лейкофильтрация" />
                                                             </div>
                                                         </h:panelGroup>
-                                                    </div>
-                                                    <div style="margin-top: 10px;">
-                                                        <h:selectBooleanCheckbox value="#{bloodComponent.document.irradiated}" disabled="#{bloodComponent.viewState}" />
-                                                        <h:outputText value="Облучение" />
-                                                    </div>
-                                                    <h:panelGroup rendered="#{not(bloodComponent.leukoConcentrate)}">
                                                         <div style="margin-top: 10px;">
-                                                            <h:selectBooleanCheckbox value="#{bloodComponent.document.leukoFiltered}" disabled="#{bloodComponent.viewState}" />
-                                                            <h:outputText value="Лейкофильтрация" />
+                                                            <h:selectBooleanCheckbox value="#{bloodComponent.document.pooling}" disabled="#{bloodComponent.viewState}" />
+                                                            <h:outputText value="Пулирование" />
                                                         </div>
-                                                    </h:panelGroup>
-                                                    <div style="margin-top: 10px;">
-                                                        <h:selectBooleanCheckbox value="#{bloodComponent.document.pooling}" disabled="#{bloodComponent.viewState}" />
-                                                        <h:outputText value="Пулирование" />
-                                                    </div>
-                                                    <div style="margin-top: 10px;">
-                                                        <h:selectBooleanCheckbox value="#{bloodComponent.document.washing}" disabled="#{bloodComponent.viewState}" />
-                                                        <h:outputText value="Отмывание" />
-                                                    </div>
-                                                </fieldset>
+                                                        <div style="margin-top: 10px;">
+                                                            <h:selectBooleanCheckbox value="#{bloodComponent.document.washing}" disabled="#{bloodComponent.viewState}" />
+                                                            <h:outputText value="Отмывание" />
+                                                        </div>
+                                                    </fieldset>
+                                                </td>
+                                            </tr>
+                                        </h:panelGroup>
+                                        <tr class="row">
+                                            <td class="first">Температура хранения:</td>
+                                            <td>
+                                                <span>от</span> <h:inputText value="#{bloodComponent.document.lowerStorageTemperature}" />
+                                                <span>до</span> <h:inputText value="#{bloodComponent.document.higherStorageTemperature}" />
+                                            </td>
+                                        </tr>
+                                        <tr class="row">
+                                            <td class="first"><h:outputText value="#{bloodComponent.leukoConcentrate? 'Седиментирующий раствор:': 'Ресуспендирующий раствор:'}" /></td>
+                                            <td>
+                                                <h:selectOneMenu id="preservative" value="#{bloodComponent.document.preservative}" converter="ClassifierConverter">
+                                                    <f:selectItems value="#{dictionaryManagement.getByCategory(bloodComponent.leukoConcentrate? 'Седиментирующий раствор': 'Ресуспендирующий раствор')}" />
+                                                </h:selectOneMenu>
+                                                <span style="margin:0 5px;">Объем, мл:</span>
+                                                <h:inputText value="#{bloodComponent.document.preservativeVolume}" />
                                             </td>
                                         </tr>
                                     </h:panelGroup>
-                                    <tr class="row">
-                                        <td class="first">Температура хранения:</td>
-                                        <td>
-                                            <span>от</span> <h:inputText value="#{bloodComponent.document.lowerStorageTemperature}" />
-                                            <span>до</span> <h:inputText value="#{bloodComponent.document.higherStorageTemperature}" />
-                                        </td>
-                                    </tr>
-                                    <tr class="row">
-                                        <td class="first"><h:outputText value="#{bloodComponent.leukoConcentrate? 'Седиментирующий раствор:': 'Ресуспендирующий раствор:'}" /></td>
-                                        <td>
-                                            <h:selectOneMenu id="preservative" value="#{bloodComponent.document.preservative}" converter="ClassifierConverter">
-                                                <f:selectItems value="#{dictionaryManagement.getByCategory(bloodComponent.leukoConcentrate? 'Седиментирующий раствор': 'Ресуспендирующий раствор')}" />
-                                            </h:selectOneMenu>
-                                            <span style="margin:0 5px;">Объем, мл:</span>
-                                            <h:inputText value="#{bloodComponent.document.preservativeVolume}" />
-                                        </td>
-                                    </tr>
                                 </h:panelGroup>
+                                <!-- Конец Обычных КК-->
                             </table>
                         </div>
                     </h:panelGroup>

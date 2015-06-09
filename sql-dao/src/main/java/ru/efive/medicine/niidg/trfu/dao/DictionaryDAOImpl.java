@@ -6,11 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 
 import ru.efive.dao.sql.dao.DictionaryDAOHibernate;
 import ru.efive.dao.sql.entity.DictionaryEntity;
@@ -233,7 +229,10 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
         	detachedCriteria.add(Restrictions.eq("deleted", false));
         }
         if (StringUtils.isNotEmpty(filter)) {
-        	detachedCriteria.add(Restrictions.ilike("value", filter, MatchMode.ANYWHERE));
+			Junction dis = Restrictions.disjunction();
+        	dis.add(Restrictions.ilike("value", filter, MatchMode.ANYWHERE));
+			dis.add(Restrictions.ilike("code", filter, MatchMode.ANYWHERE));
+			detachedCriteria.add(dis);
         }
 		String[] ords = orderBy == null ? null : orderBy.split(",");
 		if (ords != null) {

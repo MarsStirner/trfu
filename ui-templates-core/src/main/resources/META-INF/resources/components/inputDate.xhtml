@@ -51,7 +51,7 @@
             <composite:attribute name="validator" shortDescription="MethodExpression representing a validator method that will be called during Process Validations to perform correctness checks on the value of this component. The expression must evaluate to a public method that takes FacesContext, UIComponent, and Object parameters, with a return type of void."/>
             <composite:attribute name="validatorMessage" shortDescription="A ValueExpression enabled attribute that, if present, will be used as the text of the validator message, replacing any message that comes from the validator."/>
             <composite:attribute name="value" shortDescription="Value for editing"/>
-            <composite:attribute name="valueChangeListener" shortDescription="MethodExpression representing a value change listener method that will be notified when a new value has been set for this input component. The expression must evaluate to a public method that takes a ValueChangeEvent parameter, with a return type of void, or to a public method that takes no arguments with a return type of void. In the latter case, the method has no way of easily knowing what the new value is, but this can be useful in cases where a notification is needed that 'this value changed'."/>
+            <composite:attribute method-signature="void listener(javax.faces.event.ValueChangeEvent)" name="valueChangeListener" shortDescription="MethodExpression representing a value change listener method that will be notified when a new value has been set for this input component. The expression must evaluate to a public method that takes a ValueChangeEvent parameter, with a return type of void, or to a public method that takes no arguments with a return type of void. In the latter case, the method has no way of easily knowing what the new value is, but this can be useful in cases where a notification is needed that 'this value changed'."/>
         </composite:interface>
         <composite:implementation>
             <h:outputStylesheet library="e5ui/css" name="datepicker.css" target="head" />
@@ -98,7 +98,7 @@
                     <c:if test="#{not empty cc.attrs.validator}"><f:attribute name="validator" value="#{cc.attrs.validator}"/></c:if>
                     <c:if test="#{not empty cc.attrs.validatorMessage}"><f:attribute name="validatorMessage" value="#{cc.attrs.validatorMessage}"/></c:if>
                     <c:if test="#{not empty cc.attrs.valueChangeListener}"><f:attribute name="valueChangeListener" value="#{cc.attrs.valueChangeListener}"/></c:if>
-                    
+
                     <c:choose>
                     	<c:when test="#{empty cc.attrs.en}">
                         	<c:set var="patternDate" value="dd.MM.yyyy"/>
@@ -113,7 +113,7 @@
                 	</c:choose>
 
 					<f:convertDateTime for="dateEditor" pattern="#{patternDate}"/>
-                    
+
                     <composite:insertChildren/>
                 </h:inputText>&nbsp;
                 <h:commandButton
@@ -137,9 +137,9 @@
                         var editorIdSelector = "##{cc.clientId.replaceAll(':', '\\\\\\\\:')}\\:dateEditor";
                         var buttonIdSelector = "##{cc.clientId.replaceAll(':', '\\\\\\\\:')}\\:calendarButton";
                         var maskDate = "#{maskDate}";
-						
+
                         #{cc.attrs.disableEditor? '$(editorIdSelector).attr("readonly", true)': '$(editorIdSelector).mask(maskDate);'}
-                        
+
                         $(buttonIdSelector).DatePicker($.extend({}, #{jsInitVar}, {
                             format: '#{formatDate}',
                             date: $(editorIdSelector).val(),

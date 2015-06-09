@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:e5ui="http://efive.ru/uitemplates"
-	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:e5ui="http://efive.ru/uitemplates"
+	  xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
+	  xmlns:p="http://primefaces.org/ui"
+		>
 
 <ui:composition template="#{sessionManagement.templateName}">
 	
@@ -18,7 +19,7 @@
 			<div class="actionbar">
 				<div class="menu">
 					<div class="defbutton">
-						<h:commandLink action="#{bloodComponentList.composePurchasedComponent}">
+						<h:commandLink action="#{purchasedBloodComponentRegistration.composePurchasedComponent}">
 							<h:graphicImage value="#{resource['images:blank.png']}" />
 							Зарегистрировать
 						</h:commandLink>
@@ -39,8 +40,18 @@
 			<div class="row">
 				<table class="form_grid">
 					<tr class="row">
+						<td class="first">Номер накладной</td>
+						<td><p:inputText value="#{purchasedBloodComponentRegistration.invoiceNumber}"/></td>
+					</tr>
+					<tr class="row">
+						<td class="first">Дата поступления</td>
+						<td>
+							<e5ui-comp:inputDate id="receivedDate" value="#{purchasedBloodComponentRegistration.receivedDate}" lang="ru" />
+						</td>
+					</tr>
+					<tr class="row">
 						<td class="first">Код компонента</td>
-						<td><h:inputText value="#{bloodComponentList.fullNumber}" /></td>
+						<td><p:inputText value="#{purchasedBloodComponentRegistration.fullNumber}" maxlength="15"/></td>
 					</tr>
 				</table>
 			</div>

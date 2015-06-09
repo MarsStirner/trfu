@@ -1,6 +1,7 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import org.apache.commons.lang.StringUtils;
+import org.primefaces.event.SelectEvent;
 import ru.efive.crm.dao.ContragentDAOHibernate;
 import ru.efive.crm.data.Contragent;
 import ru.efive.dao.sql.entity.enums.RoleType;
@@ -10,6 +11,8 @@ import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.BloodSystemDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.AnalysisType;
+import ru.efive.medicine.niidg.trfu.data.dictionary.Anticoagulant;
+import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.data.entity.*;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.PropertiesEditorBean;
@@ -25,6 +28,7 @@ import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
@@ -49,6 +53,11 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     @Inject
     @Named("sessionManagement")
     private transient SessionManagementBean sessionManagement = new SessionManagementBean();
+
+    @Inject
+    @Named("purchasedBloodComponentRegistration")
+    private transient PurchasedBloodComponentRegistrationBean purchasedConfig;
+
     private ProcessorModalBean processorModal = new ProcessorModalBean() {
         @Override
         protected void doInit() {
@@ -174,57 +183,54 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             if (StringUtils.isNotEmpty(externalNumber)) {
                 try {
                     bloodComponent.setPurchased(true);
-                    System.out.println("External number: " + externalNumber);
-                    bloodComponent.setNumber(StringUtils.right(externalNumber, 2));
-                    System.out.println("New component number: " + bloodComponent.getNumber());
-                    bloodComponent.setParentNumber(StringUtils.substring(externalNumber, externalNumber.length() - 7, externalNumber.length() - 2));
-                    System.out.println("New component parent number: " + bloodComponent.getParentNumber());
-                    int bloodGroupNumber = Integer.parseInt(String.valueOf(externalNumber.charAt(externalNumber.length() - 8)));
-                    System.out.println("New component blood group number: " + bloodGroupNumber);
-                    if (bloodGroupNumber != 0) {
-                        bloodComponent.setBloodGroup(dictionaryManagement.getBloodGroupByNumber(bloodGroupNumber));
+                    bloodComponent.setIrradiated(true);
+
+                    final List<Classifier> preservativeTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByValueAndCategory(Classifier.class, "SAGM", "Ресуспендирующий раствор");
+                    if(!preservativeTypes.isEmpty()){
+                        bloodComponent.setPreservative(preservativeTypes.get(0));
+                        bloodComponent.setPreservativeVolume(100);
                     }
-                    final String stateCode = StringUtils.substring(externalNumber, 1, 3);
-                    final String organizationCode = StringUtils.substring(externalNumber, 3, 5);
-                    if (StringUtils.isNotEmpty(stateCode) && StringUtils.isNotEmpty(organizationCode)) {
-                        System.out.println("stateCode: " + stateCode + ", organizationCode: " + organizationCode);
-                        Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO)
-                                .getByStateAndOrganizationCode(Integer.parseInt(stateCode), Integer.parseInt(organizationCode));
-                        if (contragent != null) {
-                            bloodComponent.setMaker(contragent);
+
+                    final List<Anticoagulant> anticoagulants =  sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByValueAndCategory(Anticoagulant.class, "CPD", null);
+                    if(!anticoagulants.isEmpty()){
+                       bloodComponent.setAnticoagulant(anticoagulants.get(0));
+                        bloodComponent.setAnticoagulantVolume(63.0d);
+                    }
+
+                    if(purchasedConfig != null){
+                        bloodComponent.setInvoiceNumber(purchasedConfig.getInvoiceNumber());
+                        bloodComponent.setReceivedDate(purchasedConfig.getReceivedDate());
+                    }
+                    // 2 символа - НОМЕР КК
+                    final String componentNumber = StringUtils.right(externalNumber, 2);
+                    bloodComponent.setNumber(componentNumber);
+                    // 6 символов - номер донации
+                    final String donationNumber = StringUtils.right(externalNumber, 8).substring(0, 6);
+                    bloodComponent.setParentNumber(donationNumber);
+                    // 2 символа ПРОПУСКАЕМ (год производства КК)
+                    // 2 символа organisationCode
+                    final String organizationCode  = StringUtils.right(externalNumber, 12).substring(0, 2);
+                    // 2 символа stateCode
+                    final String stateCode  = StringUtils.right(externalNumber, 14).substring(0, 2);
+                    try {
+                        if (StringUtils.isNotEmpty(stateCode) && StringUtils.isNotEmpty(organizationCode)) {
+                            System.out.println("stateCode: " + stateCode + ", organizationCode: " + organizationCode);
+                            Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO)
+                                    .getByStateAndOrganizationCode(Integer.parseInt(stateCode), Integer.parseInt(organizationCode));
+                            if (contragent != null) {
+                                bloodComponent.setMaker(contragent);
+                            }
                         }
+                    } catch (NumberFormatException e){
+                        System.out.println("Cannot parse externalNumber Organisation part to Integers : "+e.getMessage());
                     }
-                    //Добавление результатов тестов (иммуносерология + 5 тестов на вич, сифилис, гепатиты)
+                    //Добавление результатов тестов (иммуносерология)
                     final List<AnalysisType> allAnalysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO)
                             .findAnalysisTypes("Иммуносерология", false);
-                    allAnalysisTypes.addAll(
-                            sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
-                                    "Гепатит B", "Донация", false
-                            )
-                    );
-                    allAnalysisTypes.addAll(
-                            sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
-                                    "Гепатит C", "Донация", false
-                            )
-                    );
-                    allAnalysisTypes.addAll(
-                            sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
-                                    "ВИЧ 1", "Донация", false
-                            )
-                    );
-                    allAnalysisTypes.addAll(
-                            sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
-                                    "ВИЧ 2", "Донация", false
-                            )
-                    );
-                    allAnalysisTypes.addAll(
-                            sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
-                                    "Сифилис (RW)", "Донация", false
-                            )
-                    );
+
                     final List<Analysis> bctl = bloodComponent.getTestList();
                     if (bctl == null || bctl.isEmpty()) {
-                        bloodComponent.setTestList(new ArrayList<Analysis>(11));
+                        bloodComponent.setTestList(new ArrayList<Analysis>(6));
                     }
                     for (AnalysisType currentType : allAnalysisTypes) {
                         boolean exists = false;
@@ -237,11 +243,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                         if (!exists) {
                             final Analysis analysis = new Analysis();
                             analysis.setType(currentType);
-                            if (currentType.getCategory().equals("Донация")) {
-                                analysis.setValue("Отрицательный");
-                            } else {
-                                analysis.setValue("-");
-                            }
+                            analysis.setValue("-");
                             bloodComponent.getTestList().add(analysis);
                         }
                     }
@@ -304,6 +306,19 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         bloodComponent.setHistory(history);
 
         setDocument(bloodComponent);
+    }
+
+    public void handleDateSelect(SelectEvent event){
+        final Date nd = (Date) event.getObject();
+        final BloodComponent document = getDocument();
+        document.setDonationDate(nd);
+        document.setProductionDate(nd);
+        Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
+        if (document.getProductionDate() != null) {
+            calendar.setTime(document.getProductionDate());
+        }
+        calendar.add(Calendar.DATE, 41);
+        document.setExpirationDate(calendar.getTime());
     }
 
     @Override
@@ -607,7 +622,16 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     }
 
     public void componentTypeListener(AjaxBehaviorEvent event) {
-        System.out.println("component type change listener");
+        final BloodComponent document = getDocument();
+        final BloodComponentType componentType = document.getComponentType();
+        if(componentType != null) {
+            if(componentType.getHigherStorageTemperature() != null) {
+                document.setHigherStorageTemperature(componentType.getHigherStorageTemperature().byteValue());
+            }
+            if(componentType.getLowerStorageTemperature() != null){
+                document.setLowerStorageTemperature(componentType.getLowerStorageTemperature().byteValue());
+            }
+        }
     }
 
     public void inactivatedListener(AjaxBehaviorEvent event) {
@@ -893,7 +917,9 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 
         public void addVolumeEntry() {
             volumeList.add(new VolumeEntry(0));
-        }        @Override
+        }
+
+        @Override
         protected void doSave() {
             super.doSave();
         }

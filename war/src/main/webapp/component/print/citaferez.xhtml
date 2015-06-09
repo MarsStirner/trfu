@@ -31,7 +31,7 @@
 	                </td>
 
 	                <td width="100" valign="top" style="text-align:center;">
-                         <p style="font-family:Code128bWin; font-size:24px;">&#353;<h:outputText style="font-size:24px; font-family:Code128bWin;" value="#{bloodDonation.document.number}" />&#74;&#339;</p>
+                         <p style="font-family:'Code 128'; font-size:24px;"><h:outputText style="font-size:24px; font-family:'Code 128';" value="#{bloodDonation.document.number}" converter="Code128Converter"/></p>
                          Донация: <h:outputText value="#{bloodDonation.document.number}" />
 	                </td>
 	            </tr>

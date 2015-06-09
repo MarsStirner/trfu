@@ -1,5 +1,6 @@
 package ru.efive.medicine.niidg.trfu.data.dictionary;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -32,7 +33,23 @@ public class BloodComponentType extends DictionaryEntity {
 	public boolean isUsed() {
 		return used;
 	}
-	
+
+	public Integer getLowerStorageTemperature() {
+		return lowerStorageTemperature;
+	}
+
+	public void setLowerStorageTemperature(final Integer lowerStorageTemperature) {
+		this.lowerStorageTemperature = lowerStorageTemperature;
+	}
+
+	public Integer getHigherStorageTemperature() {
+		return higherStorageTemperature;
+	}
+
+	public void setHigherStorageTemperature(final Integer higherStorageTemperature) {
+		this.higherStorageTemperature = higherStorageTemperature;
+	}
+
 	@Override
 	public String toString() {
 		return getCode() + " " + getValue();
@@ -67,6 +84,13 @@ public class BloodComponentType extends DictionaryEntity {
 	 * Используется ли компонент
 	 */
 	private boolean used;
+
+	@Column(name="lowerStorageTemperature")
+	private Integer lowerStorageTemperature;
+
+
+	@Column(name="higherStorageTemperature")
+	private Integer higherStorageTemperature;
 	
 	private static final long serialVersionUID = 6086994767559295755L;
 	

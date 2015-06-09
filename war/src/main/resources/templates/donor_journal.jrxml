@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 410_у-П2" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
+<!-- 2015-05-29T18:23:21 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 410_у-П2" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2d580bf1-ab28-4fee-b482-b84c68c8ccaf">
 	<property name="ireport.zoom" value="1.2100000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -30,302 +33,130 @@
 	</parameter>
 	<parameter name="Division" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT
-     count(trfu_blood_donation_types.`id`) AS trfu_blood_donation_types_count_all,
-     count(CASE WHEN (trfu_blood_donation_types.`id`=1 and trfu_blood_donation_requests.`deleted`=0) THEN 1 ELSE NULL END) AS trfu_blood_donation_types_count_bl,
-     count(CASE WHEN (trfu_blood_donation_types.`id`=4 and trfu_blood_donation_requests.`deleted`=0) THEN 1 ELSE NULL END) AS trfu_blood_donation_types_count_pl,
-     count(CASE WHEN (trfu_blood_donation_types.`id`=3 and trfu_blood_donation_requests.`deleted`=0) THEN 1 ELSE NULL END) AS trfu_blood_donation_types_count_tr,
-     count(CASE WHEN(trfu_blood_donation_requests.`donorType_id`=63) THEN 1 ELSE NULL END) AS trfu_blood_donation_types_count_auto,
-     (CASE WHEN(trfu_examination_requests.`status_id`=6 or trfu_examination_requests.`status_id`=2) THEN 1 ELSE NULL END) AS exam,
-  (CASE WHEN(trfu_donors.`donorType_id`=12) THEN 1 ELSE NULL END) AS bezv_donors,
-  (CASE WHEN(trfu_donors.`donorType_id`=13) THEN 1 ELSE NULL END) AS platn_donors,
-  (CASE WHEN(trfu_donors.`donorType_id`=14) THEN 1 ELSE NULL END) AS auto_donors,
-(CASE WHEN(trfu_examination_requests.`status_id`=-1) THEN 1 ELSE NULL END) AS otvod_exam,
-     (CASE WHEN(trfu_examination_requests.`examinationType`=0) THEN 1 ELSE NULL END) AS perv_exam,
-(CASE WHEN(trfu_examination_requests.`examinationType`=1) THEN 1 ELSE NULL END) AS povt_exam,
-     trfu_examination_requests.`id` as trfu_examination_requests_id,
-     trfu_donors.`birth` AS trfu_donors_birth,
-     trfu_donors.`firstName` AS trfu_donors_firstName,
-     trfu_donors.`lastName` AS trfu_donors_lastName,
-     trfu_donors.`middleName` AS trfu_donors_middleName,
-     trfu_donors.`number` AS trfu_donors_number,
-     trfu_blood_donation_types.`value` AS trfu_blood_donation_types_value,
-DATE(trfu_examination_requests.`created`) as date
-FROM
-     `trfu_examination_requests` trfu_examination_requests
-     inner join `trfu_donors` trfu_donors on trfu_donors.`id` = trfu_examination_requests.`donor_id`
-     LEFT OUTER JOIN `trfu_blood_donation_requests` trfu_blood_donation_requests ON trfu_examination_requests.`id` = trfu_blood_donation_requests.`examination_id`
-     LEFT OUTER JOIN `trfu_blood_donation_request_fact_entries` trfu_blood_donation_request_fact_entries_A ON trfu_blood_donation_requests.`id` = trfu_blood_donation_request_fact_entries_A.`donation_id`
-     LEFT OUTER JOIN `trfu_blood_donation_entries` trfu_blood_donation_entries ON trfu_blood_donation_request_fact_entries_A.`entry_id` = trfu_blood_donation_entries.`id`
-     LEFT OUTER JOIN `trfu_blood_donation_types` trfu_blood_donation_types ON trfu_blood_donation_entries.`donationType_id` = trfu_blood_donation_types.`id`
-WHERE
-     DATE(trfu_examination_requests.`created`) >= DATE($P{StartDate})
- AND DATE(trfu_examination_requests.`created`) <= DATE($P{EndDate})
- AND trfu_donors.`deleted` = 0
-and trfu_examination_requests.`deleted` = 0
-GROUP BY
-     trfu_examination_requests.`number`
-ORDER BY
-     trfu_examination_requests.`created` ASC]]>
+		<![CDATA[SELECT 
+			 controlDate,
+			 examinationsCount,
+			 exam_on_inspection,
+			 exam_otvod,
+			 exam_canceled,
+			 donationsCount,
+			 donation_primary,
+			 donation_repeated,
+			 donation_type_blood,
+			 donation_type_tromb,
+			 donation_type_plazm,
+			 donorType_free,	
+			 donorType_auto
+		 		FROM
+		 			report_donor_journal
+		 	WHERE 
+		 		DATE(controlDate) BETWEEN DATE($P{StartDate}) AND DATE($P{EndDate})]]>
 	</queryString>
-	<field name="trfu_blood_donation_types_count_all" class="java.lang.Long"/>
-	<field name="trfu_blood_donation_types_count_bl" class="java.lang.Long"/>
-	<field name="trfu_blood_donation_types_count_pl" class="java.lang.Long"/>
-	<field name="trfu_blood_donation_types_count_tr" class="java.lang.Long"/>
-	<field name="trfu_blood_donation_types_count_auto" class="java.lang.Long"/>
-	<field name="exam" class="java.lang.Integer"/>
-	<field name="bezv_donors" class="java.lang.Integer"/>
-	<field name="platn_donors" class="java.lang.Integer"/>
-	<field name="auto_donors" class="java.lang.Integer"/>
-	<field name="otvod_exam" class="java.lang.Integer"/>
-	<field name="perv_exam" class="java.lang.Integer"/>
-	<field name="povt_exam" class="java.lang.Integer"/>
-	<field name="trfu_examination_requests_id" class="java.lang.Integer"/>
-	<field name="trfu_donors_birth" class="java.sql.Timestamp"/>
-	<field name="trfu_donors_firstName" class="java.lang.String"/>
-	<field name="trfu_donors_lastName" class="java.lang.String"/>
-	<field name="trfu_donors_middleName" class="java.lang.String"/>
-	<field name="trfu_donors_number" class="java.lang.String"/>
-	<field name="trfu_blood_donation_types_value" class="java.lang.String"/>
-	<field name="date" class="java.sql.Date"/>
-	<variable name="Total" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_all}]]></variableExpression>
+	<field name="controlDate" class="java.sql.Date"/>
+	<field name="examinationsCount" class="java.lang.Integer"/>
+	<field name="exam_on_inspection" class="java.lang.Integer"/>
+	<field name="exam_otvod" class="java.lang.Integer"/>
+	<field name="exam_canceled" class="java.lang.Integer"/>
+	<field name="donationsCount" class="java.lang.Integer"/>
+	<field name="donation_primary" class="java.lang.Integer"/>
+	<field name="donation_repeated" class="java.lang.Integer"/>
+	<field name="donation_type_blood" class="java.lang.Integer"/>
+	<field name="donation_type_tromb" class="java.lang.Integer"/>
+	<field name="donation_type_plazm" class="java.lang.Integer"/>
+	<field name="donorType_free" class="java.lang.Integer"/>
+	<field name="donorType_auto" class="java.lang.Integer"/>
+	<variable name="examCountSum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{examinationsCount}]]></variableExpression>
 	</variable>
-	<variable name="Total_bl" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_bl}]]></variableExpression>
+	<variable name="exam_on_inspection_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{exam_on_inspection}]]></variableExpression>
 	</variable>
-	<variable name="Total_pl" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_pl}]]></variableExpression>
+	<variable name="exam_otvod_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{exam_otvod}]]></variableExpression>
 	</variable>
-	<variable name="Total_tr" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_tr}]]></variableExpression>
+	<variable name="exam_canceled_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{exam_canceled}]]></variableExpression>
 	</variable>
-	<variable name="Total_auto" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_auto}]]></variableExpression>
+	<variable name="donCount_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{donationsCount}]]></variableExpression>
 	</variable>
-	<variable name="Total_exam" class="java.lang.Long" calculation="Sum">
-		<variableExpression><![CDATA[$F{exam}]]></variableExpression>
+	<variable name="don_primary_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{donation_primary}]]></variableExpression>
 	</variable>
-	<variable name="trfu_blood_donation_types_count_bl_1" class="java.lang.Long" resetType="Group" resetGroup="ExamDate" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_bl}]]></variableExpression>
+	<variable name="don_repeated_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{donation_repeated}]]></variableExpression>
 	</variable>
-	<variable name="trfu_blood_donation_types_count_tr_1" class="java.lang.Long" resetType="Group" resetGroup="ExamDate" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_tr}]]></variableExpression>
+	<variable name="don_blood_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{donation_type_blood}]]></variableExpression>
 	</variable>
-	<variable name="trfu_blood_donation_types_count_pl_1" class="java.lang.Long" resetType="Group" resetGroup="ExamDate" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_pl}]]></variableExpression>
+	<variable name="don_tromb_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{donation_type_tromb}]]></variableExpression>
 	</variable>
-	<variable name="exam_1" class="java.lang.Long" resetType="Group" resetGroup="ExamDate" calculation="Count">
-		<variableExpression><![CDATA[$F{exam}]]></variableExpression>
+	<variable name="don_plazm_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{donation_type_plazm}]]></variableExpression>
 	</variable>
-	<variable name="trfu_examination_requests_id_1" class="java.lang.Integer" resetType="Group" resetGroup="ExamDate" calculation="Count">
-		<variableExpression><![CDATA[$F{trfu_examination_requests_id}]]></variableExpression>
+	<variable name="donorFree_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{donorType_free}]]></variableExpression>
 	</variable>
-	<variable name="perv_exam_1" class="java.lang.Integer" resetType="Group" resetGroup="ExamDate" calculation="Count">
-		<variableExpression><![CDATA[$F{perv_exam}]]></variableExpression>
+	<variable name="donorAuto_Sum" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{donorType_auto}]]></variableExpression>
 	</variable>
-	<variable name="povt_exam_1" class="java.lang.Integer" resetType="Group" resetGroup="ExamDate" calculation="Count">
-		<variableExpression><![CDATA[$F{povt_exam}]]></variableExpression>
-	</variable>
-	<variable name="otvod_exam_1" class="java.lang.Integer" resetType="Group" resetGroup="ExamDate" calculation="Count">
-		<variableExpression><![CDATA[$F{otvod_exam}]]></variableExpression>
-	</variable>
-	<variable name="bezv_donors_1" class="java.lang.Integer" resetType="Group" resetGroup="ExamDate" calculation="Sum">
-		<variableExpression><![CDATA[$F{bezv_donors}]]></variableExpression>
-	</variable>
-	<variable name="platn_donors_1" class="java.lang.Integer" resetType="Group" resetGroup="ExamDate" calculation="Count">
-		<variableExpression><![CDATA[$F{platn_donors}]]></variableExpression>
-	</variable>
-	<variable name="auto_donors_1" class="java.lang.Integer" resetType="Group" resetGroup="ExamDate" calculation="Count">
-		<variableExpression><![CDATA[$F{auto_donors}]]></variableExpression>
-	</variable>
-	<variable name="trfu_examination_requests_id_2" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[$F{trfu_examination_requests_id}]]></variableExpression>
-	</variable>
-	<variable name="perv_exam_2" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[$F{perv_exam}]]></variableExpression>
-	</variable>
-	<variable name="povt_exam_2" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[$F{povt_exam}]]></variableExpression>
-	</variable>
-	<variable name="bezv_donors_3" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{bezv_donors}]]></variableExpression>
-	</variable>
-	<variable name="platn_donors_2" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[$F{platn_donors}]]></variableExpression>
-	</variable>
-	<variable name="auto_donors_2" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[$F{auto_donors}]]></variableExpression>
-	</variable>
-	<variable name="trfu_blood_donation_types_count_bl_2" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_bl}]]></variableExpression>
-	</variable>
-	<variable name="trfu_blood_donation_types_count_tr_2" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_tr}]]></variableExpression>
-	</variable>
-	<variable name="trfu_blood_donation_types_count_pl_2" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{trfu_blood_donation_types_count_pl}]]></variableExpression>
-	</variable>
-	<variable name="exam_2" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[$F{exam}]]></variableExpression>
-	</variable>
-	<variable name="otvod_exam_2" class="java.lang.Integer" calculation="Count">
-		<variableExpression><![CDATA[$F{otvod_exam}]]></variableExpression>
-	</variable>
-	<variable name="bezv_donors_2" class="java.lang.Integer" calculation="Sum">
-		<variableExpression><![CDATA[$F{bezv_donors}]]></variableExpression>
-	</variable>
-	<group name="ExamDate">
-		<groupExpression><![CDATA[$F{date}]]></groupExpression>
-		<groupHeader>
-			<band/>
-		</groupHeader>
-		<groupFooter>
-			<band height="15">
-				<textField pattern="dd.MM.yyyy">
-					<reportElement style="table_TD" x="0" y="0" width="59" height="15"/>
-					<textElement verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-						<paragraph leftIndent="5"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="454" y="0" width="55" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{trfu_blood_donation_types_count_bl_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="509" y="0" width="65" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{trfu_blood_donation_types_count_tr_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="574" y="0" width="65" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{trfu_blood_donation_types_count_pl_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="639" y="0" width="74" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{exam_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="59" y="0" width="55" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{trfu_examination_requests_id_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="114" y="0" width="63" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{perv_exam_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="177" y="0" width="63" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{povt_exam_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="713" y="0" width="75" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{otvod_exam_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="240" y="0" width="80" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{bezv_donors_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="320" y="0" width="63" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{platn_donors_1}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement style="table_TD" x="383" y="0" width="71" height="15"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Tahoma"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$V{auto_donors_1}]]></textFieldExpression>
-				</textField>
-			</band>
-		</groupFooter>
-	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="70" splitType="Stretch">
 			<staticText>
-				<reportElement positionType="Float" x="179" y="32" width="420" height="18"/>
+				<reportElement positionType="Float" x="179" y="32" width="420" height="18" uuid="4040178b-abb8-4f32-92e3-ae9d6460e56f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[ДНЕВНИК УЧЕТА ДОНОРОВ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="256" y="50" width="64" height="20"/>
+				<reportElement positionType="Float" x="256" y="50" width="64" height="20" uuid="8568923b-8f61-459c-b490-bcc60083cd2c"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[за период с]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="397" y="50" width="19" height="20"/>
+				<reportElement positionType="Float" x="397" y="50" width="19" height="20" uuid="c18c2867-1080-4e45-94c7-2bc7e797d7ff"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[по]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="720" y="0" width="82" height="20"/>
+				<reportElement x="720" y="0" width="82" height="20" uuid="ae97112d-f523-46fd-93ef-e82daa711bc1"/>
 				<textElement textAlignment="Right">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Форма 410/у]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement positionType="Float" x="320" y="50" width="76" height="20"/>
+				<reportElement positionType="Float" x="320" y="50" width="76" height="20" uuid="de38e64d-2e61-41b3-acba-5ed61a47ee95"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{StartDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement positionType="Float" x="417" y="50" width="92" height="20"/>
+				<reportElement positionType="Float" x="417" y="50" width="92" height="20" uuid="d9209c08-8c91-42f5-b5bc-9c91260f91a3"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{EndDate}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="59" y="15" width="661" height="15"/>
+				<reportElement positionType="Float" x="59" y="15" width="661" height="15" uuid="64dd2a0a-d47a-4e7b-a255-fe855bb1795b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{Division}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="59" y="0" width="661" height="15"/>
+				<reportElement positionType="Float" x="59" y="0" width="661" height="15" uuid="fdc0e6c7-63ec-4df2-ba60-34d25f04680f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -339,114 +170,208 @@ ORDER BY
 	<columnHeader>
 		<band height="55" splitType="Stretch">
 			<staticText>
-				<reportElement style="table_TD" x="454" y="0" width="55" height="55"/>
+				<reportElement style="table_TD" x="460" y="0" width="55" height="55" uuid="9b5bdfc9-1a97-42a0-93ee-d5dc4ac515f6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Сдавших кровь]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="0" y="0" width="59" height="55"/>
+				<reportElement style="table_TD" x="-10" y="0" width="60" height="55" uuid="5cb69129-488d-4a44-a90b-a4dd4d68b931"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Дата]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="638" y="0" width="75" height="55"/>
+				<reportElement style="table_TD" x="644" y="0" width="75" height="55" uuid="c88ccdca-0b52-4b83-aeda-2624c22a6ad5"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
-				<text><![CDATA[На обследование]]></text>
+				<text><![CDATA[Безвозмездных доноров]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="509" y="0" width="65" height="55"/>
+				<reportElement style="table_TD" x="515" y="0" width="65" height="55" uuid="4bcdb7f1-dff1-4103-8c2e-89a25f87d14a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Сдавших тромбоциты]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="574" y="0" width="65" height="55"/>
+				<reportElement style="table_TD" x="580" y="0" width="65" height="55" uuid="efdaf24e-142e-471d-bd45-690dc122c857"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Сдавших плазму]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="59" y="0" width="55" height="55"/>
+				<reportElement style="table_TD" x="50" y="0" width="64" height="55" uuid="15a1f320-0858-4404-867a-08681e5b5824"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
-				<text><![CDATA[Принято доноров]]></text>
+				<text><![CDATA[Осмотрено доноров]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="114" y="0" width="63" height="55"/>
+				<reportElement style="table_TD" x="114" y="0" width="66" height="55" uuid="46fb417b-b586-44b2-99f1-55504e32e1e9"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
-				<text><![CDATA[Первичных]]></text>
+				<text><![CDATA[На обследовании]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="177" y="0" width="63" height="55"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Tahoma" size="10"/>
-				</textElement>
-				<text><![CDATA[Повторных]]></text>
-			</staticText>
-			<staticText>
-				<reportElement style="table_TD" x="713" y="0" width="75" height="55"/>
+				<reportElement style="table_TD" x="180" y="0" width="53" height="55" uuid="1dae340c-6ab3-481e-ae5d-a70727494d17"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Отведено]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="240" y="0" width="80" height="55"/>
+				<reportElement style="table_TD" x="719" y="0" width="75" height="55" uuid="671a1afc-0e3c-4b03-98f3-cf4fd8d58721"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
-				<text><![CDATA[Безвозмездных]]></text>
+				<text><![CDATA[Ауто-доноров]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="320" y="0" width="63" height="55"/>
+				<reportElement style="table_TD" x="233" y="0" width="47" height="55" uuid="19eddca3-7578-4116-9e27-41c298aa6518"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
-				<text><![CDATA[Платных]]></text>
+				<text><![CDATA[Отменено]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="383" y="0" width="71" height="55"/>
+				<reportElement style="table_TD" x="280" y="0" width="59" height="55" uuid="3c1f7a82-f1cb-46ec-8eb5-b6a8b1038adb"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
-				<text><![CDATA[Родственников]]></text>
+				<text><![CDATA[Проведено донаций]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="339" y="0" width="58" height="55" uuid="b0f344e6-17b6-429d-a5bf-1cc44ce8da11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Первичных донаций]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table_TD" x="397" y="0" width="63" height="55" uuid="03655bdd-e60c-4df7-a1f9-8119249030ca"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="10"/>
+				</textElement>
+				<text><![CDATA[Повторных донаций]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band splitType="Stretch"/>
+		<band height="16">
+			<textField pattern="dd.MM.yyyy">
+				<reportElement style="table_TD" x="-10" y="0" width="60" height="15" uuid="a516ca44-df28-40c9-a820-28e144a368b3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{controlDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="460" y="0" width="55" height="15" uuid="e0c70843-997c-472e-9473-d80a5b0be407"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donation_type_blood}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="515" y="0" width="65" height="15" uuid="4628c9e6-9978-4015-bacb-6720292e0b7b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donation_type_tromb}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="580" y="0" width="65" height="15" uuid="71052012-fc33-4736-9b21-8e86f3250754"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donation_type_plazm}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="645" y="0" width="74" height="15" uuid="5466d786-b1b6-4ec1-8e04-03bac655a197"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donorType_free}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="50" y="0" width="64" height="15" uuid="14e1c548-b55e-4fc3-90f9-156a51350b05"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{examinationsCount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="114" y="0" width="66" height="15" uuid="0b9c85fd-9bb8-40a2-a9ee-fa641873a520"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{exam_on_inspection}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="180" y="0" width="53" height="15" uuid="d51c6018-896d-40b8-ba33-58d178b6468b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{exam_otvod}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="719" y="0" width="75" height="15" uuid="508b4d1f-730f-449c-937f-62f0abcaf39b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donorType_auto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="233" y="0" width="47" height="15" uuid="cf9621b3-19da-4030-9c18-34b4d144b4f2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{exam_canceled}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="280" y="0" width="59" height="15" uuid="586b2433-a7e8-4ede-9163-6b2cfa324f3b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donationsCount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="339" y="0" width="58" height="15" uuid="3a71c789-d513-4bab-aed8-f74151668e05"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donation_primary}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="397" y="0" width="63" height="15" uuid="ff2c59f5-5776-4cc4-9835-fbb46ca7d0ae"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{donation_repeated}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
-	<columnFooter>
-		<band splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band splitType="Stretch"/>
-	</pageFooter>
 	<summary>
-		<band height="48" splitType="Stretch">
+		<band height="58" splitType="Stretch">
 			<staticText>
-				<reportElement x="366" y="27" width="143" height="20"/>
+				<reportElement x="366" y="-1" width="143" height="20" uuid="2951fa91-8164-4e36-9040-aaeee4455d8c"/>
 				<textElement>
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[Зав. отделением]]></text>
 			</staticText>
 			<line>
-				<reportElement x="509" y="47" width="140" height="1"/>
+				<reportElement x="509" y="19" width="140" height="1" uuid="843ea58c-76ac-4a84-b866-92b80ca8a5e7"/>
 			</line>
 			<staticText>
-				<reportElement style="table_TD" x="0" y="0" width="59" height="20"/>
+				<reportElement style="table_TD" x="-10" y="-1" width="60" height="20" uuid="02deb13e-ddc6-455e-962d-eaa095e43996"/>
 				<box leftPadding="3"/>
 				<textElement>
 					<font fontName="Tahoma" size="11" isBold="false"/>
@@ -454,81 +379,88 @@ ORDER BY
 				<text><![CDATA[Итого:]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="table_TD" x="59" y="0" width="55" height="20"/>
+				<reportElement style="table_TD" x="50" y="-1" width="64" height="20" uuid="0c52269e-3f90-464f-9ef9-7dd46bd02114"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{trfu_examination_requests_id_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{examCountSum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="114" y="0" width="63" height="20"/>
+				<reportElement style="table_TD" x="114" y="-1" width="66" height="20" uuid="5a918249-0869-4867-8efc-94b2a234c4d3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{perv_exam_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{exam_on_inspection_Sum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="177" y="0" width="63" height="20"/>
+				<reportElement style="table_TD" x="180" y="-1" width="53" height="20" uuid="7af1b62d-5d20-4246-b4ee-d0fb9188127e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{povt_exam_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{exam_otvod_Sum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="320" y="0" width="63" height="20"/>
+				<reportElement style="table_TD" x="233" y="-1" width="47" height="20" uuid="13fbcfbe-2361-48cf-9d65-3d9fa6d00cdb"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{platn_donors_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{exam_canceled_Sum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="383" y="0" width="71" height="20"/>
+				<reportElement style="table_TD" x="280" y="-1" width="59" height="20" uuid="bb570bcd-dedf-4403-bd6e-993110d7e0b4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{auto_donors_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{donCount_Sum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="454" y="0" width="55" height="20"/>
+				<reportElement style="table_TD" x="339" y="-1" width="58" height="20" uuid="839b3bb7-d8f5-4e9d-b995-855c97dbb73d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{trfu_blood_donation_types_count_bl_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{don_primary_Sum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="509" y="0" width="65" height="20"/>
+				<reportElement style="table_TD" x="397" y="-1" width="63" height="20" uuid="a7711859-e7b2-48d6-9150-8527f37e3401"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{trfu_blood_donation_types_count_tr_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{don_repeated_Sum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="574" y="0" width="65" height="20"/>
+				<reportElement style="table_TD" x="460" y="-1" width="55" height="20" uuid="3a4b7682-ee46-427f-96fe-14f6f3a4830d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{trfu_blood_donation_types_count_pl_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{don_blood_Sum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="639" y="0" width="74" height="20"/>
+				<reportElement style="table_TD" x="515" y="-1" width="65" height="20" uuid="1502f11d-ebdb-4262-b6d2-4893dac98b80"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{exam_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{don_tromb_Sum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="713" y="0" width="75" height="20"/>
+				<reportElement style="table_TD" x="580" y="-1" width="65" height="20" uuid="86320888-8ef9-44c5-861d-1ec3e73dbae1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{otvod_exam_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{don_plazm_Sum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="240" y="0" width="80" height="20"/>
+				<reportElement style="table_TD" x="645" y="-1" width="74" height="20" uuid="04f8013f-0651-4cd6-9ce4-e307a6a95ab4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="11" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{bezv_donors_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{donorFree_Sum}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table_TD" x="719" y="-1" width="75" height="20" uuid="276f61c0-6a58-4c99-8c2f-f66e2c4e466e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{donorAuto_Sum}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

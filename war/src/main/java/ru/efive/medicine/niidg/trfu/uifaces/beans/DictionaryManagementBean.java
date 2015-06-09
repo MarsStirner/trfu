@@ -133,7 +133,7 @@ public class DictionaryManagementBean implements Serializable {
 		}
 		return result;
 	}
-	
+
 	public List<BloodComponentType> getBloodComponentTypes(String filter) {
 		List<BloodComponentType> result = new ArrayList<BloodComponentType>();
 		try {

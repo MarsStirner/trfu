@@ -863,22 +863,6 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
         }
     }
 
-    public List<Analysis> getTestDonationList() {
-        if (purchased) {
-            List<Analysis> result = new ArrayList<Analysis>(6);
-            if(testList != null && !testList.isEmpty()) {
-                for (Analysis current : testList) {
-                    if (current.getType().getCategory().equals("Донация")) {
-                        result.add(current);
-                    }
-                }
-            }
-            return result;
-        } else {
-            return null;
-        }
-    }
-
     public BloodDonationEntry getFactEntry(){
         return factEntry;
     }
