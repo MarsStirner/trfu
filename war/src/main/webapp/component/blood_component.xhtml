@@ -1038,7 +1038,8 @@
                                         <td class="first">Дата донации:</td>
                                         <td>
                                             <p:calendar id="donationDatePurchased" value="#{bloodComponent.document.donationDate}" lang="ru" locale="ru" mode="popup" showOn="both"  mask="true" pattern="dd.MM.yyyy">
-                                                <p:ajax event="dateSelect" listener="#{bloodComponent.handleDateSelect}" update="productionDatePurchased expirationDatePurchased expirationDatePurchased" />
+                                                <p:ajax event="dateSelect" listener="#{bloodComponent.handleDateSelect}" update="productionDatePurchased expirationDatePurchased expirationDatePurchased"/>
+                                                <p:ajax event="valueChange" listener="#{bloodComponent.handleDateChange}" execute="@this" update="productionDatePurchased expirationDatePurchased expirationDatePurchased"/>
                                             </p:calendar>
                                         </td>
                                     </tr>

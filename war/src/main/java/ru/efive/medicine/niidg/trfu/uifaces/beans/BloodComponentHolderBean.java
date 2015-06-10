@@ -321,6 +321,19 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         document.setExpirationDate(calendar.getTime());
     }
 
+    public void handleDateChange(AjaxBehaviorEvent event){
+        final BloodComponent document = getDocument();
+        final Date nd = document.getDonationDate();
+        document.setDonationDate(nd);
+        document.setProductionDate(nd);
+        Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
+        if (document.getProductionDate() != null) {
+            calendar.setTime(document.getProductionDate());
+        }
+        calendar.add(Calendar.DATE, 41);
+        document.setExpirationDate(calendar.getTime());
+    }
+
     @Override
     protected void initDocument(Integer id) {
         try {
