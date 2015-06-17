@@ -23,6 +23,7 @@ import ru.efive.uifaces.bean.ModalWindowHolderBean;
 import ru.efive.wf.core.ActionResult;
 import ru.efive.wf.core.activity.EditableProperty;
 import ru.efive.wf.core.util.EngineHelper;
+import ru.hitsl.helper.BloodComponentHelper;
 
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
@@ -317,7 +318,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         if (document.getProductionDate() != null) {
             calendar.setTime(document.getProductionDate());
         }
-        calendar.add(Calendar.DATE, 41);
+        calendar.add(Calendar.DATE, 42);
         document.setExpirationDate(calendar.getTime());
     }
 
@@ -330,7 +331,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         if (document.getProductionDate() != null) {
             calendar.setTime(document.getProductionDate());
         }
-        calendar.add(Calendar.DATE, 41);
+        calendar.add(Calendar.DATE, 42);
         document.setExpirationDate(calendar.getTime());
     }
 
@@ -747,52 +748,32 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     }
 
     public void previewBigLabel() {
-        try {
-            if (getDocument().getBloodGroup() == null || StringUtils.isEmpty(
-                    getDocument().getBloodGroup().getValue()
-            ) ||
-                    StringUtils.containsIgnoreCase(getDocument().getBloodGroup().getValue(), "не определен")) {
-                FacesContext.getCurrentInstance().addMessage(
-                        null, new FacesMessage(
-                                FacesMessage.SEVERITY_ERROR, "Не " + "указана группа крови", ""
-                        )
-                );
-                return;
-            }
-            if (getDocument().getRhesusFactor() == null || StringUtils.isEmpty(
-                    getDocument().getRhesusFactor().getValue()
-            ) ||
-                    StringUtils.containsIgnoreCase(getDocument().getRhesusFactor().getValue(), "не определен")) {
-                FacesContext.getCurrentInstance().addMessage(
-                        null, new FacesMessage(
-                                FacesMessage.SEVERITY_ERROR, "Не " + "указан резус-фактор", ""
-                        )
-                );
-                return;
-            }
-            Map<String, String> requestProperties = new HashMap<String, String>();
-            if(getDocument().isPurchased() && getDocument().getMaker().getId() == 13){
-                requestProperties.put("reportName", "BigBarcode4JReport_fmba.jrxml");
-            } else {
-                requestProperties.put("reportName", "BigBarcode4JReport.jrxml");
-            }
-            requestProperties.put("docId", Integer.toString(getDocument().getId()));
-            requestProperties.put("docType", getDocument().getType());
-            if (donor != null) {
-                requestProperties.put("donorId", Integer.toString(donor.getId()));
-            }
-            requestProperties.put(
-                    "transfusiologistFullName", sessionManagement.getLoggedUser() == null ? "" : sessionManagement.getLoggedUser().getDescription()
-            );
-            reportsManagement.sqlPrintReportByRequestParams(requestProperties);
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(
-                    null, new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR, "Ошибка " + "при формировании этикетки компонента", ""
-                    )
-            );
-            e.printStackTrace();
-        }
+       if(BloodComponentHelper.validateBeforePrint(getDocument())){
+           final Map<String, String> requestProperties = new HashMap<String, String>();
+           if(getDocument().isPurchased() && getDocument().getMaker().getId() == 13){
+               requestProperties.put("reportName", "BigBarcode4JReport_fmba.jrxml");
+           } else {
+               requestProperties.put("reportName", "BigBarcode4JReport.jrxml");
+           }
+           requestProperties.put("docId", Integer.toString(getDocument().getId()));
+           requestProperties.put("docType", getDocument().getType());
+           if (donor != null) {
+               requestProperties.put("donorId", Integer.toString(donor.getId()));
+           }
+           requestProperties.put(
+                   "transfusiologistFullName", sessionManagement.getLoggedUser() == null ? "" : sessionManagement.getLoggedUser().getDescription()
+           );
+           try{
+               reportsManagement.sqlPrintReportByRequestParams(requestProperties);
+           } catch (Exception e) {
+               FacesContext.getCurrentInstance().addMessage(
+                       null, new FacesMessage(
+                               FacesMessage.SEVERITY_ERROR, "Ошибка при формировании этикетки компонента", e.getMessage()
+                       )
+               );
+               e.printStackTrace();
+           }
+       }
     }
 
     public boolean isExpeditionEditAvailable() {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-06-03T15:24:13 -->
+<!-- 2015-06-17T18:10:02 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BigBarcode4JReport_fmba" pageWidth="283" pageHeight="283" columnWidth="283" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e2c27dca-4040-4067-8a42-4544c41dcfbc">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -170,7 +170,7 @@
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Код донора: "+$F{donorCode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Код донора: "+($F{donorCode} != null ? $F{donorCode} : "")]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="176" width="141" height="1" uuid="f475fe40-289e-4958-8d8c-74073e118d11"/>
@@ -232,7 +232,7 @@
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Tahoma" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Из "+ $F{donationVolume}+ " мл " + ($F{donationType} == 1 ? "цельной": "переработанной") +" крови"+($V{anticoagulantInfo} != null ? ", "+$V{anticoagulantInfo}+" мл.": "")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{donationVolume} != null && $F{donationType} != null ? ("Из "+ $F{donationVolume}+ " мл " + ($F{donationType} == 1 ? "цельной": "переработанной") +" крови") : "")+($V{anticoagulantInfo} != null ? ", "+$V{anticoagulantInfo}+" мл.": "")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="5" y="191" width="130" height="14" uuid="5933077a-a5c5-4e12-bb0e-ed0a0fcb63ee">
@@ -280,7 +280,7 @@
 				<textElement>
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Годен по "+DATEFORMAT($F{expirationDate}, "dd.MM.yyyy HH:mm")]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Годен по "+($F{expirationDate} != null ? DATEFORMAT($F{expirationDate}, "dd.MM.yyyy HH:mm"): "")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="donorTextStyle" x="141" y="1" width="140" height="30" uuid="4fe578fe-c8af-47f5-bbc7-2849bf78c021">

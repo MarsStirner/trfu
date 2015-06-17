@@ -45,31 +45,42 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
      * Изготовитель
      */
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name="maker_id", nullable = false)
     private Contragent maker;
+
     /**
      * дата создания документа
+     * DEFAULT VALUE = ON INSERT CURRENT_TIMESTAMP
      */
     @Temporal(value = TemporalType.TIMESTAMP)
+    @Column(name="created", nullable = false)
     private Date created;
+
     /**
      * Группа крови
      */
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name="bloodGroup_id", nullable = false)
     private BloodGroup bloodGroup;
+
     /**
      * Резус-фактор
      */
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name="rhesusFactor_id", nullable = false)
     private Classifier rhesusFactor;
     /**
      * дата донации
      */
     @Temporal(value = TemporalType.TIMESTAMP)
+    @Column(name = "donationDate", nullable = false)
     private Date donationDate;
+
     /**
      * дата производства
      */
     @Temporal(value = TemporalType.TIMESTAMP)
+    @Column(name = "productionDate", nullable = false)
     private Date productionDate;
     /**
      * дата окончания срока хранения
@@ -89,15 +100,19 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
      * Тип компонента крови
      */
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @JoinColumn(name="componentType_id", nullable = false)
     private BloodComponentType componentType;
     /**
      * Вес ЭМ до фильтрации
      */
     private int emVolume;
+
     /**
      * Объем компонента
      */
+    @Column(name="volume", nullable = false)
     private int volume;
+
     /**
      * Объем до вирусинактивации, мл
      */
@@ -289,6 +304,7 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "componentType_id", referencedColumnName = "componentType_id", insertable = false, updatable = false)
     private DirAdditionalLiquor dirAdditionalLiquor;
+
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private BloodSystem bloodSystem;
     /**

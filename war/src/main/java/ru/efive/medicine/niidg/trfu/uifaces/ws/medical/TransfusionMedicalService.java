@@ -430,9 +430,13 @@ public class TransfusionMedicalService {
 
     @WebMethod(operationName = "getComponentTypes", action = "urn:getComponentTypes")
     public List<ComponentType> getComponentTypes() {
+        logger.info("Called service getComponentTypes");
         List<ComponentType> result = new ArrayList<ComponentType>();
         try {
-            List<BloodComponentType> bloodComponentTypes = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).findUsedBloodComponentTypes(false, "code", true);
+            List<BloodComponentType> bloodComponentTypes = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext()
+                    .getBean(ApplicationHelper.DICTIONARY_DAO)).findBloodComponentTypes(
+                    false, "code", true
+            );
             for (BloodComponentType bloodComponentType : bloodComponentTypes) {
                 ComponentType componentType = new ComponentType();
                 componentType.setId(bloodComponentType.getId());
@@ -442,6 +446,15 @@ public class TransfusionMedicalService {
             }
         } catch (Exception e) {
             logger.error("TransfusionMedicalService - component types not sent", e);
+        }
+        logger.info("Successfully end of service getComponentTypes. Return "+result.size()+" items");
+        if(logger.isDebugEnabled()){
+            if(!result.isEmpty()){
+                logger.debug(" ID | CODE | VALUE ");
+            }
+            for(ComponentType bct : result) {
+                logger.debug(bct.getId()+" | "+bct.getCode()+ " | "+bct.getValue());
+            }
         }
         return result;
     }

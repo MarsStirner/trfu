@@ -17,51 +17,13 @@
         <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
         <h:outputScript library="js" name="forms.js" target="head" />
         <h:outputScript library="js" name="primefacesLocale_ru.js" target="head"/>
+        <h:outputStylesheet>
+            .ui-outputlabel .ui-outputlabel-rfi {
+                vertical-align: top;
+                margin-left: 0.4em;
+            }
+        </h:outputStylesheet>
         <e5ui-comp:outputUtilScript />
-        <h:outputScript>
-            var oldtValOnClick;
-            var actions;
-            var isVisibleHistory = false;
-
-            function changeVisibleHistory() {
-            isVisibleHistory = !isVisibleHistory;
-            hideShowHistory();
-            }
-
-            function hideShowHistory() {
-            var blockHistory = $("[id*='history']");
-            if (isVisibleHistory) {
-            blockHistory.show();
-            } else {
-            blockHistory.hide();
-            }
-            }
-
-            function setCursor(typeCursor) {
-            var styleTitle = "cursor: " + typeCursor + ";color: #4581c0";
-            $("[id*='history']").prev().find("a").attr("style", styleTitle);
-            }
-
-            function checkBloodComponent() {
-            var componentType = $("[id='main_content_form:componentType']");
-            if (componentType.val() != " ") {
-            actions.attr("onclick", oldtValOnClick);
-            actions.click();
-            } else {
-            alert("Необходимо выбрать компонент крови!");
-            }
-            }
-
-            jQuery(function () {
-            hideShowHistory();
-            actions = $("[id='main_content_form:showActions']");
-            oldtValOnClick = actions.attr("onclick");
-            actions.attr("onclick", "checkBloodComponent()");
-            if ($("[id*='purchasedComponent']").size() > 0) {
-            $("[id*='purchasedComponent']").attr("checked", "true");
-            }
-            });
-        </h:outputScript>
     </ui:define>
 
     <ui:define name="left_menu"/>
@@ -315,6 +277,8 @@
     </ui:define>
 
     <ui:define name="content">
+        <!-- Сообщения при печати этикетки-->
+        <p:growl for="print" showDetail ="true"/>
         <div id="header_content">
             <h:panelGroup rendered="#{bloodComponent.createState}">
                 <div class="name">Новый компонент крови</div>
@@ -882,234 +846,178 @@
                                 <!-- Для заупленного КК-->
                                 <h:panelGroup rendered="#{bloodComponent.document.purchased}">
                                     <tr class="row">
-                                        <td class="first">Дата поступления:</td>
+                                        <td class="first"><p:outputLabel for="receivedDatePurchased" value="Дата поступления"/></td>
                                         <td>
                                             <p:calendar id="receivedDatePurchased" value="#{bloodComponent.document.receivedDate}" lang="ru" locale="ru" mode="popup" showOn="both"  mask="true" pattern="dd.MM.yyyy" />
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Номер накладной</td>
-                                        <td><h:inputText value="#{bloodComponent.document.invoiceNumber}" /></td>
+                                        <td class="first"><p:outputLabel for="p_invoiceNumber" value="Номер накладной"/></td>
+                                        <td><p:inputText id="p_invoiceNumber" value="#{bloodComponent.document.invoiceNumber}"/></td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Номер донации</td>
+                                        <td class="first"><p:outputLabel for="p_donationNumber" value="Номер донации"/></td>
                                         <td>
-                                            <h:inputText value="#{bloodComponent.document.parentNumber}"/>
+                                            <p:inputMask id="p_donationNumber" value="#{bloodComponent.document.parentNumber}" required="true" requiredMessage="Необходимо указать номер донации (5-6 символов)"
+                                                         mask="99999?9" autocomplete="false" slotChar=""/>
+                                            <p:message for="p_donationNumber" display="text" />
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Номер компонента</td>
+                                        <td class="first"><p:outputLabel for="p_number" value="Номер компонента"/></td>
                                         <td>
-                                            <h:inputText value="#{bloodComponent.document.number}"/>
+                                            <p:inputMask id="p_number" value="#{bloodComponent.document.number}" required="true" requiredMessage="Необходимо указать номер компонента крови (2 символа)" mask="99" slotChar=""/>
+                                            <p:message for="p_number" display="text" />
                                         </td>
                                     </tr>
                                     <tr class="row">
                                         <td class="first">
-                                            <h:outputLink onclick="contragentSelectVar.clickOpen('contragentSelectModal'); return false;">
-                                                Изготовитель:
-                                            </h:outputLink>
+                                            <p:outputLabel for="p_maker" value="Изготовитель"/>
                                         </td>
                                         <td>
-                                            <h:panelGroup id="maker_info_purchased">
-                                                <h:outputText id="makerPurchased" value="#{bloodComponent.document.maker.fullName}"
-                                                              class="wide" />
-                                                <h:outputLink rendered="#{bloodComponent.document.maker ne null}" style="margin-left:5px;" value="/component/contragent.xhtml" target="_blank">
-                                                    <h:graphicImage value="#{resource['images:link.png']}" />
-                                                    <f:param name="docId" value="#{bloodComponent.document.maker.id}" />
-                                                </h:outputLink>
-                                            </h:panelGroup>
-                                            <e5ui-comp:modalWindow id="contragentSelectModalPurchased"
-                                                                   modalWindowHolder="#{bloodComponent.contragentSelectModal}"
-                                                                   render=":main_content_form:maker_info_purchased"
-                                                                   execute="contragent_select_table"
-                                                                   showButtons="false"
-                                                                   style="width:500px;"
-                                                                   widgetVar="contragentSelectVar">
-                                                <div id="title">Выбор изготовителя</div>
-                                                <div id="modal_container" style="margin-top: 0;">
-                                                    <div class="searchbar">
-                                                        <h:inputText id="filter_string" value="#{bloodComponent.contragentSelectModal.contragentList.filter}"
-                                                                     style="display:block; float:left; margin-right:10px;" title="Поиск" />
-                                                        <h:commandButton value=" " action="#{bloodComponent.contragentSelectModal.contragentList.changePageOffset(0)}"
-                                                                         styleClass="searchbutton">
-                                                            <f:ajax execute=":main_content_form:contragentSelectModal:filter_string"
-                                                                    render=":main_content_form:contragentSelectModal:contragent_select_table :main_content_form:contragentSelectModal:contragent_paging" />
-                                                        </h:commandButton>
-                                                    </div>
-                                                    <div class="wrap" style="height:300px;">
-                                                        <div class="inner" style="height:300px;">
-                                                            <e5ui:dataTable id="contragent_select_table" border="0" cellpadding="0" cellspacing="0"
-                                                                            value="#{bloodComponent.contragentSelectModal.contragentList.documents}"
-                                                                            var="contragent_row" grouping="false" width="100%">
-                                                                <e5ui:row onclick="e5ui_util.clickElement(this, 'selectLink$');"
-                                                                          styleClass="#{bloodComponent.contragentSelectModal.selected(contragent_row)? 'grid_row_selected': ''}" />
-                                                                <e5ui:column>
-                                                                    <f:facet name="header">
-                                                                        <p>Контрагент</p>
-                                                                    </f:facet>
-                                                                    <h:outputText value="#{contragent_row.fullName}" />
-                                                                    <h:commandLink id="selectLink" style="display: none;"
-                                                                                   rendered="#{not bloodComponent.contragentSelectModal.selected(contragent_row)}"
-                                                                                   action="#{bloodComponent.contragentSelectModal.select(contragent_row)}"/>
-                                                                </e5ui:column>
-                                                            </e5ui:dataTable>
-                                                        </div>
-                                                    </div>
-                                                    <div style="clear:both;">
-                                                        <h:panelGroup id="contragent_paging">
-                                                            <e5ui-comp:tablePager id="pager" documentListHolder="#{bloodComponent.contragentSelectModal.contragentList}" />
-                                                        </h:panelGroup>
-                                                    </div>
-                                                </div>
-                                                <div class="e5ui-modal-bottombuttons">
-                                                    <h:button onclick="contragentSelectVar.clickSave(); return false;" value="Выбрать" />
-                                                    <h:button onclick="contragentSelectVar.clickClose(); return false;" value="Отмена" />
-                                                </div>
-                                            </e5ui-comp:modalWindow>
+                                            <p:selectOneMenu id ="p_maker" value="#{bloodComponent.document.maker}" converter="ContragentConverter" required="true" requiredMessage="Необходимо выбрать изготовителя" style="width:58em" >
+                                                <f:selectItem noSelectOption="true"/>
+                                                <f:selectItems value="#{bloodComponent.contragentSelectModal.contragentList.documents}" var="row_maker" itemLabel="#{row_maker.fullName}" itemValue="#{row_maker}"/>
+                                            </p:selectOneMenu>
+                                            <p:message for="p_maker" display="text" />
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Код донора</td>
-                                        <td><h:inputText value="#{bloodComponent.document.donorCode}" /></td>
+                                        <td class="first"><p:outputLabel for="p_donorCode" value="Код донора"/></td>
+                                        <td><p:inputText id="p_donorCode" value="#{bloodComponent.document.donorCode}"/></td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Компонент:</td>
+                                        <td class="first"><p:outputLabel id ="lblForCompTypeAC" for="componentTypeListPurchasedAC" value="Тип компонента"/></td>
                                         <td>
-                                            <p:autoComplete id="componentTypeListPurchasedAC" value="#{bloodComponent.document.componentType}"  converter="BloodComponentTypeConverter" completeMethod="#{dictionaryManagement.getBloodComponentTypes}" scrollHeight="250"  dropdown="true" size="100">
-                                                <p:ajax event="itemSelect" listener="#{bloodComponent.componentTypeListener}" update="storageTemperatureLow storageTemperatureHigh" />
+                                            <p:autoComplete id="componentTypeListPurchasedAC" value="#{bloodComponent.document.componentType}"  converter="BloodComponentTypeConverter" completeMethod="#{dictionaryManagement.getBloodComponentTypes}" scrollHeight="250"  dropdown="true" size="100" required="true" requiredMessage="Необходимо указать тип компонента крови">
+                                                <p:ajax event="itemSelect" listener="#{bloodComponent.componentTypeListener}" update="storageTemperatureLow storageTemperatureHigh" resetValues="true"/>
                                             </p:autoComplete>
+                                            <p:message id = "msgForCompTypeAC" for="componentTypeListPurchasedAC" display="text" />
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Объем компонента:</td>
-                                        <td><h:inputText value="#{bloodComponent.document.volume}" style="font-weight:bold;" /></td>
+                                        <td class="first"><p:outputLabel for="p_volume" value="Объем компонента"/></td>
+                                        <td>
+                                            <p:inputMask id="p_volume" mask="9?9999" value="#{bloodComponent.document.volume}" slotChar="" required="true" requiredMessage="Необходимо указать объем компонента"/>
+                                            <p:message for="p_volume" display="text" />
+                                        </td>
                                     </tr>
                                     <tr class="row">
                                         <td class="first" colspan="2">
-                                            <fieldset style="width:30%;">
+                                            <fieldset style="width:40%;">
                                                 <legend>
                                                     <span class="title">Полученный объем</span>
                                                 </legend>
-                                                <div class="wrap" style="width:100%; margin:0">
-                                                    <div class="inner">
-                                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0" style="width:100%;"
-                                                                        value="#{bloodComponent.document.factEntry}" var="row">
-                                                            <e5ui:column style="min-width:12em;">
-                                                                <f:facet name="header">
-                                                                    <p>Вид донорства</p>
-                                                                </f:facet>
-                                                                <h:selectOneMenu value="#{row.donationType}" converter="BloodDonationTypeConverter">
-                                                                    <f:selectItems value="#{dictionaryManagement.bloodDonationTypes}"/>
-                                                                </h:selectOneMenu>
-                                                            </e5ui:column>
-                                                            <e5ui:column style="min-width:5em;">
-                                                                <f:facet name="header">
-                                                                    <p>Объем донации</p>
-                                                                </f:facet>
-                                                                <h:inputText value="#{row.dose}" size="4" style="margin-right:3px;"/> мл
-                                                            </e5ui:column>
-                                                        </e5ui:dataTable>
-                                                    </div>
-                                                </div>
+                                                <p:dataTable style="width:100%;" value="#{bloodComponent.document.factEntry}" var="row">
+                                                    <p:column headerText="Вид донорства" style="width:60%">
+                                                        <p:selectOneMenu value="#{row.donationType}" converter="BloodDonationTypeConverter" style="width:95%">
+                                                            <f:selectItems value="#{dictionaryManagement.bloodDonationTypes}"/>
+                                                        </p:selectOneMenu>
+                                                    </p:column>
+                                                    <p:column headerText="Объем донации, мл">
+                                                        <p:inputMask id="p_donation_dose" value="#{row.dose}" mask="9?9999" slotChar="" required="true" requiredMessage="Необходимо ввести объем донации"/>
+                                                        <p:message for="p_donation_dose" display="text" />
+                                                    </p:column>
+                                                </p:dataTable>
                                             </fieldset>
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Антикоагулянт:</td>
+                                        <td class="first"><p:outputLabel for="anticoagulantPurchased" value="Антикоагулянт"/></td>
                                         <td>
-                                            <h:selectOneMenu id="anticoagulantPurchased" value="#{bloodComponent.document.anticoagulant}" converter="AnticoagulantConverter">
+                                            <p:selectOneMenu id="anticoagulantPurchased" value="#{bloodComponent.document.anticoagulant}" converter="AnticoagulantConverter" style="width:10em;">
                                                 <f:selectItems value="#{dictionaryManagement.anticoagulants}" />
-                                            </h:selectOneMenu>
-                                            <span style="margin:0 5px;">Объем, мл:</span>
-                                            <h:inputText value="#{bloodComponent.document.anticoagulantVolume}" />
+                                            </p:selectOneMenu>
+                                            <p:spacer width="30" height="1"/>
+                                            <p:outputLabel for="p_anticoagulant_volume" value="Объем, мл"/>
+                                            <p:spacer width="5" height="1"/>
+                                            <p:inputText id="p_anticoagulant_volume" value="#{bloodComponent.document.anticoagulantVolume}" style="vertical-align: top;" required="true" requiredMessage="Необходимо ввести число (возможно с точкой), например '63.0'"/>
+                                            <p:message for="p_anticoagulant_volume"  display="text" />
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first"><h:outputText value="#{bloodComponent.leukoConcentrate? 'Седиментирующий раствор:': 'Ресуспендирующий раствор:'}" /></td>
+                                        <td class="first"><p:outputLabel for ="preservativePurchased" value="#{bloodComponent.leukoConcentrate? 'Седиментирующий раствор': 'Ресуспендирующий раствор'}" /></td>
                                         <td>
-                                            <h:selectOneMenu id="preservativePurchased" value="#{bloodComponent.document.preservative}" converter="ClassifierConverter">
+                                            <p:selectOneMenu id="preservativePurchased" value="#{bloodComponent.document.preservative}" converter="ClassifierConverter" style="width:10em;">
                                                 <f:selectItems value="#{dictionaryManagement.getByCategory(bloodComponent.leukoConcentrate? 'Седиментирующий раствор': 'Ресуспендирующий раствор')}" />
-                                            </h:selectOneMenu>
-                                            <span style="margin:0 5px;">Объем, мл:</span>
-                                            <h:inputText value="#{bloodComponent.document.preservativeVolume}" />
+                                            </p:selectOneMenu>
+                                            <p:spacer width="30" height="1"/>
+                                            <p:outputLabel for="p_preservative_volume" value="Объем, мл"/>
+                                            <p:spacer width="5" height="1"/>
+                                            <p:inputText id="p_preservative_volume" value="#{bloodComponent.document.preservativeVolume}" style="vertical-align: top;" required="true" requiredMessage="Необходимо ввести число, например '63'"/>
+                                            <p:message for="p_preservative_volume"  display="text" />
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Дата донации:</td>
+                                        <td class="first"><p:outputLabel for ="donationDatePurchased" value="Дата донации"/></td>
                                         <td>
-                                            <p:calendar id="donationDatePurchased" value="#{bloodComponent.document.donationDate}" lang="ru" locale="ru" mode="popup" showOn="both"  mask="true" pattern="dd.MM.yyyy">
-                                                <p:ajax event="dateSelect" listener="#{bloodComponent.handleDateSelect}" update="productionDatePurchased expirationDatePurchased expirationDatePurchased"/>
-                                                <p:ajax event="valueChange" listener="#{bloodComponent.handleDateChange}" execute="@this" update="productionDatePurchased expirationDatePurchased expirationDatePurchased"/>
+                                            <p:calendar id="donationDatePurchased" value="#{bloodComponent.document.donationDate}" lang="ru" locale="ru" mode="popup" showOn="both"  mask="true" pattern="dd.MM.yyyy" required="true" requiredMessage="Необходимо ввести дату донации">
+                                                <p:ajax event="dateSelect" listener="#{bloodComponent.handleDateSelect}" execute="@this" update="productionDatePurchased expirationDatePurchased expirationDatePurchased" resetValues="true"/>
+                                                <p:ajax event="valueChange" listener="#{bloodComponent.handleDateChange}" execute="@this" update="productionDatePurchased expirationDatePurchased expirationDatePurchased" resetValues="true"/>
                                             </p:calendar>
+                                            <p:message for="donationDatePurchased"  display="text" />
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Дата производства:</td>
+                                        <td class="first"><p:outputLabel for ="productionDatePurchased" value="Дата производства"/></td>
                                         <td>
-                                            <p:calendar id="productionDatePurchased" value="#{bloodComponent.document.productionDate}" lang="ru" locale="ru" mode="popup" showOn="both" mask="true" pattern="dd.MM.yyyy HH:mm"/>
+                                            <p:calendar id="productionDatePurchased" value="#{bloodComponent.document.productionDate}" lang="ru" locale="ru" mode="popup" showOn="both" mask="true" pattern="dd.MM.yyyy HH:mm" required="true" requiredMessage="Необходимо ввести дату производства"/>
+                                            <p:message for="productionDatePurchased"  display="text" />
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Группа крови:</td>
+                                        <td class="first"><p:outputLabel for ="bloodGroupPurchased" value="Группа крови"/></td>
                                         <td>
-                                            <h:selectOneMenu id="bloodGroupPurchased" value="#{bloodComponent.document.bloodGroup}" converter="BloodGroupConverter">
+                                            <p:selectOneMenu id="bloodGroupPurchased" value="#{bloodComponent.document.bloodGroup}" converter="BloodGroupConverter" required="true" style="width:10em;">
                                                 <f:selectItems value="#{dictionaryManagement.bloodGroups}" />
-                                            </h:selectOneMenu>
+                                            </p:selectOneMenu>
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Резус-принадлежность:</td>
+                                        <td class="first"><p:outputLabel for ="rhesusFactorPurchased" value="Резус-принадлежность"/></td>
                                         <td>
-                                            <h:selectOneMenu id="rhesusFactorPurchased" value="#{bloodComponent.document.rhesusFactor}" converter="ClassifierConverter">
+                                            <p:selectOneMenu id="rhesusFactorPurchased" value="#{bloodComponent.document.rhesusFactor}" converter="ClassifierConverter"  required="true" style="width:10em;">
                                                 <f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
-                                            </h:selectOneMenu>
+                                            </p:selectOneMenu>
                                         </td>
                                     </tr>
                                     <tr class="row">
                                         <td class="first" colspan="2">
-                                            <fieldset style="width:30%;">
+                                            <fieldset style="width:40%;">
                                                 <legend>
                                                     <span class="title">Иммуносерология</span>
                                                 </legend>
-                                                <div class="wrap">
-                                                    <div class="inner">
-                                                        <e5ui:dataTable border="0" cellpadding="0" cellspacing="0"
-                                                                        value="#{bloodComponent.document.testImmunoList}"
-                                                                        var="row" grouping="false">
-                                                            <e5ui:column style="width:10em;">
-                                                                <f:facet name="header">
-                                                                    <p>Фенотип</p>
-                                                                </f:facet>
-                                                                <h:outputText value="#{row.type.value}"/>
-                                                            </e5ui:column>
-                                                            <e5ui:column>
-                                                                <f:facet name="header">
-                                                                    <p>Результат</p>
-                                                                </f:facet>
-                                                                <h:selectOneRadio layout="lineDirection"  value="#{row.value}">
-                                                                    <f:selectItems	value="#{dictionaryManagement.getValuesByCategory(row.type.value)}"/>
-                                                                </h:selectOneRadio>
-                                                            </e5ui:column>
-                                                        </e5ui:dataTable>
-                                                    </div>
-                                                </div>
+                                                <p:dataTable value="#{bloodComponent.document.testImmunoList}" var="row_immuno" style="padding:2px">
+                                                    <p:column headerText="Фенотип" style="width:30%">
+                                                        <h:outputText value="#{row_immuno.type.value}"/>
+                                                    </p:column>
+                                                    <p:column headerText="Результат">
+                                                        <p:selectOneRadio value="#{row_immuno.value}" plain="true">
+                                                            <f:selectItems	value="#{dictionaryManagement.getValuesByCategory(row_immuno.type.value)}"/>
+                                                        </p:selectOneRadio>
+                                                    </p:column>
+                                                </p:dataTable>
                                             </fieldset>
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <td class="first">Дата окончания срока хранения:</td>
+                                        <td class="first"><p:outputLabel for="expirationDatePurchased" value="Дата окончания срока хранения"/></td>
                                         <td>
                                             <p:calendar id="expirationDatePurchased" value="#{bloodComponent.document.expirationDate}" lang="ru" locale="ru" mode="popup" showOn="both" mask="true" pattern="dd.MM.yyyy HH:mm"/>
                                         </td>
                                     </tr>
                                     <tr class="row">
-                                        <h:panelGroup id = "storageTemperature">
-                                        <td class="first">Температура хранения:</td>
+                                        <td class="first"><p:outputLabel for="storageTemperatureLow" value="Температура хранения"/></td>
                                         <td>
-                                            <span >от</span> <h:inputText id = "storageTemperatureLow" style="margin:0 5px;" value="#{bloodComponent.document.lowerStorageTemperature}" />
-                                            <span>до</span> <h:inputText id = "storageTemperatureHigh" style="margin:0 5px;" value="#{bloodComponent.document.higherStorageTemperature}" />
+                                            <div class="ui-grid ui-grid-responsive" style="width:40%;">
+                                                <div class="ui-grid-row">
+                                                    <div class="ui-grid-col-3"> от
+                                                        <p:inputText id = "storageTemperatureLow" value="#{bloodComponent.document.lowerStorageTemperature}" required="true" requiredMessage="Необходимо задать минимальную температуру хранения" converterMessage="Введите число от -127 до 128" size="3"/><p:message for="storageTemperatureLow" display="text"/></div>
+                                                    <div class="ui-grid-col-3">до <p:inputText id = "storageTemperatureHigh" value="#{bloodComponent.document.higherStorageTemperature}" required="true" requiredMessage="Необходимо задать максимальную температуру хранения" converterMessage="Введите число от -127 до 128" size="3"/><p:message for="storageTemperatureHigh" display="text"/></div>
+                                                </div>
+                                            </div>
                                         </td>
-                                        </h:panelGroup>
+
                                     </tr>
                                     <tr class="row">
                                         <td class="first" colspan="2">
@@ -1633,12 +1541,6 @@
     </ui:define>
 
     <ui:define name="footer">
-
-        <e5ui:multiMarker id="main_form_marker" rendered="true" hintWindowStyleClass="e5ui-marker-hintWindow"
-                          hintWindowInfoStyleClass="e5ui-marker-hintWindow-info" hintWindowWarnStyleClass="e5ui-marker-hintWindow-warn"
-                          hintWindowErrorStyleClass="e5ui-marker-hintWindow-error" hintWindowFatalStyleClass="e5ui-marker-hintWindow-fatal" displayMode="window">
-            <h:button onclick="e5ui_multiMarker.remove('main_form_marker'); return false;" value="ОК" />
-        </e5ui:multiMarker>
         <h:outputStylesheet library="css" name="datatable.css" />
         <h:outputStylesheet library="css" name="modalWindow.css" />
         <h:outputStylesheet library="css" name="multiMarker.css" />

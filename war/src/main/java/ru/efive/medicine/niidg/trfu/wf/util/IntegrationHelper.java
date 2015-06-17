@@ -15,9 +15,11 @@ import ru.efive.medicine.niidg.trfu.uifaces.beans.ReportsManagmentBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ActionResult;
+import ru.hitsl.helper.BloodComponentHelper;
 import ru.korusconsulting.external.*;
 import ru.korusconsulting.laboratory.www.*;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
@@ -28,10 +30,15 @@ import java.util.regex.Pattern;
 
 public class IntegrationHelper {
 
+    private static final Logger logger = Logger.getLogger(IntegrationHelper.class);
+
     public static ActionResult queryAppointment(ExaminationRequest examination) {
         FacesContext context = FacesContext.getCurrentInstance();
-        ApplicationPropertiesHolder propertiesHolder =
-                (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
+        ApplicationPropertiesHolder propertiesHolder = (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(
+                context,
+                "#{propertiesHolder}",
+                ApplicationPropertiesHolder.class
+        );
 
         ActionResult result = new ActionResult();
         result.setProcessed(false);
@@ -146,8 +153,11 @@ public class IntegrationHelper {
 
     public static ActionResult queryAppointment(BloodDonationRequest donation) {
         FacesContext context = FacesContext.getCurrentInstance();
-        ApplicationPropertiesHolder propertiesHolder =
-                (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
+        ApplicationPropertiesHolder propertiesHolder = (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(
+                context,
+                "#{propertiesHolder}",
+                ApplicationPropertiesHolder.class
+        );
 
         ActionResult result = new ActionResult();
         result.setProcessed(false);
@@ -262,8 +272,11 @@ public class IntegrationHelper {
 
     public static ActionResult queryAppointment(BloodComponent component) {
         FacesContext context = FacesContext.getCurrentInstance();
-        ApplicationPropertiesHolder propertiesHolder =
-                (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
+        ApplicationPropertiesHolder propertiesHolder = (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(
+                context,
+                "#{propertiesHolder}",
+                ApplicationPropertiesHolder.class
+        );
 
         ActionResult result = new ActionResult();
         result.setProcessed(false);
@@ -307,7 +320,6 @@ public class IntegrationHelper {
         return result;
     }
 
-
     private static List<Tindicator> getIndicators(ExternalAppointment appointment) {
         List<Tindicator> indicators = new ArrayList<Tindicator>();
         try {
@@ -333,8 +345,11 @@ public class IntegrationHelper {
         if (orderRequest.isFromMIS()) {
 
             FacesContext context = FacesContext.getCurrentInstance();
-            ApplicationPropertiesHolder propertiesHolder =
-                    context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
+            ApplicationPropertiesHolder propertiesHolder = context.getApplication().evaluateExpressionGet(
+                    context,
+                    "#{propertiesHolder}",
+                    ApplicationPropertiesHolder.class
+            );
 
             boolean process = true;
             Object enabled = propertiesHolder.getProperty("application", "mis.integration.enabled");
@@ -351,10 +366,17 @@ public class IntegrationHelper {
             Object serviceAddress = propertiesHolder.getProperty("application", "mis.integration.address");
 
             if (process) {
-                BloodComponentListHolderBean componentsListHolder =
-                        context.getApplication().evaluateExpressionGet(context, "#{bloodComponentList}", BloodComponentListHolderBean.class);
+                BloodComponentListHolderBean componentsListHolder = context.getApplication().evaluateExpressionGet(
+                        context,
+                        "#{bloodComponentList}",
+                        BloodComponentListHolderBean.class
+                );
                 List<BloodComponent> bloodComponentsList = componentsListHolder.getDocumentsByOrder(orderRequest.getId());
-                ReportsManagmentBean reportsManagement = context.getApplication().evaluateExpressionGet(context, "#{reports}", ReportsManagmentBean.class);
+                ReportsManagmentBean reportsManagement = context.getApplication().evaluateExpressionGet(
+                        context,
+                        "#{reports}",
+                        ReportsManagmentBean.class
+                );
 
                 TransfusionServiceImpl medicalService = new TransfusionServiceImpl(new java.net.URL(serviceAddress.toString()));
 
@@ -362,8 +384,7 @@ public class IntegrationHelper {
                 calendar.setTime(orderRequest.getFactDate());
                 XMLGregorianCalendar factDate = new XMLGregorianCalendarImpl(calendar);
                 List<OrderIssueInfo> components = new ArrayList<OrderIssueInfo>();
-                final Map<String,String> requestProperties = new HashMap<String, String>();
-                requestProperties.put("reportName", "BigBarcode4JReport.jrxml");
+                final Map<String, String> requestProperties = new HashMap<String, String>();
                 requestProperties.put("docType", "BloodComponent");
                 //TODO Админ или все-таки откуда-то тянуть?
                 requestProperties.put("transfusiologistFullName", "Administrator");
@@ -384,50 +405,73 @@ public class IntegrationHelper {
                     component.setComponentId(bloodComponent.getId());
                     component.setVolume(bloodComponent.getVolume());
                     //Print all components labels and store it as pictures
-                    try {
-                        final Map<String, String> reportProperties = new HashMap<String, String>(requestProperties);
-                        reportProperties.put("docId", String.valueOf(bloodComponent.getId()));
-                        if (bloodComponent.isPurchased()) {
-                            requestProperties.put("donorId", bloodComponent.getDonorCode());
-                        } else {
-                            requestProperties.put("donorId", String.valueOf(bloodComponent.getDonation().getDonor().getId()));
-                        }
-                        final Pattern pattern = Pattern.compile(".*([/\\\\].*[/\\\\]\\d*.*)$");
-                        final File reportFile = reportsManagement.printBigLabelAndStoreItToFile(reportProperties);
-                        if(reportFile != null){
-                            final Matcher matcher = pattern.matcher(reportFile.getAbsolutePath());
-                            if(matcher.find()){
-                                component.setStickerUrl(matcher.group(1));
-                                System.out.println(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), matcher.group(1)));
+                    if (BloodComponentHelper.validateBeforePrint(bloodComponent)) {
+                        try {
+                            final Map<String, String> reportProperties = new HashMap<String, String>(requestProperties);
+                            reportProperties.put("docId", String.valueOf(bloodComponent.getId()));
+                            if (bloodComponent.isPurchased()) {
+                                reportProperties.put("donorId", bloodComponent.getDonorCode());
+                                reportProperties.put("reportName", "BigBarcode4JReport_fmba.jrxml");
                             } else {
-                                component.setStickerUrl(reportFile.getAbsolutePath());
-                                System.out.println(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), reportFile.getAbsolutePath()));
+                                reportProperties.put("donorId", String.valueOf(bloodComponent.getDonation().getDonor().getId()));
+                                reportProperties.put("reportName", "BigBarcode4JReport.jrxml");
                             }
+                            final Pattern pattern = Pattern.compile(".*([/\\\\].*[/\\\\]\\d*.*)$");
+                            final File reportFile = reportsManagement.printBigLabelAndStoreItToFile(reportProperties);
+                            if (reportFile != null) {
+                                final Matcher matcher = pattern.matcher(reportFile.getAbsolutePath());
+                                if (matcher.find()) {
+                                    component.setStickerUrl(matcher.group(1));
+                                    logger.info(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), matcher.group(1)));
+                                } else {
+                                    component.setStickerUrl(reportFile.getAbsolutePath());
+                                    logger.info(
+                                            String.format(
+                                                    "BloodComponent[%s] file = %s", bloodComponent.getId(), reportFile.getAbsolutePath()
+                                            )
+                                    );
+                                }
 
-                        } else if (StringUtils.isNotEmpty(bloodComponent.getBigLabelPath())) {
-                            final Matcher matcher = pattern.matcher(bloodComponent.getBigLabelPath());
-                            if(matcher.find()){
-                                component.setStickerUrl(matcher.group(1));
-                                System.out.println(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), matcher.group(1)));
-                            } else {
-                                component.setStickerUrl(bloodComponent.getBigLabelPath());
-                                System.out.println(String.format("BloodComponent[%s] label = %s", bloodComponent.getId(), bloodComponent.getBigLabelPath()));
+                            } else if (StringUtils.isNotEmpty(bloodComponent.getBigLabelPath())) {
+                                final Matcher matcher = pattern.matcher(bloodComponent.getBigLabelPath());
+                                if (matcher.find()) {
+                                    component.setStickerUrl(matcher.group(1));
+                                    logger.info(String.format("BloodComponent[%s] file = %s", bloodComponent.getId(), matcher.group(1)));
+                                } else {
+                                    component.setStickerUrl(bloodComponent.getBigLabelPath());
+                                    logger.info(
+                                            String.format(
+                                                    "BloodComponent[%s] label = %s", bloodComponent.getId(), bloodComponent.getBigLabelPath()
+                                            )
+                                    );
 
+                                }
                             }
+                        } catch (Exception e) {
+                            logger.error(String.format("Exception in bigLabel print to BloodComponent[%s]", bloodComponent.getId()), e);
                         }
-                    } catch (Exception e){
-                        System.out.println(String.format("Exception in biglabel print to BloodComponent[%s]",bloodComponent.getId()));
-                        e.printStackTrace();
+                    } else {
+                        logger.warn("BigLabel not printed, cause validation fails");
+                        for (FacesMessage msg : FacesContext.getCurrentInstance().getMessageList("print")) {
+                            logger.warn("Validation message: " + msg.getDetail());
+                        }
+                        //TODO тут они нам не нужны и мы их вычищаем
+                        FacesContext.getCurrentInstance().getMessages().remove();
                     }
                     components.add(component);
                 }
 
-                IssueResult issueResult = medicalService.getPortTransfusion().setOrderIssueResult(Integer.parseInt(orderRequest.getExternalNumber()), factDate, components, orderRequest.getCommentary());
+                IssueResult issueResult = medicalService.getPortTransfusion().setOrderIssueResult(
+                        Integer.parseInt(orderRequest.getExternalNumber()),
+                        factDate,
+                        components,
+                        orderRequest.getCommentary()
+                );
 
                 result.setProcessed(issueResult.isResult());
                 result.setDescription(issueResult.getDescription());
             } else {
-                System.out.println("MIS integration disabled");
+                logger.info("MIS integration disabled");
                 result.setProcessed(true);
             }
         } else {
@@ -440,7 +484,11 @@ public class IntegrationHelper {
         ActionResult result = new ActionResult();
 
         FacesContext context = FacesContext.getCurrentInstance();
-        ApplicationPropertiesHolder propertiesHolder = context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
+        ApplicationPropertiesHolder propertiesHolder = context.getApplication().evaluateExpressionGet(
+                context,
+                "#{propertiesHolder}",
+                ApplicationPropertiesHolder.class
+        );
 
         boolean process = true;
         Object enabled = propertiesHolder.getProperty("application", "mis.integration.enabled");
@@ -485,7 +533,12 @@ public class IntegrationHelper {
                 result.setDescription("Не указана фактическая дата проведения процедуры");
                 return result;
             }
-            patientCredentials.setRhesusFactorId(StringUtils.equalsIgnoreCase(operation.getDonor().getRhesusFactor().getValue(), "положительный") ? 0 : 1);
+            patientCredentials.setRhesusFactorId(
+                    StringUtils.equalsIgnoreCase(
+                            operation.getDonor().getRhesusFactor().getValue(),
+                            "положительный"
+                    ) ? 0 : 1
+            );
 
             if (operation.getDonor().getBirth() == null) {
                 result.setProcessed(false);
@@ -558,7 +611,12 @@ public class IntegrationHelper {
                         eritrocyteMass.setBloodGroupId(report.getEritrocyteMass().getBloodGroup().getId());
                     }
                     if (report.getEritrocyteMass().getRhesusFactor() != null) {
-                        eritrocyteMass.setRhesusFactorId(StringUtils.equalsIgnoreCase(report.getEritrocyteMass().getRhesusFactor().getValue(), "положительный") ? 0 : 1);
+                        eritrocyteMass.setRhesusFactorId(
+                                StringUtils.equalsIgnoreCase(
+                                        report.getEritrocyteMass().getRhesusFactor().getValue(),
+                                        "положительный"
+                                ) ? 0 : 1
+                        );
                     }
                     eritrocyteMass.setVolume(report.getEritrocyteMass().getErVolume());
 
@@ -614,7 +672,13 @@ public class IntegrationHelper {
                 }
             }
 
-            IssueResult issueResult = medicalService.getPortTransfusion().setProcedureResult(patientCredentials, procedureInfo, eritrocyteMass, measures, finalVolumeList);
+            IssueResult issueResult = medicalService.getPortTransfusion().setProcedureResult(
+                    patientCredentials,
+                    procedureInfo,
+                    eritrocyteMass,
+                    measures,
+                    finalVolumeList
+            );
 
             result.setProcessed(issueResult.isResult());
             result.setDescription(issueResult.getDescription());
@@ -629,8 +693,11 @@ public class IntegrationHelper {
         boolean result = false;
         try {
             FacesContext context = FacesContext.getCurrentInstance();
-            ApplicationPropertiesHolder propertiesHolder =
-                    context.getApplication().evaluateExpressionGet(context, "#{propertiesHolder}", ApplicationPropertiesHolder.class);
+            ApplicationPropertiesHolder propertiesHolder = context.getApplication().evaluateExpressionGet(
+                    context,
+                    "#{propertiesHolder}",
+                    ApplicationPropertiesHolder.class
+            );
 
             boolean process = true;
             Object enabled = propertiesHolder.getProperty("application", "mis.integration.enabled");
@@ -676,6 +743,4 @@ public class IntegrationHelper {
         }
         return result;
     }
-
-    private static final Logger logger = Logger.getLogger(IntegrationHelper.class);
 }

@@ -16,23 +16,23 @@ import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 public class ContragentConverter implements Converter {
 
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
-		Object result = null;
 		try {
 			if (StringUtils.isEmpty(value)) {
 				return null;
 			}
-			SessionManagementBean sessionManagement = 
-				(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
+			SessionManagementBean sessionManagement =  context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
 						SessionManagementBean.class);
-			Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).getByFullName(value);
+			final Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).getByFullName(value);
 			if (contragent == null) {
 				System.out.println("Не найдены значения");
+			}  else {
+				return contragent;
 			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return null;
 	}
 
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
