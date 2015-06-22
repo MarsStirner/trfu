@@ -2,6 +2,7 @@ package ru.efive.medicine.niidg.trfu.dao;
 
 import java.util.List;
 
+import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
@@ -38,8 +39,12 @@ public class ExternalAnalysisResultDAOImpl extends GenericDAOHibernate<ExternalA
 	}
 
     public List<ExternalAnalysisResult> getResultsByAppointmentId(int appointmentId) {
-        return (List<ExternalAnalysisResult>) getSession().createSQLQuery("CALL get_external_analysis_values(:appointmentId)").
+		final Session session = getSession();
+        final List<ExternalAnalysisResult> results =  (List<ExternalAnalysisResult>) session.createSQLQuery("CALL get_external_analysis_values(:appointmentId)").
                 addEntity(ExternalAnalysisResult.class).setParameter("appointmentId", appointmentId).list();
+		session.close();
+		return results;
+
 
     }
 	
