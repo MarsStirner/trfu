@@ -12,7 +12,7 @@ public class ImmunoAnalysisValueConverterFactory {
         if(indicator.getConverterName()==ConverterName.K_Antigen_Immuno_Converter){
             return new K_Converter();
         }
-        if(indicator.getConverterName()==ConverterName.CcEe_Antigens_Immuno_Converter){
+        if(indicator.getConverterName()==ConverterName.CcEe_Antigens_Immuno_Converter  ){
             return new CcEe_Converter();
         }
         return new ImmunoAnalysisValueConverter() {

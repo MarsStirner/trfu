@@ -34,7 +34,7 @@ public class BloodComponentFilterableListHolderBean extends
 
 	@Override
 	public Sorting initSorting() {
-		return new Sorting("parentNumber,number", true);
+		return new Sorting("parentNumber,number", false);
 	}
 
 	@Override

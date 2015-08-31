@@ -98,4 +98,20 @@ public class PatientCredentials implements java.io.Serializable {
     public void setBloodPhenotype(List<BloodPhenotype> bloodPhenotype) {
         this.bloodPhenotype = bloodPhenotype;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("PatientCredentials{");
+        sb.append("id=").append(id);
+        sb.append(", lastName='").append(lastName).append('\'');
+        sb.append(", firstName='").append(firstName).append('\'');
+        sb.append(", middleName='").append(middleName).append('\'');
+        sb.append(", birth=").append(birth);
+        sb.append(", bloodGroupId=").append(bloodGroupId);
+        sb.append(", rhesusFactorId=").append(rhesusFactorId);
+        sb.append(", bloodKell=").append(bloodKell);
+        sb.append(", bloodPhenotype=").append(bloodPhenotype);
+        sb.append('}');
+        return sb.toString();
+    }
 }

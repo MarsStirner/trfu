@@ -10,7 +10,7 @@ import javax.inject.Named;
 public class VersionInfo implements Serializable {
 	private static final long serialVersionUID = 6929693412341369918L;
 	private String versionAssembly = "0.4.10";
-	private String dateAssembly = "26.01.2015 15:25:53";
+	private String dateAssembly = "25.08.2015 21:44:53";
 	
 	public String getVersionAssembly() {
 		return versionAssembly;

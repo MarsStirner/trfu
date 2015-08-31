@@ -343,7 +343,6 @@ public class IntegrationHelper {
     public static ActionResult processComponentRequest(BloodComponentOrderRequest orderRequest) throws java.net.MalformedURLException {
         ActionResult result = new ActionResult();
         if (orderRequest.isFromMIS()) {
-
             FacesContext context = FacesContext.getCurrentInstance();
             ApplicationPropertiesHolder propertiesHolder = context.getApplication().evaluateExpressionGet(
                     context,

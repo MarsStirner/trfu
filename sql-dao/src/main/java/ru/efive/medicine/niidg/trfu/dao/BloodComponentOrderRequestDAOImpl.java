@@ -185,8 +185,8 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 		addNotDeletedCriteria(detachedCriteria);
 		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
 		return getHibernateTemplate().findByCriteria(
-				getSearchCriteria(detachedCriteria, filter), offset,
-				count);
+				getSearchCriteria(detachedCriteria, filter), offset, count
+		);
 	}
 
 	public long countDocument(BloodComponentOrdersFilter filter) {
@@ -259,5 +259,20 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 			criteria.add(conjunction);
 		}
         return criteria;
+	}
+
+	public BloodComponentOrderRequest findComponentOrderRequestByExternalNumber(final String externalNumber) {
+		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
+		detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+		detachedCriteria.add(Restrictions.eq("deleted", false));
+		detachedCriteria.add(Restrictions.eq("fromMIS", true));
+		detachedCriteria.add(Restrictions.eq("externalNumber", externalNumber));
+		final List list = getHibernateTemplate().findByCriteria(detachedCriteria);
+		if(!list.isEmpty()){
+			return (BloodComponentOrderRequest) list.get(0);
+		} else {
+			return null;
+		}
+
 	}
 }

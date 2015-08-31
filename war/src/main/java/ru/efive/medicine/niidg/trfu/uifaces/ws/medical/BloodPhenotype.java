@@ -32,4 +32,13 @@ public class BloodPhenotype {
     public void setValue(Boolean value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("BloodPhenotype{");
+        sb.append("phenotype='").append(phenotype).append('\'');
+        sb.append(", value=").append(value);
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -58,40 +58,81 @@ public class TransfusionMedicalService {
     private transient DictionaryManagementBean dictionaryManagement;
 
     private static final Logger logger = Logger.getLogger(TransfusionMedicalService.class);
+    private static volatile int requestNumber= 0;
+
+    private static synchronized int countRequest(){
+       return requestNumber++;
+    }
+
 
     @WebMethod(operationName = "orderBloodComponents", action = "urn:orderBloodComponents")
     public OrderResult orderBloodComponents(
             @WebParam(name = "patientCredentials") PatientCredentials patientCredentials,
             @WebParam(name = "orderInformation") OrderInformation orderInformation) {
-        OrderResult result = new OrderResult();
-        result.setOrderComment("");
+        final int currentRequest = countRequest();
+        logger.warn(String.format("#%d TransfusionMedicalService - Received new blood components order message", currentRequest));
+        logParameters(patientCredentials, currentRequest);
+        logParameters(orderInformation, currentRequest);
+        final OrderResult result = new OrderResult();
+        if (patientCredentials == null) {
+            logger.warn("TransfusionMedicalService - failed to order blood components. No patient credentials");
+            result.setResult(false);
+            result.setDescription("Не указана информация о пациенте");
+            return result;
+        }
+        if (orderInformation == null) {
+            logger.warn("TransfusionMedicalService - failed to order blood components. No order information");
+            result.setResult(false);
+            result.setDescription("Не указана информация о требовании");
+            return result;
+        }
+        if (orderInformation.getId() == null || orderInformation.getId() <= 0) {
+            result.setResult(false);
+            result.setDescription("Не указан уникальный идентификатор требования МИС");
+            logger.warn("TransfusionMedicalService - failed to order blood components. No external id");
+            return result;
+        }
         try {
-            logger.warn("TransfusionMedicalService - Received new blood components order message");
+            final BloodComponentOrderRequestDAOImpl dao = (BloodComponentOrderRequestDAOImpl) ApplicationContextHelper.getApplicationContext()
+                    .getBean(ApplicationHelper.COMPONENT_ORDER_DAO);
 
-            if (patientCredentials == null) {
+            final BloodComponentOrderRequest byExternalNumber = dao.findComponentOrderRequestByExternalNumber(orderInformation.getId().toString());
+            logger.warn(
+                    "By externalNumber \'" + orderInformation.getId() + "\' founded order[" +
+                            (byExternalNumber == null ? 0 : byExternalNumber.getId()) +
+                            "]"
+            );
+            if(byExternalNumber != null && byExternalNumber.getStatusId() >= 3) {
                 result.setResult(false);
-                result.setDescription("Не указана информация о пациенте");
-                logger.warn("TransfusionMedicalService - failed to order blood components. No patient credentials");
+                result.setNumber(byExternalNumber.getNumber());
+                result.setRequestId(byExternalNumber.getId());
+                result.setDescription("Требование уже обработано и не может быть изменено");
+                logger.warn("TransfusionMedicalService - failed to order blood components. Already processed!");
                 return result;
             }
-            if (orderInformation == null) {
-                result.setResult(false);
-                result.setDescription("Не указана информация о требовании");
-                logger.warn("TransfusionMedicalService - failed to order blood components. No order information");
-                return result;
-            }
-
-            BloodComponentOrderRequest request = new BloodComponentOrderRequest();
+            final BloodComponentOrderRequest request = byExternalNumber != null ? byExternalNumber :  new BloodComponentOrderRequest();
             initializeBloodComponentOrderRequest(request);
+            request.setDoseCount(orderInformation.getDoseCount());
+            request.setExternalNumber(orderInformation.getId().toString());
+            request.setIbNumber(orderInformation.getIbNumber());
+            request.setIndication(orderInformation.getIndication());
+            request.setNumber(orderInformation.getNumber());
+            request.setRecipient(patientCredentials.getLastName());
+            request.setRecipientBirth(patientCredentials.getBirth());
+            request.setRecipientFirstName(patientCredentials.getFirstName());
+            request.setRecipientMiddleName(patientCredentials.getMiddleName());
+            request.setRecipientId(patientCredentials.getId());
             request.setAttendingDoctorFirstName(orderInformation.getAttendingPhysicianFirstName());
             request.setAttendingDoctorId(orderInformation.getAttendingPhysicianId());
             request.setAttendingDoctorLastName(orderInformation.getAttendingPhysicianLastName());
             request.setAttendingDoctorMiddleName(orderInformation.getAttendingPhysicianMiddleName());
-
             request.setPlanDate(orderInformation.getPlanDate());
+            request.setFromMIS(true);
+            final Date now = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
+            request.setCreated(now);
 
             BloodGroup bg = null;
-            if (patientCredentials.getBloodGroupId() != null && patientCredentials.getBloodGroupId() > 0) {
+            if (patientCredentials.getBloodGroupId() != null) {
                 bg = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).
                         findBloodGroupByNumber(patientCredentials.getBloodGroupId());
             }
@@ -102,6 +143,15 @@ public class TransfusionMedicalService {
                 return result;
             }
             request.setBloodGroup(bg);
+            if (orderInformation.getBloodGroupId() != null) {
+                //Тут -1 означает -2 ибо так надо (разные справочники в МИС)
+                final BloodGroup bg_o = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).
+                        findBloodGroupByNumber(orderInformation.getBloodGroupId() == -1 ? -2 : orderInformation.getBloodGroupId());
+                if (bg_o != null) {
+                    request.setOrderBloodGroup(bg_o);
+                }
+            }
+
 
             BloodComponentType bloodComponentType = null;
             if (orderInformation.getComponentTypeId() != null && orderInformation.getComponentTypeId() > 0) {
@@ -116,10 +166,47 @@ public class TransfusionMedicalService {
             request.setComponentType(bloodComponentType);
 
             List<Classifier> rhList = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).findByCategory(Classifier.class, "Резус-фактор", false);
-            String rhString = patientCredentials.getRhesusFactorId() == 1 ? "Отрицательный" : "Положительный";
+            String rhString;
+
+            switch (patientCredentials.getRhesusFactorId()){
+                case 1: rhString= "Отрицательный";
+                    break;
+                case 0: rhString = "Положительный";
+                    break;
+                case -1: rhString = "Не интерпретируется";
+                    break;
+                default: rhString ="";
+            }
+
+            if(orderInformation.getRhesusFactorId() != null) {
+                String rh_o;
+                switch (orderInformation.getRhesusFactorId()) {
+                    case 1:
+                        rh_o = "Отрицательный";
+                        break;
+                    case 0:
+                        rh_o = "Положительный";
+                        break;
+                    case -1:
+                        rh_o = "По индивидуальному подбору";
+                        break;
+                    default:
+                        rh_o = "";
+                }
+                for (Classifier cand : rhList) {
+                    if (cand.getValue().equals(rh_o)){
+                        request.setOrderRhesusFactor(cand);
+                        break;
+                    }
+                }
+            }
+
             Classifier rh = null;
             for (Classifier cand : rhList) {
-                if (cand.getValue().equals(rhString)) rh = cand;
+                if (cand.getValue().equals(rhString)){
+                    rh = cand;
+                    break;
+                }
             }
             if (rh == null) {
                 result.setResult(false);
@@ -127,8 +214,8 @@ public class TransfusionMedicalService {
                 logger.warn("TransfusionMedicalService - failed to order blood components. Rhesus factor not found");
                 return result;
             }
-
             request.setRhesusFactor(rh);
+
 
             request.setDiagnosis(orderInformation.getDiagnosis());
             Division ans = null;
@@ -141,24 +228,7 @@ public class TransfusionMedicalService {
                 logger.warn("TransfusionMedicalService - failed to order blood components. Division not found");
                 return result;
             }
-
             request.setDivision(ans.getName());
-            request.setDoseCount(orderInformation.getDoseCount());
-            if (orderInformation.getId() == null || orderInformation.getId() <= 0) {
-                result.setResult(false);
-                result.setDescription("Не указан уникальный идентификатор требования МИС");
-                logger.warn("TransfusionMedicalService - failed to order blood components. No external id");
-                return result;
-            }
-            request.setExternalNumber(orderInformation.getId().toString());
-            request.setIbNumber(orderInformation.getIbNumber());
-            request.setIndication(orderInformation.getIndication());
-            request.setNumber(orderInformation.getNumber());
-            request.setRecipient(patientCredentials.getLastName());
-            request.setRecipientBirth(patientCredentials.getBirth());
-            request.setRecipientFirstName(patientCredentials.getFirstName());
-            request.setRecipientMiddleName(patientCredentials.getMiddleName());
-            request.setRecipientId(patientCredentials.getId());
 
             if (orderInformation.getTransfusionType() == null || orderInformation.getTransfusionType() < 0 || orderInformation.getTransfusionType() > 1) {
                 result.setResult(false);
@@ -209,16 +279,15 @@ public class TransfusionMedicalService {
             } else {
                 request.setKellAntigen(null);
             }
-            final BloodComponentOrderRequestDAOImpl dao = (BloodComponentOrderRequestDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.COMPONENT_ORDER_DAO);
+
             dao.save(request);
             if (request.getId() != 0) {
                 request.setNumber(StringUtils.leftPad(String.valueOf(request.getId()), 5, '0'));
-                request = dao.save(request);
+                dao.save(request);
                 result.setResult(true);
                 result.setNumber(request.getNumber());
                 result.setRequestId(request.getId());
                 logger.warn("TransfusionMedicalService - blood components successfully ordered.");
-
                 if (request.getTransfusionType() == 1) {
                     processSmsNotification(request);
                 }
@@ -233,6 +302,19 @@ public class TransfusionMedicalService {
             result.setDescription("Не удалось зарегистрировать заявку. Внутренняя ошибка");
         }
         return result;
+    }
+
+    private void logParameters(final PatientCredentials patientCredentials, final int request) {
+        final StringBuilder sb = new StringBuilder("#");
+        sb.append(request).append(" ").append(patientCredentials);
+        logger.warn(sb.toString());
+    }
+
+
+    private void logParameters(final OrderInformation orderInformation, final int request) {
+        final StringBuilder sb = new StringBuilder("#");
+        sb.append(request).append(" ").append(orderInformation);
+        logger.warn(sb.toString());
     }
 
     @WebMethod(operationName = "orderMedicalProcedure", action = "urn:orderMedicalProcedure")
@@ -430,7 +512,7 @@ public class TransfusionMedicalService {
 
     @WebMethod(operationName = "getComponentTypes", action = "urn:getComponentTypes")
     public List<ComponentType> getComponentTypes() {
-        logger.info("Called service getComponentTypes");
+        logger.warn("Called service getComponentTypes");
         List<ComponentType> result = new ArrayList<ComponentType>();
         try {
             List<BloodComponentType> bloodComponentTypes = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext()
@@ -447,7 +529,7 @@ public class TransfusionMedicalService {
         } catch (Exception e) {
             logger.error("TransfusionMedicalService - component types not sent", e);
         }
-        logger.info("Successfully end of service getComponentTypes. Return "+result.size()+" items");
+        logger.warn("Successfully end of service getComponentTypes. Return " + result.size() + " items");
         if(logger.isDebugEnabled()){
             if(!result.isEmpty()){
                 logger.debug(" ID | CODE | VALUE ");
@@ -485,40 +567,56 @@ public class TransfusionMedicalService {
     }
 
     private void initializeBloodComponentOrderRequest(BloodComponentOrderRequest request) {
-        Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
-        request.setCreated(created);
+        final Date now = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
+        request.setCreated(now);
         request.setFromMIS(true);
+        if(request.getId() == 0) {
+            HistoryEntry historyEntry = new HistoryEntry();
+            historyEntry.setCreated(now);
+            historyEntry.setStartDate(now);
+            historyEntry.setDocType(request.getType());
+            historyEntry.setParentId(request.getId());
+            historyEntry.setActionId(0);
+            historyEntry.setFromStatusId(1);
+            historyEntry.setEndDate(now);
+            historyEntry.setProcessed(true);
+            historyEntry.setCommentary("По требованию МИС");
+            Set<HistoryEntry> history = new HashSet<HistoryEntry>();
+            history.add(historyEntry);
 
-        HistoryEntry historyEntry = new HistoryEntry();
-        historyEntry.setCreated(created);
-        historyEntry.setStartDate(created);
-        historyEntry.setDocType(request.getType());
-        historyEntry.setParentId(request.getId());
-        historyEntry.setActionId(0);
-        historyEntry.setFromStatusId(1);
-        historyEntry.setEndDate(created);
-        historyEntry.setProcessed(true);
-        historyEntry.setCommentary("По требованию МИС");
-        Set<HistoryEntry> history = new HashSet<HistoryEntry>();
-        history.add(historyEntry);
+            Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
+            calendar.add(Calendar.SECOND, 1);
+            Date registered = calendar.getTime();
+            historyEntry = new HistoryEntry();
+            historyEntry.setCreated(registered);
+            historyEntry.setStartDate(registered);
+            historyEntry.setDocType(request.getType());
+            historyEntry.setParentId(request.getId());
+            historyEntry.setActionId(1);
+            historyEntry.setFromStatusId(1);
+            historyEntry.setToStatusId(2);
+            historyEntry.setEndDate(registered);
+            historyEntry.setProcessed(true);
+            historyEntry.setCommentary("");
+            history.add(historyEntry);
 
-        Calendar calendar = Calendar.getInstance(ApplicationHelper.getLocale());
-        calendar.add(Calendar.SECOND, 1);
-        Date registered = calendar.getTime();
-        historyEntry = new HistoryEntry();
-        historyEntry.setCreated(registered);
-        historyEntry.setStartDate(registered);
-        historyEntry.setDocType(request.getType());
-        historyEntry.setParentId(request.getId());
-        historyEntry.setActionId(1);
-        historyEntry.setFromStatusId(1);
-        historyEntry.setToStatusId(2);
-        historyEntry.setEndDate(registered);
-        historyEntry.setProcessed(true);
-        historyEntry.setCommentary("");
-        history.add(historyEntry);
-
-        request.setHistory(history);
+            request.setHistory(history);
+        } else {
+            HistoryEntry historyEntry = new HistoryEntry();
+            historyEntry.setCreated(now);
+            historyEntry.setStartDate(now);
+            historyEntry.setDocType(request.getType());
+            historyEntry.setParentId(request.getId());
+            historyEntry.setActionId(0);
+            historyEntry.setFromStatusId(1);
+            historyEntry.setEndDate(now);
+            historyEntry.setProcessed(true);
+            historyEntry.setCommentary("Изменение из МИС");
+            if(request.getHistory() == null){
+                request.setHistory(new HashSet<HistoryEntry>(1));
+            }
+            request.getHistory().add(historyEntry);
+        }
 
         request.setStatusId(2);
     }

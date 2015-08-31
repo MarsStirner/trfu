@@ -7,7 +7,7 @@ import java.util.Date;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OrderInformation", propOrder = {"id", "number","divisionId","ibNumber","diagnosis","componentTypeId","volume","doseCount","indication","transfusionType",
-                                                 "planDate","registrationDate","attendingPhysicianId","attendingPhysicianLastName","attendingPhysicianFirstName", "attendingPhysicianMiddleName"} )
+                                                 "planDate","registrationDate","attendingPhysicianId","attendingPhysicianLastName","attendingPhysicianFirstName", "attendingPhysicianMiddleName", "bloodGroupId", "rhesusFactorId"} )
 @XmlRootElement(name = "OrderInformation")
 public class  OrderInformation implements java.io.Serializable{
     @XmlElement(name = "id")
@@ -42,6 +42,11 @@ public class  OrderInformation implements java.io.Serializable{
     private String attendingPhysicianFirstName;
     @XmlElement(name = "attendingPhysicianMiddleName")
     private String attendingPhysicianMiddleName;
+    @XmlElement(name = "bloodGroupId")
+    private Integer bloodGroupId;
+    @XmlElement(name = "rhesusFactorId")
+    private Integer rhesusFactorId;
+
 
     public Integer getId() {
         return id;
@@ -169,5 +174,46 @@ public class  OrderInformation implements java.io.Serializable{
 
     public void setAttendingPhysicianMiddleName(String attendingPhysicianMiddleName) {
         this.attendingPhysicianMiddleName = attendingPhysicianMiddleName;
+    }
+
+    public Integer getBloodGroupId() {
+        return bloodGroupId;
+    }
+
+    public void setBloodGroupId(final Integer bloodGroupId) {
+        this.bloodGroupId = bloodGroupId;
+    }
+
+    public Integer getRhesusFactorId() {
+        return rhesusFactorId;
+    }
+
+    public void setRhesusFactorId(final Integer rhesusFactorId) {
+        this.rhesusFactorId = rhesusFactorId;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("OrderInformation{");
+        sb.append("id=").append(id);
+        sb.append(", number='").append(number).append('\'');
+        sb.append(", divisionId=").append(divisionId);
+        sb.append(", ibNumber='").append(ibNumber).append('\'');
+        sb.append(", diagnosis='").append(diagnosis).append('\'');
+        sb.append(", componentTypeId=").append(componentTypeId);
+        sb.append(", volume=").append(volume);
+        sb.append(", doseCount=").append(doseCount);
+        sb.append(", indication='").append(indication).append('\'');
+        sb.append(", transfusionType=").append(transfusionType);
+        sb.append(", planDate=").append(planDate);
+        sb.append(", registrationDate=").append(registrationDate);
+        sb.append(", attendingPhysicianId=").append(attendingPhysicianId);
+        sb.append(", attendingPhysicianLastName='").append(attendingPhysicianLastName).append('\'');
+        sb.append(", attendingPhysicianFirstName='").append(attendingPhysicianFirstName).append('\'');
+        sb.append(", attendingPhysicianMiddleName='").append(attendingPhysicianMiddleName).append('\'');
+        sb.append(", bloodGroupId=").append(bloodGroupId);
+        sb.append(", rhesusFactorId=").append(rhesusFactorId);
+        sb.append('}');
+        return sb.toString();
     }
 }

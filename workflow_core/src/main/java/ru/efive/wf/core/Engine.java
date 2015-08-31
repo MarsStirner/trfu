@@ -11,9 +11,8 @@ public final class Engine {
 	
 	public void initialize(ProcessedData processedData, ProcessUser processUser) throws Exception {
 		System.out.println("initialize engine");
-		process = ProcessFactory.getProcessByType(processedData);
-		process.setProcessUser(processUser);
-		
+		process = ProcessFactory.getProcessByType(processedData, processUser);
+
 		List <IAction> actions = new ArrayList<IAction>();
 		
 		List<StatusChangeAction> statusActions = process.getCurrentStatus().getAvailableActions();

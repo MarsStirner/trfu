@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 420-А_у_П2" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
+<!-- 2015-08-25T21:49:44 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 420-А_у_П2" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5ccbbb1c-238b-4457-bdd1-fe160d8b7cd0">
 	<property name="ireport.zoom" value="1.6105100000000079"/>
 	<property name="ireport.x" value="490"/>
 	<property name="ireport.y" value="38"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -37,7 +40,7 @@
      trfu_blood_donation_entries.`dose` AS trfu_blood_donation_entries_dose,
      trfu_blood_donation_requests.`factDate` AS trfu_blood_donation_requests_factDate,
      trfu_pheresis_reports.`plasmaVolume` AS trfu_pheresis_reports_plasmaVolume,
-     trfu_pheresis_reports.`ErVolume` AS trfu_pheresis_reports_ErVolume,
+     trfu_pheresis_reports.`ErVolume` AS trfu_pheresis_reports_erVolume,
      trfu_blood_donation_requests.`analysisCount` AS trfu_blood_donation_requests_analysisCount,
      trfu_pheresis_reports.`totalPltVolume` AS trfu_pheresis_reports_totalPltVolume,
      trfu_pheresis_reports.`erVolume` AS trfu_pheresis_reports_erVolume,
@@ -59,7 +62,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 	<field name="trfu_blood_donation_entries_dose" class="java.lang.Integer"/>
 	<field name="trfu_blood_donation_requests_factDate" class="java.sql.Timestamp"/>
 	<field name="trfu_pheresis_reports_plasmaVolume" class="java.lang.Double"/>
-	<field name="trfu_pheresis_reports_ErVolume" class="java.lang.Double"/>
+	<field name="trfu_pheresis_reports_erVolume" class="java.lang.Double"/>
 	<field name="trfu_blood_donation_requests_analysisCount" class="java.lang.Integer"/>
 	<field name="trfu_pheresis_reports_totalPltVolume" class="java.lang.Double"/>
 	<field name="trfu_pheresis_reports_acErVolume" class="java.lang.Double"/>
@@ -102,17 +105,17 @@ and trfu_blood_donation_requests.deleted = 0]]>
 	<title>
 		<band height="102" splitType="Stretch">
 			<staticText>
-				<reportElement x="710" y="0" width="92" height="18"/>
+				<reportElement x="710" y="0" width="92" height="18" uuid="edb53e10-5e9a-477d-89cc-7b65e12e96fb"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Форма 420-А/у-П2]]></text>
 			</staticText>
 			<line>
-				<reportElement x="601" y="64" width="100" height="1"/>
+				<reportElement x="601" y="64" width="100" height="1" uuid="25844bc5-6510-4fa3-a528-0a3a2176d86b"/>
 			</line>
 			<staticText>
-				<reportElement x="278" y="44" width="246" height="34"/>
+				<reportElement x="278" y="44" width="246" height="34" uuid="3d66c60c-3e8d-4202-9633-851b6b5c94f8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -121,49 +124,49 @@ and trfu_blood_donation_requests.deleted = 0]]>
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="292" y="82" width="67" height="20"/>
+				<reportElement x="292" y="82" width="67" height="20" uuid="b544fd5e-dff7-4f71-8219-831f8f561e41"/>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[за период c]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="417" y="82" width="19" height="20"/>
+				<reportElement x="417" y="82" width="19" height="20" uuid="07981d4b-1711-4970-9115-101fb63e8088"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[по]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="359" y="82" width="58" height="20"/>
+				<reportElement x="359" y="82" width="58" height="20" uuid="481b8d49-fd84-4b5b-8e60-7e11bad2d41e"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{StartDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="436" y="82" width="100" height="20"/>
+				<reportElement x="436" y="82" width="100" height="20" uuid="2201fca3-ab34-4a3b-9f33-c0efa16f0561"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{EndDate}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="0" width="802" height="15"/>
+				<reportElement positionType="Float" x="0" y="0" width="802" height="15" uuid="ee0c8971-c231-41fd-82f3-c08bceef95f2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="0" y="15" width="802" height="15"/>
+				<reportElement positionType="Float" x="0" y="15" width="802" height="15" uuid="72d24750-0b95-44b6-a197-ee0f1060df59"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{Division}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="562" y="18" width="179" height="36"/>
+				<reportElement x="562" y="18" width="179" height="36" uuid="55bf42d5-9f53-4acd-b4de-fa2e44a19b52"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
@@ -178,7 +181,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 	<columnHeader>
 		<band height="50" splitType="Stretch">
 			<staticText>
-				<reportElement style="table_TD" x="49" y="0" width="60" height="50"/>
+				<reportElement style="table_TD" x="49" y="0" width="60" height="50" uuid="e9d0b6b2-9e80-4eb7-907a-37a8f579a715"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -186,14 +189,14 @@ and trfu_blood_donation_requests.deleted = 0]]>
 мес.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="109" y="0" width="60" height="50"/>
+				<reportElement style="table_TD" x="109" y="0" width="60" height="50" uuid="2cd79a3d-fe53-4423-a39a-6d834b5741e2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Тип]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="169" y="0" width="60" height="50"/>
+				<reportElement style="table_TD" x="169" y="0" width="60" height="50" uuid="eae0e71f-af4a-46d6-a033-8ba94bff55ba"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -201,7 +204,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 ций]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="290" y="0" width="61" height="50"/>
+				<reportElement style="table_TD" x="290" y="0" width="61" height="50" uuid="28e1795d-60e4-438c-b6d7-4fda0b415673"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -210,7 +213,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 ровано]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="229" y="0" width="61" height="50"/>
+				<reportElement style="table_TD" x="229" y="0" width="61" height="50" uuid="6d1edb34-2f6c-438a-a9bc-fbd70c651b15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -218,14 +221,14 @@ and trfu_blood_donation_requests.deleted = 0]]>
 крови ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="351" y="0" width="61" height="50"/>
+				<reportElement style="table_TD" x="351" y="0" width="61" height="50" uuid="e64033d2-839a-4851-b6a7-65d170a374e4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Плазмы]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="412" y="0" width="150" height="30"/>
+				<reportElement style="table_TD" x="412" y="0" width="150" height="30" uuid="746e4772-f08e-4387-a51f-799d6b7739c5"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -234,28 +237,28 @@ and trfu_blood_donation_requests.deleted = 0]]>
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="412" y="30" width="60" height="20"/>
+				<reportElement style="table_TD" x="412" y="30" width="60" height="20" uuid="8fd85f95-f03c-4c5a-b0ec-5a04391f4fd9"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[серол.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="472" y="30" width="60" height="20"/>
+				<reportElement style="table_TD" x="472" y="30" width="60" height="20" uuid="82e89800-aff9-4a14-b8fc-148326a8ec08"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[гемат.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="532" y="30" width="30" height="20"/>
+				<reportElement style="table_TD" x="532" y="30" width="30" height="20" uuid="e3818990-43ee-4c92-91bb-9a480ca81322"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[БАК]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="562" y="0" width="65" height="50"/>
+				<reportElement style="table_TD" x="562" y="0" width="65" height="50" uuid="df064d74-a029-4a92-9d13-11e4c7b3bc1f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -263,7 +266,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 контроль]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="627" y="0" width="65" height="50"/>
+				<reportElement style="table_TD" x="627" y="0" width="65" height="50" uuid="ad8911d7-c3dd-4f7c-9c87-580235cf90d9"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -283,7 +286,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 	<summary>
 		<band height="76" splitType="Stretch">
 			<staticText>
-				<reportElement style="table_TD" x="49" y="30" width="120" height="15"/>
+				<reportElement style="table_TD" x="49" y="30" width="120" height="15" uuid="c8ee4d5a-ab58-4a0a-8816-c71982c5e4d7"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -291,7 +294,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[ИТОГО]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="109" y="0" width="60" height="15"/>
+				<reportElement style="table_TD" x="109" y="0" width="60" height="15" uuid="3bd9436e-6aa1-4e62-8cf4-f299f598f849"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -299,7 +302,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[безв.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="109" y="15" width="60" height="15"/>
+				<reportElement style="table_TD" x="109" y="15" width="60" height="15" uuid="b6111920-411f-40a8-828f-1e489e32f117"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -307,7 +310,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[плат.]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="table_TD" x="169" y="0" width="60" height="15"/>
+				<reportElement style="table_TD" x="169" y="0" width="60" height="15" uuid="99bf1d81-db02-414c-b0ef-a4005d863083"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -315,7 +318,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<textFieldExpression><![CDATA[$F{trfu_blood_donation_requests_count}==null?0:$F{trfu_blood_donation_requests_count}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="412" y="0" width="60" height="15"/>
+				<reportElement style="table_TD" x="412" y="0" width="60" height="15" uuid="c61cb5d6-b625-4f8f-8259-02451eda8b34"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -323,7 +326,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<textFieldExpression><![CDATA[$V{trfu_blood_donation_requests_analysisCount_1}==null?0:($V{trfu_blood_donation_requests_analysisCount_1}/2)]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="472" y="0" width="60" height="15"/>
+				<reportElement style="table_TD" x="472" y="0" width="60" height="15" uuid="ed96fe97-790b-4dfb-bfea-897aa709a0ee"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -331,7 +334,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<textFieldExpression><![CDATA[$V{trfu_blood_donation_requests_analysisCount_1}==null?0:($V{trfu_blood_donation_requests_analysisCount_1}/2)]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="table_TD" x="532" y="0" width="30" height="15"/>
+				<reportElement style="table_TD" x="532" y="0" width="30" height="15" uuid="d4c5b3af-1b4e-4db8-8970-5460a90362a3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -339,7 +342,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[0]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="562" y="0" width="65" height="15"/>
+				<reportElement style="table_TD" x="562" y="0" width="65" height="15" uuid="5a9486e2-555d-48be-b292-2f620559ddfc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -347,7 +350,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField pattern="yy MM">
-				<reportElement style="table_TD" x="49" y="0" width="60" height="30"/>
+				<reportElement style="table_TD" x="49" y="0" width="60" height="30" uuid="a070578d-e0bc-4b2c-9359-61a64f6ab010"/>
 				<textElement>
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -355,7 +358,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<textFieldExpression><![CDATA[$P{EndDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement style="table_TD" x="351" y="0" width="61" height="15"/>
+				<reportElement style="table_TD" x="351" y="0" width="61" height="15" uuid="76431107-7fd6-4608-95aa-86e02505ae2e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -363,7 +366,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<textFieldExpression><![CDATA[$V{trfu_pheresis_reports_plasmaVolume_1}==null?0:$V{trfu_pheresis_reports_plasmaVolume_1}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="table_TD" x="169" y="15" width="60" height="15"/>
+				<reportElement style="table_TD" x="169" y="15" width="60" height="15" uuid="ee95c16d-9344-4659-bed7-37ee33c3a005"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -371,7 +374,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[0]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="229" y="15" width="61" height="15"/>
+				<reportElement style="table_TD" x="229" y="15" width="61" height="15" uuid="170fd031-fb2a-4947-8d1d-85bc82c86cda"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -379,7 +382,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[0]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="290" y="15" width="61" height="15"/>
+				<reportElement style="table_TD" x="290" y="15" width="61" height="15" uuid="2c5c64ef-6cbe-43da-9f29-1fd5a056e7a7"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -387,7 +390,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[0]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="351" y="15" width="61" height="15"/>
+				<reportElement style="table_TD" x="351" y="15" width="61" height="15" uuid="05dfbdbb-d809-479c-a4cf-45c9c6944fdc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -395,7 +398,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[0]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="472" y="15" width="60" height="15"/>
+				<reportElement style="table_TD" x="472" y="15" width="60" height="15" uuid="80f3a9c6-0f56-4c8b-beb4-02b9e8b16419"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -403,7 +406,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[0]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="627" y="15" width="65" height="15"/>
+				<reportElement style="table_TD" x="627" y="15" width="65" height="15" uuid="c8dd941f-007d-40b2-b3fd-9ab3717d5c6c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -411,7 +414,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[0]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="532" y="15" width="30" height="15"/>
+				<reportElement style="table_TD" x="532" y="15" width="30" height="15" uuid="8dfac595-373b-477f-b87e-1a8a3a44f664"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -419,7 +422,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[0]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="412" y="15" width="60" height="15"/>
+				<reportElement style="table_TD" x="412" y="15" width="60" height="15" uuid="39589f1b-8312-4593-983f-df51687951a6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -427,7 +430,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[0]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="562" y="15" width="65" height="15"/>
+				<reportElement style="table_TD" x="562" y="15" width="65" height="15" uuid="151763e1-05a4-44df-9877-28fc7211c6ea"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -435,28 +438,28 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="table_TD" x="229" y="0" width="61" height="15"/>
+				<reportElement style="table_TD" x="229" y="0" width="61" height="15" uuid="6ebfc0bf-0c1c-43d6-9011-dcc0658eb2a1"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{trfu_pheresis_reports_totalVolume_1}==null?0:$V{trfu_pheresis_reports_totalVolume_1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="290" y="0" width="61" height="15"/>
+				<reportElement style="table_TD" x="290" y="0" width="61" height="15" uuid="f43903ba-9d66-4395-b348-21257e8c93f5"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{trfu_pheresis_reports_totalVolume_plusAC}==null?0:($V{trfu_pheresis_reports_totalVolume_plusAC}-$V{ComponentsAll})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="627" y="0" width="65" height="15"/>
+				<reportElement style="table_TD" x="627" y="0" width="65" height="15" uuid="bc284372-c1bc-4b72-bba6-65bc17b79d3e"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{trfu_pheresis_reports_totalVolume_plusAC}==null?0:$V{trfu_pheresis_reports_totalVolume_plusAC}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement style="table_TD" x="351" y="30" width="61" height="15"/>
+				<reportElement style="table_TD" x="351" y="30" width="61" height="15" uuid="6aaaf541-b9f7-493d-8ef8-438ae6d10944"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -464,7 +467,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<textFieldExpression><![CDATA[$V{trfu_pheresis_reports_plasmaVolume_1}==null?0:$V{trfu_pheresis_reports_plasmaVolume_1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="169" y="30" width="60" height="15"/>
+				<reportElement style="table_TD" x="169" y="30" width="60" height="15" uuid="af3cd8c7-71ca-4fe0-9284-22952347287e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -472,14 +475,14 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<textFieldExpression><![CDATA[$F{trfu_blood_donation_requests_count}==null?0:$F{trfu_blood_donation_requests_count}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="627" y="30" width="65" height="15"/>
+				<reportElement style="table_TD" x="627" y="30" width="65" height="15" uuid="cd381364-0295-43fb-9841-cbc64eabdcb2"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{trfu_pheresis_reports_totalVolume_plusAC}==null?0:$V{trfu_pheresis_reports_totalVolume_plusAC}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="412" y="30" width="60" height="15"/>
+				<reportElement style="table_TD" x="412" y="30" width="60" height="15" uuid="5919850d-a810-4faf-a495-ca7c89042020"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -487,7 +490,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<textFieldExpression><![CDATA[$V{trfu_blood_donation_requests_analysisCount_1}==null?0:($V{trfu_blood_donation_requests_analysisCount_1}/2)]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="472" y="30" width="60" height="15"/>
+				<reportElement style="table_TD" x="472" y="30" width="60" height="15" uuid="a7dc401f-a364-4a45-a07c-80bf2645e0a6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -495,21 +498,21 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<textFieldExpression><![CDATA[$V{trfu_blood_donation_requests_analysisCount_1}==null?0:($V{trfu_blood_donation_requests_analysisCount_1}/2)]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="290" y="30" width="61" height="15"/>
+				<reportElement style="table_TD" x="290" y="30" width="61" height="15" uuid="53a465d9-b1ec-4e07-8807-f24d53bfe96b"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{trfu_pheresis_reports_totalVolume_plusAC}==null?0:($V{trfu_pheresis_reports_totalVolume_plusAC}-$V{ComponentsAll})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="229" y="30" width="61" height="15"/>
+				<reportElement style="table_TD" x="229" y="30" width="61" height="15" uuid="ace008f4-b501-41ff-9cdb-50494c5beb35"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{trfu_pheresis_reports_totalVolume_1}==null?0:$V{trfu_pheresis_reports_totalVolume_1}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="table_TD" x="532" y="30" width="30" height="15"/>
+				<reportElement style="table_TD" x="532" y="30" width="30" height="15" uuid="6df2220e-5611-43ce-8fe7-3c31f7b1a9ee"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -517,7 +520,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[0]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="562" y="30" width="65" height="15"/>
+				<reportElement style="table_TD" x="562" y="30" width="65" height="15" uuid="6bcf9215-c1f3-448e-baca-e5257eda0512"/>
 				<textElement textAlignment="Justified" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 					<paragraph leftIndent="5"/>
@@ -525,7 +528,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="412" y="56" width="330" height="20"/>
+				<reportElement x="412" y="56" width="330" height="20" uuid="7149d68c-2ba4-4044-9799-7e89d80d7259"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>

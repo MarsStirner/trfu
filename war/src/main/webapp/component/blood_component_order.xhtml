@@ -224,11 +224,18 @@
 										<td><h:outputText value="#{bloodComponentOrder.document.diagnosis}" class="wide" /></td>
 									</tr>
 									<tr class="row">
-									<td class="first">Группа крови</td>
+									<td class="first">Группа крови (основная)</td>
 										<td><h:outputText value="#{bloodComponentOrder.document.bloodGroup}" converter="BloodGroupConverter" />
 											<span style="margin:0 5px;">Rh</span>
 											<h:outputText value="#{bloodComponentOrder.document.rhesusFactor}" converter="ClassifierConverter" />
 										</td>
+									</tr>
+									<tr class="row">
+									<td class="first">Группа крови (для заказа)</td>
+									<td><h:outputText value="#{bloodComponentOrder.document.orderBloodGroup}" converter="BloodGroupConverter" />
+										<span style="margin:0 5px;">Rh</span>
+										<h:outputText value="#{bloodComponentOrder.document.orderRhesusFactor}" converter="ClassifierConverter" />
+									</td>
 									</tr>
                                     <tr class="row">
                                         <td class="first" colspan="2">
@@ -394,13 +401,25 @@
 										<td><h:inputText value="#{bloodComponentOrder.document.diagnosis}" class="wide" /></td>
 									</tr>
 									<tr class="row">
-										<td class="first">Группа крови</td>
+										<td class="first">Группа крови (основная)</td>
 										<td>
 											<h:selectOneMenu id="bloodGroup" value="#{bloodComponentOrder.document.bloodGroup}" converter="BloodGroupConverter">
 												<f:selectItems value="#{dictionaryManagement.bloodGroups}" />
 											</h:selectOneMenu>
 											<span style="margin:0 5px;" >Rh</span>
 											<h:selectOneMenu id="rhesusFactor" value="#{bloodComponentOrder.document.rhesusFactor}" converter="ClassifierConverter">
+												<f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
+											</h:selectOneMenu>
+										</td>
+									</tr>
+									<tr class="row">
+										<td class="first">Группа крови (для заказа)</td>
+										<td>
+											<h:selectOneMenu id="order_bloodGroup" value="#{bloodComponentOrder.document.orderBloodGroup}" converter="BloodGroupConverter">
+												<f:selectItems value="#{dictionaryManagement.bloodGroups}" />
+											</h:selectOneMenu>
+											<span style="margin:0 5px;" >Rh</span>
+											<h:selectOneMenu id="order_rhesusFactor" value="#{bloodComponentOrder.document.orderRhesusFactor}" converter="ClassifierConverter">
 												<f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" />
 											</h:selectOneMenu>
 										</td>

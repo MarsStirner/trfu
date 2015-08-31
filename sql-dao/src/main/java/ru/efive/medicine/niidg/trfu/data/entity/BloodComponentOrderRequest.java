@@ -253,6 +253,22 @@ public class BloodComponentOrderRequest extends IdentifiedEntity implements Proc
         this.rhesusFactor = rhesusFactor;
     }
 
+    public BloodGroup getOrderBloodGroup() {
+        return orderBloodGroup;
+    }
+
+    public void setOrderBloodGroup(final BloodGroup orderBloodGroup) {
+        this.orderBloodGroup = orderBloodGroup;
+    }
+
+    public Classifier getOrderRhesusFactor() {
+        return orderRhesusFactor;
+    }
+
+    public void setOrderRhesusFactor(final Classifier orderRhesusFactor) {
+        this.orderRhesusFactor = orderRhesusFactor;
+    }
+
     public int getCount() {
         return count;
     }
@@ -490,6 +506,18 @@ public class BloodComponentOrderRequest extends IdentifiedEntity implements Proc
      */
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Classifier rhesusFactor;
+
+    /**
+     * Группа крови (запрошенная)
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private BloodGroup orderBloodGroup;
+
+    /**
+     * Резус-фактор (запрошенный)
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private Classifier orderRhesusFactor;
 
     /**
      * Компонент крови

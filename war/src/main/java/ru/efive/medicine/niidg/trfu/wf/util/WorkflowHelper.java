@@ -13,18 +13,7 @@ import org.apache.commons.lang.StringUtils;
 
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
-import ru.efive.medicine.niidg.trfu.dao.AnalysisDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.AnamnesisDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.BloodComponentProcessingMappingDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.DonorRejectionDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.ExaminationEntryDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.ExternalAppointmentDaoImpl;
-import ru.efive.medicine.niidg.trfu.dao.PheresisDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.QuarantineTypeDAOImpl;
+import ru.efive.medicine.niidg.trfu.dao.*;
 import ru.efive.medicine.niidg.trfu.data.dictionary.AnalysisType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
@@ -185,6 +174,26 @@ public final class WorkflowHelper {
 		catch (Exception e) {
 			result = false;
 			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public static ActionResult checkBloodComponentOrderNotChangedExternally(BloodComponentOrderRequest request){
+		System.out.println("Start checkBloodComponentOrderNotChangedExternally");
+		final FacesContext context = FacesContext.getCurrentInstance();
+		final SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(
+				context, "#{sessionManagement}", SessionManagementBean.class
+		);
+		final BloodComponentOrderRequestDAOImpl dao = sessionManagement.getDAO(
+				BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO
+		);
+		final BloodComponentOrderRequest currentState = dao.get(request.getId());
+		final boolean processed = currentState.getCreated().equals(request.getCreated());
+		System.out.println("End checkBloodComponentOrderNotChangedExternally = " + processed);
+		final ActionResult result = new ActionResult();
+		result.setProcessed(processed);
+		if(!processed) {
+			result.setDescription("Обрабатываемая вами заявка на выдачу компонентов крови была изменена из МИС. Обновите страницу и проверьте данные.");
 		}
 		return result;
 	}
