@@ -393,14 +393,13 @@ public class IntegrationHelper {
                     component.setComponentTypeId(bloodComponent.getComponentType().getId());
                     if (bloodComponent.isPurchased()) {
                         component.setDonorId(Integer.valueOf(bloodComponent.getDonorCode()));
-                        component.setNumber(bloodComponent.getNumber());
                     } else {
                         component.setDonorId(bloodComponent.getDonation().getDonor().getId());
-                        component.setNumber(bloodComponent.getParentNumber());
                     }
+                    component.setNumber(bloodComponent.getParentNumber());
                     component.setDoseCount(bloodComponent.getDoseCount());
 
-                    component.setRhesusFactorId(bloodComponent.getRhesusFactor().getValue().equals("отрицательный") ? 1 : 0);
+                    component.setRhesusFactorId(bloodComponent.getRhesusFactor().getValue().equalsIgnoreCase("Отрицательный") ? 1 : 0);
                     component.setComponentId(bloodComponent.getId());
                     component.setVolume(bloodComponent.getVolume());
                     //Print all components labels and store it as pictures
