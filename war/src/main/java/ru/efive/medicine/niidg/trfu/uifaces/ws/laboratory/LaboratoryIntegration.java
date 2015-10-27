@@ -1,7 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.ws.laboratory;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dao.*;
@@ -321,7 +322,7 @@ public class LaboratoryIntegration {
     }
 
 
-    private static final Logger logger = Logger.getLogger(LaboratoryIntegration.class);
+    private static final Logger logger = LoggerFactory.getLogger(LaboratoryIntegration.class);
 
     private void logParameters(int orderId, String orderBarCode, List<AnalysisResult> results, String
             biomaterialDefects, int resultDoctorLisId) {

@@ -1,52 +1,56 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<h:outputStylesheet library="css" name="style.css" />
-	<title>Трансфузиология</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <h:outputStylesheet library="css" name="style.css"/>
+    <title>Трансфузиология</title>
 </h:head>
 
 <h:body id="main_body">
-	<div id="main_global">
-		<div id="first">
-			<div class="head">
-				<h:graphicImage value="/resources/images/logo.png" /><br />
-				<h2>ФГБУ «Федеральный научно-клинический центр детской гематологии, онкологии и иммунологии»</h2>
-				<h1>Трансфузиология</h1>
-			</div>
-			
-			<h:form id="main_content" onkeypress="if (event.keyCode == 13) this.submit();" onsubmit="#{sessionManagement.logIn()}">
-				<div class="main_content">
-        			<h:panelGroup rendered="#{not(sessionManagement.loggedIn)}">
-        				<h2>Вход в систему</h2>
-	        			<div>Логин</div>
-	        			<div>
-	        				<h:inputText value="#{sessionManagement.userName}" styleClass="inp" />
-	        			</div>
-	        			<div>Пароль</div>
-	        			<div>
-	        				<h:inputSecret value="#{sessionManagement.password}" styleClass="inp" />
-	        			</div>
-	        			<div><h:commandButton styleClass="but" type="submit" value="Войти" /></div>
-	                    <div class="forget"><a href="/forget/enter_email.xhtml">Забыли пароль?</a></div>
-	        		</h:panelGroup>
-	        		<h:panelGroup rendered="#{sessionManagement.loggedIn}">
-	        			<h:outputScript>
-	        				location.href = "/component/role_select.xhtml";
-	        			</h:outputScript>
-	        		</h:panelGroup>
-	        		<div>
-	                	<h:messages errorClass="e5ui-error" layout="table" globalOnly="true" showSummary="true" showDetail="false" />
-	            	</div>
-	        	</div>
-        	</h:form>
+    <div id="main_global">
+        <div id="first">
+            <div class="head">
+                <h:graphicImage value="/resources/images/logo.png"/><br/>
+
+                <h2>ФГБУ «Федеральный научно-клинический центр детской гематологии, онкологии и иммунологии»</h2>
+
+                <h1>Трансфузиология</h1>
+            </div>
+
+            <h:form id="main_content" onkeypress="if (event.keyCode == 13) this.submit();">
+                <div class="main_content">
+                    <h:panelGroup rendered="#{not(sessionManagement.loggedIn)}">
+                        <h2>Вход в систему</h2>
+
+                        <div>Логин</div>
+                        <div>
+                            <p:inputText value="#{sessionManagement.userName}" styleClass="inp"/>
+                        </div>
+                        <div>Пароль</div>
+                        <div>
+                            <p:password value="#{sessionManagement.password}" styleClass="inp"/>
+                        </div>
+                        <div>
+                            <p:commandButton styleClass="but" type="submit" value="Войти" ajax="false" action="#{sessionManagement.logIn}"/></div>
+                        <div class="forget"><a href="/forget/enter_email.xhtml">Забыли пароль?</a></div>
+                    </h:panelGroup>
+                    <c:if test="#{sessionManagement.loggedIn}">
+                        <h:outputScript>
+                            location.href = "/component/role_select.xhtml";
+                        </h:outputScript>
+                   </c:if>
+                    <div>
+                        <p:messages showSummary="true"  showDetail="false"/>
+                    </div>
+                </div>
+            </h:form>
         </div>
-	</div>
+    </div>
 </h:body>
 
 </html>

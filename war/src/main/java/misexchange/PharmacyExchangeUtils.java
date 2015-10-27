@@ -1,8 +1,9 @@
 package misexchange;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.hl7.v3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodSystem;
@@ -21,7 +22,7 @@ public class PharmacyExchangeUtils {
     JAXBContext jaxbContext;
     private MISExchange misExchange;
     
-    private static final Logger logger = Logger.getLogger(PharmacyExchangeUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(PharmacyExchangeUtils.class);
 
     public PharmacyExchangeUtils() throws JAXBException, java.net.MalformedURLException {
     	FacesContext context = FacesContext.getCurrentInstance();

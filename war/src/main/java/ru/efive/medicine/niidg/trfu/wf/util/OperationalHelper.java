@@ -1,20 +1,8 @@
 package ru.efive.medicine.niidg.trfu.wf.util;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-
-import ru.efive.crm.dao.ContragentDAOHibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.efive.crm.data.Contragent;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
@@ -26,13 +14,18 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationEntry;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.PheresisReport;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.PropertiesEditorBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ActionResult;
 
+import javax.faces.context.FacesContext;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 public final class OperationalHelper {
 	
-	private static final Logger logger = Logger.getLogger(OperationalHelper.class);
+	private static final Logger logger = LoggerFactory.getLogger(OperationalHelper.class);
 	
 	
 	public static ActionResult operationalReject(final BloodDonationRequest request, final String description, final Contragent maker) throws Exception {

@@ -1,15 +1,14 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.ArrayList;
-import java.util.List;
+import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.entity.Donor;
-import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named("donorQuarantineFinishInviteList")
 @SessionScoped

@@ -1,33 +1,24 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
-
 import ru.efive.dao.sql.entity.DictionaryEntity;
 import ru.efive.dao.sql.entity.enums.ConverterName;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.dictionary.AnalysisType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
-import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
-import ru.efive.medicine.niidg.trfu.data.dictionary.DonorRejectionType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationEntryType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.QualityControlMappingEntry;
+import ru.efive.medicine.niidg.trfu.data.dictionary.*;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalIndicator;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.DictionaryManagementBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
+
+import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named("settings")
 @SessionScoped

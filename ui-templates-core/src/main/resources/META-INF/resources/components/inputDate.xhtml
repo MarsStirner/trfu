@@ -137,10 +137,14 @@
                         var editorIdSelector = "##{cc.clientId.replaceAll(':', '\\\\\\\\:')}\\:dateEditor";
                         var buttonIdSelector = "##{cc.clientId.replaceAll(':', '\\\\\\\\:')}\\:calendarButton";
                         var maskDate = "#{maskDate}";
+                        var a = "#{cc.attrs.disableEditor}";
+                        if(a) {
+                            $(editorIdSelector).attr("readonly", true);
+                        }else {
+                            $(editorIdSelector).mask(maskDate);
+                        }
 
-                        #{cc.attrs.disableEditor? '$(editorIdSelector).attr("readonly", true)': '$(editorIdSelector).mask(maskDate);'}
-
-                        $(buttonIdSelector).DatePicker($.extend({}, #{jsInitVar}, {
+                        $(buttonIdSelector).DatePicker($.extend({}, "#{jsInitVar}", {
                             format: '#{formatDate}',
                             date: $(editorIdSelector).val(),
                             onChange: function(formatted, dates) {

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="trfuDatasource"/>
+        <property name="lookupOnStartup" value="true"/>
+    </bean>
+
+    <!-- Hibernate SessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan">
+            <list>
+                <value>ru.efive.dao.sql.entity</value>
+                <value>ru.efive.dao.sql.entity.user</value>
+                <value>ru.efive.medicine.niidg.trfu.data</value>
+                <value>ru.efive.medicine.niidg.trfu.data.entity</value>
+                <value>ru.efive.medicine.niidg.trfu.data.dictionary</value>
+                <value>ru.efive.medicine.niidg.trfu.data.entity.medical</value>
+                <value>ru.efive.medicine.niidg.trfu.data.entity.integration</value>
+                <value>ru.efive.crm.data</value>
+                <value>ru.efive.dao.sql.wf.entity</value>
+                <value>ru.efive.dao.sql.entity.document</value>
+                <value>ru.efive.medicine.niidg.trfu.data.entity.operational</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+                <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
+                <prop key="net.sf.ehcache.configurationResourceName">ehcache.xml</prop>
+                <prop key="hibernate.hbm2ddl.auto">none</prop>
+                <prop key="hibernate.default_batch_fetch_size">10</prop>
+                <prop key="hibernate.max_fetch_depth">2</prop>
+                <prop key="hibernate.generate_statistics">false</prop>
+                <prop key="hibernate.jdbc.use_get_generated_keys">true</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.jdbc.fetch_size">10</prop>
+                <prop key="hibernate.jdbc.batch_size">10</prop>
+                <prop key="hibernate.dbcp.whenExhaustedAction">2</prop>
+                <prop key="hibernate.connection.autocommit">true</prop>
+                <prop key="hibernate.connection.useUnicode">true</prop>
+                <prop key="hibernate.connection.characterEncoding">UTF-8</prop>
+                <prop key="hibernate.connection.charSet">UTF-8</prop>
+                <prop key="format_sql">true</prop>
+
+                <prop key="hibernate.show_sql">false</prop>
+                <!--<prop key="hibernate.cache.use_second_level_cache">true</prop>-->
+                <!--<prop key="hibernate.cache.use_query_cache">true</prop>-->
+            </props>
+        </property>
+    </bean>
+
+    <!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
+
+    <!--
+     Data access object: Hibernate implementation.
+    -->
+
+    <!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="save">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Standard settings to DAO classes-->
+    <bean id="daoSettings" abstract="true">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="userDao" class="ru.efive.dao.sql.dao.user.UserDAOHibernate" parent="daoSettings"/>
+
+    <bean id="roleDao" class="ru.efive.dao.sql.dao.user.RoleDAOHibernate" parent="daoSettings"/>
+
+    <bean id="appointmentDao" class="ru.efive.dao.sql.dao.user.AppointmentDAOHibernate" parent="daoSettings"/>
+
+    <bean id="donorDao" class="ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl" parent="daoSettings"/>
+
+    <bean id="bloodComponentDao" class="ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl" parent="daoSettings"/>
+
+    <bean id="requestDao" class="ru.efive.medicine.niidg.trfu.dao.RequestDAOImpl" parent="daoSettings"/>
+
+    <bean id="examinationDao" class="ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl" parent="daoSettings"/>
+
+    <bean id="anamnesisDao" class="ru.efive.medicine.niidg.trfu.dao.AnamnesisDAOImpl" parent="daoSettings"/>
+
+    <bean id="analysisDao" class="ru.efive.medicine.niidg.trfu.dao.AnalysisDAOImpl" parent="daoSettings"/>
+
+    <bean id="examinationEntryDao" class="ru.efive.medicine.niidg.trfu.dao.ExaminationEntryDAOImpl" parent="daoSettings"/>
+
+    <bean id="divisionDao" class="ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl" parent="daoSettings"/>
+
+    <bean id="componentOrderDao" class="ru.efive.medicine.niidg.trfu.dao.BloodComponentOrderRequestDAOImpl" parent="daoSettings"/>
+
+    <bean id="donationDao" class="ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl" parent="daoSettings"/>
+
+    <bean id="dictionaryDao" class="ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl" parent="daoSettings"/>
+
+    <bean id="pheresisDao" class="ru.efive.medicine.niidg.trfu.dao.PheresisDAOImpl" parent="daoSettings"/>
+
+    <bean id="donorRejectionDao" class="ru.efive.medicine.niidg.trfu.dao.DonorRejectionDAOImpl" parent="daoSettings"/>
+
+    <bean id="operationalDao" class="ru.efive.medicine.niidg.trfu.dao.OperationalDaoImpl" parent="daoSettings"/>
+
+    <bean id="bloodSystemDao" class="ru.efive.medicine.niidg.trfu.dao.BloodSystemDAOImpl" parent="daoSettings"/>
+
+    <bean id="bloodSystemTypeDao" class="ru.efive.medicine.niidg.trfu.dao.BloodSystemTypeDAOImpl" parent="daoSettings"/>
+
+    <bean id="quarantineTypeDao" class="ru.efive.medicine.niidg.trfu.dao.QuarantineTypeDAOImpl" parent="daoSettings"/>
+
+    <bean id="componentProcessingMappingDao" class="ru.efive.medicine.niidg.trfu.dao.BloodComponentProcessingMappingDAOImpl" parent="daoSettings"/>
+
+    <bean id="timeTableDao" class="ru.efive.medicine.niidg.trfu.dao.TimeTableDAOImpl" parent="daoSettings"/>
+
+    <!-- medical business objects -->
+    <bean id="medicalDao" class="ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl" parent="daoSettings"/>
+
+    <bean id="informationDao" class="ru.efive.medicine.niidg.trfu.dao.InformationEntryDaoImpl" parent="daoSettings"/>
+
+    <bean id="externalAppointmentDao" class="ru.efive.medicine.niidg.trfu.dao.ExternalAppointmentDaoImpl" parent="daoSettings"/>
+
+    <bean id="externalAnalysisResultDao" class="ru.efive.medicine.niidg.trfu.dao.ExternalAnalysisResultDAOImpl" parent="daoSettings"/>
+
+    <!-- external business objects -->
+    <bean id="contragentDao" class="ru.efive.crm.dao.ContragentDAOHibernate" parent="daoSettings"/>
+
+    <bean id="contragentNomenclatureDao" class="ru.efive.crm.dao.NomenclatureDAOImpl" parent="daoSettings"/>
+
+    <!-- temporal business objects -->
+    <bean id="patientDao" class="ru.efive.medicine.niidg.trfu.dao.PatientDAOImpl" parent="daoSettings"/>
+    <!-- workflow business objects -->
+    <bean id="historyDao" class="ru.efive.dao.sql.wf.dao.HistoryDAOImpl" parent="daoSettings"/>
+
+    <bean id="reportDao" class="ru.efive.medicine.niidg.trfu.dao.ReportDAOImpl" parent="daoSettings"/>
+
+    <bean id="emailTemplateDao" class="ru.efive.medicine.niidg.trfu.dao.EmailTemplateDAOImpl" parent="daoSettings"/>
+
+    <bean id="textTemplateDao" class="ru.efive.medicine.niidg.trfu.dao.TextTemplateDAOImpl" parent="daoSettings"/>
+
+</beans>

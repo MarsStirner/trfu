@@ -1,11 +1,11 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserListByAppointmentHolderBean extends AbstractDocumentListHolderBean<User> {
 	private static final long serialVersionUID = -746492376641890611L;

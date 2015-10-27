@@ -2,7 +2,34 @@
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <description>NIIDG Transfusion</description>
     <display-name>NIIDG Transfusion</display-name>
-    
+
+    <session-config>
+        <session-timeout>45</session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>index.xhtml</welcome-file>
+    </welcome-file-list>
+
+    <servlet>
+        <description>Faces Servlet</description>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>AuthenticationFilter</filter-name>
+        <filter-class>ru.efive.medicine.niidg.trfu.uifaces.AuthenticationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <url-pattern>/component/*</url-pattern>
+    </filter-mapping>
+
     <context-param>
 		<param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
 		<param-value>false</param-value>
@@ -12,77 +39,43 @@
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>
     </context-param>
-    
-    <!-- <context-param>
+
+    <!--This is basically GET request based. Every GET request creates a new logical view.-->
+    <context-param>
+        <param-name>com.sun.faces.numberOfViewsInSession</param-name>
+        <param-value>50</param-value>
+    </context-param>
+    <!--
+        This is basically synchronous (non-ajax!) POST request based.
+        Every synchronous POST request creates a new physical view.
+        They are all stored on basis of a logical view like so Map<LogicalView, Map<PhysicalView, ViewState>>.
+    -->
+    <context-param>
+        <param-name>com.sun.faces.numberOfLogicalViews</param-name>
+        <param-value>50</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+
+    <!--Тема для элементов из библиотеки primefaces-->
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>bootstrap</param-value>
+    </context-param>
+
+    <!--Do not evaluate EL in comments-->
+    <context-param>
+        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>WEB-INF/classes/applicationContext.xml</param-value>
-    </context-param> -->
-    
-    <servlet>
-        <description>Faces Servlet</description>
-        <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>*.xhtml</url-pattern>
-    </servlet-mapping>
-    
-    <session-config>
-        <session-timeout>30</session-timeout>
-    </session-config>
-    <welcome-file-list>
-        <welcome-file>index.xhtml</welcome-file>
-    </welcome-file-list>
-    
-    <listener>
-		<listener-class>
-			ru.efive.medicine.niidg.trfu.uifaces.SessionListener
-		</listener-class>
-	</listener>
-	<filter>
-		<filter-name>SessionTimeoutFilter</filter-name>
-		<filter-class>
-			ru.efive.medicine.niidg.trfu.uifaces.SessionTimeoutFilter
-		</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>SessionTimeoutFilter</filter-name>
-		<url-pattern>*.xhtml</url-pattern> 
-	</filter-mapping>
-    
-    <filter>
-    	<filter-name>AuthenticationFilter</filter-name>
-    	<filter-class>ru.efive.medicine.niidg.trfu.uifaces.AuthenticationFilter</filter-class>
- 	</filter>
- 	<filter-mapping>
-    	<filter-name>AuthenticationFilter</filter-name>
-    	<url-pattern>/component/*</url-pattern>
-	</filter-mapping>
-    
-    <context-param>
-	    <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
-	    <param-value>true</param-value>
-	</context-param>
-    
-    <context-param>
-		<param-name>log4jConfigLocation</param-name>
-		<param-value>classpath:/log4j.xml</param-value>
-	</context-param>
-	
-	<!--context-param>
-		<param-name>primefaces.THEME</param-name>
-		<param-value>none</param-value>
-	</context-param-->
-	
-   <servlet>
-      <servlet-name>filter-results-export</servlet-name>
-      <servlet-class>ru.efive.medicine.niidg.trfu.servlet.FilterResultsExportServlet</servlet-class>
-   </servlet>
+    </context-param>
 
-   <servlet-mapping>
-      <servlet-name>filter-results-export</servlet-name>
-      <url-pattern>/filter-results-export</url-pattern>
-   </servlet-mapping>
-	
 </web-app>

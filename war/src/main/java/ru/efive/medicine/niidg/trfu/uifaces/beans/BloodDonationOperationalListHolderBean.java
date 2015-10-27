@@ -1,23 +1,15 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
+import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import ru.efive.dao.sql.dao.user.UserDAOHibernate;
-import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.admin.UserListByAppointmentHolderBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
-import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
-import ru.efive.uifaces.bean.ModalWindowHolderBean;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named("bloodDonationOperationalList")
 @SessionScoped

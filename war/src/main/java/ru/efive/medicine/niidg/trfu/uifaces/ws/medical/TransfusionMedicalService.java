@@ -1,5 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.ws.medical;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentOrderRequestDAOImpl;
@@ -13,15 +16,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentOrderPhenotype;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentOrderRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.Division;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.EritrocyteMass;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.Hemodynamics;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.LaboratoryMeasure;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.LiquidBalance;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.OperationParameters;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.OperationReport;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.Supply;
+import ru.efive.medicine.niidg.trfu.data.entity.medical.*;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.DictionaryManagementBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
@@ -35,17 +30,8 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.rpc.ServiceException;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @WebService(name = "transfusionMedicalService", targetNamespace = "http://www.korusconsulting.ru", serviceName = "transfusion-medical-service", portName = "transfusionMedicalService")
 public class TransfusionMedicalService {
@@ -57,7 +43,7 @@ public class TransfusionMedicalService {
     @Named("dictionaryManagement")
     private transient DictionaryManagementBean dictionaryManagement;
 
-    private static final Logger logger = Logger.getLogger(TransfusionMedicalService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TransfusionMedicalService.class);
     private static volatile int requestNumber= 0;
 
     private static synchronized int countRequest(){

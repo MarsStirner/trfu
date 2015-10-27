@@ -11,7 +11,9 @@
     <description>Root Project NIIDG Transfusion</description>
 
     <modules>
+        <module>config</module>
         <module>sql-dao</module>
+        <module>ui-templates-core</module>
         <module>alfresco-dao</module>
         <module>workflow_core</module>
         <module>war</module>
@@ -47,15 +49,15 @@
 
     <properties>
         <!-- Sources -->
-        <version.jdk>1.6</version.jdk>
+        <version.jdk>1.7</version.jdk>
         <source.encoding>UTF-8</source.encoding>
 
         <!-- Target -->
         <version.app.ear>6</version.app.ear>
-        <version.jdk.target>1.6</version.jdk.target>
+        <version.jdk.target>1.7</version.jdk.target>
 
         <!-- Components -->
-        <version.javaee-api>6.0</version.javaee-api>
+        <version.javaee-api>7.0</version.javaee-api>
 
         <!-- Test Environment -->
         <version.junit>4.8.2</version.junit>
@@ -66,7 +68,7 @@
         <version.mvn.plugin.javadoc>2.8</version.mvn.plugin.javadoc>
         <version.mvn.plugin.site>3.2</version.mvn.plugin.site>
         <version.mvn.plugin.surefire-report>2.13</version.mvn.plugin.surefire-report>
-        <version.mvn.plugin.ear>2.5</version.mvn.plugin.ear>
+        <version.mvn.plugin.ear>2.8</version.mvn.plugin.ear>
         <version.mvn.plugin.war>2.1.1</version.mvn.plugin.war>
 
         <!-- Mojo maven plugins version -->
@@ -106,6 +108,12 @@
                 <groupId>ru.efive.medicine.niidg</groupId>
                 <artifactId>transfusion</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.10</version>
             </dependency>
 
             <dependency>
@@ -198,38 +206,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-javadoc-plugin</artifactId>
-                            <configuration>
-                                <encoding>${source.encoding}</encoding>
-                                <charset>${source.encoding}</charset>
-                                <show>public</show>
-                            </configuration>
-                        </plugin>
-
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>findbugs-maven-plugin</artifactId>
-                            <configuration>
-                                <effort>Max</effort>
-                                <threshold>Low</threshold>
-                            </configuration>
-                        </plugin>
-
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-report-plugin</artifactId>
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-            </plugin>
         </plugins>
-        <!--<finalName>${project.artifactId}-${project.version}</finalName>-->
+        <finalName>${project.artifactId}-${project.version}</finalName>
     </build>
 </project>

@@ -2,11 +2,10 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.exception.JDBCConnectionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
-import ru.efive.dao.InitializationException;
-import ru.efive.dao.alfresco.AlfrescoDAO;
-import ru.efive.dao.alfresco.AlfrescoNode;
 import ru.efive.dao.sql.dao.DictionaryDAO;
 import ru.efive.dao.sql.dao.GenericDAO;
 import ru.efive.dao.sql.dao.user.UserDAO;
@@ -17,7 +16,9 @@ import ru.efive.dao.sql.entity.user.User;
 import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import ru.hitsl.helper.AuthorizationData;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -30,41 +31,79 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+
+import static ru.efive.medicine.niidg.trfu.uifaces.beans.utils.MessageHolder.*;
+
 @Named("sessionManagement")
 @SessionScoped
 public class SessionManagementBean implements Serializable {
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+    public static final String AUTH_KEY = "app.user.name";
+    public static final String BACK_URL = "app.back.url";
+    public static final String AUTH_TYPE = "app.user.type";
+
+    private final static Logger LOGGER = LoggerFactory.getLogger("AUTH");
+    private static final long serialVersionUID = -916300301346029630L;
+
+    private AuthorizationData authData;
+
+    private String userName;
+    private String password;
+    private String backUrl;
+    private Role currentRole;
+
+    private Donor loggedDonor;
+
+    @Inject
+    @Named("indexManagement")
+    private transient IndexManagementBean indexManagement;
+
+    @Inject
+    @Named("operationalSession")
+    private transient OperationalSessionBean operationalSession;
+
 
     public String getUserName() {
         return userName;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public boolean isLoggedIn() {
         return FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(AUTH_KEY) != null;
     }
 
-    public boolean isRoleSelected() {
-        return currentRole != null;
-    }
-
     public synchronized void logIn() {
         if (StringUtils.isNotEmpty(userName) && StringUtils.isNotEmpty(password)) {
+            LOGGER.info("Try to login [{}][{}]", userName, password);
             try {
                 UserDAO dao = getDAO(UserDAO.class, "userDao");
-                loggedUser = dao.findByLoginAndPassword(userName, password);
+                User loggedUser = dao.findByLoginAndPassword(userName, password);
                 if (loggedUser != null) {
-                    if (!loggedUser.getRoleList().isEmpty()) {
+                    LOGGER.debug("By userName[{}] founded User[{}]", userName, loggedUser.getId());
+                    //Проверка удаленности\уволенности сотрудника
+                    if (loggedUser.isDeleted()) {
+                        LOGGER.error("USER[{}] IS DELETED", loggedUser.getId());
+                        FacesContext.getCurrentInstance().addMessage(null, MSG_AUTH_DELETED);
+                        return;
+                    }
+                    //Проверка наличия у пользователя ролей
+                    if (loggedUser.getRoles().isEmpty()) {
+                        LOGGER.warn("USER[{}] HAS NO ONE ROLE", loggedUser.getId());
+                        FacesContext.getCurrentInstance().addMessage(null, MSG_AUTH_NO_ROLE);
+                        return;
+                    }
+
                         if (loggedUser.getSelectedRole() != null) {
                             currentRole = loggedUser.getSelectedRole();
                         } else {
@@ -72,52 +111,32 @@ public class SessionManagementBean implements Serializable {
                             loggedUser.setSelectedRole(currentRole);
                             loggedUser = getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO).save(loggedUser);
                         }
-                        FacesContext facesContext = FacesContext.getCurrentInstance();
-                        ExternalContext externalContext = facesContext.getExternalContext();
-                        externalContext.getSessionMap().put(AUTH_KEY, loggedUser.getLogin());
-                        externalContext.getSessionMap().put(AUTH_TYPE, "user");
-                    } else{
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "Вход невозможен, так как вам не назначено ни одной роли. Обратитесь к Администратору.", ""));
-                        loggedUser = null;
+
+                    this.authData = new AuthorizationData(loggedUser);
+
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(AUTH_KEY, loggedUser.getLogin());
+
+                    Object requestUrl = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(BACK_URL);
+                    if (requestUrl != null) {
+                        backUrl = requestUrl.toString();
+                        LOGGER.info("back url={}", backUrl);
                     }
+
+                    LOGGER.info("SUCCESSFUL LOGIN:{}\n AUTH_DATA={}", loggedUser.getId(), authData);
                 } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Введены неверные данные", ""));
+                    LOGGER.error("USER[{}] NOT FOUND", userName);
+                    FacesContext.getCurrentInstance().addMessage(null, MSG_AUTH_NOT_FOUND);
                 }
-            } catch (DataAccessResourceFailureException e) {
-                final FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Отсутствует связь с базой " +
-                        "данных", "");
-                processLoginException(msg, e);
-            } catch (JDBCConnectionException e) {
-                String message = "Ошибка при входе в систему. Попробуйте повторить позже";
-                if (StringUtils.contains(e.getMessage(), "Cannot open connection")) {
-                    message = "Отсутствует связь с базой данных";
-                }
-                final FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, message, "");
-                processLoginException(msg, e);
-            } catch (DataAccessException e) {
-                final FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка доступа к базе " +
-                        "данных", "");
-                processLoginException(msg, e);
-            } catch (NullPointerException e) {
-                final FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка. Обратитесь" +
-                        " в техническую поддержку", "");
-                processLoginException(msg, e);
+            } catch (Exception e) {
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(AUTH_KEY);
+                FacesContext.getCurrentInstance().addMessage(null, MSG_AUTH_ERROR);
+                this.authData = null;
+                LOGGER.error("Exception while processing login action:", e);
             }
         }
     }
 
-    private void processLoginException(final FacesMessage msg, Exception e) {
-        final FacesContext context = FacesContext.getCurrentInstance();
-        context.getExternalContext().getSessionMap().remove(AUTH_KEY);
-        if (context.getMessageList().contains(msg)) {
-            context.addMessage(null, msg);
-        }
-        loggedUser = null;
-        e.printStackTrace();
-    }
-
+    @Deprecated
     public void donorLogIn() {
         if (userName != null && !userName.equals("") && password != null && !password.equals("")) {
             try {
@@ -129,15 +148,24 @@ public class SessionManagementBean implements Serializable {
                     externalContext.getSessionMap().put(AUTH_KEY, loggedDonor.getMail());
                     externalContext.getSessionMap().put(AUTH_TYPE, "donor");
                 } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Введены неверные данные", ""));
+                    FacesContext.getCurrentInstance().addMessage(
+                            null, new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR, "Введены неверные данные", ""
+                            )
+                    );
                 }
             } catch (DataAccessResourceFailureException e) {
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(AUTH_KEY);
-                if (FacesContext.getCurrentInstance().getMessageList().contains(new FacesMessage(FacesMessage
-                        .SEVERITY_ERROR, "Отсутствует связь с базой данных", ""))) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Отсутствует связь с базой данных", ""));
+                if (FacesContext.getCurrentInstance().getMessageList().contains(
+                        new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR, "Отсутствует связь с базой данных", ""
+                        )
+                )) {
+                    FacesContext.getCurrentInstance().addMessage(
+                            null, new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR, "Отсутствует связь с базой данных", ""
+                            )
+                    );
                 }
                 loggedDonor = null;
                 e.printStackTrace();
@@ -147,28 +175,46 @@ public class SessionManagementBean implements Serializable {
                 if (StringUtils.contains(e.getMessage(), "Cannot open connection")) {
                     message = "Отсутствует связь с базой данных";
                 }
-                if (FacesContext.getCurrentInstance().getMessageList().contains(new FacesMessage(FacesMessage
-                        .SEVERITY_ERROR, message, ""))) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            message, ""));
+                if (FacesContext.getCurrentInstance().getMessageList().contains(
+                        new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR, message, ""
+                        )
+                )) {
+                    FacesContext.getCurrentInstance().addMessage(
+                            null, new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR, message, ""
+                            )
+                    );
                 }
                 loggedDonor = null;
                 e.printStackTrace();
             } catch (DataAccessException e) {
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(AUTH_KEY);
-                if (FacesContext.getCurrentInstance().getMessageList().contains(new FacesMessage(FacesMessage
-                        .SEVERITY_ERROR, "Ошибка доступа к базе данных", ""))) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Ошибка доступа к базе данных", ""));
+                if (FacesContext.getCurrentInstance().getMessageList().contains(
+                        new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR, "Ошибка доступа к базе данных", ""
+                        )
+                )) {
+                    FacesContext.getCurrentInstance().addMessage(
+                            null, new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR, "Ошибка доступа к базе данных", ""
+                            )
+                    );
                 }
                 loggedDonor = null;
                 e.printStackTrace();
             } catch (NullPointerException e) {
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(AUTH_KEY);
-                if (FacesContext.getCurrentInstance().getMessageList().contains(new FacesMessage(FacesMessage
-                        .SEVERITY_ERROR, "Внутренняя ошибка. Обратитесь в техническую поддержку", ""))) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Внутренняя ошибка. Обратитесь в техническую поддержку", ""));
+                if (FacesContext.getCurrentInstance().getMessageList().contains(
+                        new FacesMessage(
+                                FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка. Обратитесь в техническую поддержку", ""
+                        )
+                )) {
+                    FacesContext.getCurrentInstance().addMessage(
+                            null, new FacesMessage(
+                                    FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка. Обратитесь в техническую поддержку", ""
+                            )
+                    );
                 }
                 loggedDonor = null;
                 e.printStackTrace();
@@ -176,30 +222,7 @@ public class SessionManagementBean implements Serializable {
         }
     }
 
-    public void checkDatabaseConnection() {
-        try {
-            UserDAO dao = getDAO(UserDAO.class, "userDao");
-            loggedUser = dao.findByLoginAndPassword(getLoggedUser().getLogin(), getLoggedUser().getPassword());
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "База " +
-                    "данных доступна", ""));
-        } catch (DataAccessResourceFailureException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Отсутствует связь с базой данных", ""));
-            e.printStackTrace();
-        } catch (JDBCConnectionException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Отсутствует связь с базой данных", ""));
-            e.printStackTrace();
-        } catch (DataAccessException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка " +
-                    "" + "доступа к базе данных", ""));
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Внутренняя ошибка. Обратитесь в техническую поддержку", ""));
-            e.printStackTrace();
-        }
-    }
+
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public <T extends DictionaryDAO> T getDictionaryDAO(Class<T> persistentClass, String beanName) {
@@ -211,34 +234,29 @@ public class SessionManagementBean implements Serializable {
         return (T) indexManagement.getContext().getBean(beanName);
     }
 
-    public synchronized <M extends AlfrescoNode> AlfrescoDAO<M> getAlfrescoDAO(Class<M> class_) {
-        AlfrescoDAO<M> dao = null;
-        try {
-            dao = new AlfrescoDAO<M>(class_);
-            dao.setUserName("admin");
-            dao.setPassword("admin");
-            if (!dao.connect()) throw new InitializationException();
-        } catch (InitializationException e) {
-            System.out.println("Unable to instantiate connection to Alfresco remote service");
-            dao = null;
-        }
-        return dao;
-    }
 
-    public synchronized String logOut() {
-        loggedUser = null;
-        currentRole = null;
+    public String logOut() {
+        authData = null;
         userName = null;
         password = null;
-        final ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        externalContext.getSessionMap().remove(AUTH_KEY);
-        externalContext.getSessionMap().remove(AUTH_TYPE);
-        System.out.println("is logged: " + isLoggedIn());
-        return "/index?faces-redirect=true";//
+
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext != null) {
+            ExternalContext externalContext = facesContext.getExternalContext();
+            externalContext.invalidateSession();
+        }
+        LOGGER.info("LOGOUT");
+        return "/index?faces-redirect=true";
+    }
+
+
+    @PreDestroy
+    public void destroy() {
+        logOut();
     }
 
     public User getLoggedUser() {
-        return loggedUser;
+        return authData.getAuthorized();
     }
 
     public Donor getLoggedDonor() {
@@ -246,16 +264,9 @@ public class SessionManagementBean implements Serializable {
     }
 
     public String setCurrentRole(Role currentRole) {
+        authData.getAuthorized().setSelectedRole(currentRole);
         this.currentRole = currentRole;
-        try {
-            loggedUser.setSelectedRole(currentRole);
-            loggedUser = getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO).save(loggedUser);
-            if (reportList != null) {
-                reportList.markNeedRefresh();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO).save(authData.getAuthorized());
         return getNavigationRule() + "?faces-redirect=true";
     }
 
@@ -263,22 +274,36 @@ public class SessionManagementBean implements Serializable {
         return currentRole;
     }
 
+    public String getBackUrl() {
+        String url = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+        if (StringUtils.isEmpty(backUrl)) {
+            return url + getNavigationRule();
+        } else {
+            LOGGER.info("redirectUrl:{}", backUrl);
+            final String redirectTo = url + backUrl;
+            //Должно стрелять только один раз
+            backUrl = "";
+            return redirectTo;
+        }
+    }
+
     public List<Role> getAvailableRoles() {
-        List<Role> result = new ArrayList<Role>();
-        List<Role> list = loggedUser.getRoleList();
-        for (Role role : list) {
+        List<Role> result = new ArrayList<>();
+        for (Role role : authData.getRoles()) {
             if (!currentRole.equals(role)) {
                 result.add(role);
             }
         }
-        Collections.sort(result, new Comparator<Role>() {
+        Collections.sort(
+                result, new Comparator<Role>() {
 
-            @Override
-            public int compare(Role o1, Role o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
+                    @Override
+                    public int compare(Role o1, Role o2) {
+                        return o1.getName().compareTo(o2.getName());
+                    }
 
-        });
+                }
+        );
         return result;
     }
 
@@ -314,7 +339,7 @@ public class SessionManagementBean implements Serializable {
             sb.append("control_template.xhtml");
         }
         /*else if (currentRole.getRoleType().equals(RoleType.INACTIVATION)) {
-    		sb.append("inactivation_template.xhtml");
+            sb.append("inactivation_template.xhtml");
     	}*/
         else if (currentRole.getRoleType().equals(RoleType.HEAD_NURSE)) {
             sb.append("head_nurse_template.xhtml");
@@ -388,29 +413,4 @@ public class SessionManagementBean implements Serializable {
     public boolean isOperational() {
         return currentRole.getRoleType().equals(RoleType.OPERATIONAL);
     }
-
-
-    private User loggedUser;
-    private Donor loggedDonor;
-    private Role currentRole;
-
-    private String userName;
-    private String password;
-
-
-    @Inject
-    @Named("indexManagement")
-    private transient IndexManagementBean indexManagement;
-    @Inject
-    @Named("reportTemplateList")
-    private transient ReportTemplateListBean reportList;
-    @Inject
-    @Named("operationalSession")
-    private transient OperationalSessionBean operationalSession;
-
-
-    public static final String AUTH_KEY = "app.user.name";
-    public static final String AUTH_TYPE = "app.user.type";
-
-    private static final long serialVersionUID = -916300301346029630L;
 }

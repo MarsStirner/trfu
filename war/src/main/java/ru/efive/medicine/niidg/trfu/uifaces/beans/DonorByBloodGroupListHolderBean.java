@@ -1,19 +1,18 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @Named("donorByBloodGroupList")
 @SessionScoped

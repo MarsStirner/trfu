@@ -19,24 +19,30 @@
     </parent>
 
     <dependencies>
-    	<dependency>
-            <groupId>org.glassfish.extras</groupId>
-            <artifactId>glassfish-embedded-all</artifactId>
-            <version>3.1.1</version>
-            <scope>test</scope>
+		<dependency>
+			<groupId>javax.faces</groupId>
+			<artifactId>javax.faces-api</artifactId>
+			<version>2.2</version>
+			<scope>provided</scope>
 		</dependency>
-	    
+
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>5.2.RC3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.primefaces.themes</groupId>
+			<artifactId>all-themes</artifactId>
+			<version>1.0.10</version>
+		</dependency>
+
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
         </dependency>
-        
-        <dependency>
-	    	<groupId>mysql</groupId>
-	    	<artifactId>mysql-connector-java</artifactId>
-	    	<version>5.1.9</version>
-		</dependency>
-		
+
         <dependency>
             <groupId>ru.efive.workflow</groupId>
             <artifactId>workflow-core</artifactId>
@@ -53,13 +59,11 @@
 			<artifactId>alfresco-dao</artifactId>
 			<scope>provided</scope>
 		</dependency>
-        
+
         <dependency>
             <groupId>ru.efive.ui-templates</groupId>
             <artifactId>ui-templates-core</artifactId>
-	    	<version>0.0.1-SNAPSHOT</version>
-	    	<scope>system</scope>
-      		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ui-templates-core-0.0.1-SNAPSHOT.jar</systemPath>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         
         <dependency>
@@ -185,10 +189,10 @@
 			<scope>system</scope>
       		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/jaxb-xmldsig-core-1.0.0.jar</systemPath>
 		</dependency>
-		
-		<dependency>  
-			<groupId>org.primefaces</groupId>  
-			<artifactId>primefaces</artifactId>  
+
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
 			<version>5.1</version>
 		</dependency>
 		

@@ -2,7 +2,7 @@ package ru.efive.medicine.niidg.trfu.dictionary.impl;
 
 import java.util.Calendar;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dao.TimeTableDAOImpl;
@@ -66,7 +66,6 @@ public class OnePlanTimesheetTemplate extends TimesheetTemplate {
 		}
 		catch (Exception e) {
 			result = false;
-			Logger.getLogger(OnePlanTimesheetTemplate.class).error(e);
 		}
 		return result;
 	}

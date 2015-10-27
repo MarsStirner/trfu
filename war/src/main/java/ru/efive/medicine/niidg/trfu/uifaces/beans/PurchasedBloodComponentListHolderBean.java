@@ -1,16 +1,15 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named("purchasedBloodComponentList")
 @SessionScoped

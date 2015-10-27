@@ -12,8 +12,6 @@
 <ui:composition template="#{sessionManagement.templateName}">
 	
 	<ui:define name="running_head">
-		<!-- #{contragent.document.id}  -->
-		<e5ui-comp:userSessionUpdate rendered="#{contragent.editState or contragent.createState}" interval="300" />
 		<h:outputScript library="js" name="datepicker_init_ru.js" target="head" />
 		<e5ui-comp:outputUtilScript />
 	</ui:define>

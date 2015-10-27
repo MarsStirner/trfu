@@ -2,7 +2,8 @@ package ru.efive.medicine.niidg.trfu.wf.util;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.*;
@@ -30,7 +31,7 @@ import java.util.regex.Pattern;
 
 public class IntegrationHelper {
 
-    private static final Logger logger = Logger.getLogger(IntegrationHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(IntegrationHelper.class);
 
     public static ActionResult queryAppointment(ExaminationRequest examination) {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -736,7 +737,7 @@ public class IntegrationHelper {
             }
             result = true;
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("", e);
             result = false;
         }
         return result;

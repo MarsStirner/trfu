@@ -1,21 +1,20 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.integration;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.efive.medicine.niidg.trfu.dao.InformationEntryDaoImpl;
+import ru.efive.medicine.niidg.trfu.data.entity.integration.InformationEntry;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
+import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.apache.log4j.Logger;
-
-import ru.efive.medicine.niidg.trfu.dao.InformationEntryDaoImpl;
-import ru.efive.medicine.niidg.trfu.data.entity.integration.InformationEntry;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
-import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named("informationList")
 @SessionScoped
@@ -64,7 +63,7 @@ public class InformationEntryListHolderBean extends AbstractDocumentListHolderBe
 	private transient SessionManagementBean sessionManagement = new SessionManagementBean();
 	
 	
-	private static final Logger logger = Logger.getLogger(InformationEntryListHolderBean.class);
+	private static final Logger logger = LoggerFactory.getLogger(InformationEntryListHolderBean.class);
 	
 	private static final long serialVersionUID = 6546450615334686914L;
 }

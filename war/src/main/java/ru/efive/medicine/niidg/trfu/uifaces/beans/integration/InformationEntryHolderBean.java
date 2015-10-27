@@ -1,18 +1,7 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.integration;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.log4j.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.InformationEntryDaoImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.InformationEntry;
@@ -23,6 +12,16 @@ import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 import ru.efive.wf.core.activity.MailMessage;
 import ru.efive.wf.core.activity.SendMailActivity;
+
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Named("information")
 @ConversationScoped
@@ -187,7 +186,7 @@ public class InformationEntryHolderBean extends AbstractDocumentHolderBean<Infor
     @Named("propertiesHolder")
     private ApplicationPropertiesHolder propertiesHolder;
 	
-	private static final Logger logger = Logger.getLogger(InformationEntryHolderBean.class);
+	private static final Logger logger = LoggerFactory.getLogger(InformationEntryHolderBean.class);
 	
 	private static final long serialVersionUID = 1L;
 }

@@ -1,18 +1,7 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.filters;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.poi.ss.usermodel.Workbook;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.filters.AbstractFilter;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
@@ -20,6 +9,14 @@ import ru.efive.medicine.niidg.trfu.uifaces.beans.print.FilterParametersPair;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.print.PrintHelper;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
+
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
 public abstract class AbstractFilterableListHolderBean<T extends Serializable, F extends AbstractFilter<F>>
 		extends AbstractDocumentListHolderBean<T> {
@@ -238,4 +235,5 @@ public abstract class AbstractFilterableListHolderBean<T extends Serializable, F
 	protected int getTotalCount() {
 		return getTotalCount(storedFilter);
 	}
+
 }

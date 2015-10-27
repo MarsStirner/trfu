@@ -1,14 +1,14 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ru.efive.dao.sql.dao.user.RoleDAOHibernate;
 import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.enums.RoleType;
 import ru.efive.dao.sql.entity.user.Role;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserListByRoleTypeHolderBean  extends AbstractDocumentListHolderBean<User> {
 	private static final long serialVersionUID = -6101030623256125020L;

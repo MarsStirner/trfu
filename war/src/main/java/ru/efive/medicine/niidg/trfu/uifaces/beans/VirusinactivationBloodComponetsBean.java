@@ -1,11 +1,5 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.BloodSystemDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
@@ -15,6 +9,16 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodSystem;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Named("virusinactivationComponentList")
 @SessionScoped

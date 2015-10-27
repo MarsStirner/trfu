@@ -10,6 +10,7 @@ import org.hibernate.SessionFactory;
 import org.krysalis.barcode4j.HumanReadablePlacement;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.java2d.Java2DCanvasProvider;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import ru.efive.dao.sql.entity.document.ReportTemplate;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
@@ -57,27 +58,27 @@ public class ReportsManagmentBean implements Serializable {
         System.out.println("Starting");
         Connection conn = null;
         try {
-            FileSystemXmlApplicationContext context = indexManagement.getContext();
+            ApplicationContext context = indexManagement.getContext();
             BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
             System.out.println("Data source is " + dataSource);
             conn = dataSource.getConnection();
             JasperReport jasperReport = JasperCompileManager.compileReport(getClass().getResourceAsStream("/reports/customers.xml"));
 
             // Передаем resultSet в отчет
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, new HashMap(), conn);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, new HashMap<String, Object>(), conn);
 
             JasperExportManager.exportReportToPdfFile(jasperPrint, "c:\\customers_report.pdf");
             //JasperExportManager.exportReportToHtmlFile(jasperPrint,
             //"C:\\customers_report.html");
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (JRException e) {
+        } catch (SQLException | JRException e) {
             e.printStackTrace();
         } finally {
             // Корректно закрываем соединение с базой
             try {
-                conn.close();
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -87,7 +88,7 @@ public class ReportsManagmentBean implements Serializable {
     }
 
     public void printShortLabel() throws IOException, ClassNotFoundException, SQLException {
-        FileSystemXmlApplicationContext context = indexManagement.getContext();
+        ApplicationContext context = indexManagement.getContext();
         BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
         //FacesContext.getCurrentInstance().getExternalContext().get
@@ -95,30 +96,27 @@ public class ReportsManagmentBean implements Serializable {
         //in_properties.load(getClass().getClassLoader().getResourceAsStream("properties/print.properties"));
 
         //Check printer name
-        String printer = "Xerox WorkCentre M165";//in_properties.getProperty("printer.name");
 
         //Get printer by checked name
-        String in_printerName = printer;
         PrintService psZebra = null;
-        String sPrinterName = null;
         PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
-        for (int i = 0; i < services.length; i++) {
-            PrintServiceAttribute attr = services[i].getAttribute(PrinterName.class);
-            sPrinterName = ((PrinterName) attr).getValue();
-            if (sPrinterName.equals(in_printerName)) {
-                psZebra = services[i];
+        for (final PrintService service : services) {
+            PrintServiceAttribute attr = service.getAttribute(PrinterName.class);
+           String sPrinterName = ((PrinterName) attr).getValue();
+            if (sPrinterName.equals("Xerox WorkCentre M165")) {
+                psZebra = service;
                 break;
             }
         }
         if (psZebra == null) {
-            System.out.println(in_printerName + " is not found.");
+            System.out.println("Xerox WorkCentre M165" + " is not found.");
             return;
         }
         System.out.println("The printer you find is -> " + psZebra.getName());
 
 		/* Get Data source */
         //--------------------------------------------------------------------------------------------------//
-        Statement stmt = (Statement) conn.createStatement();
+        Statement stmt = conn.createStatement();
         ResultSet rs;
         //String request=in_properties.getProperty("jdbc.first_donor_by_rnumber").replaceFirst("%component_number%", args[1]).replaceFirst("%request_number%",args[0]);
         String request = "select d.firstName as firstName, d.middleName as middleName, d.lastName as lastName, d.number as d_number, r.number as r_number, r.created as created from trfu_donors d inner join trfu_examination_requests r on r.donor_id = d.id where r.number='00010'";
@@ -127,16 +125,12 @@ public class ReportsManagmentBean implements Serializable {
         JasperReport report = null;
         JasperPrint print = null;
         try {
-            //report=JasperCompileManager.compileReport("Barcode4JReport.xml");
             InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/Barcode4JReport.xml");
-            //byte[]  buf = new byte[ inputStream.available() ];
-            //inputStream.read( buf );
-            //String contents = new String(buf);
 
 
             report = JasperCompileManager.compileReport(inputStream);
             //print=JasperFillManager.fillReport(report,new HashMap(), new JREmptyDataSource());
-            print = JasperFillManager.fillReport(report, new HashMap(), new JRResultSetDataSource(rs));
+            print = JasperFillManager.fillReport(report, new HashMap<String, Object>(), new JRResultSetDataSource(rs));
             //InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/Barcode4JReport.jasper");
             //print=JasperFillManager.fillReport(inputStream,new HashMap(), new JRResultSetDataSource(rs));
             JasperExportManager.exportReportToPdfFile(print, "c:/reports/db_big_report.pdf");
@@ -144,47 +138,6 @@ public class ReportsManagmentBean implements Serializable {
             e.printStackTrace();
         }
         System.out.println("end");
-        if (true) {
-            return;
-        }
-        //--------------------------------------------------------------------------------------------------//
-        //Configure page printing on found print
-
-        DocPrintJob job = psZebra.createPrintJob();
-
-        PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
-        //System.out.println(Float.valueOf(args[1]).floatValue());
-        MediaSizeName mediaSizeName = MediaSize.findMedia(30.0f, 20.0f, MediaPrintableArea.MM);
-        //System.out.println(mediaSizeName);
-        //MediaSizeName mediaSizeName = MediaSizeName.ISO_A4;
-        printRequestAttributeSet.add(mediaSizeName);
-        printRequestAttributeSet.add(new Copies(1));
-
-        JRPrintServiceExporter exporter = new JRPrintServiceExporter();
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
-        /* We set the selected service and pass it as a paramenter */
-        exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE, psZebra);
-        exporter.setParameter(JRPrintServiceExporterParameter.PRINT_SERVICE_ATTRIBUTE_SET, psZebra.getAttributes());
-        exporter.setParameter(JRPrintServiceExporterParameter.PRINT_REQUEST_ATTRIBUTE_SET, printRequestAttributeSet);
-        exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PAGE_DIALOG, Boolean.FALSE);
-        exporter.setParameter(JRPrintServiceExporterParameter.DISPLAY_PRINT_DIALOG, Boolean.FALSE);
-
-        try {
-            exporter.exportReport();
-            System.out.println("printed");
-        } catch (JRException e) {
-            e.printStackTrace();
-            System.out.println("not printed");
-        } finally {
-            // Корректно закрываем соединение с базой
-            try {
-                conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        String[] args1 = {"1", "2"};
-        //printReportByTemplateName({"1","2"});
     }
 
     public void hibernatePrintReportByRequestParams() throws IOException, ClassNotFoundException, SQLException {
@@ -192,7 +145,7 @@ public class ReportsManagmentBean implements Serializable {
         Map<String, String> requestProperties = facesContext.getExternalContext().getRequestParameterMap();
         String in_reportName = requestProperties.get("reportName");
         String in_printerName = requestProperties.get("printerName");
-        FileSystemXmlApplicationContext context = indexManagement.getContext();
+        ApplicationContext context = indexManagement.getContext();
         BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 
@@ -202,14 +155,13 @@ public class ReportsManagmentBean implements Serializable {
             return;
         }
         PrintService psZebra = null;
-        String sPrinterName = null;
         PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
-        for (int i = 0; i < services.length; i++) {
-            PrintServiceAttribute attr = services[i].getAttribute(PrinterName.class);
-            sPrinterName = ((PrinterName) attr).getValue();
+        for (final PrintService service : services) {
+            PrintServiceAttribute attr = service.getAttribute(PrinterName.class);
+            String sPrinterName = ((PrinterName) attr).getValue();
             System.out.println(sPrinterName);
             if (sPrinterName.equals(in_printerName)) {
-                psZebra = services[i];
+                psZebra = service;
                 break;
             }
         }
@@ -231,7 +183,7 @@ public class ReportsManagmentBean implements Serializable {
             return;
         }
         Session session = ((SessionFactory) indexManagement.getContext().getBean("sessionFactory")).openSession();
-        final Map<String, Object> in_map = new HashMap<String, Object>();
+        final Map<String, Object> in_map = new HashMap<>();
         for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
             System.out.println("_" + entry.getKey());
             in_map.put("_" + entry.getKey(), entry.getValue());
@@ -312,7 +264,7 @@ public class ReportsManagmentBean implements Serializable {
         AffineTransform rotationTransform = new AffineTransform();
         rotationTransform.rotate(Math.toRadians(-90));
         final Font rotatedFont = edgeFont.deriveFont(rotationTransform);
-        Graphics2D g2d = (Graphics2D) picture_240_160.createGraphics();
+        Graphics2D g2d = picture_240_160.createGraphics();
         g2d.setColor(Color.WHITE);
         g2d.fillRect(0, 0, 240, 160);
         g2d.setColor(Color.BLACK);
@@ -349,19 +301,19 @@ public class ReportsManagmentBean implements Serializable {
     public void hibernatePrintReportByRequestParams(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
         String in_reportName = requestProperties.get("reportName");
         String in_printerName = requestProperties.get("printerName");
-        FileSystemXmlApplicationContext context = indexManagement.getContext();
+        ApplicationContext context = indexManagement.getContext();
         BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 
         PrintService psZebra = null;
-        String sPrinterName = null;
+        String sPrinterName;
         PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
-        for (int i = 0; i < services.length; i++) {
-            PrintServiceAttribute attr = services[i].getAttribute(PrinterName.class);
+        for (final PrintService service : services) {
+            PrintServiceAttribute attr = service.getAttribute(PrinterName.class);
             sPrinterName = ((PrinterName) attr).getValue();
             System.out.println(sPrinterName);
             if (sPrinterName.equals(in_printerName)) {
-                psZebra = services[i];
+                psZebra = service;
                 break;
             }
         }
@@ -372,12 +324,12 @@ public class ReportsManagmentBean implements Serializable {
             System.out.println("Found printer name is >> " + psZebra.getName());
         }
 
-        JasperReport report = null;
+        JasperReport report;
         JasperPrint print = null;
         try {
             InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/" + in_reportName);
             report = JasperCompileManager.compileReport(inputStream);
-            Map<String, Object> in_map = new HashMap<String, Object>();
+            Map<String, Object> in_map = new HashMap<>();
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
                 System.out.println("_" + entry.getKey());
                 in_map.put("_" + entry.getKey(), entry.getValue());
@@ -438,7 +390,7 @@ public class ReportsManagmentBean implements Serializable {
     public void sqlPrintReportByRequestParams() throws IOException, ClassNotFoundException, SQLException {
         Map<String, String> requestProperties = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String in_reportName = requestProperties.get("reportName");
-        FileSystemXmlApplicationContext context = indexManagement.getContext();
+        ApplicationContext context = indexManagement.getContext();
         BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 
@@ -448,7 +400,7 @@ public class ReportsManagmentBean implements Serializable {
         try {
             InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/" + in_reportName);
             report = JasperCompileManager.compileReport(inputStream);
-            Map<String, Object> in_map = new HashMap<String, Object>();
+            Map<String, Object> in_map = new HashMap<>();
             //main_content_form:startDate:dateEditor
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
                 System.out.println("_" + entry.getKey());
@@ -493,7 +445,7 @@ public class ReportsManagmentBean implements Serializable {
 
     public File printBigLabelAndStoreItToFile(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
         String in_reportName = requestProperties.get("reportName");
-        FileSystemXmlApplicationContext context = indexManagement.getContext();
+        ApplicationContext context = indexManagement.getContext();
         BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 
@@ -503,7 +455,7 @@ public class ReportsManagmentBean implements Serializable {
         try {
             InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/" + in_reportName);
             report = JasperCompileManager.compileReport(inputStream);
-            Map<String, Object> in_map = new HashMap<String, Object>();
+            Map<String, Object> in_map = new HashMap<>();
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
                 System.out.println("_" + entry.getKey());
 
@@ -550,7 +502,7 @@ public class ReportsManagmentBean implements Serializable {
 
     public void sqlPrintReportByRequestParams(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
         String in_reportName = requestProperties.get("reportName");
-        FileSystemXmlApplicationContext context = indexManagement.getContext();
+        ApplicationContext context = indexManagement.getContext();
         BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 		
@@ -560,7 +512,7 @@ public class ReportsManagmentBean implements Serializable {
         try {
             InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/" + in_reportName);
             report = JasperCompileManager.compileReport(inputStream);
-            Map<String, Object> in_map = new HashMap<String, Object>();
+            Map<String, Object> in_map = new HashMap<>();
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
                 System.out.println("_" + entry.getKey());
 
@@ -719,7 +671,7 @@ public class ReportsManagmentBean implements Serializable {
     }
 
     public void sqlPrintReportByRequestParams(ReportTemplate reportTemplate) throws IOException, ClassNotFoundException, SQLException {
-        FileSystemXmlApplicationContext context = indexManagement.getContext();
+        ApplicationContext context = indexManagement.getContext();
         Map<String, Object> requestProperties = reportTemplate.getProperties();
         String in_reportName = requestProperties.get("reportName").toString();
         BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
@@ -731,7 +683,7 @@ public class ReportsManagmentBean implements Serializable {
         try {
             InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/" + in_reportName);
             report = JasperCompileManager.compileReport(inputStream);
-            Map<String, Object> in_map = new HashMap<String, Object>();
+            Map<String, Object> in_map = new HashMap<>();
             for (Map.Entry<String, Object> entry : requestProperties.entrySet()) {
                 System.out.println("_" + entry.getKey() + ": " + entry.getValue());
                 in_map.put("_" + entry.getKey(), entry.getValue());
@@ -766,7 +718,7 @@ public class ReportsManagmentBean implements Serializable {
     }
 
     public void sqlPrintReportByRequestParams(ReportTemplate reportTemplate, Map<String, Object> genericProperties) throws IOException, ClassNotFoundException, SQLException {
-        FileSystemXmlApplicationContext context = indexManagement.getContext();
+        ApplicationContext context = indexManagement.getContext();
         Map<String, Object> requestProperties = reportTemplate.getProperties();
 
         for (Map.Entry<String, Object> entry : genericProperties.entrySet()) {
@@ -785,7 +737,7 @@ public class ReportsManagmentBean implements Serializable {
         try {
             InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/" + in_reportName);
             report = JasperCompileManager.compileReport(inputStream);
-            Map<String, Object> in_map = new HashMap<String, Object>();
+            Map<String, Object> in_map = new HashMap<>();
             for (Map.Entry<String, Object> entry : requestProperties.entrySet()) {
                 System.out.println("_" + entry.getKey() + ": " + entry.getValue());
                 in_map.put("_" + entry.getKey(), entry.getValue());

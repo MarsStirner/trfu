@@ -1,10 +1,13 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.efive.dao.sql.entity.user.User;
+import ru.efive.medicine.niidg.trfu.data.entity.Donor;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.DonorListSelectModalBean;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.UserListSelectModalBean;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
+import ru.smsdelivery.*;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -13,17 +16,9 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.rpc.ServiceException;
-
-import org.apache.log4j.Logger;
-
-import ru.efive.dao.sql.entity.user.User;
-import ru.efive.medicine.niidg.trfu.data.entity.Donor;
-import ru.efive.medicine.niidg.trfu.data.entity.OperationalCrew;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.DonorListHolderBean;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.DonorListSelectModalBean;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.UserListSelectModalBean;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
-import ru.smsdelivery.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named("smsService")
 @SessionScoped
@@ -31,7 +26,7 @@ public class ShortMessagingServiceBean implements Serializable {
     private String message;
     private List<User> users = new ArrayList<User>();
     private List<Donor> donors = new ArrayList<Donor>();
-    private static final Logger logger = Logger.getLogger(ShortMessagingServiceBean.class);
+    private static final Logger logger = LoggerFactory.getLogger(ShortMessagingServiceBean.class);
 
     private static final long serialVersionUID = 1L;
 
@@ -186,7 +181,7 @@ public class ShortMessagingServiceBean implements Serializable {
         }
         if(warnBuffer.length()>0){
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, warnBuffer.toString(), ""));
-            logger.warn(warnBuffer);
+            logger.warn(warnBuffer.toString());
         }
     }
 

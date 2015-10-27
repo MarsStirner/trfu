@@ -12,9 +12,10 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.primefaces.event.SelectEvent;
 
+import org.slf4j.LoggerFactory;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dao.TimeTableDAOImpl;
@@ -44,7 +45,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 					selectedUser, false)).intValue();
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error("", e);
 		}
 		return result;
 	}
@@ -58,7 +59,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 					selectedUser, false, -1, -1, getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error("", e);
 		}
 		return result;
 	}
@@ -98,7 +99,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 			refresh();
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error("", e);
 		}
 	}
 	
@@ -110,7 +111,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 			}
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error("", e);
 		}
 	}
 	
@@ -119,7 +120,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 			logger.warn("Timetable row selection event");
 		}
 		catch (Exception e) {
-			logger.error(e);
+			logger.error("", e);
 		}
 	}
 	
@@ -206,7 +207,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 		}
 		catch (Exception e) {
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка при формировании расписания", ""));
-			logger.error(e);
+			logger.error("", e);
 		}
 	}
 	
@@ -225,7 +226,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 		}
 		catch (Exception e) {
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Внутренняя ошибка при удалении", ""));
-			logger.error(e);
+			logger.error("", e);
 		}
 	}
 	
@@ -250,5 +251,5 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 	
 	private static final long serialVersionUID = -8190884817003318592L;
 	
-	private final static Logger logger = Logger.getLogger(TimeTableBean.class);
+	private final static Logger logger = LoggerFactory.getLogger(TimeTableBean.class);
 }

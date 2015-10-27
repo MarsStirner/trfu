@@ -18,7 +18,7 @@
 	<div id="main_global">
 		<h:form id="main_content_form">
 			
-			<h:panelGroup rendered="#{sessionManagement.roleSelected}">
+			<h:panelGroup rendered="#{sessionManagement.currentRole ne null}">
 	        	<h:outputScript>
 	        		location.href = "#{sessionManagement.startTemplateName}";
 	        	</h:outputScript>
