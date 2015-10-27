@@ -189,12 +189,6 @@
 			<scope>system</scope>
       		<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/jaxb-xmldsig-core-1.0.0.jar</systemPath>
 		</dependency>
-
-		<dependency>
-			<groupId>org.primefaces</groupId>
-			<artifactId>primefaces</artifactId>
-			<version>5.1</version>
-		</dependency>
 		
         <dependency>
             <groupId>org.springframework</groupId>

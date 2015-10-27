@@ -6,9 +6,9 @@
 
 
     <parent>
-        <groupId>ru.efive.dms</groupId>
-        <artifactId>dms-app</artifactId>
-        <version>0.3.7</version>
+        <groupId>ru.efive.medicine.niidg</groupId>
+        <artifactId>trfu</artifactId>
+        <version>0.4.10-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 

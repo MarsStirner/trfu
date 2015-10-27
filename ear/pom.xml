@@ -36,6 +36,13 @@
 			<type>war</type>
 		</dependency>
 
+        <dependency>
+            <groupId>logback.config</groupId>
+            <artifactId>config</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+
     </dependencies>
     
     <build>
@@ -47,14 +54,12 @@
                     <defaultLibBundleDir>/lib</defaultLibBundleDir>
                     <version>${version.app.ear}</version>
                     <modules>
-
                         <webModule>
                             <groupId>ru.efive.medicine.niidg</groupId>
                             <artifactId>transfusion</artifactId>
                             <bundleDir>/</bundleDir>
                             <context-root>/</context-root>
                         </webModule>
-
                     </modules>
     	        </configuration>
     	    </plugin>

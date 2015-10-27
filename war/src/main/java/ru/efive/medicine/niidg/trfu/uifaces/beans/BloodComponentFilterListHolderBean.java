@@ -1,6 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.efive.crm.data.Contragent;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
@@ -10,16 +12,23 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
-import javax.enterprise.context.SessionScoped;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
 
 @Named("bloodComponenFilterList")
-@SessionScoped
+@ViewScoped
 public class BloodComponentFilterListHolderBean extends AbstractDocumentListHolderBean<BloodComponent> {
+	private static final Logger logger = LoggerFactory.getLogger(BloodComponentFilterListHolderBean.class);
+
+	@PostConstruct
+	public void init(){
+		logger.info("Init");
+	}
 
 	@Override
 	public Pagination initPagination() {
@@ -33,6 +42,7 @@ public class BloodComponentFilterListHolderBean extends AbstractDocumentListHold
 
 	@Override
 	protected int getTotalCount() {
+		logger.info("get count start");
 		int result = 0;
 		try {
 			result = new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).countDocument(in_filters, false)).intValue();
@@ -40,11 +50,13 @@ public class BloodComponentFilterListHolderBean extends AbstractDocumentListHold
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		logger.info("get count end");
 		return result;
 	}
 
 	@Override
 	protected List<BloodComponent> loadDocuments() {
+		logger.info("load start");
 		List<BloodComponent> result = new ArrayList<BloodComponent>();
 		try {
 			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocuments(in_filters, false,
@@ -54,6 +66,7 @@ public class BloodComponentFilterListHolderBean extends AbstractDocumentListHold
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Невозможно осуществить поиск", ""));
 			e.printStackTrace();
 		}
+		logger.info("load end");
 		return result;
 	}
 
