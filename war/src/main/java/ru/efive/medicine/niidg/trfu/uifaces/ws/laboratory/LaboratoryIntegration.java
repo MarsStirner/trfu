@@ -54,22 +54,23 @@ public class LaboratoryIntegration {
                 logger.error(result);
                 throw new Exception(result);
             }
+            if (orderId == 0) {
+                logger.error("Не указан идетифкатор направления на исследования");
+                throw new Exception("Не указан идетифкатор направления на исследования");
+            }
 
             final FileSystemXmlApplicationContext applicationContext = ApplicationContextHelper.getApplicationContext();
 
             final ExternalAppointmentDaoImpl dao = (ExternalAppointmentDaoImpl) applicationContext.getBean
                     (ApplicationHelper.EXTERNAL_APPOINTMENT_DAO);
-            List<ExternalAppointment> appointments = dao.getAppoitments(orderBarCode);
-            if (appointments == null || appointments.isEmpty()) {
+            ExternalAppointment appointment = dao.get(orderId);
+            if (appointment == null) {
                 result = String.format(EXTERNAL_APPOINTMENT_NOT_FOUND, orderId, orderBarCode);
                 logger.error(result);
                 throw new Exception(result);
             }
 
-            List<Analysis> analysisList = new ArrayList<Analysis>();
-            for (ExternalAppointment externalAppointment : appointments) {
-                analysisList.addAll(externalAppointment.getTests());
-            }
+            List<Analysis> analysisList = new ArrayList<>(appointment.getTests());
 
             BloodDonationRequest donationRequest = ((BloodDonationRequestDAOImpl) applicationContext.getBean
                     (ApplicationHelper.DONATION_DAO)).findDocumentByBarCode(orderBarCode);
@@ -86,11 +87,10 @@ public class LaboratoryIntegration {
             updateAnalysisList(analysisList, results);
 
             ExternalAnalysisEntry entry = createExternalAnalysisEntry(results, biomaterialDefects, resultDoctorLisId);
-            appointments.get(appointments.size() - 1).addHistoryEntry(entry);
+            appointment.addHistoryEntry(entry);
 
-            for (ExternalAppointment externalAppointment : appointments) {
-                dao.save(externalAppointment);
-            }
+            dao.save(appointment);
+
             result = SUCCESSFUL_RESULT;
             logger.warn("Result of the laboratory integration: " + result);
         } catch (Exception e) {
@@ -235,14 +235,7 @@ public class LaboratoryIntegration {
 
         for (Analysis analysis : analysisList) {
             if (analysis.getExternalValues() != null) {
-                List<AnalysisExternalValue> externalValues = analysis.getExternalValues();
-                Collections.sort(externalValues, new Comparator<AnalysisExternalValue>() {
-                    @Override
-                    public int compare(AnalysisExternalValue o1, AnalysisExternalValue o2) {
-                        return o1.getIndicator().getId() - o2.getIndicator().getId();
-                    }
-                });
-                for (AnalysisExternalValue externalValue : externalValues) {
+                for (AnalysisExternalValue externalValue : analysis.getExternalValues()) {
                     if (analysis.getExternalValues().size() > 1) {
                         analysis.setValueType(2); //множественные внешние значения
                     } else {
