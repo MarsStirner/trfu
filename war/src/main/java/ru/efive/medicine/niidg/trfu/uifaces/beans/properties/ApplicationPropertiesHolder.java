@@ -34,7 +34,7 @@ public class ApplicationPropertiesHolder {
     @PostConstruct
     public void init() throws IllegalStateException {
         try {
-            logger.info("CLASSLOADER find application.properties file in \'{}\'", getClass().getClassLoader().getResource("application.properties").getPath());
+            logger.info("CLASS LOADER find application.properties file in \'{}\'", getClass().getClassLoader().getResource("application.properties").getPath());
             properties.put("application", new ExtendedProperties(getClass().getClassLoader().getResource("application.properties").getPath()));
         }catch (Exception | PropertyTypeNotSupported e){
             throw new IllegalStateException(e);
