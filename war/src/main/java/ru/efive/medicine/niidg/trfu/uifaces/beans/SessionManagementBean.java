@@ -236,16 +236,15 @@ public class SessionManagementBean implements Serializable {
 
 
     public String logOut() {
+        LOGGER.info("LOGOUT {}", authData);
         authData = null;
         userName = null;
         password = null;
-
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null) {
             ExternalContext externalContext = facesContext.getExternalContext();
             externalContext.invalidateSession();
         }
-        LOGGER.info("LOGOUT");
         return "/index?faces-redirect=true";
     }
 
@@ -274,18 +273,6 @@ public class SessionManagementBean implements Serializable {
         return currentRole;
     }
 
-    public String getBackUrl() {
-        String url = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
-        if (StringUtils.isEmpty(backUrl)) {
-            return url + getNavigationRule();
-        } else {
-            LOGGER.info("redirectUrl:{}", backUrl);
-            final String redirectTo = url + backUrl;
-            //Должно стрелять только один раз
-            backUrl = "";
-            return redirectTo;
-        }
-    }
 
     public List<Role> getAvailableRoles() {
         List<Role> result = new ArrayList<>();
@@ -356,7 +343,14 @@ public class SessionManagementBean implements Serializable {
     }
 
     private String getNavigationRule() {
-        StringBuilder sb = new StringBuilder("/component/");
+        LOGGER.info("redirectUrl:{}", backUrl);
+        if (StringUtils.isNotEmpty(backUrl) && backUrl.contains("/component/")){
+            final String res = backUrl;
+            LOGGER.info("Use & clear backUrl. Redirect to \'{}\'", res);
+            backUrl = null;
+            return res;
+        }
+        final StringBuilder sb = new StringBuilder("/component/");
         if (currentRole == null) {
             sb.append("filter/donors");
         } else if (currentRole.getRoleType().equals(RoleType.ENTERPRISE_ADMINISTRATION)) {
@@ -396,14 +390,16 @@ public class SessionManagementBean implements Serializable {
         } else {
             sb.append("filter/donors");
         }
+        //Если в URL нет GET-параметров, то добавить в конец ".xhtml"
+        if(sb.indexOf("?") == -1 ) {
+            sb.append(".xhtml");
+        }
+        LOGGER.info("Navigation rule = \'{}\'", sb.toString());
         return sb.toString();
     }
 
     public String getStartTemplateName() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        return externalContext.encodeActionURL(facesContext.getApplication().getViewHandler().getActionURL
-                (facesContext, getNavigationRule() + ".xhtml"));
+        return FacesContext.getCurrentInstance().getExternalContext().encodeActionURL(getNavigationRule());
     }
 
     public boolean isAdmin() {
