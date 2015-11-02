@@ -54,6 +54,30 @@
         </rollingPolicy>
     </appender>
 
+    <!-- Для интеграции с ЛИС-->
+    <appender name="APPENDER_LIS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${log.format}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${com.sun.aas.instanceRoot}/logs/lis/lis.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>${logs.maxHistory}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Для интеграции с МИС-->
+    <appender name="APPENDER_MIS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${log.format}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${com.sun.aas.instanceRoot}/logs/mis/mis.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>${logs.maxHistory}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
     <!--LOGGERS-->
 
     <!--Логгеры для документов-->
@@ -72,6 +96,17 @@
     <logger name="CONVERTER" level="DEBUG">
         <appender-ref ref="APPENDER_UTIL"/>
     </logger>
+
+    <!-- Логгер для ЛИС-->
+    <logger name="LIS" level="DEBUG">
+        <appender-ref ref="APPENDER_LIS"/>
+    </logger>
+
+    <!-- Логгер для МИС-->
+    <logger name="MIS" level="DEBUG">
+        <appender-ref ref="APPENDER_MIS"/>
+    </logger>
+
 
     <!--Логгер для действий с пользователями-->
     <logger name="USER" level="DEBUG"/>

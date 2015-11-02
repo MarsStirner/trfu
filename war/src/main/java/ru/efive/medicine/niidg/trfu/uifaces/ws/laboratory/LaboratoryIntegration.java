@@ -318,7 +318,7 @@ public class LaboratoryIntegration {
     }
 
 
-    private static final Logger logger = LoggerFactory.getLogger(LaboratoryIntegration.class);
+    private static final Logger logger = LoggerFactory.getLogger("LIS");
 
     private void logParameters(int orderId, String orderBarCode, List<AnalysisResult> results, String
             biomaterialDefects, int resultDoctorLisId) {

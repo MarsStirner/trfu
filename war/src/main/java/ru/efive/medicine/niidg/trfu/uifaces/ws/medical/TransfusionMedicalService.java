@@ -43,7 +43,7 @@ public class TransfusionMedicalService {
     @Named("dictionaryManagement")
     private transient DictionaryManagementBean dictionaryManagement;
 
-    private static final Logger logger = LoggerFactory.getLogger(TransfusionMedicalService.class);
+    private static final Logger logger = LoggerFactory.getLogger("MIS");
     private static volatile int requestNumber= 0;
 
     private static synchronized int countRequest(){
