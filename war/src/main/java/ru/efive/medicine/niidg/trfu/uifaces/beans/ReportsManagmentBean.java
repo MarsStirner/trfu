@@ -3,7 +3,6 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.export.*;
 import net.sf.jasperreports.engine.query.JRHibernateQueryExecuterFactory;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,7 +10,6 @@ import org.krysalis.barcode4j.HumanReadablePlacement;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.java2d.Java2DCanvasProvider;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 import ru.efive.dao.sql.entity.document.ReportTemplate;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
@@ -33,6 +31,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.PrintServiceAttribute;
 import javax.print.attribute.standard.*;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -59,7 +58,7 @@ public class ReportsManagmentBean implements Serializable {
         Connection conn = null;
         try {
             ApplicationContext context = indexManagement.getContext();
-            BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
+            DataSource dataSource = (DataSource) context.getBean("dataSource");
             System.out.println("Data source is " + dataSource);
             conn = dataSource.getConnection();
             JasperReport jasperReport = JasperCompileManager.compileReport(getClass().getResourceAsStream("/reports/customers.xml"));
@@ -89,7 +88,7 @@ public class ReportsManagmentBean implements Serializable {
 
     public void printShortLabel() throws IOException, ClassNotFoundException, SQLException {
         ApplicationContext context = indexManagement.getContext();
-        BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
+        DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
         //FacesContext.getCurrentInstance().getExternalContext().get
         //Properties in_properties=new Properties();
@@ -146,7 +145,7 @@ public class ReportsManagmentBean implements Serializable {
         String in_reportName = requestProperties.get("reportName");
         String in_printerName = requestProperties.get("printerName");
         ApplicationContext context = indexManagement.getContext();
-        BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
+        DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 
         if (in_printerName == null) {
@@ -302,7 +301,7 @@ public class ReportsManagmentBean implements Serializable {
         String in_reportName = requestProperties.get("reportName");
         String in_printerName = requestProperties.get("printerName");
         ApplicationContext context = indexManagement.getContext();
-        BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
+        DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 
         PrintService psZebra = null;
@@ -391,7 +390,7 @@ public class ReportsManagmentBean implements Serializable {
         Map<String, String> requestProperties = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
         String in_reportName = requestProperties.get("reportName");
         ApplicationContext context = indexManagement.getContext();
-        BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
+        DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 
 		/* Get Data source */
@@ -446,7 +445,7 @@ public class ReportsManagmentBean implements Serializable {
     public File printBigLabelAndStoreItToFile(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
         String in_reportName = requestProperties.get("reportName");
         ApplicationContext context = indexManagement.getContext();
-        BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
+        DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 
 		/* Get Data source */
@@ -503,7 +502,7 @@ public class ReportsManagmentBean implements Serializable {
     public void sqlPrintReportByRequestParams(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
         String in_reportName = requestProperties.get("reportName");
         ApplicationContext context = indexManagement.getContext();
-        BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
+        DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 		
 		/* Get Data source */
@@ -674,7 +673,7 @@ public class ReportsManagmentBean implements Serializable {
         ApplicationContext context = indexManagement.getContext();
         Map<String, Object> requestProperties = reportTemplate.getProperties();
         String in_reportName = requestProperties.get("reportName").toString();
-        BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
+        DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 		
 		/* Get Data source */
@@ -728,7 +727,7 @@ public class ReportsManagmentBean implements Serializable {
         }
 
         String in_reportName = requestProperties.get("reportName").toString();
-        BasicDataSource dataSource = (BasicDataSource) context.getBean("dataSource");
+        DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
 		
 		/* Get Data source */

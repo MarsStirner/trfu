@@ -1,9 +1,6 @@
 package ru.efive.ws.test;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import ru.efive.medicine.niidg.trfu.context.NoPropertyStoragePathException;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentOrderRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
@@ -17,12 +14,11 @@ import ru.efive.wf.core.ActionResult;
 import ru.korusconsulting.external.DivisionInfo;
 import ru.korusconsulting.external.TransfusionServiceImpl;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-
-import javax.xml.bind.JAXBException;
 
 public class ExtrernalMedicalServiceTest {
 	ClassPathXmlApplicationContext ctx;
@@ -32,8 +28,7 @@ public class ExtrernalMedicalServiceTest {
     public void init() throws IOException, PropertyTypeNotSupported, ParseException, NoPropertyStoragePathException, JAXBException {
     	ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         ApplicationPropertiesHolder propertiesHolder = new ApplicationPropertiesHolder();
-        propertiesHolder.init();
-        
+
         Object serviceAddress = propertiesHolder.getProperty("application", "mis.integration.address");
         System.out.println(serviceAddress);
         

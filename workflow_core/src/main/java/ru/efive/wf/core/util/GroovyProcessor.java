@@ -1,15 +1,9 @@
 package ru.efive.wf.core.util;
 
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.SimpleScriptContext;
-
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-
+import org.springframework.context.ApplicationContext;
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 
+import javax.script.*;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +19,7 @@ public class GroovyProcessor {
 				try {
 					//Object applicationContext = PropertyUtils.getProperty(indexManagement, "context");
 					//if (applicationContext != null) {
-					FileSystemXmlApplicationContext applicationContext = ApplicationContextHelper.getApplicationContext();
+					ApplicationContext applicationContext = ApplicationContextHelper.getApplicationContext();
 						ScriptEngineManager factory = new ScriptEngineManager();
 						ScriptEngine engine = factory.getEngineByName("groovy");
 

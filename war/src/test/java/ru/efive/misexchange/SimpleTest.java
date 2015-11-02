@@ -2,7 +2,6 @@ package ru.efive.misexchange;
 
 import misexchange.PharmacyExchangeUtils;
 import org.junit.Before;
-import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.efive.medicine.niidg.trfu.context.NoPropertyStoragePathException;
 import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
@@ -10,7 +9,6 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.util.PropertyTypeNotSupported;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
-
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -25,7 +23,6 @@ public class SimpleTest {
     public void init() throws IOException, PropertyTypeNotSupported, ParseException, NoPropertyStoragePathException, JAXBException {
         ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         ApplicationPropertiesHolder propertiesHolder = new ApplicationPropertiesHolder();
-        propertiesHolder.init();
         utils = new PharmacyExchangeUtils(propertiesHolder);
     }
     

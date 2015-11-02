@@ -3,7 +3,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.ws.laboratory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.ApplicationContext;
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dao.*;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
@@ -20,7 +20,10 @@ import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 @WebService(name = "trfu-laboratory-integration", targetNamespace = "http://www.korusconsulting.ru", serviceName =
         "trfu-laboratory-integration", portName = "trfu-laboratory-integration")
@@ -59,7 +62,7 @@ public class LaboratoryIntegration {
                 throw new Exception("Не указан идетифкатор направления на исследования");
             }
 
-            final FileSystemXmlApplicationContext applicationContext = ApplicationContextHelper.getApplicationContext();
+            final ApplicationContext applicationContext = ApplicationContextHelper.getApplicationContext();
 
             final ExternalAppointmentDaoImpl dao = (ExternalAppointmentDaoImpl) applicationContext.getBean
                     (ApplicationHelper.EXTERNAL_APPOINTMENT_DAO);

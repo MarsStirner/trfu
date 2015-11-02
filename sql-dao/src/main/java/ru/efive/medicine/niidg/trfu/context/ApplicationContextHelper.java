@@ -1,17 +1,17 @@
 package ru.efive.medicine.niidg.trfu.context;
 
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.ApplicationContext;
 
 public class ApplicationContextHelper {
 	
-	public static void setApplicationContext(FileSystemXmlApplicationContext ctx) {
+	public static void setApplicationContext(ApplicationContext ctx) {
 		ApplicationContextHelper.ctx = ctx;
     }
 
-    public static FileSystemXmlApplicationContext getApplicationContext() {
+    public static ApplicationContext getApplicationContext() {
         return ctx;
     }
 	
 	
-	private static FileSystemXmlApplicationContext ctx;
+	private static ApplicationContext ctx;
 }
