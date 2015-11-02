@@ -98,12 +98,12 @@
     </logger>
 
     <!-- Логгер для ЛИС-->
-    <logger name="LIS" level="DEBUG">
+    <logger name="LIS" level="DEBUG" additivity="false">
         <appender-ref ref="APPENDER_LIS"/>
     </logger>
 
     <!-- Логгер для МИС-->
-    <logger name="MIS" level="DEBUG">
+    <logger name="MIS" level="DEBUG" additivity="false">
         <appender-ref ref="APPENDER_MIS"/>
     </logger>
 

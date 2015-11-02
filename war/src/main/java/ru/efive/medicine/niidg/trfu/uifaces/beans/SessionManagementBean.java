@@ -103,15 +103,13 @@ public class SessionManagementBean implements Serializable {
                         FacesContext.getCurrentInstance().addMessage(null, MSG_AUTH_NO_ROLE);
                         return;
                     }
-
-                        if (loggedUser.getSelectedRole() != null) {
-                            currentRole = loggedUser.getSelectedRole();
-                        } else {
-                            currentRole = loggedUser.getRoleList().get(0);
-                            loggedUser.setSelectedRole(currentRole);
-                            loggedUser = getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO).save(loggedUser);
-                        }
-
+                    if (loggedUser.getSelectedRole() != null) {
+                        currentRole = loggedUser.getSelectedRole();
+                    } else {
+                        currentRole = loggedUser.getRoleList().get(0);
+                        loggedUser.setSelectedRole(currentRole);
+                        loggedUser = getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO).save(loggedUser);
+                    }
                     this.authData = new AuthorizationData(loggedUser);
 
                     FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(AUTH_KEY, loggedUser.getLogin());
