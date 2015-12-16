@@ -1,14 +1,5 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.io.Serializable;
-import java.util.Calendar;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
@@ -16,8 +7,16 @@ import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Calendar;
+
 @Named("user")
-@ConversationScoped
+@ViewScoped
 public class UserHolderBean extends AbstractDocumentHolderBean<User, Integer> implements Serializable {
 
 	@Override
@@ -85,7 +84,7 @@ public class UserHolderBean extends AbstractDocumentHolderBean<User, Integer> im
 		}
 		return result;
 	}
-	
+
 	@Override
 	protected boolean saveNewDocument() {
 		boolean result = false;

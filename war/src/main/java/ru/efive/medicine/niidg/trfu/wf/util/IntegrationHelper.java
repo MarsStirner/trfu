@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 public class IntegrationHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(IntegrationHelper.class);
+    private static final int LIS_BARCODE_LENGTH = 8;
 
     public static ActionResult queryAppointment(ExaminationRequest examination) {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -108,7 +109,7 @@ public class IntegrationHelper {
                 BiomaterialInfo biomaterial = new BiomaterialInfo();
                 biomaterial.setOrderBiomaterialCode("");
                 biomaterial.setOrderBiomaterialName("");
-                biomaterial.setOrderBarCode(examination.getNumber());
+                biomaterial.setOrderBarCode(StringUtils.leftPad(examination.getNumber(), LIS_BARCODE_LENGTH, '0'));
                 calendar = Calendar.getInstance(ApplicationHelper.getLocale());
                 calendar.setTime(examination.getCreated());
                 biomaterial.setOrderProbeDate(calendar);
@@ -227,7 +228,7 @@ public class IntegrationHelper {
                 BiomaterialInfo biomaterial = new BiomaterialInfo();
                 biomaterial.setOrderBiomaterialCode("");
                 biomaterial.setOrderBiomaterialName("");
-                biomaterial.setOrderBarCode(donation.getNumber());
+                biomaterial.setOrderBarCode(StringUtils.leftPad(donation.getNumber(), LIS_BARCODE_LENGTH, '0'));
                 calendar = Calendar.getInstance(ApplicationHelper.getLocale());
                 calendar.setTime(donation.getCreated());
                 biomaterial.setOrderProbeDate(calendar);
