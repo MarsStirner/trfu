@@ -384,8 +384,8 @@ public class IntegrationHelper {
                 GregorianCalendar calendar = new GregorianCalendar();
                 calendar.setTime(orderRequest.getFactDate());
                 XMLGregorianCalendar factDate = new XMLGregorianCalendarImpl(calendar);
-                List<OrderIssueInfo> components = new ArrayList<OrderIssueInfo>();
-                final Map<String, String> requestProperties = new HashMap<String, String>();
+                List<OrderIssueInfo> components = new ArrayList<>();
+                final Map<String, String> requestProperties = new HashMap<>();
                 requestProperties.put("docType", "BloodComponent");
                 //TODO Админ или все-таки откуда-то тянуть?
                 requestProperties.put("transfusiologistFullName", "Administrator");
