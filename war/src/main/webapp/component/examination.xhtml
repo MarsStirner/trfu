@@ -7,6 +7,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:e5ui="http://efive.ru/uitemplates"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:e5ui-comp="http://efive.ru/uitemplates/composite">
 
 <ui:composition template="#{sessionManagement.templateName}">
@@ -234,6 +235,7 @@
 </ui:define>
 
 <ui:define name="content">
+    <p:growl/>
 <div id="header_content">
     <h:panelGroup rendered="#{examination.createState}">
         <div class="name">Новое обследование</div>

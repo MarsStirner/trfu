@@ -53,6 +53,28 @@ import java.util.List;
 @Named("reports")
 @RequestScoped
 public class ReportsManagmentBean implements Serializable {
+    @Inject
+    @Named("indexManagement")
+    private transient IndexManagementBean indexManagement;
+    @Inject
+    @Named("propertiesHolder")
+    private transient ApplicationPropertiesHolder propertiesHolder;
+    @Inject
+    @Named("sessionManagement")
+    private transient SessionManagementBean sessionManagement = new SessionManagementBean();
+
+    protected static double fromPPItoCM(double dpi) {
+        return dpi / 72 / 0.393700787;
+    }
+
+    protected static double fromCMToPPI(double cm) {
+        return toPPI(cm * 0.393700787);
+    }
+
+    protected static double toPPI(double inch) {
+        return inch * 72d;
+    }
+
     public void getHttpReportByXML() {
         System.out.println("Starting");
         Connection conn = null;
@@ -101,7 +123,7 @@ public class ReportsManagmentBean implements Serializable {
         PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
         for (final PrintService service : services) {
             PrintServiceAttribute attr = service.getAttribute(PrinterName.class);
-           String sPrinterName = ((PrinterName) attr).getValue();
+            String sPrinterName = ((PrinterName) attr).getValue();
             if (sPrinterName.equals("Xerox WorkCentre M165")) {
                 psZebra = service;
                 break;
@@ -118,7 +140,7 @@ public class ReportsManagmentBean implements Serializable {
         Statement stmt = conn.createStatement();
         ResultSet rs;
         //String request=in_properties.getProperty("jdbc.first_donor_by_rnumber").replaceFirst("%component_number%", args[1]).replaceFirst("%request_number%",args[0]);
-        String request = "select d.firstName as firstName, d.middleName as middleName, d.lastName as lastName, d.number as d_number, r.number as r_number, r.created as created from trfu_donors d inner join trfu_examination_requests r on r.donor_id = d.id where r.number='00010'";
+        String request = "SELECT d.firstName AS firstName, d.middleName AS middleName, d.lastName AS lastName, d.number AS d_number, r.number AS r_number, r.created AS created FROM trfu_donors d INNER JOIN trfu_examination_requests r ON r.donor_id = d.id WHERE r.number='00010'";
         rs = stmt.executeQuery(request);
 
         JasperReport report = null;
@@ -140,17 +162,26 @@ public class ReportsManagmentBean implements Serializable {
     }
 
     public void hibernatePrintReportByRequestParams() throws IOException, ClassNotFoundException, SQLException {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        Map<String, String> requestProperties = facesContext.getExternalContext().getRequestParameterMap();
-        String in_reportName = requestProperties.get("reportName");
-        String in_printerName = requestProperties.get("printerName");
-        ApplicationContext context = indexManagement.getContext();
-        DataSource dataSource = (DataSource) context.getBean("dataSource");
-        Connection conn = dataSource.getConnection();
-
+        final Map<String, String> requestProperties = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        //String in_reportName = requestProperties.get("reportName");
+        final String in_printerName = requestProperties.get("printerName");
         if (in_printerName == null) {
             System.out.println("Wrong system configuration. Property reports.smallLabel.printerName is not set");
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не указано наименование принтера печати этикеток. Обратитесь в техническую поддержку", ""));
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR, "Не указано наименование принтера печати этикеток. Обратитесь в техническую поддержку", ""
+                    )
+            );
+            return;
+        }
+        Object count = propertiesHolder.getProperty("application", "reports.smallLabel.count");
+        if (count == null) {
+            System.out.println("Wrong system configuration. Property reports.smallLabel.count is not set");
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""
+                    )
+            );
             return;
         }
         PrintService psZebra = null;
@@ -167,7 +198,9 @@ public class ReportsManagmentBean implements Serializable {
         if (psZebra == null) {
             System.out.println(in_printerName + " is not found.");
             System.out.println("q" + in_printerName);
-            facesContext.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не найден принтер для печати этикеток", ""));
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не найден принтер для печати этикеток", "")
+            );
             return;
         } else {
             System.out.println("Found printer name is >> " + psZebra.getName());
@@ -175,41 +208,55 @@ public class ReportsManagmentBean implements Serializable {
                 System.out.println(" * " + attr.getName() + ":" + attr);
             }
         }
-        Object count = propertiesHolder.getProperty("application", "reports.smallLabel.count");
-        if (count == null) {
-            System.out.println("Wrong system configuration. Property reports.smallLabel.count is not set");
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""));
-            return;
-        }
-        Session session = ((SessionFactory) indexManagement.getContext().getBean("sessionFactory")).openSession();
+
         final Map<String, Object> in_map = new HashMap<>();
         for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
             System.out.println("_" + entry.getKey());
             in_map.put("_" + entry.getKey(), entry.getValue());
             in_map.put(entry.getKey(), entry.getValue());
         }
-        final List resultList = session.createQuery("select\n" +
-                "request.number as r_number,\n" +
-                "request.created as created,\n" +
-                "request.donor.number as d_number,\n" +
-                "request.donor.middleName as middleName,\n" +
-                "request.donor.lastName as lastName,\n" +
-                "request.donor.firstName as firstName\n" +
-                "from\n" +
-                "ExaminationRequest as request\n" +
-                "where\n" +
-                "request.number=\'" + in_map.get("_requestNumber") + "\'").list();
-        if (resultList.isEmpty()) {
-            return;
+        Session session = null;
+        String r_number = null;
+        Date created = null;
+        String d_number = null;
+        String middleName = null;
+        String lastName = null;
+        String firstName = null;
+        try {
+            session = ((SessionFactory) indexManagement.getContext().getBean("sessionFactory")).openSession();
+            final List resultList = session.createQuery(
+                    "select\n" +
+                            "request.number as r_number,\n" +
+                            "request.created as created,\n" +
+                            "request.donor.number as d_number,\n" +
+                            "request.donor.middleName as middleName,\n" +
+                            "request.donor.lastName as lastName,\n" +
+                            "request.donor.firstName as firstName\n" +
+                            "from\n" +
+                            "ExaminationRequest as request\n" +
+                            "where\n" +
+                            "request.number=\'" + in_map.get("_requestNumber") + "\'"
+            ).list();
+            if (resultList.isEmpty()) {
+                return;
+            }
+            Object[] row = (Object[]) resultList.get(0);
+            r_number = (String) row[0];
+            created = (Date) row[1];
+            d_number = (String) row[2];
+            middleName = (String) row[3];
+            lastName = (String) row[4];
+            firstName = (String) row[5];
+        } finally {
+            if (session != null && session.isOpen()) {
+                try {
+                    session.close();
+                } catch (Exception e) {
+                    session.cancelQuery();
+                    session.disconnect();
+                }
+            }
         }
-        Object[] row = (Object[]) resultList.get(0);
-        final String r_number = (String) row[0];
-        final Date created = (Date) row[1];
-        final String d_number = (String) row[2];
-        final String middleName = (String) row[3];
-        final String lastName = (String) row[4];
-        final String firstName = (String) row[5];
-        session.close();
         final StringBuilder fioStringBuilder = new StringBuilder(lastName);
         if (firstName != null && !firstName.isEmpty()) {
             fioStringBuilder.append(' ').append(firstName.charAt(0)).append('.');
@@ -218,7 +265,9 @@ public class ReportsManagmentBean implements Serializable {
             fioStringBuilder.append(' ').append(middleName.charAt(0)).append('.');
         }
         System.out.println("Print bufferedImage with Paper settings");
-        final BufferedImage picture_240_160 = createLabel240_160(r_number, new SimpleDateFormat("dd.MM.yyyy").format(created), d_number, fioStringBuilder.toString());
+        final BufferedImage picture_240_160 = createLabel240_160(
+                r_number, new SimpleDateFormat("dd.MM.yyyy").format(created), d_number, fioStringBuilder.toString()
+        );
         printImage240x160withPaper(picture_240_160, psZebra, count);
     }
 
@@ -239,10 +288,8 @@ public class ReportsManagmentBean implements Serializable {
             double height = fromCMToPPI(2.0);
             paper.setSize(width, height);
             paper.setImageableArea(
-                    0,
-                    0,
-                    width,
-                    height);
+                    0, 0, width, height
+            );
             pf.setOrientation(PageFormat.PORTRAIT);
             pf.setPaper(paper);
             PageFormat validatePage = job.validatePage(pf);
@@ -282,20 +329,6 @@ public class ReportsManagmentBean implements Serializable {
         bean.generateBarcode(new Java2DCanvasProvider(g2d, 0), r_number);
         return picture_240_160;
     }
-
-
-    protected static double fromPPItoCM(double dpi) {
-        return dpi / 72 / 0.393700787;
-    }
-
-    protected static double fromCMToPPI(double cm) {
-        return toPPI(cm * 0.393700787);
-    }
-
-    protected static double toPPI(double inch) {
-        return inch * 72d;
-    }
-
 
     public void hibernatePrintReportByRequestParams(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
         String in_reportName = requestProperties.get("reportName");
@@ -354,7 +387,11 @@ public class ReportsManagmentBean implements Serializable {
         Object count = propertiesHolder.getProperty("application", "reports.smallLabel.count");
         if (count == null) {
             System.out.println("Wrong system configuration. Property reports.smallLabel.count is not set");
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""));
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""
+                    )
+            );
         } else {
             printRequestAttributeSet.add(new Copies(Integer.parseInt(count.toString())));
         }
@@ -498,13 +535,12 @@ public class ReportsManagmentBean implements Serializable {
         }
     }
 
-
     public void sqlPrintReportByRequestParams(Map<String, String> requestProperties) throws IOException, ClassNotFoundException, SQLException {
         String in_reportName = requestProperties.get("reportName");
         ApplicationContext context = indexManagement.getContext();
         DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
-		
+
 		/* Get Data source */
         JasperReport report = null;
         JasperPrint print = null;
@@ -591,14 +627,19 @@ public class ReportsManagmentBean implements Serializable {
         final File pictureFile = getPictureFile(extension, requestProperties);
         if (pictureFile != null) {
             try {
-                BufferedImage picture = new BufferedImage((int) (print.getPageWidth() * scale) + 1, (int) (print.getPageHeight() * scale) + 1, BufferedImage.TYPE_INT_RGB);
+                BufferedImage picture = new BufferedImage(
+                        (int) (print.getPageWidth() * scale) + 1, (int) (print.getPageHeight() * scale) + 1, BufferedImage.TYPE_INT_RGB
+                );
                 JRGraphics2DExporter pictureExporter = new JRGraphics2DExporter();
                 pictureExporter.setParameter(JRExporterParameter.JASPER_PRINT, print);
                 pictureExporter.setParameter(JRGraphics2DExporterParameter.GRAPHICS_2D, picture.createGraphics());
                 pictureExporter.setParameter(JRGraphics2DExporterParameter.ZOOM_RATIO, scale);
                 pictureExporter.exportReport();
                 if (ImageIO.write(picture, extension, pictureFile)) {
-                    System.out.println("Picture \'" + pictureFile.getAbsolutePath() + "\' Scale:" + scale + " Size: " + picture.getWidth() + 'x' + picture.getHeight() + " and use " + pictureFile.length() / 1024 + "Kb.");
+                    System.out.println(
+                            "Picture \'" + pictureFile.getAbsolutePath() + "\' Scale:" + scale + " Size: " + picture.getWidth() + 'x' + picture
+                                    .getHeight() + " and use " + pictureFile.length() / 1024 + "Kb."
+                    );
                 } else {
                     System.out.println("Export ot image failed without exception");
                 }
@@ -633,9 +674,7 @@ public class ReportsManagmentBean implements Serializable {
             fileName = "undefined_".concat(UUID.randomUUID().toString());
         }
         StringBuilder sb = new StringBuilder(storagePath);
-        sb.append(spr).append(donorId)
-                .append(spr).append(fileName)
-                .append('.').append(extension);
+        sb.append(spr).append(donorId).append(spr).append(fileName).append('.').append(extension);
         final File result = new File(sb.toString());
         result.mkdirs();
         return result;
@@ -675,7 +714,7 @@ public class ReportsManagmentBean implements Serializable {
         String in_reportName = requestProperties.get("reportName").toString();
         DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
-		
+
 		/* Get Data source */
         JasperReport report = null;
         JasperPrint print = null;
@@ -716,7 +755,8 @@ public class ReportsManagmentBean implements Serializable {
         }
     }
 
-    public void sqlPrintReportByRequestParams(ReportTemplate reportTemplate, Map<String, Object> genericProperties) throws IOException, ClassNotFoundException, SQLException {
+    public void sqlPrintReportByRequestParams(ReportTemplate reportTemplate, Map<String, Object> genericProperties)
+            throws IOException, ClassNotFoundException, SQLException {
         ApplicationContext context = indexManagement.getContext();
         Map<String, Object> requestProperties = reportTemplate.getProperties();
 
@@ -729,7 +769,7 @@ public class ReportsManagmentBean implements Serializable {
         String in_reportName = requestProperties.get("reportName").toString();
         DataSource dataSource = (DataSource) context.getBean("dataSource");
         Connection conn = dataSource.getConnection();
-		
+
 		/* Get Data source */
         JasperReport report = null;
         JasperPrint print = null;
@@ -770,26 +810,12 @@ public class ReportsManagmentBean implements Serializable {
         }
     }
 
-
-    @Inject
-    @Named("indexManagement")
-    private transient IndexManagementBean indexManagement;
-
-    @Inject
-    @Named("propertiesHolder")
-    private transient ApplicationPropertiesHolder propertiesHolder;
-
-    @Inject
-    @Named("sessionManagement")
-    private transient SessionManagementBean sessionManagement = new SessionManagementBean();
-
-
     protected String dump(Paper paper) {
         StringBuilder sb = new StringBuilder(64);
-        sb.append(paper.getWidth()).append("x").append(paper.getHeight())
-                .append("/").append(paper.getImageableX()).append("x").
-                append(paper.getImageableY()).append(" - ").append(paper
-                .getImageableWidth()).append("x").append(paper.getImageableHeight());
+        sb.append(paper.getWidth()).append("x").append(paper.getHeight()).append("/").append(paper.getImageableX()).append("x").
+                append(paper.getImageableY()).append(" - ").append(
+                paper.getImageableWidth()
+        ).append("x").append(paper.getImageableHeight());
         return sb.toString();
     }
 
