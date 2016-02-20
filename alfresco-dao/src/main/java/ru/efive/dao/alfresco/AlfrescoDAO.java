@@ -76,8 +76,7 @@ public class AlfrescoDAO<T extends AlfrescoNode> implements DAO<T> {
 			WebServiceFactory.setEndpointAddress("http://" + serverHost + ":" + serverPort + "/api");
 			AuthenticationUtils.startSession(userName, password);
 			result = true;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			result = false;
 			e.printStackTrace();
 		}

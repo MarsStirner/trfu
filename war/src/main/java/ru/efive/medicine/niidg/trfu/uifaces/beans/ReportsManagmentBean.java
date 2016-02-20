@@ -9,6 +9,8 @@ import org.hibernate.SessionFactory;
 import org.krysalis.barcode4j.HumanReadablePlacement;
 import org.krysalis.barcode4j.impl.code128.Code128Bean;
 import org.krysalis.barcode4j.output.java2d.Java2DCanvasProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import ru.efive.dao.sql.entity.document.ReportTemplate;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
@@ -25,7 +27,6 @@ import javax.inject.Named;
 import javax.print.DocPrintJob;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
-import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.PrintServiceAttribute;
@@ -42,9 +43,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -53,6 +52,8 @@ import java.util.List;
 @Named("reports")
 @RequestScoped
 public class ReportsManagmentBean implements Serializable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("REPORT");
     @Inject
     @Named("indexManagement")
     private transient IndexManagementBean indexManagement;
@@ -75,143 +76,21 @@ public class ReportsManagmentBean implements Serializable {
         return inch * 72d;
     }
 
-    public void getHttpReportByXML() {
-        System.out.println("Starting");
-        Connection conn = null;
-        try {
-            ApplicationContext context = indexManagement.getContext();
-            DataSource dataSource = (DataSource) context.getBean("dataSource");
-            System.out.println("Data source is " + dataSource);
-            conn = dataSource.getConnection();
-            JasperReport jasperReport = JasperCompileManager.compileReport(getClass().getResourceAsStream("/reports/customers.xml"));
-
-            // Передаем resultSet в отчет
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, new HashMap<String, Object>(), conn);
-
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "c:\\customers_report.pdf");
-            //JasperExportManager.exportReportToHtmlFile(jasperPrint,
-            //"C:\\customers_report.html");
-
-        } catch (SQLException | JRException e) {
-            e.printStackTrace();
-        } finally {
-            // Корректно закрываем соединение с базой
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("Done.");
-
-    }
-
-    public void printShortLabel() throws IOException, ClassNotFoundException, SQLException {
-        ApplicationContext context = indexManagement.getContext();
-        DataSource dataSource = (DataSource) context.getBean("dataSource");
-        Connection conn = dataSource.getConnection();
-        //FacesContext.getCurrentInstance().getExternalContext().get
-        //Properties in_properties=new Properties();
-        //in_properties.load(getClass().getClassLoader().getResourceAsStream("properties/print.properties"));
-
-        //Check printer name
-
-        //Get printer by checked name
-        PrintService psZebra = null;
-        PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
-        for (final PrintService service : services) {
-            PrintServiceAttribute attr = service.getAttribute(PrinterName.class);
-            String sPrinterName = ((PrinterName) attr).getValue();
-            if (sPrinterName.equals("Xerox WorkCentre M165")) {
-                psZebra = service;
-                break;
-            }
-        }
-        if (psZebra == null) {
-            System.out.println("Xerox WorkCentre M165" + " is not found.");
-            return;
-        }
-        System.out.println("The printer you find is -> " + psZebra.getName());
-
-		/* Get Data source */
-        //--------------------------------------------------------------------------------------------------//
-        Statement stmt = conn.createStatement();
-        ResultSet rs;
-        //String request=in_properties.getProperty("jdbc.first_donor_by_rnumber").replaceFirst("%component_number%", args[1]).replaceFirst("%request_number%",args[0]);
-        String request = "SELECT d.firstName AS firstName, d.middleName AS middleName, d.lastName AS lastName, d.number AS d_number, r.number AS r_number, r.created AS created FROM trfu_donors d INNER JOIN trfu_examination_requests r ON r.donor_id = d.id WHERE r.number='00010'";
-        rs = stmt.executeQuery(request);
-
-        JasperReport report = null;
-        JasperPrint print = null;
-        try {
-            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/Barcode4JReport.xml");
-
-
-            report = JasperCompileManager.compileReport(inputStream);
-            //print=JasperFillManager.fillReport(report,new HashMap(), new JREmptyDataSource());
-            print = JasperFillManager.fillReport(report, new HashMap<String, Object>(), new JRResultSetDataSource(rs));
-            //InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("templates/Barcode4JReport.jasper");
-            //print=JasperFillManager.fillReport(inputStream,new HashMap(), new JRResultSetDataSource(rs));
-            JasperExportManager.exportReportToPdfFile(print, "c:/reports/db_big_report.pdf");
-        } catch (JRException e) {
-            e.printStackTrace();
-        }
-        System.out.println("end");
-    }
 
     public void hibernatePrintReportByRequestParams() throws IOException, ClassNotFoundException, SQLException {
         final Map<String, String> requestProperties = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        //String in_reportName = requestProperties.get("reportName");
-        final String in_printerName = requestProperties.get("printerName");
-        if (in_printerName == null) {
-            System.out.println("Wrong system configuration. Property reports.smallLabel.printerName is not set");
-            FacesContext.getCurrentInstance().addMessage(
-                    null, new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR, "Не указано наименование принтера печати этикеток. Обратитесь в техническую поддержку", ""
-                    )
-            );
+
+        LOGGER.debug("Call->hibernatePrintReportByRequestParams[void::obsolete for small labels]({})", requestProperties);
+        final PrintService printService = getPrintService(requestProperties);
+        if(printService == null ){
+            LOGGER.error("PrintService not found, abort printing");
             return;
         }
-        Object count = propertiesHolder.getProperty("application", "reports.smallLabel.count");
-        if (count == null) {
-            System.out.println("Wrong system configuration. Property reports.smallLabel.count is not set");
-            FacesContext.getCurrentInstance().addMessage(
-                    null, new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""
-                    )
-            );
-            return;
-        }
-        PrintService psZebra = null;
-        PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
-        for (final PrintService service : services) {
-            PrintServiceAttribute attr = service.getAttribute(PrinterName.class);
-            String sPrinterName = ((PrinterName) attr).getValue();
-            System.out.println(sPrinterName);
-            if (sPrinterName.equals(in_printerName)) {
-                psZebra = service;
-                break;
-            }
-        }
-        if (psZebra == null) {
-            System.out.println(in_printerName + " is not found.");
-            System.out.println("q" + in_printerName);
-            FacesContext.getCurrentInstance().addMessage(
-                    null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не найден принтер для печати этикеток", "")
-            );
-            return;
-        } else {
-            System.out.println("Found printer name is >> " + psZebra.getName());
-            for (Attribute attr : psZebra.getAttributes().toArray()) {
-                System.out.println(" * " + attr.getName() + ":" + attr);
-            }
-        }
+        final int copiesCount = getCopiesCount();
 
         final Map<String, Object> in_map = new HashMap<>();
         for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
-            System.out.println("_" + entry.getKey());
+            LOGGER.info("_" + entry.getKey());
             in_map.put("_" + entry.getKey(), entry.getValue());
             in_map.put(entry.getKey(), entry.getValue());
         }
@@ -252,6 +131,7 @@ public class ReportsManagmentBean implements Serializable {
                 try {
                     session.close();
                 } catch (Exception e) {
+                    LOGGER.error("Session closed error ", e);
                     session.cancelQuery();
                     session.disconnect();
                 }
@@ -264,14 +144,81 @@ public class ReportsManagmentBean implements Serializable {
         if (middleName != null && !middleName.isEmpty()) {
             fioStringBuilder.append(' ').append(middleName.charAt(0)).append('.');
         }
-        System.out.println("Print bufferedImage with Paper settings");
+        LOGGER.info("Print bufferedImage with Paper settings");
         final BufferedImage picture_240_160 = createLabel240_160(
                 r_number, new SimpleDateFormat("dd.MM.yyyy").format(created), d_number, fioStringBuilder.toString()
         );
-        printImage240x160withPaper(picture_240_160, psZebra, count);
+        printImage240x160withPaper(picture_240_160, printService, copiesCount);
     }
 
-    private void printImage240x160withPaper(BufferedImage print, PrintService ps, Object count) {
+    /**
+     * Получить количество копий из настроек приложения
+     * @return  количество копий из настроек приложения / "1" в случае ошибки или если в настройках меньше 1
+     */
+    private int getCopiesCount() {
+        Object result = propertiesHolder.getProperty("application", "reports.smallLabel.count");
+        if (result == null) {
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""
+                    )
+            );
+            LOGGER.warn("Wrong system configuration. Property reports.smallLabel.count is not set. Return default value(1)");
+            return 1;
+        } else {
+            try{
+                int typedResult = (Integer)result;
+                return typedResult < 1 ? 1 : typedResult;
+            } catch (NumberFormatException | ClassCastException e){
+                LOGGER.error("CopiesCount error ::"+ result, e);
+                return 1;
+            }
+        }
+    }
+
+    /**
+     * Поиск среди доступных устройтсв вывода принтера из параметров
+     * @param requestProperties  параметры печати (содаржат имя принтера "printerName")
+     * @return искомый printService или null если не найдено
+     */
+    private PrintService getPrintService(final Map<String, String> requestProperties) {
+        final String printerName = requestProperties.get("printerName");
+        if (StringUtils.isEmpty(printerName)) {
+            LOGGER.info("Wrong system configuration. Printer name is not defined");
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR, "Не указано наименование принтера печати этикеток. Обратитесь в техническую поддержку", ""
+                    )
+            );
+            return null;
+        }
+        LOGGER.info("Lookup printService: name to search=\'{}\'", printerName);
+        PrintService result = null;
+        for (final PrintService service : PrintServiceLookup.lookupPrintServices(null, null)) {
+            if (printerName.equals(service.getAttribute(PrinterName.class).getValue())) {
+                result = service;
+                break;
+            }
+        }
+        if (result == null) {
+            LOGGER.info("Printer name[{}] is not found.", printerName);
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не найден принтер для печати этикеток", "")
+            );
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("List of available PrintServices:");
+                for (final PrintService service : PrintServiceLookup.lookupPrintServices(null, null)) {
+                    LOGGER.debug(service.getAttribute(PrinterName.class).getValue());
+                }
+            }
+            return null;
+        } else {
+            LOGGER.info("Found printer[{}] attributes >> {}", result, result.getAttributes());
+            return result;
+        }
+    }
+
+    private void printImage240x160withPaper(BufferedImage print, PrintService ps, int count) {
         try {
             final PrinterJob job = PrinterJob.getPrinterJob();
             job.setPrintService(ps);
@@ -279,27 +226,25 @@ public class ReportsManagmentBean implements Serializable {
             aset.add(new PrinterResolution(203, 203, PrinterResolution.DPI));
             aset.add(new JobName("Little Label printing from java", Locale.getDefault()));
             aset.add(PrintQuality.HIGH);
-            aset.add(new Copies((Integer) count));
+            //Количество копий (если меньше единицы - то одна копия, иначе кол-во копии)
+            aset.add(new Copies(count < 1 ? 1 : count));
             PageFormat pf = job.defaultPage();
             dump(pf);
             Paper paper = pf.getPaper();
-            //                        30X20mm
+            //30X20mm
             double width = fromCMToPPI(3.0);
             double height = fromCMToPPI(2.0);
             paper.setSize(width, height);
-            paper.setImageableArea(
-                    0, 0, width, height
-            );
+            paper.setImageableArea(0, 0, width, height);
             pf.setOrientation(PageFormat.PORTRAIT);
             pf.setPaper(paper);
             PageFormat validatePage = job.validatePage(pf);
-            System.out.println("Valid- ");
+            LOGGER.info("Valid- ");
             dump(validatePage);
             job.setPrintable(new ImagePrintable(print), pf);
             job.print(aset);
         } catch (Exception e) {
-            System.out.println("imagePrint failed:");
-            e.printStackTrace();
+            LOGGER.error("imagePrint failed:", e);
         }
     }
 
@@ -343,17 +288,17 @@ public class ReportsManagmentBean implements Serializable {
         for (final PrintService service : services) {
             PrintServiceAttribute attr = service.getAttribute(PrinterName.class);
             sPrinterName = ((PrinterName) attr).getValue();
-            System.out.println(sPrinterName);
+            LOGGER.info(sPrinterName);
             if (sPrinterName.equals(in_printerName)) {
                 psZebra = service;
                 break;
             }
         }
         if (psZebra == null) {
-            System.out.println(in_printerName + " is not found.");
+            LOGGER.info(in_printerName + " is not found.");
             throw new IOException(in_printerName + " is not found.");
         } else {
-            System.out.println("Found printer name is >> " + psZebra.getName());
+            LOGGER.info("Found printer name is >> " + psZebra.getName());
         }
 
         JasperReport report;
@@ -363,7 +308,7 @@ public class ReportsManagmentBean implements Serializable {
             report = JasperCompileManager.compileReport(inputStream);
             Map<String, Object> in_map = new HashMap<>();
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
-                System.out.println("_" + entry.getKey());
+                LOGGER.info("_" + entry.getKey());
                 in_map.put("_" + entry.getKey(), entry.getValue());
                 in_map.put(entry.getKey(), entry.getValue());
             }
@@ -380,13 +325,13 @@ public class ReportsManagmentBean implements Serializable {
         DocPrintJob job = psZebra.createPrintJob();
         PrintRequestAttributeSet printRequestAttributeSet = new HashPrintRequestAttributeSet();
         MediaSizeName mediaSizeName = MediaSize.findMedia(30.0F, 20.0F, MediaPrintableArea.MM);
-        System.out.println(mediaSizeName);
+        LOGGER.info("MediaSizeName = {}", mediaSizeName);
 
         printRequestAttributeSet.add(new MediaPrintableArea(0, 0, 26, 37, MediaPrintableArea.MM));
 
         Object count = propertiesHolder.getProperty("application", "reports.smallLabel.count");
         if (count == null) {
-            System.out.println("Wrong system configuration. Property reports.smallLabel.count is not set");
+            LOGGER.info("Wrong system configuration. Property reports.smallLabel.count is not set");
             FacesContext.getCurrentInstance().addMessage(
                     null, new FacesMessage(
                             FacesMessage.SEVERITY_ERROR, "Не установлено количество печатаемых этикеток. Обратитесь в техническую поддержку", ""
@@ -409,10 +354,10 @@ public class ReportsManagmentBean implements Serializable {
 
         try {
             exporter.exportReport();
-            System.out.println("Printed success");
+            LOGGER.info("Printed success");
         } catch (JRException e) {
             e.printStackTrace();
-            System.out.println("not printed");
+            LOGGER.info("not printed");
         } finally {
             // Корректно закрываем соединение с базой
             try {
@@ -439,16 +384,16 @@ public class ReportsManagmentBean implements Serializable {
             Map<String, Object> in_map = new HashMap<>();
             //main_content_form:startDate:dateEditor
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
-                System.out.println("_" + entry.getKey());
+                LOGGER.info("_" + entry.getKey());
 
                 if (StringUtils.contains(entry.getKey(), "Date")) {
                     try {
-                        System.out.println("-" + entry.getValue());
+                        LOGGER.info("-" + entry.getValue());
                         Date date = new SimpleDateFormat("dd.MM.yyyy").parse(entry.getValue());
                         in_map.put("_" + entry.getKey(), date);
                         in_map.put(entry.getKey(), date);
                     } catch (ParseException e) {
-                        System.out.println("Wrong date parameter");
+                        LOGGER.info("Wrong date parameter");
                         in_map.put("_" + entry.getKey(), entry.getValue());
                         in_map.put(entry.getKey(), entry.getValue());
                     }
@@ -493,16 +438,16 @@ public class ReportsManagmentBean implements Serializable {
             report = JasperCompileManager.compileReport(inputStream);
             Map<String, Object> in_map = new HashMap<>();
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
-                System.out.println("_" + entry.getKey());
+                LOGGER.info("_" + entry.getKey());
 
                 if (StringUtils.contains(entry.getKey(), "Date")) {
                     try {
-                        System.out.println("-" + entry.getValue());
+                        LOGGER.info("-" + entry.getValue());
                         Date date = new SimpleDateFormat("dd.MM.yyyy").parse(entry.getValue());
                         in_map.put("_" + entry.getKey(), date);
                         in_map.put(entry.getKey(), date);
                     } catch (ParseException e) {
-                        System.out.println("Wrong date parameter");
+                        LOGGER.info("Wrong date parameter");
                         in_map.put("_" + entry.getKey(), entry.getValue());
                         in_map.put(entry.getKey(), entry.getValue());
                     }
@@ -516,9 +461,9 @@ public class ReportsManagmentBean implements Serializable {
             final File imageFile = exportToImage(print, requestProperties);
             if (imageFile != null) {
                 if (storePictureLinkToDatabase(imageFile, requestProperties)) {
-                    System.out.println("Successful store labelPath");
+                    LOGGER.info("Successful store labelPath");
                 } else {
-                    System.out.println("Failed to store labelPath");
+                    LOGGER.info("Failed to store labelPath");
                 }
             }
             return imageFile;
@@ -549,16 +494,16 @@ public class ReportsManagmentBean implements Serializable {
             report = JasperCompileManager.compileReport(inputStream);
             Map<String, Object> in_map = new HashMap<>();
             for (Map.Entry<String, String> entry : requestProperties.entrySet()) {
-                System.out.println("_" + entry.getKey());
+                LOGGER.info("_" + entry.getKey());
 
                 if (StringUtils.contains(entry.getKey(), "Date")) {
                     try {
-                        System.out.println("-" + entry.getValue());
+                        LOGGER.info("-" + entry.getValue());
                         Date date = new SimpleDateFormat("dd.MM.yyyy").parse(entry.getValue());
                         in_map.put("_" + entry.getKey(), date);
                         in_map.put(entry.getKey(), date);
                     } catch (ParseException e) {
-                        System.out.println("Wrong date parameter");
+                        LOGGER.info("Wrong date parameter");
                         in_map.put("_" + entry.getKey(), entry.getValue());
                         in_map.put(entry.getKey(), entry.getValue());
                     }
@@ -584,9 +529,9 @@ public class ReportsManagmentBean implements Serializable {
             final File imageFile = exportToImage(print, requestProperties);
             if (imageFile != null) {
                 if (storePictureLinkToDatabase(imageFile, requestProperties)) {
-                    System.out.println("Successful store labelPath");
+                    LOGGER.info("Successful store labelPath");
                 } else {
-                    System.out.println("Failed to store labelPath");
+                    LOGGER.info("Failed to store labelPath");
                 }
             }
         } catch (JRException e) {
@@ -604,13 +549,13 @@ public class ReportsManagmentBean implements Serializable {
     private boolean storePictureLinkToDatabase(final File file, final Map<String, String> requestProperties) {
         final String docType = requestProperties.get("docType");
         if (docType == null || docType.isEmpty()) {
-            System.out.println("Cannot store PictureImage to Database cause: Undefined docType");
+            LOGGER.info("Cannot store PictureImage to Database cause: Undefined docType");
             return false;
         }
         if ("BloodComponent".equalsIgnoreCase(docType)) {
             return storePictureLinkToBloodComponent(file, requestProperties.get("docId"));
         } // .... other store to database calls
-        System.out.println("Unknown docType");
+        LOGGER.info("Unknown docType");
         return false;
     }
 
@@ -636,15 +581,15 @@ public class ReportsManagmentBean implements Serializable {
                 pictureExporter.setParameter(JRGraphics2DExporterParameter.ZOOM_RATIO, scale);
                 pictureExporter.exportReport();
                 if (ImageIO.write(picture, extension, pictureFile)) {
-                    System.out.println(
+                    LOGGER.info(
                             "Picture \'" + pictureFile.getAbsolutePath() + "\' Scale:" + scale + " Size: " + picture.getWidth() + 'x' + picture
                                     .getHeight() + " and use " + pictureFile.length() / 1024 + "Kb."
                     );
                 } else {
-                    System.out.println("Export ot image failed without exception");
+                    LOGGER.info("Export ot image failed without exception");
                 }
             } catch (Exception e) {
-                System.out.println("Export ot image failed");
+                LOGGER.info("Export ot image failed");
                 e.printStackTrace();
                 return null;
             }
@@ -658,7 +603,7 @@ public class ReportsManagmentBean implements Serializable {
         try {
             storagePath = (String) propertiesHolder.getProperty("application", "reports.storage.path");
         } catch (Exception e) {
-            System.out.println("Picture storage path property is empty or invalid use relative path \'..\\pictures\\'");
+            LOGGER.info("Picture storage path property is empty or invalid use relative path \'..\\pictures\\'");
             storagePath = spr + ".." + spr + "pictures" + spr;
         }
         String donorId;
@@ -673,7 +618,7 @@ public class ReportsManagmentBean implements Serializable {
         } else {
             fileName = "undefined_".concat(UUID.randomUUID().toString());
         }
-        StringBuilder sb = new StringBuilder(storagePath);
+        final StringBuilder sb = new StringBuilder(storagePath);
         sb.append(spr).append(donorId).append(spr).append(fileName).append('.').append(extension);
         final File result = new File(sb.toString());
         result.mkdirs();
@@ -685,7 +630,7 @@ public class ReportsManagmentBean implements Serializable {
             Object extensionProperty = propertiesHolder.getProperty("application", "reports.storage.extension");
             return (String) extensionProperty;
         } catch (Exception e) {
-            System.out.println("Extension property is not defined or incorrect. Use default=\'png\'");
+            LOGGER.info("Extension property is not defined or incorrect. Use default=\'png\'");
             return "png";
         }
     }
@@ -695,15 +640,15 @@ public class ReportsManagmentBean implements Serializable {
             Object scaleProperty = propertiesHolder.getProperty("application", "reports.bigLabelPictureScale");
             float scale = scaleProperty instanceof Number ? ((Number) scaleProperty).floatValue() : Float.parseFloat(scaleProperty.toString());
             if (scale > 10.0f) {
-                System.out.println("ScaleProperty is greater then 10.0f. Use 10.0f.");
+                LOGGER.info("ScaleProperty is greater then 10.0f. Use 10.0f.");
                 return 10.0f;
             } else if (scale < 0.0f) {
-                System.out.println("ScaleProperty is lesser then 0.0f. Use 1.0f.");
+                LOGGER.info("ScaleProperty is lesser then 0.0f. Use 1.0f.");
                 return 1.0f;
             }
             return scale;
         } catch (Exception e) {
-            System.out.println("Scale property is not defined or incorrect. Use default=2.0f");
+            LOGGER.info("Scale property is not defined or incorrect. Use default=2.0f");
             return 2.0f;
         }
     }
@@ -723,7 +668,7 @@ public class ReportsManagmentBean implements Serializable {
             report = JasperCompileManager.compileReport(inputStream);
             Map<String, Object> in_map = new HashMap<>();
             for (Map.Entry<String, Object> entry : requestProperties.entrySet()) {
-                System.out.println("_" + entry.getKey() + ": " + entry.getValue());
+                LOGGER.info("_" + entry.getKey() + ": " + entry.getValue());
                 in_map.put("_" + entry.getKey(), entry.getValue());
                 in_map.put(entry.getKey(), entry.getValue());
             }
@@ -778,7 +723,7 @@ public class ReportsManagmentBean implements Serializable {
             report = JasperCompileManager.compileReport(inputStream);
             Map<String, Object> in_map = new HashMap<>();
             for (Map.Entry<String, Object> entry : requestProperties.entrySet()) {
-                System.out.println("_" + entry.getKey() + ": " + entry.getValue());
+                LOGGER.info("_" + entry.getKey() + ": " + entry.getValue());
                 in_map.put("_" + entry.getKey(), entry.getValue());
                 in_map.put(entry.getKey(), entry.getValue());
             }
@@ -821,7 +766,7 @@ public class ReportsManagmentBean implements Serializable {
 
     protected void dump(PageFormat pf) {
         Paper paper = pf.getPaper();
-        System.out.println(dump(paper));
+        LOGGER.info(dump(paper));
     }
 
     private class ImagePrintable implements Printable {

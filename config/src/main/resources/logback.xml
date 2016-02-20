@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
     <jmxConfigurator/>
-    <contextName>ORD</contextName>
+    <contextName>TRFU</contextName>
 
     <!--APPENDERS-->
 
@@ -78,6 +78,17 @@
         </rollingPolicy>
     </appender>
 
+    <!-- Для отчетов-->
+    <appender name="APPENDER_REPORTS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${log.format}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${com.sun.aas.instanceRoot}/logs/report/report.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>${logs.maxHistory}</maxHistory>
+        </rollingPolicy>
+    </appender>
     <!--LOGGERS-->
 
     <!--Логгеры для документов-->
@@ -86,6 +97,11 @@
         <appender-ref ref="APPENDER_DOC"/>
     </logger>
     <!--Конец логгеров для документов-->
+
+    <!--Логгер для отчетов-->
+    <logger name="REPORT" level="${logs.document.level}" additivity="true">
+        <appender-ref ref="APPENDER_REPORT"/>
+    </logger>
 
     <logger name="AUTH" level="DEBUG"/>
 

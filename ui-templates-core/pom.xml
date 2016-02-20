@@ -54,16 +54,16 @@
 
     <properties>
         <!-- Sources -->
-        <version.jdk>1.6</version.jdk>
+        <version.jdk>1.7</version.jdk>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 	<!-- Target -->
 	<version.app.ear>6</version.app.ear>
-        <version.jdk.target>1.6</version.jdk.target>
+        <version.jdk.target>1.7</version.jdk.target>
     
 	<!-- Components -->
 	<version.javaee-api>6.0</version.javaee-api>
-	<version.lib.primefaces>5.1</version.lib.primefaces>
+	<version.lib.primefaces>5.2.RC3</version.lib.primefaces>
     
     	<!-- Test Environment -->
     	<version.junit>4.4</version.junit>
@@ -261,41 +261,7 @@
                 </executions -->
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-javadoc-plugin</artifactId>
-                            <configuration>
-                                <encoding>${project.build.sourceEncoding}</encoding>
-                                <charset>${project.build.sourceEncoding}</charset>
-                                <show>public</show>
-                            </configuration>
-                        </plugin>
-                        
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>findbugs-maven-plugin</artifactId>
-                        </plugin>
 
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-report-plugin</artifactId>
-                        </plugin>
-
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-checkstyle-plugin</artifactId>
-                            <configuration>
-                                <configLocation>checkstyle.xml</configLocation>
-                            </configuration>
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-            </plugin>
             
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

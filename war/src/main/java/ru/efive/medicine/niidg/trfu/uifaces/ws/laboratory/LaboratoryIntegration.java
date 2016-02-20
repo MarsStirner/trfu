@@ -66,7 +66,7 @@ public class LaboratoryIntegration {
 
             final ExternalAppointmentDaoImpl dao = (ExternalAppointmentDaoImpl) applicationContext.getBean
                     (ApplicationHelper.EXTERNAL_APPOINTMENT_DAO);
-            ExternalAppointment appointment = dao.get(orderId);
+            ExternalAppointment appointment = dao.getWithHistory(orderId);
             if (appointment == null) {
                 result = String.format(EXTERNAL_APPOINTMENT_NOT_FOUND, orderId, orderBarCode);
                 logger.error(result);

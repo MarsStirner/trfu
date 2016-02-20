@@ -14,7 +14,6 @@
         <module>config</module>
         <module>sql-dao</module>
         <module>ui-templates-core</module>
-        <module>alfresco-dao</module>
         <module>workflow_core</module>
         <module>war</module>
         <module>ear</module>

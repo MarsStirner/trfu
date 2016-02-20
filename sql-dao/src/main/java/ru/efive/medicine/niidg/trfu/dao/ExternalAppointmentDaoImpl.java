@@ -1,18 +1,18 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAppointment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExternalAppointmentDaoImpl extends GenericDAOHibernate<ExternalAppointment> {
 	
@@ -32,6 +32,14 @@ public class ExternalAppointmentDaoImpl extends GenericDAOHibernate<ExternalAppo
 			}
 		}
 		return result;
+	}
+
+	public ExternalAppointment getWithHistory(int orderId){
+		final DetachedCriteria criteria = DetachedCriteria.forClass(ExternalAppointment.class)
+				.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+		criteria.add(Restrictions.idEq(orderId)).createAlias("historyEntries", "history", CriteriaSpecification.LEFT_JOIN);
+		final List result = getHibernateTemplate().findByCriteria(criteria, -1, 1);
+		return result.iterator().hasNext() ? (ExternalAppointment) result.iterator().next() : null;
 	}
 	
 	@SuppressWarnings("unchecked")

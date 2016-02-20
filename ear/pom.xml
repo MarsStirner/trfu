@@ -24,11 +24,6 @@
             <artifactId>sql-dao</artifactId>
         </dependency>
         
-        <dependency>
-            <groupId>ru.efive.dao</groupId>
-            <artifactId>alfresco-dao</artifactId>
-        </dependency>
-        
 		<dependency>
 			<groupId>ru.efive.medicine.niidg</groupId>
 			<artifactId>transfusion</artifactId>

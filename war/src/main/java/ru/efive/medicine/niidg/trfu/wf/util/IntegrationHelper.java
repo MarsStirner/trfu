@@ -32,11 +32,11 @@ import java.util.regex.Pattern;
 public class IntegrationHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(IntegrationHelper.class);
-    private static final int LIS_BARCODE_LENGTH = 8;
+    private static final int LIS_BARCODE_LENGTH = 5;
 
     public static ActionResult queryAppointment(ExaminationRequest examination) {
         FacesContext context = FacesContext.getCurrentInstance();
-        ApplicationPropertiesHolder propertiesHolder = (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(
+        ApplicationPropertiesHolder propertiesHolder = context.getApplication().evaluateExpressionGet(
                 context,
                 "#{propertiesHolder}",
                 ApplicationPropertiesHolder.class
@@ -75,7 +75,7 @@ public class IntegrationHelper {
         if (process) {
             try {
                 boolean failureFlag = false;
-                List<String> failureDescription = new ArrayList<String>();
+                List<String> failureDescription = new ArrayList<>();
                 IAcrossIntf_FNKCservice service = new IAcrossIntf_FNKCserviceLocator();
                 PatientInfo donor = new PatientInfo();
                 donor.setPatientMisId(examination.getDonor().getId());
@@ -116,7 +116,7 @@ public class IntegrationHelper {
 
                 OrderInfo order = new OrderInfo();
                 order.setOrderPriority(2);
-                if (examination.getAppointment().getTests() != null && examination.getAppointment().getTests().size() > 0) {
+                if (examination.getAppointment().getTests() != null && !examination.getAppointment().getTests().isEmpty()) {
                     order.setIndicators(getIndicators(examination.getAppointment()).toArray(new Tindicator[0]));
                 } else {
                     failureFlag = true;
@@ -155,7 +155,7 @@ public class IntegrationHelper {
 
     public static ActionResult queryAppointment(BloodDonationRequest donation) {
         FacesContext context = FacesContext.getCurrentInstance();
-        ApplicationPropertiesHolder propertiesHolder = (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(
+        ApplicationPropertiesHolder propertiesHolder = context.getApplication().evaluateExpressionGet(
                 context,
                 "#{propertiesHolder}",
                 ApplicationPropertiesHolder.class
@@ -194,7 +194,7 @@ public class IntegrationHelper {
         if (process) {
             try {
                 boolean failureFlag = false;
-                List<String> failureDescription = new ArrayList<String>();
+                List<String> failureDescription = new ArrayList<>();
                 IAcrossIntf_FNKCservice service = new IAcrossIntf_FNKCserviceLocator();
                 PatientInfo donor = new PatientInfo();
                 donor.setPatientMisId(donation.getDonor().getId());
@@ -274,7 +274,7 @@ public class IntegrationHelper {
 
     public static ActionResult queryAppointment(BloodComponent component) {
         FacesContext context = FacesContext.getCurrentInstance();
-        ApplicationPropertiesHolder propertiesHolder = (ApplicationPropertiesHolder) context.getApplication().evaluateExpressionGet(
+        ApplicationPropertiesHolder propertiesHolder = context.getApplication().evaluateExpressionGet(
                 context,
                 "#{propertiesHolder}",
                 ApplicationPropertiesHolder.class
@@ -323,7 +323,7 @@ public class IntegrationHelper {
     }
 
     private static List<Tindicator> getIndicators(ExternalAppointment appointment) {
-        List<Tindicator> indicators = new ArrayList<Tindicator>();
+        List<Tindicator> indicators = new ArrayList<>();
         try {
             for (Analysis analysis : appointment.getTests()) {
                 if (analysis.getType().isLaboratoryTest()) {
@@ -407,7 +407,7 @@ public class IntegrationHelper {
                     //Print all components labels and store it as pictures
                     if (BloodComponentHelper.validateBeforePrint(bloodComponent)) {
                         try {
-                            final Map<String, String> reportProperties = new HashMap<String, String>(requestProperties);
+                            final Map<String, String> reportProperties = new HashMap<>(requestProperties);
                             reportProperties.put("docId", String.valueOf(bloodComponent.getId()));
                             if (bloodComponent.isPurchased()) {
                                 reportProperties.put("donorId", bloodComponent.getDonorCode());
@@ -556,8 +556,8 @@ public class IntegrationHelper {
             procedureInfo.setFactDate(new XMLGregorianCalendarImpl(calendar));
 
             EritrocyteMass eritrocyteMass = new EritrocyteMass();
-            List<LaboratoryMeasure> measures = new ArrayList<LaboratoryMeasure>();
-            List<FinalVolume> finalVolumeList = new ArrayList<FinalVolume>();
+            List<LaboratoryMeasure> measures = new ArrayList<>();
+            List<FinalVolume> finalVolumeList = new ArrayList<>();
 
             if (operation.getOperationReport() != null) {
                 OperationReport report = operation.getOperationReport();
@@ -690,7 +690,7 @@ public class IntegrationHelper {
     }
 
     public static boolean updateDivisions() {
-        boolean result = false;
+        boolean result;
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             ApplicationPropertiesHolder propertiesHolder = context.getApplication().evaluateExpressionGet(
