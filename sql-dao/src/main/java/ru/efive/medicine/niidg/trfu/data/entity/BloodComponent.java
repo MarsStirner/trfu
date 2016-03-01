@@ -325,6 +325,9 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
     @Temporal(TemporalType.TIMESTAMP)
     private Date virusInactivationDate;
 
+    @Column(name = "parent_id", nullable = true)
+    private Integer parentId;
+
 
     public User getAuthor() {
         return author;
@@ -885,6 +888,14 @@ public class BloodComponent extends IdentifiedEntity implements ProcessedData, C
 
     public void setFactEntry(BloodDonationEntry entry){
         this.factEntry = entry;
+    }
+
+    public void setParentId(final Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public int getParentId() {
+        return parentId;
     }
 }
 

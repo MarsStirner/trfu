@@ -29,7 +29,6 @@ import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
@@ -934,11 +933,11 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                 }
             }
             if (sum == getDocument().getVolume()) {
-                //TODO тикет на дубликаты номеров при разделении
                 final Date splitDate = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
                 BloodComponentDAOImpl dao = sessionManagement.getDAO(
                         BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO
                 );
+                int lastBCNumber = dao.getLastNumberByDonation(getDocument().getParentNumber(), getDocument().isPurchased());
                 for (VolumeEntry volume : volumeList) {
                     BloodComponent component = getDocument().cloneComponent();
                     component.setId(0);
@@ -968,6 +967,11 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                     component.setSplitVolume(getDocument().getVolume());
                     component.setSplitDate(splitDate);
                     component.setPreInactivatedVolume(0);
+                    component.setParentId(getDocument().getId());
+                    component.setUuid(UUID.randomUUID().toString());
+                    component.setBigLabelPath(null);
+                    lastBCNumber++;
+                    component.setNumber(StringUtils.leftPad(String.valueOf(lastBCNumber), 2, '0'));
 
                     HistoryEntry newEntry = new HistoryEntry();
                     newEntry.setActionId(3);
@@ -982,10 +986,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                     newEntry.setProcessed(true);
                     StringBuilder sb = new StringBuilder("Получено путем разделения из компонента объемом ").append(component.getSplitVolume())
                             .append(" ").append(
-                                    new java.text.SimpleDateFormat(
-                                            "dd.MM" +
-                                                    ".yyyy" + " HH:mm"
-                                    ).format(splitDate)
+                                    new java.text.SimpleDateFormat("dd.MM.yyyy HH:mm").format(splitDate)
                             );
                     newEntry.setCommentary(sb.toString());
 
@@ -1011,10 +1012,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                 newEntry.setParentId(component.getId());
                 newEntry.setEndDate(splitDate);
                 newEntry.setProcessed(true);
-                StringBuilder sb = new StringBuilder("Компонент разделен ").append(
-                        new java.text.SimpleDateFormat(
-                                "dd" + ".MM.yyyy HH:mm"
-                        ).format(splitDate)
+                StringBuilder sb = new StringBuilder("Компонент разделен ").append(new java.text.SimpleDateFormat("dd.MM.yyyy HH:mm").format(splitDate)
                 ).append(" ").append("на ").append(volumeList.size()).append(" КК (");
                 final Iterator<VolumeEntry> volumeEntryIterator = volumeList.iterator();
                 while (volumeEntryIterator.hasNext()) {

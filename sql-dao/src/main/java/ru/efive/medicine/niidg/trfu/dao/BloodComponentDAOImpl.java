@@ -1,21 +1,11 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
-import org.hibernate.Session;
 import org.hibernate.criterion.*;
 import org.hibernate.type.StringType;
-
 import ru.efive.crm.data.Contragent;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
@@ -26,6 +16,8 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.BloodComponentsFilter;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+
+import java.util.*;
 
 public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
 	
@@ -1231,4 +1223,23 @@ public class BloodComponentDAOImpl extends GenericDAOHibernate<BloodComponent> {
         }
         return getCountOf(detachedCriteria);
     }
+
+	public int getLastNumberByDonation(final String donationNumber, final boolean purchased) {
+		final DetachedCriteria detachedCriteria = DetachedCriteria.forClass(BloodComponent.class).setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
+        detachedCriteria.add(Restrictions.eq("deleted", false));
+		detachedCriteria.add(Restrictions.eq("purchased", purchased));
+		if (purchased) {
+			detachedCriteria.add(Restrictions.eq("parentNumber", donationNumber));
+		} else {
+			detachedCriteria.createAlias("donation", "donation", CriteriaSpecification.INNER_JOIN);
+			detachedCriteria.add(Restrictions.eq("donation.number", donationNumber));
+		}
+		detachedCriteria.addOrder(Order.desc("number"));
+		final List<BloodComponent> resultList = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+		if(resultList == null || resultList.isEmpty()){
+			return 0;
+		} else {
+			return Integer.parseInt(resultList.get(0).getNumber());
+		}
+	}
 }
