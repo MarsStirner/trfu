@@ -1,14 +1,9 @@
 package ru.efive.medicine.niidg.trfu.data.entity;
 
-import java.util.*;
-
-import javax.persistence.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-
 import ru.efive.dao.sql.entity.IdentifiedEntity;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
@@ -17,6 +12,9 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ProcessedData;
+
+import javax.persistence.*;
+import java.util.*;
 
 /**
  * Обращение на заказ компонента крови
@@ -216,9 +214,7 @@ public class BloodComponentOrderRequest extends IdentifiedEntity implements Proc
         if (age == 0) {
             return "";
         }
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(age).append(" ").append(age % 10 == 1 && age % 100 != 11 ? "год" : age % 10 >= 2 && age % 10 <= 4 && (age % 100 < 10 || age % 100 >= 20) ? "года" : "лет");
-        return buffer.toString();
+        return new StringBuilder(age).append(" ").append(age % 10 == 1 && age % 100 != 11 ? "год" : age % 10 >= 2 && age % 10 <= 4 && (age % 100 < 10 || age % 100 >= 20) ? "года" : "лет").toString();
     }
 
     public String getIbNumber() {
