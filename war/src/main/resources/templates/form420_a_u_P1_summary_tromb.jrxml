@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 420_а_у-П1" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2016-06-16T20:23:01 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 420_а_у-П1" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f128c940-bfda-41ba-b5f4-be6dff3ca5ae">
 	<property name="ireport.zoom" value="1.4641000000000157"/>
 	<property name="ireport.x" value="267"/>
 	<property name="ireport.y" value="195"/>
@@ -23,7 +25,7 @@
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<subDataset name="Components">
+	<subDataset name="Components" uuid="dca4472d-1c58-4929-9a84-ec6f77903d4e">
 		<parameter name="StartDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
@@ -87,7 +89,7 @@ GROUP BY
 			<variableExpression><![CDATA[(java.math.BigDecimal.valueOf( $F{recievedAcVolume} )).divide( java.math.BigDecimal.valueOf( 1000.00 ) )]]></variableExpression>
 		</variable>
 	</subDataset>
-	<subDataset name="Components_Razbivka">
+	<subDataset name="Components_Razbivka" uuid="500a435a-af77-4491-ae2f-1accc4a22ede">
 		<parameter name="StartDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
@@ -410,7 +412,7 @@ group by 1]]>
 		<field name="ervzv_brak_count" class="java.lang.Long"/>
 		<field name="tromb_brak_count" class="java.lang.Long"/>
 	</subDataset>
-	<subDataset name="ComponentsAll">
+	<subDataset name="ComponentsAll" uuid="5188f0d8-db60-465e-928a-4fa920e25052">
 		<parameter name="StartDate" class="java.util.Date">
 			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 		</parameter>
@@ -575,51 +577,51 @@ order by cl.value]]>
 		<groupFooter>
 			<band height="74">
 				<textField>
-					<reportElement style="table_TD" x="0" y="0" width="35" height="74"/>
+					<reportElement style="table_TD" x="0" y="0" width="35" height="74" uuid="115ebe52-fd0a-40f7-b1f7-0a865fee5f63"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{group_count}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.000">
-					<reportElement style="table_TD" x="274" y="0" width="41" height="74"/>
+					<reportElement style="table_TD" x="274" y="0" width="41" height="74" uuid="2737b068-a840-490f-b569-9a98727fae80"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{bezv_celn_kr}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.000">
-					<reportElement style="table_TD" x="315" y="0" width="41" height="74"/>
+					<reportElement style="table_TD" x="315" y="0" width="41" height="74" uuid="5702a499-9e96-4f0a-8b66-f2735d8725f0"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{bezv_lab}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.000">
-					<reportElement style="table_TD" x="356" y="0" width="41" height="74"/>
+					<reportElement style="table_TD" x="356" y="0" width="41" height="74" uuid="bf57fe33-6e9b-4c1c-945d-5dabd26e2cff"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{bezv_lab}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.000">
-					<reportElement style="table_TD" x="397" y="0" width="41" height="74"/>
+					<reportElement style="table_TD" x="397" y="0" width="41" height="74" uuid="8283c23c-1302-4215-99e8-0e03239d1cde"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{bezv_celn_kr}.add($V{bezv_lab}).add($V{bezv_lab})]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.000">
-					<reportElement style="table_TD" x="438" y="0" width="75" height="74"/>
+					<reportElement style="table_TD" x="438" y="0" width="75" height="74" uuid="6e141b08-7249-4ffe-8acd-7eca629a63c3"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{bezv_celn_kr}.add($V{AcTotal})]]></textFieldExpression>
 				</textField>
 				<componentElement>
-					<reportElement key="table 1" x="513" y="0" width="289" height="74"/>
+					<reportElement key="table 1" x="513" y="0" width="289" height="74" uuid="8857e301-ba85-4371-9365-f569366c6e46"/>
 					<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-						<datasetRun subDataset="Components">
+						<datasetRun subDataset="Components" uuid="964751a5-9e35-4275-9c68-ce38f7a30470">
 							<datasetParameter name="StartDate">
 								<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 							</datasetParameter>
@@ -631,11 +633,11 @@ order by cl.value]]>
 							</datasetParameter>
 							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 						</datasetRun>
-						<jr:column width="80">
+						<jr:column width="80" uuid="4e0f37b9-e4d2-4947-aef5-80ccead50518">
 							<jr:tableFooter style="table_TD" height="0" rowSpan="1"/>
 							<jr:columnFooter height="74" rowSpan="1">
 								<textField pattern="###0.000">
-									<reportElement style="table_TD" x="0" y="0" width="80" height="74"/>
+									<reportElement style="table_TD" x="0" y="0" width="80" height="74" uuid="5a3a9fbc-845d-4f38-abc7-d5adc5ecea12"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Tahoma"/>
 									</textElement>
@@ -644,26 +646,26 @@ order by cl.value]]>
 							</jr:columnFooter>
 							<jr:detailCell height="0" rowSpan="1"/>
 						</jr:column>
-						<jr:columnGroup width="78">
-							<jr:column width="30">
+						<jr:columnGroup width="78" uuid="bf771d35-863f-4867-8e17-0ab530a0ffc5">
+							<jr:column width="30" uuid="30359a96-0a0b-4c2e-930e-b85000a5f4a6">
 								<jr:tableFooter height="0" rowSpan="1"/>
 								<jr:columnFooter height="74" rowSpan="1">
 									<textField>
-										<reportElement style="table_TD" x="0" y="0" width="30" height="24"/>
+										<reportElement style="table_TD" x="0" y="0" width="30" height="24" uuid="1ff97470-c9d9-4d49-b8c9-12a93980a6ba"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Tahoma"/>
 										</textElement>
 										<textFieldExpression><![CDATA[1]]></textFieldExpression>
 									</textField>
 									<textField>
-										<reportElement style="table_TD" x="0" y="24" width="30" height="24"/>
+										<reportElement style="table_TD" x="0" y="24" width="30" height="24" uuid="0ed6f9cd-b94f-4546-b502-67e8f0f60eb1"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Tahoma"/>
 										</textElement>
 										<textFieldExpression><![CDATA[2]]></textFieldExpression>
 									</textField>
 									<textField>
-										<reportElement style="table_TD" x="0" y="48" width="30" height="26"/>
+										<reportElement style="table_TD" x="0" y="48" width="30" height="26" uuid="7d6785e2-d15b-4162-8a7f-5d707dfebab3"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Tahoma"/>
 										</textElement>
@@ -672,25 +674,25 @@ order by cl.value]]>
 								</jr:columnFooter>
 								<jr:detailCell height="0" rowSpan="1"/>
 							</jr:column>
-							<jr:column width="48">
+							<jr:column width="48" uuid="3e78df28-dffe-4e60-b30b-60528fb1c59f">
 								<jr:tableFooter style="table_TD" height="0" rowSpan="1"/>
 								<jr:columnFooter height="74" rowSpan="1">
 									<textField pattern="###0.000">
-										<reportElement style="table_TD" x="0" y="0" width="48" height="24"/>
+										<reportElement style="table_TD" x="0" y="0" width="48" height="24" uuid="e9619996-8f43-42d3-a796-708497df28f1"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Tahoma"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$V{tromb_volume}]]></textFieldExpression>
 									</textField>
 									<textField pattern="###0.000">
-										<reportElement style="table_TD" x="0" y="24" width="48" height="24"/>
+										<reportElement style="table_TD" x="0" y="24" width="48" height="24" uuid="f8511846-82c2-419c-aca2-d3d61b77e01e"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Tahoma"/>
 										</textElement>
 										<textFieldExpression><![CDATA[$V{ervzv_volume}]]></textFieldExpression>
 									</textField>
 									<textField pattern="###0.000">
-										<reportElement style="table_TD" x="0" y="48" width="48" height="26"/>
+										<reportElement style="table_TD" x="0" y="48" width="48" height="26" uuid="3630af73-bbc9-4789-9715-624f8653b03a"/>
 										<textElement textAlignment="Center" verticalAlignment="Middle">
 											<font fontName="Tahoma"/>
 										</textElement>
@@ -700,25 +702,25 @@ order by cl.value]]>
 								<jr:detailCell height="0" rowSpan="1"/>
 							</jr:column>
 						</jr:columnGroup>
-						<jr:column width="73">
+						<jr:column width="73" uuid="a83f0fb6-3ade-499c-9cf0-ccbe462ca28a">
 							<jr:tableFooter style="table_TD" height="0" rowSpan="1"/>
 							<jr:columnFooter style="table_TD" height="74" rowSpan="1">
 								<staticText>
-									<reportElement style="table_TD" x="0" y="0" width="73" height="24"/>
+									<reportElement style="table_TD" x="0" y="0" width="73" height="24" uuid="0fedfee0-6a30-4262-b600-2c07be9f6edf"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Tahoma"/>
 									</textElement>
 									<text><![CDATA[КТА]]></text>
 								</staticText>
 								<staticText>
-									<reportElement style="table_TD" x="0" y="24" width="73" height="24"/>
+									<reportElement style="table_TD" x="0" y="24" width="73" height="24" uuid="55358457-978d-4b92-a1fa-aadd2554f1f7"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Tahoma"/>
 									</textElement>
 									<text><![CDATA[ЭрВА]]></text>
 								</staticText>
 								<staticText>
-									<reportElement style="table_TD" x="0" y="48" width="73" height="26"/>
+									<reportElement style="table_TD" x="0" y="48" width="73" height="26" uuid="29e05333-e691-4fc4-8364-093e567823d5"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Tahoma"/>
 									</textElement>
@@ -727,7 +729,7 @@ order by cl.value]]>
 							</jr:columnFooter>
 							<jr:detailCell style="table_TD" height="0" rowSpan="1"/>
 						</jr:column>
-						<jr:column width="58">
+						<jr:column width="58" uuid="5cd0077f-2cd8-4893-a08d-c54fb8c5445f">
 							<jr:tableHeader height="0" rowSpan="1"/>
 							<jr:tableFooter style="table_TD" height="0" rowSpan="1"/>
 							<jr:columnHeader height="0" rowSpan="1"/>
@@ -737,21 +739,21 @@ order by cl.value]]>
 					</jr:table>
 				</componentElement>
 				<textField>
-					<reportElement style="table_TD" x="35" y="0" width="139" height="74"/>
+					<reportElement style="table_TD" x="35" y="0" width="139" height="74" uuid="d112cc0d-7ebd-423b-a526-0909158cfc93"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{donorType}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="table_TD" x="224" y="0" width="50" height="74"/>
+					<reportElement style="table_TD" x="224" y="0" width="50" height="74" uuid="3073801a-11a8-48c4-8d4d-63e3428b3679"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{bezv_donation_count}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="174" y="0" width="50" height="74"/>
+					<reportElement x="174" y="0" width="50" height="74" uuid="562af947-c3ea-45c0-945e-a5d01dbb9773"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Tahoma"/>
 					</textElement>
@@ -766,21 +768,21 @@ order by cl.value]]>
 	<title>
 		<band height="101" splitType="Stretch">
 			<staticText>
-				<reportElement x="710" y="0" width="92" height="18"/>
+				<reportElement x="710" y="0" width="92" height="18" uuid="b830f965-c244-4f98-a408-beca5f296e9b"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Форма 420/у-П1]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="93" y="35" width="487" height="16"/>
+				<reportElement positionType="Float" x="93" y="35" width="487" height="16" uuid="84aa9742-7e38-46fd-992a-b62640ad547c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[ОТЧЕТ О РАБОТЕ ОТДЕЛЕНИЯ ЗАГОТОВКИ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="580" y="0" width="130" height="18"/>
+				<reportElement x="580" y="0" width="130" height="18" uuid="22177457-375a-4a19-a5f0-981176f5fa0e"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -788,87 +790,87 @@ order by cl.value]]>
 ]]></text>
 			</staticText>
 			<line>
-				<reportElement x="596" y="50" width="100" height="1"/>
+				<reportElement x="630" y="81" width="100" height="1" uuid="a8c8ad99-06f7-47c9-93da-951757189c10"/>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="377" y="51" width="19" height="15"/>
+				<reportElement positionType="Float" x="377" y="51" width="19" height="15" uuid="b45c9ea1-6e0d-4cf8-82de-3d8d72441105"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[по]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="213" y="51" width="67" height="15"/>
+				<reportElement positionType="Float" x="213" y="51" width="67" height="15" uuid="f6cc122c-43ee-4f00-a2da-2eadf1e3b7f0"/>
 				<textElement textAlignment="Right" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[за период c]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="264" y="66" width="200" height="15"/>
+				<reportElement positionType="Float" x="264" y="66" width="200" height="15" uuid="0d216ccd-20b1-4dcf-bb49-7585a69ce4bf"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[только доноры тромбоцитов]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="81" width="145" height="20"/>
+				<reportElement positionType="Float" x="0" y="81" width="145" height="20" uuid="0eab9c3d-d71a-467d-9454-584701cf2dfc"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[Отчет о заготовке за период с]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="245" y="81" width="19" height="20"/>
+				<reportElement positionType="Float" x="245" y="81" width="19" height="20" uuid="010e2145-5ecd-4544-bae7-230fe4271349"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[по]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement positionType="Float" x="280" y="51" width="97" height="15"/>
+				<reportElement positionType="Float" x="280" y="51" width="97" height="15" uuid="39414ee5-3a8c-4eae-86b0-fc206e9884d4"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom"/>
 				<textFieldExpression><![CDATA[$P{StartDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement positionType="Float" x="397" y="50" width="100" height="15"/>
+				<reportElement positionType="Float" x="397" y="50" width="100" height="15" uuid="53f4ec99-b37b-4e3c-b201-26fb97899f3f"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{EndDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement positionType="Float" x="145" y="81" width="100" height="20"/>
+				<reportElement positionType="Float" x="145" y="81" width="100" height="20" uuid="62a03107-3e4b-480a-8f0c-2e604e68997f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{StartDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement positionType="Float" x="264" y="81" width="100" height="20"/>
+				<reportElement positionType="Float" x="264" y="81" width="100" height="20" uuid="33127ba5-7a26-48b9-b5fd-efa35e06440a"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{EndDate}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="93" y="0" width="487" height="18"/>
+				<reportElement positionType="Float" x="93" y="0" width="487" height="18" uuid="71d0407f-3902-4192-aba6-e891c0d9b2b7"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="93" y="18" width="487" height="17"/>
+				<reportElement positionType="Float" x="93" y="18" width="487" height="17" uuid="fd917b96-8d39-410d-83da-b1918746b6e3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{Division}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="582" y="18" width="162" height="18"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="582" y="18" width="220" height="48" uuid="d9ea23e8-c873-40e6-8b1c-68199fc3b9d7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Главный врач "+$P{HeadDoctor}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Заместитель генерального директора по научно-клинической работе - медицинский директор  "+$P{HeadDoctor}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -878,7 +880,7 @@ order by cl.value]]>
 	<columnHeader>
 		<band height="60" splitType="Stretch">
 			<staticText>
-				<reportElement style="table_TD" x="0" y="0" width="35" height="60"/>
+				<reportElement style="table_TD" x="0" y="0" width="35" height="60" uuid="b0fbe031-f83f-4bcf-b762-8544d86fe015"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -886,14 +888,14 @@ order by cl.value]]>
 п/п]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="35" y="0" width="139" height="60"/>
+				<reportElement style="table_TD" x="35" y="0" width="139" height="60" uuid="f080a0e5-48a7-4194-99d7-b0e330db666e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[Тип донации ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="174" y="0" width="50" height="60"/>
+				<reportElement style="table_TD" x="174" y="0" width="50" height="60" uuid="3c0d9ed8-94ec-4826-97e8-ba8b60455556"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -901,7 +903,7 @@ order by cl.value]]>
 ров  ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="224" y="0" width="50" height="60"/>
+				<reportElement style="table_TD" x="224" y="0" width="50" height="60" uuid="6328a654-401c-4352-8d74-3baa3efdddda"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -909,7 +911,7 @@ order by cl.value]]>
 ций  ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="274" y="0" width="164" height="30"/>
+				<reportElement style="table_TD" x="274" y="0" width="164" height="30" uuid="d1a72344-fcc7-497c-992c-991ce13353ec"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -918,7 +920,7 @@ order by cl.value]]>
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="274" y="30" width="41" height="30"/>
+				<reportElement style="table_TD" x="274" y="30" width="41" height="30" uuid="538cc8a5-f70b-48b7-9c85-5fa26d9235f9"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -926,7 +928,7 @@ order by cl.value]]>
 емк.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="315" y="30" width="41" height="30"/>
+				<reportElement style="table_TD" x="315" y="30" width="41" height="30" uuid="5e76a648-3d25-4cab-971a-324985402073"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -934,7 +936,7 @@ order by cl.value]]>
 лаб.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="356" y="30" width="41" height="30"/>
+				<reportElement style="table_TD" x="356" y="30" width="41" height="30" uuid="ef03e345-c4e6-42ad-a196-d34e47cf31b2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -943,14 +945,14 @@ order by cl.value]]>
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="397" y="30" width="41" height="30"/>
+				<reportElement style="table_TD" x="397" y="30" width="41" height="30" uuid="fd40b6f5-6a96-439f-b4d6-2dfc1807e0c1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[б/к]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="438" y="0" width="75" height="60"/>
+				<reportElement style="table_TD" x="438" y="0" width="75" height="60" uuid="d5020c74-0202-4b7b-97ed-14b0b0a0febc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -959,7 +961,7 @@ order by cl.value]]>
 (литров)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="513" y="0" width="80" height="60"/>
+				<reportElement style="table_TD" x="513" y="0" width="80" height="60" uuid="77254be4-efaf-48e7-b706-39b09602cad7"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -967,35 +969,35 @@ order by cl.value]]>
 (литров)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="593" y="0" width="209" height="30"/>
+				<reportElement style="table_TD" x="593" y="0" width="209" height="30" uuid="331a57f6-6726-407e-b625-93d9fae8594e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[Продукты]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="593" y="30" width="30" height="30"/>
+				<reportElement style="table_TD" x="593" y="30" width="30" height="30" uuid="633f7838-2f9e-4a33-97cc-fe9f93249120"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[№]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="623" y="30" width="48" height="30"/>
+				<reportElement style="table_TD" x="623" y="30" width="48" height="30" uuid="418e13fc-18f0-4894-bfa9-72024260be5f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[литров]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="671" y="30" width="73" height="30"/>
+				<reportElement style="table_TD" x="671" y="30" width="73" height="30" uuid="5cbe1905-5280-40e1-be18-3414efa2a1da"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[тип]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="744" y="30" width="58" height="30"/>
+				<reportElement style="table_TD" x="744" y="30" width="58" height="30" uuid="ef9cbbc7-5554-46d6-8c89-64f5e3d1ff5a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -1015,7 +1017,7 @@ order by cl.value]]>
 	<summary>
 		<band height="156">
 			<staticText>
-				<reportElement x="174" y="34" width="419" height="15"/>
+				<reportElement x="174" y="34" width="419" height="15" uuid="10de8784-8f62-46ea-ae39-8228cbda4d31"/>
 				<box leftPadding="3"/>
 				<textElement>
 					<font fontName="Tahoma"/>
@@ -1023,9 +1025,9 @@ order by cl.value]]>
 				<text><![CDATA[Распределение продукции по типам и направлениям:]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement key="table 1" positionType="Float" isPrintRepeatedValues="false" mode="Transparent" x="593" y="32" width="209" height="120"/>
+				<reportElement key="table 1" positionType="Float" isPrintRepeatedValues="false" mode="Transparent" x="593" y="32" width="209" height="120" uuid="6b2e7baa-d69a-49bc-8c41-a38d77ab6f51"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Components_Razbivka">
+					<datasetRun subDataset="Components_Razbivka" uuid="02019fa7-f9f7-4fe2-8d78-075c00e6aff5">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1034,12 +1036,12 @@ order by cl.value]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="30">
+					<jr:column width="30" uuid="70300b41-ab89-4af8-8aa4-094ba0d8878d">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="0" rowSpan="1"/>
 						<jr:columnHeader height="30" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TD" x="0" y="0" width="30" height="30"/>
+								<reportElement style="table_TD" x="0" y="0" width="30" height="30" uuid="b9488103-f343-456a-aadf-7520a80e0098"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma" size="12" isBold="false"/>
 								</textElement>
@@ -1048,49 +1050,49 @@ order by cl.value]]>
 						</jr:columnHeader>
 						<jr:columnFooter height="116" rowSpan="1">
 							<textField pattern="###0">
-								<reportElement style="table_TD" x="0" y="0" width="30" height="16"/>
+								<reportElement style="table_TD" x="0" y="0" width="30" height="16" uuid="a38bee16-6332-446c-a36a-5603e52d1682"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{tromb_eksped_count}]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0">
-								<reportElement style="table_TD" x="0" y="16" width="30" height="16"/>
+								<reportElement style="table_TD" x="0" y="16" width="30" height="16" uuid="c0b5f085-3097-4117-96a5-f93556115b13"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{ervzv_eksped_count}]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0">
-								<reportElement style="table_TD" x="0" y="32" width="30" height="16"/>
+								<reportElement style="table_TD" x="0" y="32" width="30" height="16" uuid="17be15b0-026d-47a4-a747-9edee264ed3e"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{tromb_ostatok_count}]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0">
-								<reportElement style="table_TD" x="0" y="48" width="30" height="16"/>
+								<reportElement style="table_TD" x="0" y="48" width="30" height="16" uuid="2db1d1e5-c845-4852-9a29-e0f87722ef5a"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{tromb_brak_count}]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0">
-								<reportElement style="table_TD" x="0" y="64" width="30" height="16"/>
+								<reportElement style="table_TD" x="0" y="64" width="30" height="16" uuid="249ead3d-fa95-4813-8875-a4645d202537"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{plasm_eksped_count}]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0">
-								<reportElement style="table_TD" x="0" y="80" width="30" height="16"/>
+								<reportElement style="table_TD" x="0" y="80" width="30" height="16" uuid="2df6bda8-3895-4d00-9db9-ed26aa1c2973"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{ervzv_aferez_ostatok_count}]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0">
-								<reportElement style="table_TD" x="0" y="96" width="30" height="16"/>
+								<reportElement style="table_TD" x="0" y="96" width="30" height="16" uuid="1b453a70-e6b7-4d97-aa88-08842894ed6c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1099,12 +1101,12 @@ order by cl.value]]>
 						</jr:columnFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="48">
+					<jr:column width="48" uuid="c30949e7-e525-4580-9956-e07de4d0cef2">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="0" rowSpan="1"/>
 						<jr:columnHeader height="30" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TD" x="0" y="0" width="48" height="30"/>
+								<reportElement style="table_TD" x="0" y="0" width="48" height="30" uuid="c9cdf4b7-8764-4eec-aef8-11db314a1440"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma" size="12" isBold="false"/>
 								</textElement>
@@ -1113,49 +1115,49 @@ order by cl.value]]>
 						</jr:columnHeader>
 						<jr:columnFooter height="116" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TD" x="0" y="0" width="48" height="16"/>
+								<reportElement style="table_TD" x="0" y="0" width="48" height="16" uuid="e1de8207-7ec4-4d78-9ea7-bb5f46b28c70"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[КТА]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="16" width="48" height="16"/>
+								<reportElement style="table_TD" x="0" y="16" width="48" height="16" uuid="0c053cfe-1efd-40ec-9a76-e3469d1cb0b3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[ЭрВА]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="32" width="48" height="16"/>
+								<reportElement style="table_TD" x="0" y="32" width="48" height="16" uuid="dd867036-622f-47b3-8549-e3bf0c532f72"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[КТА]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="48" width="48" height="16"/>
+								<reportElement style="table_TD" x="0" y="48" width="48" height="16" uuid="e9e76d5b-6dd1-46b3-bcd7-3cba6dab0c0f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[КТА]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="64" width="48" height="16"/>
+								<reportElement style="table_TD" x="0" y="64" width="48" height="16" uuid="2087f99d-8496-48c0-9332-badce53d58b9"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[СЗП]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="80" width="48" height="16"/>
+								<reportElement style="table_TD" x="0" y="80" width="48" height="16" uuid="63b31ae7-7f6c-408c-afe5-d0b9b998e51f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[ЭрВА]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="96" width="48" height="16"/>
+								<reportElement style="table_TD" x="0" y="96" width="48" height="16" uuid="f1f9c2c6-fd24-45d6-8a6b-a67cd944ff68"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1164,12 +1166,12 @@ order by cl.value]]>
 						</jr:columnFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="73">
+					<jr:column width="73" uuid="5a89997b-0941-4cd4-a41b-7776d3a0a027">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="0" rowSpan="1"/>
 						<jr:columnHeader height="30" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TD" x="0" y="0" width="73" height="30"/>
+								<reportElement style="table_TD" x="0" y="0" width="73" height="30" uuid="c5a32e77-06b4-459b-ae87-56c077021d08"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma" size="12" isBold="false"/>
 								</textElement>
@@ -1178,49 +1180,49 @@ order by cl.value]]>
 						</jr:columnHeader>
 						<jr:columnFooter height="116" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TD" x="0" y="0" width="73" height="16"/>
+								<reportElement style="table_TD" x="0" y="0" width="73" height="16" uuid="c6f4f5db-b567-40c6-9821-5a9d0825258c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[Экспед]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="16" width="73" height="16"/>
+								<reportElement style="table_TD" x="0" y="16" width="73" height="16" uuid="f84d5674-da0e-4c24-8391-1dbe743f11bd"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[Экспед]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="32" width="73" height="16"/>
+								<reportElement style="table_TD" x="0" y="32" width="73" height="16" uuid="e9b2f2f2-b651-48eb-bcab-1db41f62a37f"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[Остаток]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="48" width="73" height="16"/>
+								<reportElement style="table_TD" x="0" y="48" width="73" height="16" uuid="ac4cf0ad-37fb-4c74-adc5-74ed3373eafa"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[Брак]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="64" width="73" height="16"/>
+								<reportElement style="table_TD" x="0" y="64" width="73" height="16" uuid="be177082-690b-4155-bbda-c5526ce85fa4"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[Карантин]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="80" width="73" height="16"/>
+								<reportElement style="table_TD" x="0" y="80" width="73" height="16" uuid="331022d9-445a-4fc2-9514-4fb31681af39"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<text><![CDATA[Остаток]]></text>
 							</staticText>
 							<staticText>
-								<reportElement style="table_TD" x="0" y="96" width="73" height="16"/>
+								<reportElement style="table_TD" x="0" y="96" width="73" height="16" uuid="1058e2a2-9ec8-4280-a069-fd59af2217c9"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1229,12 +1231,12 @@ order by cl.value]]>
 						</jr:columnFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="58">
+					<jr:column width="58" uuid="96fa8f0e-37c5-4d2b-91c7-1f4dd6763b26">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="0" rowSpan="1"/>
 						<jr:columnHeader height="30" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TD" x="0" y="0" width="58" height="30"/>
+								<reportElement style="table_TD" x="0" y="0" width="58" height="30" uuid="05af771a-d910-43ee-a011-4059c893b4e8"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma" size="12" isBold="false"/>
 								</textElement>
@@ -1243,49 +1245,49 @@ order by cl.value]]>
 						</jr:columnHeader>
 						<jr:columnFooter height="116" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="16"/>
+								<reportElement style="table_TD" x="0" y="0" width="58" height="16" uuid="2cb3bb05-0d08-47db-9d46-254190e35076"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{tromb_eksped_volume}.divide( java.math.BigDecimal.valueOf(1000) )]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="16" width="58" height="16"/>
+								<reportElement style="table_TD" x="0" y="16" width="58" height="16" uuid="1e60c817-4d51-47d1-bf4d-8a73560ec30a"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{ervzv_eksped_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{ervzv_eksped_volume}.divide( java.math.BigDecimal.valueOf(1000) )]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="32" width="58" height="16"/>
+								<reportElement style="table_TD" x="0" y="32" width="58" height="16" uuid="0ae7e269-4915-4601-9b3a-3680ac588b4b"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{tromb_ostatok_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{tromb_ostatok_volume}.divide( java.math.BigDecimal.valueOf(1000) )]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="48" width="58" height="16"/>
+								<reportElement style="table_TD" x="0" y="48" width="58" height="16" uuid="44eaa457-cdf5-4087-a241-17194d36acac"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{tromb_brak_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{tromb_brak_volume}.divide( java.math.BigDecimal.valueOf(1000) )]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="64" width="58" height="16"/>
+								<reportElement style="table_TD" x="0" y="64" width="58" height="16" uuid="18004d7c-dc25-4199-bd01-3b29fda2fdbb"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{plasm_eksped_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_eksped_volume}.divide( java.math.BigDecimal.valueOf(1000) )]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="80" width="58" height="16"/>
+								<reportElement style="table_TD" x="0" y="80" width="58" height="16" uuid="6cd2fe8c-d715-4926-96e1-c614e2e9f9c1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{ervzv_aferez_ostatok_volume}==null?(java.math.BigDecimal.valueOf(0)):$F{ervzv_aferez_ostatok_volume}.divide( java.math.BigDecimal.valueOf(1000) )]]></textFieldExpression>
 							</textField>
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="96" width="58" height="16"/>
+								<reportElement style="table_TD" x="0" y="96" width="58" height="16" uuid="0b1e114b-593a-4066-b258-740cca4bbf57"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1297,65 +1299,65 @@ order by cl.value]]>
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement style="table_TD" x="0" y="0" width="174" height="15"/>
+				<reportElement style="table_TD" x="0" y="0" width="174" height="15" uuid="d74dce77-6688-4266-b43a-37f8828c3b3c"/>
 				<textElement>
 					<font fontName="Tahoma" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Итого:]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="table_TD" x="224" y="0" width="50" height="15"/>
+				<reportElement style="table_TD" x="224" y="0" width="50" height="15" uuid="956852a5-e08f-4fd2-baaf-207655a0243d"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{bezv_donation_count_1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="274" y="0" width="41" height="15"/>
+				<reportElement style="table_TD" x="274" y="0" width="41" height="15" uuid="5796c798-482c-4ae9-ac23-14d3294fe2d8"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{bezv_celn_kr_1}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.000">
-				<reportElement style="table_TD" x="315" y="0" width="41" height="15"/>
+				<reportElement style="table_TD" x="315" y="0" width="41" height="15" uuid="0424cf5c-8fd9-41ad-bd21-88a154697a0c"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{bezv_lab_1}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.000">
-				<reportElement style="table_TD" x="356" y="0" width="41" height="15"/>
+				<reportElement style="table_TD" x="356" y="0" width="41" height="15" uuid="e9efe1d8-5171-4d6b-aedd-9ca26cf3b772"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{bezv_lab_1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" x="174" y="0" width="50" height="15"/>
+				<reportElement style="table_TD" x="174" y="0" width="50" height="15" uuid="76733496-dcba-4520-a2f3-9e2717cbb20e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{donor_id_2}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.000">
-				<reportElement style="table_TD" x="397" y="0" width="41" height="15"/>
+				<reportElement style="table_TD" x="397" y="0" width="41" height="15" uuid="0e17423d-c37d-4402-866a-3dc0bc7e735e"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{bezv_celn_kr_1}.add($V{bezv_lab_1}).add($V{bezv_lab_1})]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.000">
-				<reportElement style="table_TD" x="438" y="0" width="75" height="15"/>
+				<reportElement style="table_TD" x="438" y="0" width="75" height="15" uuid="efcdd2b8-473c-414b-b79d-1e25656003aa"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{bezv_celn_kr_1}.add($V{AcTotal_1})]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="table 1" x="513" y="0" width="289" height="15"/>
+				<reportElement key="table 1" x="513" y="0" width="289" height="15" uuid="36742ac9-b32c-4d73-b159-a851af04372a"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="ComponentsAll">
+					<datasetRun subDataset="ComponentsAll" uuid="c57d1d78-2f8f-4a87-87d9-34c9f1121652">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1364,10 +1366,10 @@ order by cl.value]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="80">
+					<jr:column width="80" uuid="f7b6b6dc-b745-404b-921f-7577213b5e91">
 						<jr:tableFooter height="15" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="80" height="15"/>
+								<reportElement style="table_TD" x="0" y="0" width="80" height="15" uuid="dd0272c9-5363-451e-bb76-b7c53493fc3c"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" size="10" isBold="false"/>
 								</textElement>
@@ -1376,11 +1378,11 @@ order by cl.value]]>
 						</jr:tableFooter>
 						<jr:detailCell style="table_TD" height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="209">
+					<jr:column width="209" uuid="ea78ea59-3176-4bcc-89ac-9c2e678f9523">
 						<jr:tableHeader height="0" rowSpan="1"/>
 						<jr:tableFooter height="15" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="209" height="15"/>
+								<reportElement style="table_TD" x="0" y="0" width="209" height="15" uuid="b44bed86-3204-4d7e-9eb1-725be7b3f27d"/>
 								<box leftPadding="35"/>
 								<textElement>
 									<font fontName="Tahoma" isBold="false"/>
@@ -1394,7 +1396,7 @@ order by cl.value]]>
 				</jr:table>
 			</componentElement>
 			<textField>
-				<reportElement x="164" y="83" width="333" height="20"/>
+				<reportElement x="164" y="83" width="333" height="20" uuid="2ce9c313-2e2e-4432-ba65-66b359cb60ee"/>
 				<textElement verticalAlignment="Top">
 					<font fontName="Tahoma"/>
 				</textElement>
