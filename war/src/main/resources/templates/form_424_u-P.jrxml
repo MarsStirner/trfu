@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 424_у-П" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2016-06-16T20:27:05 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 424_у-П" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0dd79223-0011-4d0e-aa12-c0c931e99558">
 	<property name="ireport.zoom" value="1.6105100000000039"/>
 	<property name="ireport.x" value="67"/>
 	<property name="ireport.y" value="166"/>
@@ -23,7 +25,7 @@
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<subDataset name="Table Dataset 1"/>
+	<subDataset name="Table Dataset 1" uuid="787ca3e1-3ce3-4a90-bc0c-83b0f620913f"/>
 	<parameter name="CreateDate" class="java.util.Date">
 		<defaultValueExpression><![CDATA[new SimpleDateFormat("dd.MM.yyyy ")]]></defaultValueExpression>
 	</parameter>
@@ -77,21 +79,21 @@ ORDER BY
 	<title>
 		<band height="67" splitType="Stretch">
 			<staticText>
-				<reportElement x="252" y="39" width="222" height="20"/>
+				<reportElement x="252" y="39" width="222" height="20" uuid="09f094c8-b603-48f9-bc1f-d2c2b7d04d4e"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[СВОДКА О НАЛИЧИИ КОМПОНЕНТОВ КРОВИ на     ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="716" y="0" width="86" height="18"/>
+				<reportElement x="716" y="0" width="86" height="18" uuid="0f8163f4-8fc2-41da-bd13-41422d0ab08f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Форма 424/у-П]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="474" y="39" width="100" height="20"/>
+				<reportElement x="474" y="39" width="100" height="20" uuid="a0255cd7-8225-4b9c-a8f4-fd53e31dd354"/>
 				<box leftPadding="6"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
@@ -99,14 +101,14 @@ ORDER BY
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="90" y="15" width="622" height="15"/>
+				<reportElement positionType="Float" x="90" y="15" width="622" height="15" uuid="a1080848-8f79-48ef-864e-c9eae25f7eda"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{Division}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="90" y="0" width="622" height="15"/>
+				<reportElement positionType="Float" x="90" y="0" width="622" height="15" uuid="98181694-56ad-4a99-9186-09aab589fdde"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
@@ -120,14 +122,14 @@ ORDER BY
 	<columnHeader>
 		<band height="30" splitType="Stretch">
 			<staticText>
-				<reportElement style="table_TD" x="0" y="0" width="300" height="30"/>
+				<reportElement style="table_TD" x="0" y="0" width="300" height="30" uuid="54a16728-3b9b-4bd4-a0d4-2a6447f1571d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Наименование]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="300" y="0" width="40" height="30"/>
+				<reportElement style="table_TD" x="300" y="0" width="40" height="30" uuid="b94ab2fe-9f6b-44c8-a707-2e871f934611"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -135,91 +137,91 @@ ORDER BY
 изм.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="340" y="0" width="62" height="30"/>
+				<reportElement style="table_TD" x="340" y="0" width="62" height="30" uuid="a4bf057f-23b6-4427-8180-17ef27208a2e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[Всего]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="402" y="0" width="100" height="15"/>
+				<reportElement style="table_TD" x="402" y="0" width="100" height="15" uuid="c7fef791-7e16-4f1e-9160-13f339b93213"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[0(I)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="402" y="15" width="50" height="15"/>
+				<reportElement style="table_TD" x="402" y="15" width="50" height="15" uuid="1d6dc3fe-ee96-4d1d-99d2-644624d29392"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[RH+]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="452" y="15" width="50" height="15"/>
+				<reportElement style="table_TD" x="452" y="15" width="50" height="15" uuid="23051b1c-f022-4a49-974b-2afc76766c98"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[RH-]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="552" y="15" width="50" height="15"/>
+				<reportElement style="table_TD" x="552" y="15" width="50" height="15" uuid="ffd5b3f9-21a4-4365-8d15-f371746aa88a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[RH-]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="502" y="15" width="50" height="15"/>
+				<reportElement style="table_TD" x="502" y="15" width="50" height="15" uuid="f7896352-7e07-447d-9f08-d809a324a51c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[RH+]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="502" y="0" width="100" height="15"/>
+				<reportElement style="table_TD" x="502" y="0" width="100" height="15" uuid="e85c7b0b-e118-43f3-ac34-d8d11c90932d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[A(II)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="652" y="15" width="50" height="15"/>
+				<reportElement style="table_TD" x="652" y="15" width="50" height="15" uuid="69282469-e3ca-4b8d-9911-15404ebef85e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[RH-]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="602" y="15" width="50" height="15"/>
+				<reportElement style="table_TD" x="602" y="15" width="50" height="15" uuid="e8123032-f1eb-46e3-ac49-635f73b430cf"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[RH+]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="602" y="0" width="100" height="15"/>
+				<reportElement style="table_TD" x="602" y="0" width="100" height="15" uuid="1173a171-4d88-46bc-a9d3-2786b4e52659"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[B(III)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="752" y="15" width="50" height="15"/>
+				<reportElement style="table_TD" x="752" y="15" width="50" height="15" uuid="4eb34ae7-69fa-48dd-89ba-ec92dadb8f46"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[RH-]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="702" y="15" width="50" height="15"/>
+				<reportElement style="table_TD" x="702" y="15" width="50" height="15" uuid="6d0ea47e-4ed6-488a-9025-5ad160988cca"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
 				<text><![CDATA[RH+]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="702" y="0" width="100" height="15"/>
+				<reportElement style="table_TD" x="702" y="0" width="100" height="15" uuid="79f3dd34-e6cb-4430-a402-5940c552f88a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10"/>
 				</textElement>
@@ -230,7 +232,7 @@ ORDER BY
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="0" y="0" width="300" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="0" y="0" width="300" height="20" uuid="db4b697f-61e0-493f-8cc4-fc380b5079f9"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -238,7 +240,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{trfu_blood_component_types_value}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="402" y="0" width="50" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="402" y="0" width="50" height="20" uuid="57f9caa9-8778-4af3-ba7a-920ef9450ace"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -246,7 +248,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{sum_1_pos}==null?"0":$F{sum_1_pos}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="340" y="0" width="62" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="340" y="0" width="62" height="20" uuid="eba2d6d4-52f3-4e06-bb50-0bcc58df5452"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -254,7 +256,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{sum_all}==null?"0":$F{sum_all}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="452" y="0" width="50" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="452" y="0" width="50" height="20" uuid="90b35bda-2503-4a18-beea-f11ce5d2018c"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -262,7 +264,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{sum_1_neg}==null?"0":$F{sum_1_neg}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="502" y="0" width="50" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="502" y="0" width="50" height="20" uuid="49b37b48-036f-422f-ab7a-ae8a3c1713db"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -270,7 +272,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{sum_2_pos}==null?"0":$F{sum_2_pos}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="552" y="0" width="50" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="552" y="0" width="50" height="20" uuid="9b27a041-b67b-4fe7-828b-d8d49dc01622"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -278,7 +280,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{sum_2_neg}==null?"0":$F{sum_2_neg}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="602" y="0" width="50" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="602" y="0" width="50" height="20" uuid="6e40d08c-57d4-4814-90e8-208720a5087e"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -286,7 +288,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{sum_3_pos}==null?"0":$F{sum_3_pos}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="652" y="0" width="50" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="652" y="0" width="50" height="20" uuid="620a4355-5d7c-4755-8b33-a87e3a03e543"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -294,7 +296,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{sum_3_neg}==null?"0":$F{sum_3_neg}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="702" y="0" width="50" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="702" y="0" width="50" height="20" uuid="ada09b99-8d9f-45fa-8614-5d72efbc6c7b"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -302,7 +304,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{sum_4_pos}==null?"0":$F{sum_4_pos}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="752" y="0" width="50" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="752" y="0" width="50" height="20" uuid="a5fd8681-ef08-4846-b2a8-c28260630772"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 					<paragraph leftIndent="5"/>
@@ -310,7 +312,7 @@ ORDER BY
 				<textFieldExpression><![CDATA[$F{sum_4_neg}==null?"0":$F{sum_4_neg}.divide( java.math.BigDecimal.valueOf( 1000.00 ))]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="300" y="0" width="40" height="20"/>
+				<reportElement style="table_TD" stretchType="RelativeToTallestObject" x="300" y="0" width="40" height="20" uuid="7e634455-35df-40ea-b13f-3fa38a67bc38"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -325,9 +327,9 @@ ORDER BY
 		<band splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="123" splitType="Stretch">
+		<band height="124" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="10" width="81" height="43"/>
+				<reportElement x="0" y="10" width="81" height="43" uuid="dbeb3c44-6a82-447e-a9f6-e96024ea5dcc"/>
 				<textElement>
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -337,7 +339,7 @@ ORDER BY
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="247" y="9" width="242" height="61"/>
+				<reportElement x="140" y="10" width="282" height="61" uuid="7f9c49b0-73dc-4fed-b569-5316e8a514cd"/>
 				<textElement>
 					<font fontName="Tahoma"/>
 				</textElement>
@@ -347,25 +349,25 @@ ORDER BY
 ]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="0" y="53" width="103" height="18"/>
+				<reportElement x="0" y="53" width="103" height="18" uuid="50872fc0-5304-417e-9374-26414bd894c4"/>
 				<textElement>
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="247" y="102" width="316" height="21"/>
+				<reportElement x="140" y="103" width="356" height="21" uuid="862f5db4-d69e-4387-945a-d13555cf364b"/>
 				<textElement>
 					<font fontName="Tahoma"/>
 				</textElement>
 				<text><![CDATA[Сформировал ____________________________________]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="247" y="81" width="316" height="21"/>
+				<reportElement x="140" y="72" width="662" height="31" uuid="f4cc1f43-1e96-4086-a8c9-5697b8bde041"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="Tahoma"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Главный врач " + $P{HeadDoctor}+" _________________________"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Заместитель генерального директора по научно-клинической работе - медицинский директор " + $P{HeadDoctor}+" _________________"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

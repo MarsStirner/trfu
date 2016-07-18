@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report3" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2016-06-16T20:40:00 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report3" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="43ebe6e1-fb59-4ea6-9649-3e7c587d68a7">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -63,7 +65,7 @@
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<subDataset name="Vsego_ost_plasm_rashod_plasm">
+	<subDataset name="Vsego_ost_plasm_rashod_plasm" uuid="bb1ac1b0-613f-4f84-a3b4-e116673a996a">
 		<parameter name="StartDate" class="java.util.Date"/>
 		<parameter name="EndDate" class="java.util.Date"/>
 		<queryString>
@@ -330,7 +332,7 @@ where wf.to_status_id = 3
 			<variableExpression><![CDATA[$F{plasm_ostatok_2}==null?(java.math.BigDecimal.valueOf(0)):$F{plasm_ostatok_2}.divide(java.math.BigDecimal.valueOf(1000))]]></variableExpression>
 		</variable>
 	</subDataset>
-	<subDataset name="Vsego_ost_rashod_ervzv">
+	<subDataset name="Vsego_ost_rashod_ervzv" uuid="64d0cdb1-f673-4790-ac54-21a5ddc279ae">
 		<parameter name="StartDate" class="java.util.Date"/>
 		<parameter name="EndDate" class="java.util.Date"/>
 		<queryString>
@@ -512,7 +514,7 @@ and trfu_blood_components.`status_id` = -2
 			<variableExpression><![CDATA[$V{ervzv_eksped_volume}.add($V{ervzv_eksped_volume_dr}).add($V{ervzv_ostatok}).subtract($V{ervzv_rashod_volume}).subtract($V{ervzv_brak_volume})]]></variableExpression>
 		</variable>
 	</subDataset>
-	<subDataset name="Vsego_ost_rashod_ermassa">
+	<subDataset name="Vsego_ost_rashod_ermassa" uuid="47f004af-a436-4d96-8c5d-095864b32b75">
 		<parameter name="StartDate" class="java.util.Date"/>
 		<parameter name="EndDate" class="java.util.Date"/>
 		<queryString>
@@ -686,7 +688,7 @@ and trfu_blood_components.`status_id` = -2
 			<variableExpression><![CDATA[$V{erm_eksped_volume}.add($V{erm_eksped_volume_dr}).add($V{erm_ostatok}).subtract($V{erm_rashod_volume}).subtract($V{erm_brak_volume})]]></variableExpression>
 		</variable>
 	</subDataset>
-	<subDataset name="Vsego_ost_rashod_erv_aferez">
+	<subDataset name="Vsego_ost_rashod_erv_aferez" uuid="2326b625-f887-4427-b50c-2fadbf7dbdc4">
 		<parameter name="StartDate" class="java.util.Date"/>
 		<parameter name="EndDate" class="java.util.Date"/>
 		<queryString>
@@ -860,7 +862,7 @@ and trfu_blood_components.`status_id` = -2
 			<variableExpression><![CDATA[$V{ervzv_aferez_eksped_volume}.add($V{ervzv_aferez_eksped_volume_dr}).add($V{ervzv_aferez_ostatok}).subtract($V{ervzv_aferez_rashod_volume}).subtract($V{ervzv_aferez_brak_volume})]]></variableExpression>
 		</variable>
 	</subDataset>
-	<subDataset name="Vsego_ost_rashod_tromb">
+	<subDataset name="Vsego_ost_rashod_tromb" uuid="fc3b2e74-96a2-46d3-9d38-8f455c588ec7">
 		<parameter name="StartDate" class="java.util.Date"/>
 		<parameter name="EndDate" class="java.util.Date"/>
 		<queryString>
@@ -1042,7 +1044,7 @@ and trfu_blood_components.`status_id` = -2
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
 	<parameter name="Division" class="java.lang.String"/>
-	<parameter name="Manager" class="java.lang.String"/>
+	<parameter name="HeadDoctor" class="java.lang.String"/>
 	<parameter name="Superintendent" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select comp.donationDate,type.value as comp_type, comp.autoApheresis as autoApheresis,
@@ -1065,94 +1067,94 @@ group by comp_type]]>
 	<title>
 		<band height="104" splitType="Stretch">
 			<staticText>
-				<reportElement x="197" y="10" width="398" height="52"/>
+				<reportElement x="197" y="10" width="398" height="52" uuid="654bd726-52a9-4877-b956-387ee437aee1"/>
 				<textElement textAlignment="Center">
 					<font fontName="Tahoma" size="14" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Ведомость учета движения крови и ее компонентов по отделу выдачи]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="Float" x="0" y="62" width="184" height="1"/>
+				<reportElement positionType="Float" x="0" y="62" width="184" height="1" uuid="9e2c0e65-7f91-491e-8d3f-d822890a2cad"/>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="62" width="184" height="17"/>
+				<reportElement positionType="Float" x="0" y="62" width="184" height="17" uuid="0aec22e2-dca3-4309-a84b-995a0e91d041"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[наименование учреждения]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="197" y="84" width="109" height="20"/>
+				<reportElement x="197" y="84" width="109" height="20" uuid="7a00cda0-9c0b-4625-a78b-a0a307736919"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[за период с]]></text>
 			</staticText>
 			<line>
-				<reportElement x="605" y="65" width="108" height="1"/>
+				<reportElement x="605" y="65" width="108" height="1" uuid="f46a7cd5-6131-4f58-b148-c6c4117a1ca0"/>
 			</line>
 			<staticText>
-				<reportElement x="622" y="10" width="74" height="22"/>
+				<reportElement x="622" y="10" width="74" height="22" uuid="420bf771-8ae4-47f6-ab7c-e2ca474a569d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[«УТВЕРЖДАЮ»]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="591" y="68" width="137" height="16"/>
+				<reportElement x="550" y="68" width="252" height="32" uuid="e291d913-85e5-494d-a421-341b9e78e205"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<text><![CDATA[(руководитель учреждения)]]></text>
+				<text><![CDATA[(Зам. ген. дир. по научно-клинической работе - медицинский директор)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="714" y="0" width="88" height="22"/>
+				<reportElement x="714" y="0" width="88" height="22" uuid="ef6d27be-7d66-4982-bf4a-34501ed07000"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Форма 423/у-П1]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="306" y="84" width="100" height="20"/>
+				<reportElement x="306" y="84" width="100" height="20" uuid="b58af520-0b3b-402d-89a8-5d030c899db2"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{StartDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="406" y="84" width="36" height="20"/>
+				<reportElement x="406" y="84" width="36" height="20" uuid="0d35af3e-441a-4351-92b6-c34f9f1afc9e"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[по]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="442" y="84" width="100" height="20"/>
+				<reportElement x="442" y="84" width="100" height="20" uuid="5f3f99ee-95da-4aad-88de-055da15e6c16"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{EndDate}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="5" y="35" width="174" height="25"/>
+				<reportElement positionType="Float" x="5" y="35" width="174" height="25" uuid="3681fea0-673e-4b44-ab43-09ca454f1ced"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{Division}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="5" y="10" width="174" height="25"/>
+				<reportElement positionType="Float" x="5" y="10" width="174" height="25" uuid="59f99623-9bfb-4ad7-b6df-bc12a232987b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="606" y="35" width="108" height="20"/>
+				<reportElement x="606" y="35" width="108" height="20" uuid="827f6ec3-8aaa-4915-b0d2-314821dd0d7c"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{Manager}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{HeadDoctor}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -1162,14 +1164,14 @@ group by comp_type]]>
 	<columnHeader>
 		<band height="83" splitType="Stretch">
 			<staticText>
-				<reportElement style="table_TD" x="126" y="0" width="26" height="83"/>
+				<reportElement style="table_TD" x="126" y="0" width="26" height="83" uuid="43a57151-184c-433c-8afc-44158948ab6b"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="Left">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[Единицы измерения]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="152" y="0" width="62" height="83"/>
+				<reportElement style="table_TD" x="152" y="0" width="62" height="83" uuid="26d2e377-3f4a-43a0-9a2d-63ed80422ea6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
@@ -1177,21 +1179,21 @@ group by comp_type]]>
 дату]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="214" y="0" width="170" height="17"/>
+				<reportElement style="table_TD" x="214" y="0" width="170" height="17" uuid="3b6c4578-f8f3-4d11-83f1-170b4fbd9bf2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[Приход]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="266" y="17" width="118" height="17"/>
+				<reportElement style="table_TD" x="266" y="17" width="118" height="17" uuid="afc955ce-ff6b-417c-b8e1-78b7933774fd"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[в том числе]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="214" y="17" width="52" height="66"/>
+				<reportElement style="table_TD" x="214" y="17" width="52" height="66" uuid="56634e39-43e4-434e-ad49-61bd871d36fc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
@@ -1199,7 +1201,7 @@ group by comp_type]]>
 получено]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="266" y="34" width="54" height="49"/>
+				<reportElement style="table_TD" x="266" y="34" width="54" height="49" uuid="bbdcbde5-193a-4073-a265-f20d4ee74797"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
@@ -1208,7 +1210,7 @@ group by comp_type]]>
 (ОПК)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="320" y="34" width="64" height="49"/>
+				<reportElement style="table_TD" x="320" y="34" width="64" height="49" uuid="64fd42ce-c541-40b5-bc43-9f9e2463c72e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
@@ -1216,21 +1218,21 @@ group by comp_type]]>
 учреждений]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="540" y="17" width="164" height="17"/>
+				<reportElement style="table_TD" x="540" y="17" width="164" height="17" uuid="28890adb-6d36-4582-af84-1eef9891c986"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[в том числе]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="468" y="0" width="236" height="17"/>
+				<reportElement style="table_TD" x="468" y="0" width="236" height="17" uuid="aa479bed-2367-4bed-965a-938e99a1a440"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[Расход]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="468" y="17" width="72" height="66"/>
+				<reportElement style="table_TD" x="468" y="17" width="72" height="66" uuid="657da93b-ffa2-409f-9fb4-a1950e4de88d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
@@ -1238,14 +1240,14 @@ group by comp_type]]>
 выдано]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="540" y="34" width="82" height="49"/>
+				<reportElement style="table_TD" x="540" y="34" width="82" height="49" uuid="42166a72-aed3-4be3-b921-720793ee450e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[из отделов ОПК]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="704" y="0" width="58" height="83"/>
+				<reportElement style="table_TD" x="704" y="0" width="58" height="83" uuid="2fa2ddb6-06d4-4b18-96d0-bfad4eb4e328"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
@@ -1256,42 +1258,42 @@ group by comp_type]]>
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="762" y="0" width="40" height="83"/>
+				<reportElement style="table_TD" x="762" y="0" width="40" height="83" uuid="d2488b52-e347-4a1f-931a-9ef989bcb0d5"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="Left">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[Остаток на дату]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="0" y="0" width="126" height="83"/>
+				<reportElement style="table_TD" x="0" y="0" width="126" height="83" uuid="8ab2191e-231a-4cab-bf20-952cbca19c15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[Наименование сред]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="152" y="58" width="62" height="20"/>
+				<reportElement x="152" y="58" width="62" height="20" uuid="92c9a62d-4032-43f1-970f-ea517a5555df"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{StartDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="table_TD" x="622" y="34" width="82" height="49"/>
+				<reportElement style="table_TD" x="622" y="34" width="82" height="49" uuid="12087931-3037-4a92-83a6-d84a5d77e9bf"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[из др. учреждений]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement x="778" y="0" width="24" height="83"/>
+				<reportElement x="778" y="0" width="24" height="83" uuid="9d53db22-dc06-4c32-9ece-147550ee3023"/>
 				<textElement textAlignment="Center" verticalAlignment="Top" rotation="Left">
 					<font fontName="Tahoma"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{EndDate}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="table_TD" x="384" y="0" width="84" height="83"/>
+				<reportElement style="table_TD" x="384" y="0" width="84" height="83" uuid="e74bbe2a-c668-44a2-9e57-70084adb90fd"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="10" isBold="false"/>
 				</textElement>
@@ -1311,79 +1313,79 @@ group by comp_type]]>
 	<summary>
 		<band height="204" splitType="Stretch">
 			<staticText>
-				<reportElement style="table_TD" x="126" y="0" width="26" height="31"/>
+				<reportElement style="table_TD" x="126" y="0" width="26" height="31" uuid="8564ecc5-7e50-4238-b586-95568a599ba3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[л]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="0" y="0" width="126" height="31"/>
+				<reportElement style="table_TD" x="0" y="0" width="126" height="31" uuid="18f0ea57-7b3c-4384-a84a-1d39eceeba67"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[Эритроцитарная взвесь]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="0" y="31" width="126" height="31"/>
+				<reportElement style="table_TD" x="0" y="31" width="126" height="31" uuid="f15b6c18-23b6-4dbc-baf4-d8d6ad25f6ba"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[Эритроцитарная масса]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="126" y="31" width="26" height="31"/>
+				<reportElement style="table_TD" x="126" y="31" width="26" height="31" uuid="21b73591-d85c-46c1-9427-2daac36b4212"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[л]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="0" y="62" width="126" height="31"/>
+				<reportElement style="table_TD" x="0" y="62" width="126" height="31" uuid="d01eaa35-9d6c-4714-8a33-71372db32a7a"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[Эритроцитарная взвесь аферезная]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="126" y="62" width="26" height="31"/>
+				<reportElement style="table_TD" x="126" y="62" width="26" height="31" uuid="6bcf8e99-deb8-428b-bec9-dc45c9ca5bd8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[л]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="0" y="93" width="126" height="31"/>
+				<reportElement style="table_TD" x="0" y="93" width="126" height="31" uuid="e896342f-3247-445c-b67a-8f420a9adbfc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[Концентрат тромбоцитов аферезный]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="126" y="93" width="26" height="31"/>
+				<reportElement style="table_TD" x="126" y="93" width="26" height="31" uuid="ad78e5dd-ea50-498d-8319-c82911e47476"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[л]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="126" y="124" width="26" height="31"/>
+				<reportElement style="table_TD" x="126" y="124" width="26" height="31" uuid="d0328b97-a0aa-426d-b448-11e424c404cd"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[л]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="table_TD" x="0" y="124" width="126" height="31"/>
+				<reportElement style="table_TD" x="0" y="124" width="126" height="31" uuid="f16ac104-b19f-40b8-a9db-b209f2867df8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<text><![CDATA[СЗП]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement key="table 1" x="152" y="0" width="316" height="31"/>
+				<reportElement key="table 1" x="152" y="0" width="316" height="31" uuid="584f3d8a-631a-477e-b809-c83d38a6b6d9"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_ervzv">
+					<datasetRun subDataset="Vsego_ost_rashod_ervzv" uuid="05ad4ab1-ed76-4b4a-83b3-79e152e2c8ac">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1392,10 +1394,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="62">
+					<jr:column width="62" uuid="d1bb21e6-6174-498c-ac2d-dbe059b6d224">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement x="0" y="0" width="62" height="31"/>
+								<reportElement x="0" y="0" width="62" height="31" uuid="4c075b82-b151-41d7-b0ba-a9bcb5f8c317"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1404,10 +1406,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="52">
+					<jr:column width="52" uuid="af77b631-afd2-4522-bf68-c69b37e017d4">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="52" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="52" height="31" uuid="e86d3f5c-2def-42c8-94d6-08a422370f5f"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1416,10 +1418,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="54">
+					<jr:column width="54" uuid="37ff7477-bf1e-4d28-955e-74ef9a65c7b6">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="54" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="54" height="31" uuid="a85f7054-61ad-4ce4-bd7b-97fd4c106350"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1428,10 +1430,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="64">
+					<jr:column width="64" uuid="34ef702d-33ce-4847-88ba-b99056c59379">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="64" height="31" uuid="5d7f3803-02f5-4acb-9efa-ff6a78ffc9a0"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1440,10 +1442,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="84">
+					<jr:column width="84" uuid="99995695-bf9e-4f9d-9c34-4d7c7e389f49">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="84" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="84" height="31" uuid="b8cd5ede-1750-4574-8825-c7afe4552738"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
@@ -1455,9 +1457,9 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 4" x="704" y="124" width="98" height="31"/>
+				<reportElement key="table 4" x="704" y="124" width="98" height="31" uuid="97ff6e55-c4a9-402c-9307-357e1fde6a13"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_plasm_rashod_plasm">
+					<datasetRun subDataset="Vsego_ost_plasm_rashod_plasm" uuid="bb5a4817-d5ab-4ff7-aa0b-e0cecdfa35b7">
 						<datasetParameter name="EndDate">
 							<datasetParameterExpression><![CDATA[$P{EndDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1466,10 +1468,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="58">
+					<jr:column width="58" uuid="bb74591e-1bdd-42b6-b055-4820442e9e02">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="58" height="31" uuid="a95f9e06-5461-4da2-84dc-2c8dfd593a9d"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1478,10 +1480,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="40">
+					<jr:column width="40" uuid="fde76c38-23e4-411a-9324-9d6cfdb9eb8e">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="40" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="40" height="31" uuid="2eda4899-8fc9-465e-b3d1-0c0e83f2462d"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1490,24 +1492,24 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="5ce8db9c-21a6-4c72-8964-f60e74991b07">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="293742c1-64c7-4618-8972-ab61ca7f34cf">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="1a5b1ff4-4ea1-4f72-adcb-b20c055a3b4a">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 5" x="468" y="0" width="236" height="31"/>
+				<reportElement key="table 5" x="468" y="0" width="236" height="31" uuid="6b7878ea-f9d2-4c6a-a910-54c7099f486a"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_ervzv">
+					<datasetRun subDataset="Vsego_ost_rashod_ervzv" uuid="6548b72a-6f36-41c7-aa9d-c8cf0e2849ed">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1516,10 +1518,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="72">
+					<jr:column width="72" uuid="b5d54a1a-a786-4192-ba4c-d918e0921118">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="72" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="72" height="31" uuid="5ccd9b36-5719-4689-a2ab-182b8a5224d0"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1528,10 +1530,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="82">
+					<jr:column width="82" uuid="dff4d832-f960-405d-9864-02b98a587107">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31" uuid="768d2cc0-5a3a-435e-8074-a59f06abbf03"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1540,10 +1542,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="82">
+					<jr:column width="82" uuid="0ac3d08c-bd00-4399-be43-95fe5397ac96">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31" uuid="eebbbe61-c426-4438-ae9a-24257916a340"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1555,9 +1557,9 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 6" x="704" y="0" width="98" height="31"/>
+				<reportElement key="table 6" x="704" y="0" width="98" height="31" uuid="1cd7edb0-dfdd-4635-bfc7-c7c46e5c5e61"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_ervzv">
+					<datasetRun subDataset="Vsego_ost_rashod_ervzv" uuid="92b2f752-463c-47e9-a5e1-1069f7afbdba">
 						<datasetParameter name="EndDate">
 							<datasetParameterExpression><![CDATA[$P{EndDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1566,10 +1568,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="58">
+					<jr:column width="58" uuid="d8945ba1-9e7d-47e4-b8e4-90538ad4197c">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="58" height="31" uuid="903540de-58eb-4e60-8eca-9bf94fc95930"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1578,10 +1580,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="40">
+					<jr:column width="40" uuid="01705d82-020e-4a79-b217-bafa9587a758">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="40" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="40" height="31" uuid="82e136a6-ca6f-4126-a5da-87010c3c198a"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1590,24 +1592,24 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="edfeb502-9324-460a-8636-cf2275876c87">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="27ab6a08-1814-4083-af93-7879f7609c3c">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="de97efc2-cd98-4ae4-ba2a-723d569e9284">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 7" x="468" y="31" width="236" height="31"/>
+				<reportElement key="table 7" x="468" y="31" width="236" height="31" uuid="8340e904-7cb2-4fb9-84a7-0875284d91da"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_ermassa">
+					<datasetRun subDataset="Vsego_ost_rashod_ermassa" uuid="e8093a55-8b36-40a5-8461-51d2844edb69">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1616,10 +1618,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="72">
+					<jr:column width="72" uuid="b621b910-22ba-475d-89f7-129f4e06c1c3">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="72" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="72" height="31" uuid="350c7470-ca67-4246-a7ef-f440024648e0"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1628,10 +1630,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="82">
+					<jr:column width="82" uuid="7582206a-c753-44ec-b585-eebac0a72bd6">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31" uuid="ba8b698f-9a1c-4765-875e-91633a0645d5"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1640,10 +1642,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="82">
+					<jr:column width="82" uuid="3a65cfd2-1bdb-4399-bf84-30a5f3159d80">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31" uuid="6a5c1b00-c01d-4f81-ba07-6c29539fb354"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1655,9 +1657,9 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 8" x="704" y="31" width="98" height="31"/>
+				<reportElement key="table 8" x="704" y="31" width="98" height="31" uuid="3f33ebfd-e095-4887-ba5c-849f0f8c7739"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_ermassa">
+					<datasetRun subDataset="Vsego_ost_rashod_ermassa" uuid="3d9008a4-7034-4394-9d32-2ade41b374e6">
 						<datasetParameter name="EndDate">
 							<datasetParameterExpression><![CDATA[$P{EndDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1666,10 +1668,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="58">
+					<jr:column width="58" uuid="9592bb51-dc55-462b-a023-df246558cf47">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="58" height="31" uuid="c99f0bfb-99c1-49db-a268-93f461c53ce6"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1678,10 +1680,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="40">
+					<jr:column width="40" uuid="1678dfa0-c67c-416a-bbea-183793818b25">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="40" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="40" height="31" uuid="941b7aaf-6df6-46c2-97cd-2c1c1c33fb81"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1690,24 +1692,24 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="9a3e27c6-2640-4b60-b7b0-26f6fad05092">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="0b44da60-8192-4e44-acee-cbaedcf770ba">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="fa24b4cc-e0a5-4acd-90d5-8843829c16fc">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 9" x="468" y="62" width="236" height="31"/>
+				<reportElement key="table 9" x="468" y="62" width="236" height="31" uuid="95592037-cf69-4995-a42e-8bbb3dd2b319"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_erv_aferez">
+					<datasetRun subDataset="Vsego_ost_rashod_erv_aferez" uuid="1490d5d3-58c7-4021-86f5-09126844cb8a">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1716,10 +1718,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="72">
+					<jr:column width="72" uuid="870c352b-3d92-49d5-b60a-d50c9c2320b2">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="72" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="72" height="31" uuid="a12071f0-3c6b-406b-a4ab-9f249f58b4c5"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1728,10 +1730,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="82">
+					<jr:column width="82" uuid="4cb98fec-a0a9-4c56-9fd8-d79ed0e48a26">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31" uuid="814e4575-a368-47bf-87ae-109983aae0dc"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1740,10 +1742,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="82">
+					<jr:column width="82" uuid="a56d1232-5bda-40ed-9830-50eaac220c0e">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31" uuid="9d075e84-4bc8-49c4-86aa-ecb6ad650ae9"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1755,9 +1757,9 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 9" x="468" y="93" width="236" height="31"/>
+				<reportElement key="table 9" x="468" y="93" width="236" height="31" uuid="8f73ae5b-1b13-4043-b6ee-7bc063fd9a64"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_tromb">
+					<datasetRun subDataset="Vsego_ost_rashod_tromb" uuid="a59be839-6462-4abd-b3fe-d031541e1155">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1766,10 +1768,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="72">
+					<jr:column width="72" uuid="927b21d0-8942-4c3e-bdd4-8045892ae9d8">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="72" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="72" height="31" uuid="e39782fc-3ed9-4bd2-a598-2c90bbd3b90c"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1778,10 +1780,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="82">
+					<jr:column width="82" uuid="a236515d-f8a4-4172-b1a7-9913ded02b9c">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31" uuid="cf837ffc-60ba-438e-a154-d8751aa6c9d3"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1790,10 +1792,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="82">
+					<jr:column width="82" uuid="9a147040-d9a4-461f-9e51-7b97e11c278d">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31" uuid="bb3b50de-97f3-43f9-93db-3ac0c8168ede"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1805,9 +1807,9 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 10" x="704" y="93" width="98" height="31"/>
+				<reportElement key="table 10" x="704" y="93" width="98" height="31" uuid="d4d3efc2-86fc-4605-86ae-ebf606f9541c"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_tromb">
+					<datasetRun subDataset="Vsego_ost_rashod_tromb" uuid="d5db6df8-ea13-4cfc-8c4d-ae6590347edf">
 						<datasetParameter name="EndDate">
 							<datasetParameterExpression><![CDATA[$P{EndDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1816,10 +1818,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="58">
+					<jr:column width="58" uuid="9dee15e5-c8ed-4432-a8eb-8070cbf85b34">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="58" height="31" uuid="9e75207f-1479-4101-ae39-11d3a02541b2"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1828,10 +1830,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="40">
+					<jr:column width="40" uuid="42178902-d511-4793-a4af-b63176c1d296">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="40" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="40" height="31" uuid="5e2e1d49-c6b1-4365-9082-51898a8a26ad"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1840,24 +1842,24 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="676703db-e5bc-4a1a-930d-058e4f3f0740">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="935b1118-2219-421b-bf7e-ef20f077ff22">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="590cf8f8-813d-40b2-9122-02d30132195a">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 11" x="704" y="62" width="98" height="31"/>
+				<reportElement key="table 11" x="704" y="62" width="98" height="31" uuid="c4efc623-95e0-492c-a3cb-7dac0d14f9c3"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_erv_aferez">
+					<datasetRun subDataset="Vsego_ost_rashod_erv_aferez" uuid="70401bd3-ba83-4cdc-abab-bb261bd7f74b">
 						<datasetParameter name="EndDate">
 							<datasetParameterExpression><![CDATA[$P{EndDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1866,10 +1868,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="58">
+					<jr:column width="58" uuid="06776f05-7d1e-4d9c-9d53-427769d3666a">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="58" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="58" height="31" uuid="74165563-ee98-403f-bb34-4f58c4820a60"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1878,10 +1880,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="40">
+					<jr:column width="40" uuid="f1fa60c0-5ccd-435e-8cc8-5f29e2fd6a74">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="40" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="40" height="31" uuid="bc67e006-15ac-4701-a4d0-cecb89a005a2"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1890,24 +1892,24 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="ed3bf759-4d74-4701-adec-8eaf37d08364">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="aa32593d-63af-4539-9134-1c4f8e386863">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="0">
+					<jr:column width="0" uuid="9b6211d1-a169-42de-87e3-9c4055795d39">
 						<jr:tableFooter height="31" rowSpan="1"/>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 12" x="152" y="31" width="316" height="31"/>
+				<reportElement key="table 12" x="152" y="31" width="316" height="31" uuid="9848a002-79d2-4f87-b425-a4e6deb2fb2e"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_ermassa">
+					<datasetRun subDataset="Vsego_ost_rashod_ermassa" uuid="70ccce80-5b30-42a9-8594-5d0c73d9b76a">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1916,10 +1918,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="62">
+					<jr:column width="62" uuid="215d8d67-86a4-44a5-b70a-e315e75da37d">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="62" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="62" height="31" uuid="e88ac6cb-dcd0-438a-ae0e-3f2c621c3ad9"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1928,10 +1930,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="52">
+					<jr:column width="52" uuid="d582e2ca-710e-4a71-aeeb-e9b3b436a864">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="52" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="52" height="31" uuid="eeb990cf-f5f9-4110-964c-c0ee97c8fe9d"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1940,10 +1942,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="54">
+					<jr:column width="54" uuid="707afabd-dc99-4c3b-b388-0ef020c8da11">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="54" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="54" height="31" uuid="3643e3a3-b504-4523-8eb9-a92442a0fd46"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1952,10 +1954,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="64">
+					<jr:column width="64" uuid="90856dec-0762-4409-a3ec-bbfae35e6efb">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="64" height="31" uuid="f65a1c69-26eb-4484-b4b9-a14d5b4a9151"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -1964,10 +1966,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="84">
+					<jr:column width="84" uuid="89e3bf32-b938-4d2c-8b2c-fe77b5b7a6bb">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="84" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="84" height="31" uuid="ec69db67-d933-4067-8856-dcbc8327f83e"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
@@ -1979,9 +1981,9 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 13" x="152" y="62" width="316" height="31"/>
+				<reportElement key="table 13" x="152" y="62" width="316" height="31" uuid="3bb4890f-8435-4903-be94-6833c5b7fcb5"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_erv_aferez">
+					<datasetRun subDataset="Vsego_ost_rashod_erv_aferez" uuid="c6bcc6eb-91d9-44e5-a5a5-14410c60cf8d">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -1990,10 +1992,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="62">
+					<jr:column width="62" uuid="6b17c760-636c-4351-83c4-1915b3e68ef3">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="62" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="62" height="31" uuid="416c2066-6d76-4cf3-8a3e-5faf03b62db6"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2002,10 +2004,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="52">
+					<jr:column width="52" uuid="bacb1382-30b5-41c8-8e45-3c5657362b2b">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="52" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="52" height="31" uuid="9f0479ce-ffc2-4280-83eb-b0d64f39e92c"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2014,10 +2016,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="54">
+					<jr:column width="54" uuid="1b9dce2c-37a5-415d-8967-3910e9a0029e">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="54" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="54" height="31" uuid="1db771fe-1e04-435c-8299-fc6310887e18"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2026,10 +2028,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="64">
+					<jr:column width="64" uuid="15e16dfc-11f1-4320-a443-0ba69cc54e4f">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="64" height="31" uuid="b40d3741-c74f-4326-b115-1620741e644b"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2038,10 +2040,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="84">
+					<jr:column width="84" uuid="93eb13c1-3d6f-4c69-a5f4-d83b32f01eb1">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="84" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="84" height="31" uuid="1d6fd967-b03b-4a0b-8e7b-48bb2092d890"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
@@ -2053,9 +2055,9 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 14" x="152" y="93" width="316" height="31"/>
+				<reportElement key="table 14" x="152" y="93" width="316" height="31" uuid="b86c4c10-b00a-4dad-b59e-60c84e139bd1"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_rashod_tromb">
+					<datasetRun subDataset="Vsego_ost_rashod_tromb" uuid="0366ada3-ecb9-4037-b91b-b05007c78baf">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -2064,10 +2066,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="62">
+					<jr:column width="62" uuid="bc55833e-5a51-472e-a0c1-3d3e26a4d9a0">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="62" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="62" height="31" uuid="4f13fd58-3a23-45f6-88c0-8f33ab31683f"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2076,10 +2078,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="52">
+					<jr:column width="52" uuid="7d3dcff5-5267-4fc1-bd3a-d094e5a61c29">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="52" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="52" height="31" uuid="946bf1d5-ce47-4fe1-b47a-38c8a7e97af5"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2088,10 +2090,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="54">
+					<jr:column width="54" uuid="ad506e0b-64c8-4b43-bad0-2e05688884e4">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="54" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="54" height="31" uuid="88ac0a3d-2362-4297-b1a1-1d4e05cc30a3"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2100,10 +2102,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="64">
+					<jr:column width="64" uuid="e05daa39-3c3d-4b47-892c-2b2e6af505e9">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="64" height="31" uuid="1ce85ade-3ef1-4f83-a370-847442b6228c"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2112,10 +2114,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="84">
+					<jr:column width="84" uuid="54f22ecc-215a-4615-b03c-c0fbd7bbdc6f">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="84" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="84" height="31" uuid="918c8e53-be7f-444c-aed1-680d4b907dcd"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
@@ -2127,9 +2129,9 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<componentElement>
-				<reportElement key="table 15" x="152" y="124" width="552" height="31"/>
+				<reportElement key="table 15" x="152" y="124" width="552" height="31" uuid="f7b9364e-906b-4ca8-b4a7-e469fc0ea147"/>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="Vsego_ost_plasm_rashod_plasm">
+					<datasetRun subDataset="Vsego_ost_plasm_rashod_plasm" uuid="1e857229-c1f4-46c7-83a1-f11eeae3034d">
 						<datasetParameter name="StartDate">
 							<datasetParameterExpression><![CDATA[$P{StartDate}]]></datasetParameterExpression>
 						</datasetParameter>
@@ -2138,10 +2140,10 @@ group by comp_type]]>
 						</datasetParameter>
 						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
-					<jr:column width="62">
+					<jr:column width="62" uuid="d307dcfd-15be-47fb-ba99-e8efe5bf5519">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="62" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="62" height="31" uuid="b96cef31-61b2-4019-88c7-be40e72fd1de"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2150,10 +2152,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="52">
+					<jr:column width="52" uuid="3f23edec-8dc9-4daf-adce-5d76591a30bc">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="52" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="52" height="31" uuid="bcaff361-2582-46dc-b00f-e8e470e5e6f9"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2162,10 +2164,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="54">
+					<jr:column width="54" uuid="ae7b1477-9ca7-4952-92c8-0937c71af215">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="54" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="54" height="31" uuid="501c8d8a-3efd-4830-8b44-38b7b19af85a"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2174,10 +2176,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="64">
+					<jr:column width="64" uuid="6b7c848b-1351-480c-b617-a287f0167957">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="64" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="64" height="31" uuid="78fb718c-c718-47c7-b448-273d43626acc"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2186,10 +2188,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="84">
+					<jr:column width="84" uuid="52c5cc5b-d4fe-452c-9e8e-1b7f2c591481">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="84" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="84" height="31" uuid="084e097c-7fa5-4543-b2a1-08d0cd635e65"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma" isBold="false"/>
 								</textElement>
@@ -2198,10 +2200,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="72">
+					<jr:column width="72" uuid="40500e78-aaaa-46b4-b26b-72f1eac84910">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="72" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="72" height="31" uuid="568f70ad-a817-4208-a1e8-33bd33fab57c"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2210,10 +2212,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="82">
+					<jr:column width="82" uuid="168b0c59-ad4a-460e-a4a1-ec6c55eb2c00">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31" uuid="6be4ce63-a8ab-4828-a064-799ac0e1dafe"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2222,10 +2224,10 @@ group by comp_type]]>
 						</jr:tableFooter>
 						<jr:detailCell height="0" rowSpan="1"/>
 					</jr:column>
-					<jr:column width="82">
+					<jr:column width="82" uuid="a47e81bd-185c-467b-b720-0d4569482a37">
 						<jr:tableFooter height="31" rowSpan="1">
 							<textField pattern="###0.000">
-								<reportElement style="table_TD" x="0" y="0" width="82" height="31"/>
+								<reportElement style="table_TD" x="0" y="0" width="82" height="31" uuid="84426d20-881d-46c3-9cbb-b49e11fb318a"/>
 								<textElement textAlignment="Center">
 									<font fontName="Tahoma"/>
 								</textElement>
@@ -2237,7 +2239,7 @@ group by comp_type]]>
 				</jr:table>
 			</componentElement>
 			<textField>
-				<reportElement x="197" y="184" width="366" height="20"/>
+				<reportElement x="197" y="184" width="366" height="20" uuid="ce95bfd2-db0b-42a7-8a3c-d1b9b58729ae"/>
 				<textElement verticalAlignment="Top">
 					<font fontName="Tahoma"/>
 				</textElement>

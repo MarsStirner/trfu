@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-08-25T21:49:44 -->
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2016-06-16T20:19:44 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="форма 420-А_у_П2" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5ccbbb1c-238b-4457-bdd1-fe160d8b7cd0">
 	<property name="ireport.zoom" value="1.6105100000000079"/>
 	<property name="ireport.x" value="490"/>
 	<property name="ireport.y" value="38"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -112,7 +111,7 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<text><![CDATA[Форма 420-А/у-П2]]></text>
 			</staticText>
 			<line>
-				<reportElement x="601" y="64" width="100" height="1" uuid="25844bc5-6510-4fa3-a528-0a3a2176d86b"/>
+				<reportElement x="600" y="92" width="100" height="1" uuid="25844bc5-6510-4fa3-a528-0a3a2176d86b"/>
 			</line>
 			<staticText>
 				<reportElement x="278" y="44" width="246" height="34" uuid="3d66c60c-3e8d-4202-9633-851b6b5c94f8"/>
@@ -166,12 +165,12 @@ and trfu_blood_donation_requests.deleted = 0]]>
 				<textFieldExpression><![CDATA[$P{Division}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="562" y="18" width="179" height="36" uuid="55bf42d5-9f53-4acd-b4de-fa2e44a19b52"/>
+				<reportElement x="562" y="18" width="218" height="60" uuid="55bf42d5-9f53-4acd-b4de-fa2e44a19b52"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Tahoma" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Утверждаю\n"+
-"Главный врач "+ $P{HeadDoctor}]]></textFieldExpression>
+"Заместитель генерального директора по научно-клинической работе - медицинский директор "+ $P{HeadDoctor}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
