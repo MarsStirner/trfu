@@ -6,10 +6,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "OrderInformation", propOrder = {"id", "number","divisionId","ibNumber","diagnosis","componentTypeId","volume","doseCount","indication","transfusionType",
-                                                 "planDate","registrationDate","attendingPhysicianId","attendingPhysicianLastName","attendingPhysicianFirstName", "attendingPhysicianMiddleName", "bloodGroupId", "rhesusFactorId"} )
+@XmlType(name = "OrderInformation", propOrder = {"id", "number", "divisionId", "ibNumber", "diagnosis", "componentTypeId", "volume", "doseCount", "indication", "transfusionType", "planDate", "registrationDate", "attendingPhysicianId", "attendingPhysicianLastName", "attendingPhysicianFirstName", "attendingPhysicianMiddleName", "bloodGroupId", "rhesusFactorId", "lastModifyDateTime"})
 @XmlRootElement(name = "OrderInformation")
-public class  OrderInformation implements java.io.Serializable{
+public class OrderInformation implements java.io.Serializable {
     @XmlElement(name = "id")
     private Integer id;
     @XmlElement(name = "number")
@@ -46,6 +45,8 @@ public class  OrderInformation implements java.io.Serializable{
     private Integer bloodGroupId;
     @XmlElement(name = "rhesusFactorId")
     private Integer rhesusFactorId;
+    @XmlElement(name = "lastModifyDateTime")
+    private Date lastModifyDateTime;
 
 
     public Integer getId() {
@@ -192,6 +193,14 @@ public class  OrderInformation implements java.io.Serializable{
         this.rhesusFactorId = rhesusFactorId;
     }
 
+    public Date getLastModifyDateTime() {
+        return lastModifyDateTime;
+    }
+
+    public void setLastModifyDateTime(final Date lastModifyDateTime) {
+        this.lastModifyDateTime = lastModifyDateTime;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("OrderInformation{");
@@ -213,6 +222,7 @@ public class  OrderInformation implements java.io.Serializable{
         sb.append(", attendingPhysicianMiddleName='").append(attendingPhysicianMiddleName).append('\'');
         sb.append(", bloodGroupId=").append(bloodGroupId);
         sb.append(", rhesusFactorId=").append(rhesusFactorId);
+        sb.append(", lastModifyDateTime=").append(lastModifyDateTime);
         sb.append('}');
         return sb.toString();
     }

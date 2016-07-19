@@ -25,12 +25,180 @@ import java.util.*;
 @Table(name = "trfu_blood_component_order_requests")
 public class BloodComponentOrderRequest extends IdentifiedEntity implements ProcessedData {
 
-    public void setNumber(String number) {
-        this.number = number;
-    }
+
+    private static final long serialVersionUID = -543434713300187398L;
+    /**
+     * Иммуносерология - анализы
+     */
+    @OneToMany(mappedBy = "bloodComponentOrderRequest", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<BloodComponentOrderPhenotype> phenotypeList = new ArrayList<>();
+    /**
+     * Келл-Антиген
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private Classifier kellAntigen;
+    /**
+     * Номер
+     */
+    private String number;
+    /**
+     * дата создания документа
+     */
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date created;
+    /**
+     * № требования МИС
+     */
+    private String externalNumber;
+    /**
+     * Отделение
+     */
+    private String division;
+    /**
+     * фамилия реципиента
+     */
+    private String recipient;
+    /**
+     * отчество реципиента
+     */
+    private String recipientMiddleName;
+    /**
+     * имя реципиента
+     */
+    private String recipientFirstName;
+    private Integer recipientId;
+    /**
+     * Дата рождения реципиента
+     */
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date recipientBirth;
+    /**
+     * № ИБ
+     */
+    private String ibNumber;
+    /**
+     * Диагноз
+     */
+    private String diagnosis;
+    /**
+     * Группа крови
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private BloodGroup bloodGroup;
+    /**
+     * Резус-фактор
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private Classifier rhesusFactor;
+    /**
+     * Группа крови (запрошенная)
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private BloodGroup orderBloodGroup;
+    /**
+     * Резус-фактор (запрошенный)
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private Classifier orderRhesusFactor;
+    /**
+     * Компонент крови
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private BloodComponentType componentType;
+    /**
+     * Количество
+     */
+    private int count;
+    /**
+     * Показания к назначению
+     */
+    private String indication;
+    /**
+     * Вид трансфузии
+     */
+    private int transfusionType;
+    /**
+     * Дата плановой трансфузии
+     */
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @Column(nullable = true)
+    private Date planDate;
+    /**
+     * Медицинская сестра
+     */
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private User staffNurse;
+    /**
+     * Врач, назначивший трансфузию
+     */
+    //@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    private String attendingDoctor;
+    private String attendingDoctorLastName;
+    private String attendingDoctorFirstName;
+    private String attendingDoctorMiddleName;
+    private Integer attendingDoctorId;
+    /**
+     * Дата/время выдачи компонента
+     */
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date factDate;
+    /**
+     * Аутологичная кровь
+     */
+    private boolean autologous;
+    /**
+     * Подбор крови индивидуальный
+     */
+    private boolean individualSelection;
+    /**
+     * Количество, мл
+     */
+    private int volume;
+    /**
+     * Количество донорских доз
+     */
+    private double doseCount;
+    /**
+     * Количество донорских доз (результат выдачи)
+     */
+    private double doseCountResult;
+    /**
+     * Комментарий
+     */
+    @Column(columnDefinition = "text")
+    private String commentary;
+    /**
+     * Удален ли документ
+     */
+    private boolean deleted;
+    /**
+     * Текущий статус документа в процессе
+     */
+    @Column(name = "status_id")
+    private int statusId;
+    /**
+     * История
+     */
+    @OneToMany
+    @Cascade({org.hibernate.annotations.CascadeType.ALL})
+    @JoinTable(name = "trfu_blood_component_order_request_history",
+            joinColumns = {@JoinColumn(name = "request_id")},
+            inverseJoinColumns = {@JoinColumn(name = "history_entry_id")})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<HistoryEntry> history;
+
+    private boolean fromMIS;
+
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @Column(name="lastModifyDateTime")
+    private Date lastModifyDateTime;
 
     public String getNumber() {
         return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public Date getCreated() {
@@ -189,16 +357,18 @@ public class BloodComponentOrderRequest extends IdentifiedEntity implements Proc
             Calendar today = Calendar.getInstance();
             Calendar birthDate = Calendar.getInstance();
 
-            int age = 0;
+            int age;
 
             birthDate.setTime(recipientBirth);
             if (birthDate.after(today)) {
                 throw new IllegalArgumentException("Can't be born in the future");
             }
             age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
-            if ((birthDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR) > 3) || (birthDate.get(Calendar.MONTH) > today.get(Calendar.MONTH))) {
+            if ((birthDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR) > 3) || (birthDate.get(Calendar.MONTH) > today
+                    .get(Calendar.MONTH))) {
                 age--;
-            } else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH)) && (birthDate.get(Calendar.DAY_OF_MONTH) > today.get(Calendar.DAY_OF_MONTH))) {
+            } else if ((birthDate.get(Calendar.MONTH) == today.get(Calendar.MONTH)) && (birthDate.get(Calendar.DAY_OF_MONTH) > today
+                    .get(Calendar.DAY_OF_MONTH))) {
                 age--;
             }
 
@@ -214,7 +384,7 @@ public class BloodComponentOrderRequest extends IdentifiedEntity implements Proc
         if (age == 0) {
             return "";
         }
-        return new StringBuilder(age).append(" ").append(age % 10 == 1 && age % 100 != 11 ? "год" : age % 10 >= 2 && age % 10 <= 4 && (age % 100 < 10 || age % 100 >= 20) ? "года" : "лет").toString();
+        return " " + (age % 10 == 1 && age % 100 != 11 ? "год" : age % 10 >= 2 && age % 10 <= 4 && (age % 100 < 10 || age % 100 >= 20) ? "года" : "лет");
     }
 
     public String getIbNumber() {
@@ -297,36 +467,36 @@ public class BloodComponentOrderRequest extends IdentifiedEntity implements Proc
         this.factDate = factDate;
     }
 
-    public void setVolume(int volume) {
-        this.volume = volume;
-    }
-
     public int getVolume() {
         return volume;
     }
 
-    public void setDoseCount(double doseCount) {
-        this.doseCount = doseCount;
+    public void setVolume(int volume) {
+        this.volume = volume;
     }
 
     public double getDoseCount() {
         return doseCount;
     }
 
-    public void setDoseCountResult(double doseCountResult) {
-        this.doseCountResult = doseCountResult;
+    public void setDoseCount(double doseCount) {
+        this.doseCount = doseCount;
     }
 
     public double getDoseCountResult() {
         return doseCountResult;
     }
 
-    public void setTransfusionType(int transfusionType) {
-        this.transfusionType = transfusionType;
+    public void setDoseCountResult(double doseCountResult) {
+        this.doseCountResult = doseCountResult;
     }
 
     public int getTransfusionType() {
         return transfusionType;
+    }
+
+    public void setTransfusionType(int transfusionType) {
+        this.transfusionType = transfusionType;
     }
 
     public String getCommentary() {
@@ -337,12 +507,17 @@ public class BloodComponentOrderRequest extends IdentifiedEntity implements Proc
         this.commentary = commentary;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 
-    public boolean isDeleted() {
-        return deleted;
+    @Transient
+    public String getType() {
+        return "BloodComponentOrder";
     }
 
     public int getStatusId() {
@@ -354,40 +529,37 @@ public class BloodComponentOrderRequest extends IdentifiedEntity implements Proc
     }
 
     @Transient
-    public String getType() {
-        return "BloodComponentOrder";
-    }
-
-    @Transient
     public String getStatusName() {
         return ApplicationHelper.getStatusName("BloodComponentOrder", getStatusId());
-    }
-
-    public void setHistory(Set<HistoryEntry> history) {
-        this.history = history;
     }
 
     public Set<HistoryEntry> getHistory() {
         return history;
     }
 
+    public void setHistory(Set<HistoryEntry> history) {
+        this.history = history;
+    }
+
     @Transient
     public List<HistoryEntry> getHistoryList() {
-        List<HistoryEntry> result = new ArrayList<HistoryEntry>();
+        List<HistoryEntry> result = new ArrayList<>();
         if (history != null) {
             result.addAll(history);
         }
         Collections.sort(result);
         return result;
     }
+
     /**
      * Добавление в историю компонента еще одной записи, если история пуста, то она создается
+     *
      * @param historyEntry Запись в истории компонента, которую надо добавить
-     * @return  статус добавления (true - успех)
+     * @return статус добавления (true - успех)
      */
     public boolean addToHistory(final HistoryEntry historyEntry) {
-        if(history == null){
-            this.history = new HashSet<HistoryEntry>(1);
+        if (history == null) {
+            this.history = new HashSet<>(1);
         }
         return this.history.add(historyEntry);
     }
@@ -400,34 +572,20 @@ public class BloodComponentOrderRequest extends IdentifiedEntity implements Proc
         this.fromMIS = fromMIS;
     }
 
-    /**
-     * Иммуносерология - анализы
-     */
-    @OneToMany(mappedBy = "bloodComponentOrderRequest", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<BloodComponentOrderPhenotype> phenotypeList = new ArrayList<BloodComponentOrderPhenotype>();
-
-
     public List<BloodComponentOrderPhenotype> getPhenotypeList() {
         return phenotypeList;
-    }
-
-
-    public boolean addToPhenotypeList(final BloodComponentOrderPhenotype item) {
-        if (phenotypeList == null) {
-            this.phenotypeList = new ArrayList<BloodComponentOrderPhenotype>(1);
-        }
-        return phenotypeList.add(item);
     }
 
     public void setPhenotypeList(List<BloodComponentOrderPhenotype> phenotypeList) {
         this.phenotypeList = phenotypeList;
     }
 
-    /**
-     * Келл-Антиген
-     */
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private Classifier kellAntigen;
+    public boolean addToPhenotypeList(final BloodComponentOrderPhenotype item) {
+        if (phenotypeList == null) {
+            this.phenotypeList = new ArrayList<>(1);
+        }
+        return phenotypeList.add(item);
+    }
 
     public Classifier getKellAntigen() {
         return kellAntigen;
@@ -437,192 +595,11 @@ public class BloodComponentOrderRequest extends IdentifiedEntity implements Proc
         this.kellAntigen = kellAntigen;
     }
 
-    /**
-     * Номер
-     */
-    private String number;
+    public Date getLastModifyDateTime() {
+        return lastModifyDateTime;
+    }
 
-    /**
-     * дата создания документа
-     */
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date created;
-
-    /**
-     * № требования МИС
-     */
-    private String externalNumber;
-
-    /**
-     * Отделение
-     */
-    private String division;
-
-    /**
-     * фамилия реципиента
-     */
-    private String recipient;
-
-    /**
-     * отчество реципиента
-     */
-    private String recipientMiddleName;
-
-    /**
-     * имя реципиента
-     */
-    private String recipientFirstName;
-
-    private Integer recipientId;
-
-    /**
-     * Дата рождения реципиента
-     */
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date recipientBirth;
-
-    /**
-     * № ИБ
-     */
-    private String ibNumber;
-
-    /**
-     * Диагноз
-     */
-    private String diagnosis;
-
-    /**
-     * Группа крови
-     */
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private BloodGroup bloodGroup;
-
-    /**
-     * Резус-фактор
-     */
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private Classifier rhesusFactor;
-
-    /**
-     * Группа крови (запрошенная)
-     */
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private BloodGroup orderBloodGroup;
-
-    /**
-     * Резус-фактор (запрошенный)
-     */
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private Classifier orderRhesusFactor;
-
-    /**
-     * Компонент крови
-     */
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private BloodComponentType componentType;
-
-    /**
-     * Количество
-     */
-    private int count;
-
-    /**
-     * Показания к назначению
-     */
-    private String indication;
-
-    /**
-     * Вид трансфузии
-     */
-    private int transfusionType;
-
-    /**
-     * Дата плановой трансфузии
-     */
-    @Temporal(value = TemporalType.TIMESTAMP)
-    @Column(nullable = true)
-    private Date planDate;
-
-    /**
-     * Медицинская сестра
-     */
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private User staffNurse;
-
-    /**
-     * Врач, назначивший трансфузию
-     */
-    //@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
-    private String attendingDoctor;
-
-    private String attendingDoctorLastName;
-    private String attendingDoctorFirstName;
-    private String attendingDoctorMiddleName;
-    private Integer attendingDoctorId;
-
-
-    /**
-     * Дата/время выдачи компонента
-     */
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date factDate;
-
-    /**
-     * Аутологичная кровь
-     */
-    private boolean autologous;
-
-    /**
-     * Подбор крови индивидуальный
-     */
-    private boolean individualSelection;
-
-    /**
-     * Количество, мл
-     */
-    private int volume;
-
-    /**
-     * Количество донорских доз
-     */
-    private double doseCount;
-
-    /**
-     * Количество донорских доз (результат выдачи)
-     */
-    private double doseCountResult;
-
-    /**
-     * Комментарий
-     */
-    @Column(columnDefinition = "text")
-    private String commentary;
-
-    /**
-     * Удален ли документ
-     */
-    private boolean deleted;
-
-    /**
-     * Текущий статус документа в процессе
-     */
-    @Column(name = "status_id")
-    private int statusId;
-
-    /**
-     * История
-     */
-    @OneToMany
-    @Cascade({org.hibernate.annotations.CascadeType.ALL})
-    @JoinTable(name = "trfu_blood_component_order_request_history",
-            joinColumns = {@JoinColumn(name = "request_id")},
-            inverseJoinColumns = {@JoinColumn(name = "history_entry_id")})
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private Set<HistoryEntry> history;
-
-
-    private boolean fromMIS;
-
-    private static final long serialVersionUID = -543434713300187398L;
-
+    public void setLastModifyDateTime(final Date lastModifyDateTime) {
+        this.lastModifyDateTime = lastModifyDateTime;
+    }
 }

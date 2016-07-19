@@ -114,6 +114,7 @@ public class TransfusionMedicalService {
             request.setAttendingDoctorMiddleName(orderInformation.getAttendingPhysicianMiddleName());
             request.setPlanDate(orderInformation.getPlanDate());
             request.setFromMIS(true);
+            request.setLastModifyDateTime(orderInformation.getLastModifyDateTime());
             final Date now = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
             request.setCreated(now);
 
