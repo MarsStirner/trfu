@@ -1,28 +1,25 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.io.SaveToZipFile;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-
 import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.AbstractFilterableListHolderBean;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class FilterResultsExportGenerator {
 
-	protected Workbook createWorkbook() throws IOException,
-			InvalidFormatException {
+	protected Workbook createWorkbook() throws IOException, InvalidFormatException {
 		return createWorkbook("export_template.xls");
 	}
 
-	protected Workbook createWorkbook(String templateFilename)
-			throws IOException, InvalidFormatException {
+	protected Workbook createWorkbook(String templateFilename) throws IOException, InvalidFormatException {
 		InputStream is = null;
 		Workbook wb = null;
 		try {

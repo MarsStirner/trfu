@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 
 public class IntegrationHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(IntegrationHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger("LIS");
     private static final int LIS_BARCODE_LENGTH = 5;
 
     public static ActionResult queryAppointment(ExaminationRequest examination) {

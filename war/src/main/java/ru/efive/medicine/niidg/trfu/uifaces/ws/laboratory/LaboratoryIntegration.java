@@ -28,6 +28,8 @@ import java.util.List;
 @WebService(name = "trfu-laboratory-integration", targetNamespace = "http://www.korusconsulting.ru", serviceName =
         "trfu-laboratory-integration", portName = "trfu-laboratory-integration")
 public class LaboratoryIntegration {
+
+    private static final Logger logger = LoggerFactory.getLogger("LIS");
     private static final String SUCCESSFUL_RESULT = "0";
     private static final String BARCODE_NOT_SET = "Не указан штрихкод";
     private static final String EXTERNAL_APPOINTMENT_NOT_FOUND = "Не найдено направление на исследование для " +
@@ -64,23 +66,24 @@ public class LaboratoryIntegration {
 
             final ApplicationContext applicationContext = ApplicationContextHelper.getApplicationContext();
 
-            final ExternalAppointmentDaoImpl dao = (ExternalAppointmentDaoImpl) applicationContext.getBean
-                    (ApplicationHelper.EXTERNAL_APPOINTMENT_DAO);
-            ExternalAppointment appointment = dao.getWithHistory(orderId);
-            if (appointment == null) {
+            final ExternalAppointmentDaoImpl dao = (ExternalAppointmentDaoImpl) applicationContext.getBean(ApplicationHelper.EXTERNAL_APPOINTMENT_DAO);
+            List<ExternalAppointment> appointments = dao.getAppoitments(orderBarCode);
+            if (appointments == null || appointments.isEmpty()) {
                 result = String.format(EXTERNAL_APPOINTMENT_NOT_FOUND, orderId, orderBarCode);
                 logger.error(result);
                 throw new Exception(result);
             }
 
-            List<Analysis> analysisList = new ArrayList<>(appointment.getTests());
+            List<Analysis> analysisList = new ArrayList<>();
+            for (ExternalAppointment externalAppointment : appointments) {
+                analysisList.addAll(externalAppointment.getTests());
+            }
 
             BloodDonationRequest donationRequest = ((BloodDonationRequestDAOImpl) applicationContext.getBean
                     (ApplicationHelper.DONATION_DAO)).findDocumentByBarCode(orderBarCode);
             if (donationRequest != null) {
                 updateDonationRequest(donationRequest, results);
-                ((BloodDonationRequestDAOImpl) applicationContext.getBean(ApplicationHelper.DONATION_DAO)).save
-                        (donationRequest);
+                ((BloodDonationRequestDAOImpl) applicationContext.getBean(ApplicationHelper.DONATION_DAO)).save(donationRequest);
 
                 //TICKET TRFU-22/41
                 if (donationRequest.getDonor() != null) {
@@ -90,10 +93,11 @@ public class LaboratoryIntegration {
             updateAnalysisList(analysisList, results);
 
             ExternalAnalysisEntry entry = createExternalAnalysisEntry(results, biomaterialDefects, resultDoctorLisId);
-            appointment.addHistoryEntry(entry);
+            appointments.get(appointments.size() - 1).addHistoryEntry(entry);
 
-            dao.save(appointment);
-
+            for (ExternalAppointment externalAppointment : appointments) {
+                dao.save(externalAppointment);
+            }
             result = SUCCESSFUL_RESULT;
             logger.warn("Result of the laboratory integration: " + result);
         } catch (Exception e) {
@@ -318,7 +322,7 @@ public class LaboratoryIntegration {
     }
 
 
-    private static final Logger logger = LoggerFactory.getLogger("LIS");
+
 
     private void logParameters(int orderId, String orderBarCode, List<AnalysisResult> results, String
             biomaterialDefects, int resultDoctorLisId) {
