@@ -27,6 +27,7 @@ import javax.inject.Named;
 import javax.print.DocPrintJob;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
+import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.PrintServiceAttribute;
@@ -213,7 +214,10 @@ public class ReportsManagmentBean implements Serializable {
             }
             return null;
         } else {
-            LOGGER.info("Found printer[{}] attributes >> {}", result, result.getAttributes());
+            LOGGER.info("Found print service: {}", result);
+            for( Attribute a : result.getAttributes().toArray() ) {
+                LOGGER.info("* {}: {}",a.getName(), a);
+            }
             return result;
         }
     }
@@ -239,10 +243,12 @@ public class ReportsManagmentBean implements Serializable {
             pf.setOrientation(PageFormat.PORTRAIT);
             pf.setPaper(paper);
             PageFormat validatePage = job.validatePage(pf);
-            LOGGER.info("Valid- ");
+            LOGGER.info("Valid");
             dump(validatePage);
             job.setPrintable(new ImagePrintable(print), pf);
+            LOGGER.info("Before print");
             job.print(aset);
+            LOGGER.info("After print");
         } catch (Exception e) {
             LOGGER.error("imagePrint failed:", e);
         }
