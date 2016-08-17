@@ -1,16 +1,15 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.ConversationScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 
 @Named("versionInfo")
 @ConversationScoped
 public class VersionInfo implements Serializable {
 	private static final long serialVersionUID = 6929693412341369918L;
-	private String versionAssembly = "0.4.10";
-	private String dateAssembly = "25.08.2015 21:44:53";
+	private String versionAssembly = "0.4.11";
+	private String dateAssembly = "17.08.2016 18:00:00";
 	
 	public String getVersionAssembly() {
 		return versionAssembly;
