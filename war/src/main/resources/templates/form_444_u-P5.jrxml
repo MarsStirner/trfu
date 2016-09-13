@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-06-16T20:33:58 -->
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-09-12T11:46:23 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Форма 420-А_у-П4" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7d63acb4-52a7-4ab8-8ae0-38ec1d508580">
 	<property name="ireport.zoom" value="1.1000000000000185"/>
 	<property name="ireport.x" value="175"/>
@@ -106,7 +106,7 @@
 						<font fontName="Tahoma" size="9"/>
 					</textElement>
 					<text><![CDATA[Утверждаю
-Директор
+Генеральный директор
 ФГБУ ФНКЦ ДГОИ МЗ РФ
 ____________]]></text>
 				</staticText>
