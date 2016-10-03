@@ -60,6 +60,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
 				.EXAMINATION_DAO).get(id);
         if (examination == null) {
             setState(STATE_NOT_FOUND);
+            return;
         }
         examination.setExaminationEntryList(examinationEntryList.getEntriesByExaminationRequest(id));
         DonorRejectionDAOImpl dao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, ApplicationHelper

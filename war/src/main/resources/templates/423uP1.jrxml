@@ -1,0 +1,764 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-09-20T17:49:58 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report3" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryNewPage="true" uuid="43ebe6e1-fb59-4ea6-9649-3e7c587d68a7">
+    <property name="ireport.zoom" value="1.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="NEW_DATAADAPTER.xml"/>
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.unit." value="pixel"/>
+    <style name="table">
+        <box>
+            <pen lineWidth="1.0" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table 1">
+        <box>
+            <pen lineWidth="1.0" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table 2">
+        <box>
+            <pen lineWidth="1.0" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <parameter name="StartDate" class="java.util.Date"/>
+    <parameter name="EndDate" class="java.util.Date"/>
+    <parameter name="Institution" class="java.lang.String">
+        <parameterDescription><![CDATA[]]></parameterDescription>
+    </parameter>
+    <parameter name="Division" class="java.lang.String"/>
+    <parameter name="HeadDoctor" class="java.lang.String"/>
+    <parameter name="Superintendent" class="java.lang.String"/>
+    <queryString>
+        <![CDATA[-- ------------------------------------------------------------------------------------------------
+SELECT
+-- Добавляем значение для группировки
+bcType.value AS BC_TYPE,
+
+-- Остаток на начало периода
+TRUNCATE(IFNULL((BALANCE_ON_START.value/1000), 0),3) AS BALANCE_ON_START,
+-- Приход закупленных КК
+TRUNCATE(IFNULL((INCOME.self/1000), 0),3) AS INCOME_SELF,
+-- Приход закупленных КК
+TRUNCATE(IFNULL((INCOME.other/1000), 0),3) AS INCOME_OTHER,
+-- Расход собственных КК
+TRUNCATE(IFNULL((OUTCOME.self/1000), 0),3) AS OUTCOME_SELF,
+-- Расход купленных КК
+TRUNCATE(IFNULL((OUTCOME.other/1000), 0),3) AS OUTCOME_OTHER,
+-- Брак
+TRUNCATE(IFNULL((DEFECT.value/1000), 0),3) AS DEFECT,
+-- Добавочный объем от вирусинактиваций в экспедиции
+TRUNCATE(IFNULL((VOLUME_ADDED.self/1000), 0),3) AS VOLUME_ADDED_SELF,
+TRUNCATE(IFNULL((VOLUME_ADDED.other/1000), 0),3) AS VOLUME_ADDED_OTHER,
+-- Подсчеты
+TRUNCATE((IFNULL((BALANCE_ON_START.value), 0) +
+IFNULL((VOLUME_ADDED.self), 0) +
+IFNULL((VOLUME_ADDED.other), 0) +
+IFNULL((INCOME.self), 0) +
+IFNULL((INCOME.other), 0) -
+IFNULL((OUTCOME.self), 0) -
+IFNULL((OUTCOME.other), 0) -
+IFNULL((DEFECT.value), 0))/1000,3)
+AS BALANCE_ON_END_COUNTED
+
+-- ------------------------------------------------------------------------------------------------
+-- Выбираем из списка типов КК
+FROM trfu_blood_component_types bcType
+-- Остаток на начало периода ----------------------------------------------------------------------
+LEFT JOIN
+(
+  SELECT
+	   sum(vol) AS value, BC_TYPE_ID
+
+  FROM
+
+(SELECT
+  comp.id AS iid, comp.volume AS vol, comp.componentType_id AS BC_TYPE_ID
+  FROM
+    trfu_blood_components comp
+    INNER JOIN trfu_blood_component_history hist ON comp.id = hist.component_id
+    INNER JOIN wf_history wf ON hist.history_entry_id = wf.id
+  WHERE
+    wf.to_status_id = 3
+    AND wf.startDate < ADDDATE(DATE($P{StartDate}), INTERVAL '00:00:00' HOUR_SECOND)
+    AND wf.startDate = (
+      SELECT max(wf_in.startDate)
+      FROM
+        trfu_blood_component_history hist_in
+        INNER JOIN wf_history wf_in ON hist_in.history_entry_id = wf_in.id
+      WHERE
+        (wf_in.startDate) < ADDDATE(DATE($P{StartDate}), INTERVAL '00:00:00' HOUR_SECOND)
+        AND hist_in.component_id = comp.id
+      )
+  	AND (comp.status_id <> 100 OR (comp.status_id = 100 and comp.splitDate >=ADDDATE(DATE($P{StartDate}), INTERVAL '00:00:00' HOUR_SECOND)))
+and comp.deleted=0
+	) AS table11
+
+LEFT JOIN
+
+(SELECT comp.id AS iid
+FROM trfu_blood_components comp
+	INNER JOIN trfu_blood_component_history hist ON comp.id = hist.component_id
+	INNER JOIN wf_history wf ON hist.history_entry_id = wf.id
+WHERE
+  wf.from_status_id=3
+  AND comp.status_id=wf.to_status_id
+  AND comp.status_id IN (-2,10)
+  AND wf.startDate=(
+      SELECT max(wf_in.startDate)
+      FROM
+        trfu_blood_component_history hist_in
+        INNER JOIN wf_history wf_in ON hist_in.history_entry_id = wf_in.id
+      WHERE
+        wf_in.startDate <= ADDDATE(DATE($P{StartDate}), INTERVAL '00:00:00' HOUR_SECOND)
+        AND hist_in.component_id = comp.id)
+  AND comp.deleted = 0
+) AS table21
+
+ON table21.iid=table11.iid
+WHERE table21.iid IS null
+GROUP BY BC_TYPE_ID
+) AS BALANCE_ON_START ON BALANCE_ON_START.BC_TYPE_ID = bcType.id
+-- Приход КК --------------------------------------------------------------------------
+LEFT JOIN
+(
+	SELECT
+  	SUM(IF(comp.maker_id = 11, comp.volume, 0)) AS self,
+  	SUM(IF(comp.maker_id <> 11, comp.volume, 0)) AS other,
+    comp.componentType_id AS BC_TYPE_ID
+	from trfu_blood_components comp
+  	inner join trfu_blood_component_history hist on comp.id = hist.component_id
+  	inner join wf_history wf on hist.history_entry_id = wf.id
+where wf.to_status_id = 3
+	and wf.startDate between ADDDATE(DATE($P{StartDate}), INTERVAL '00:00:00' HOUR_SECOND) and ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+	and comp.deleted = 0
+	and comp.split = false
+	and 1 = (select
+				count(sub_comp.id)
+			from trfu_blood_components sub_comp
+				inner join trfu_blood_component_history sub_hist on sub_comp.id = sub_hist.component_id
+				inner join wf_history sub_wf on sub_hist.history_entry_id = sub_wf.id
+			where sub_wf.to_status_id = 3
+               	and sub_wf.startDate <= wf.startDate
+				and sub_comp.id = comp.id)
+		GROUP BY comp.componentType_id
+) AS INCOME ON INCOME.BC_TYPE_ID = bcType.id
+
+-- Расход -----------------------------------------------------------------------------------------
+LEFT JOIN
+(
+	SELECT
+  	SUM(IF(comp.maker_id = 11, comp.volume, 0)) AS self,
+  	SUM(IF(comp.maker_id <> 11, comp.volume, 0)) AS other,
+  	comp.componentType_id AS BC_TYPE_ID
+  from trfu_blood_components comp
+  	inner join trfu_blood_component_history hist on comp.id = hist.component_id
+  	inner join wf_history wf on hist.history_entry_id = wf.id
+  where wf.to_status_id = 10
+  	and wf.startDate between ADDDATE(DATE($P{StartDate}), INTERVAL '00:00:00' HOUR_SECOND) and  ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+  	and comp.deleted = 0
+  	and comp.id not in (
+      select
+  			sub_comp.id
+  		from trfu_blood_components sub_comp
+  			inner join trfu_blood_component_history sub_hist on sub_comp.id = sub_hist.component_id
+  			inner join wf_history sub_wf on sub_hist.history_entry_id = sub_wf.id
+  		where sub_wf.to_status_id <> 10
+  			and sub_wf.startDate between wf.startDate and  ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+  			and sub_comp.id = comp.id)
+  GROUP BY comp.componentType_id
+) AS OUTCOME ON OUTCOME.BC_TYPE_ID = bcType.id
+-- Брак -------------------------------------------------------------------------------------------
+LEFT JOIN
+(
+	SELECT
+    SUM(comp.volume) AS value,
+	  comp.componentType_id AS BC_TYPE_ID
+	FROM trfu_blood_components comp
+	  INNER JOIN trfu_blood_component_history hist ON comp.id = hist.component_id
+	  INNER JOIN wf_history wf ON hist.history_entry_id = wf.id
+	WHERE
+  	comp.deleted=0
+  	AND DATE(wf.startDate) >= ADDDATE(DATE($P{StartDate}), INTERVAL '00:00:00' HOUR_SECOND)
+  	AND DATE(wf.startDate) <= ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+  	AND wf.to_status_id = -2
+  	AND comp.status_id = -2
+  GROUP BY comp.componentType_id
+) AS DEFECT ON DEFECT.BC_TYPE_ID = bcType.id
+-- Добавочный объем от вирусинактиваций в экспедиции ----------------------------------------------------
+LEFT JOIN
+(
+	SELECT
+  	SUM(IF(tbc.maker_id = 11, tbc.volume, 0)) AS self,
+  	SUM(IF(tbc.maker_id <> 11, tbc.volume, 0)) AS other,
+	  tbc.componentType_id AS BC_TYPE_ID
+	FROM
+    trfu_blood_components tbc
+    INNER JOIN trfu_blood_component_history tbch ON tbc.id = tbch.component_id
+    INNER JOIN wf_history wh ON tbch.history_entry_id = wh.id
+
+  WHERE
+    wh.from_status_id=wh.to_status_id
+    AND wh.to_status_id=3
+    AND wh.action_id=14
+    AND tbc.split=1
+    AND wh.startDate BETWEEN ADDDATE(DATE($P{StartDate}), INTERVAL '00:00:00' HOUR_SECOND) and ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+    AND tbc.deleted=0
+  GROUP BY tbc.componentType_id
+) AS VOLUME_ADDED ON VOLUME_ADDED.BC_TYPE_ID = bcType.id
+
+-- ------------------------------------------------------------------------------------------------
+
+WHERE
+
+(
+	BALANCE_ON_START.value <> 0
+	OR
+	INCOME.self <> 0
+	OR
+	INCOME.other <> 0
+	OR
+	OUTCOME.self <> 0
+	OR
+	OUTCOME.other <> 0
+	OR
+	DEFECT.value <> 0
+  OR
+  VOLUME_ADDED.self <> 0
+  OR
+  VOLUME_ADDED.other <> 0
+)
+
+ GROUP BY BC_TYPE]]>
+    </queryString>
+    <field name="BC_TYPE" class="java.lang.String"/>
+    <field name="BALANCE_ON_START" class="java.math.BigDecimal"/>
+    <field name="INCOME_SELF" class="java.math.BigDecimal"/>
+    <field name="INCOME_OTHER" class="java.math.BigDecimal"/>
+    <field name="OUTCOME_SELF" class="java.math.BigDecimal"/>
+    <field name="OUTCOME_OTHER" class="java.math.BigDecimal"/>
+    <field name="DEFECT" class="java.math.BigDecimal"/>
+    <field name="VOLUME_ADDED_SELF" class="java.math.BigDecimal"/>
+    <field name="VOLUME_ADDED_OTHER" class="java.math.BigDecimal"/>
+    <field name="BALANCE_ON_END_COUNTED" class="java.math.BigDecimal"/>
+    <variable name="SELF_INCOME" class="java.math.BigDecimal">
+        <variableExpression><![CDATA[$F{INCOME_SELF}.add($F{VOLUME_ADDED_SELF})]]></variableExpression>
+    </variable>
+    <variable name="OTHER_INCOME" class="java.math.BigDecimal">
+        <variableExpression><![CDATA[$F{INCOME_OTHER}.add($F{VOLUME_ADDED_OTHER})]]></variableExpression>
+    </variable>
+    <variable name="TOTAL_INCOME" class="java.math.BigDecimal">
+        <variableExpression><![CDATA[$V{SELF_INCOME}.add($V{OTHER_INCOME})]]></variableExpression>
+    </variable>
+    <variable name="GRAND_TOTAL_INCOME" class="java.math.BigDecimal">
+        <variableExpression><![CDATA[$V{TOTAL_INCOME}.add($F{BALANCE_ON_START})]]></variableExpression>
+    </variable>
+    <variable name="TOTAL_OUTCOME" class="java.math.BigDecimal">
+        <variableExpression><![CDATA[$F{OUTCOME_SELF}.add($F{OUTCOME_OTHER})]]></variableExpression>
+    </variable>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="104" splitType="Stretch">
+            <staticText>
+                <reportElement x="197" y="10" width="398" height="52" uuid="654bd726-52a9-4877-b956-387ee437aee1"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Tahoma" size="14" isBold="false"/>
+                </textElement>
+                <text><![CDATA[Ведомость учета движения крови и ее компонентов по отделу выдачи]]></text>
+            </staticText>
+            <line>
+                <reportElement positionType="Float" x="0" y="62" width="184" height="1" uuid="9e2c0e65-7f91-491e-8d3f-d822890a2cad"/>
+            </line>
+            <staticText>
+                <reportElement positionType="Float" x="0" y="62" width="184" height="17" uuid="0aec22e2-dca3-4309-a84b-995a0e91d041"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[наименование учреждения]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="197" y="84" width="109" height="20" uuid="7a00cda0-9c0b-4625-a78b-a0a307736919"/>
+                <textElement textAlignment="Center" verticalAlignment="Bottom">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[за период с]]></text>
+            </staticText>
+            <line>
+                <reportElement x="605" y="65" width="108" height="1" uuid="f46a7cd5-6131-4f58-b148-c6c4117a1ca0"/>
+            </line>
+            <staticText>
+                <reportElement x="622" y="10" width="74" height="22" uuid="420bf771-8ae4-47f6-ab7c-e2ca474a569d"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="8" isBold="false"/>
+                </textElement>
+                <text><![CDATA[«УТВЕРЖДАЮ»]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="550" y="68" width="252" height="32" uuid="e291d913-85e5-494d-a421-341b9e78e205"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[(Зам. ген. дир. по научно-клинической работе - медицинский директор)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="714" y="0" width="88" height="22" uuid="ef6d27be-7d66-4982-bf4a-34501ed07000"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="10" isBold="false"/>
+                </textElement>
+                <text><![CDATA[Форма 423/у-П1]]></text>
+            </staticText>
+            <textField pattern="dd.MM.yyyy">
+                <reportElement x="306" y="84" width="100" height="20" uuid="b58af520-0b3b-402d-89a8-5d030c899db2"/>
+                <textElement textAlignment="Center" verticalAlignment="Bottom">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{StartDate}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="406" y="84" width="36" height="20" uuid="0d35af3e-441a-4351-92b6-c34f9f1afc9e"/>
+                <textElement textAlignment="Center" verticalAlignment="Bottom">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[по]]></text>
+            </staticText>
+            <textField pattern="dd.MM.yyyy">
+                <reportElement x="442" y="84" width="100" height="20" uuid="5f3f99ee-95da-4aad-88de-055da15e6c16"/>
+                <textElement textAlignment="Center" verticalAlignment="Bottom">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{EndDate}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement positionType="Float" x="5" y="35" width="174" height="25" uuid="3681fea0-673e-4b44-ab43-09ca454f1ced"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{Division}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement positionType="Float" x="5" y="10" width="174" height="25" uuid="59f99623-9bfb-4ad7-b6df-bc12a232987b"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{Institution}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="606" y="35" width="108" height="20" uuid="827f6ec3-8aaa-4915-b0d2-314821dd0d7c"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{HeadDoctor}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <pageHeader>
+        <band splitType="Stretch"/>
+    </pageHeader>
+    <columnHeader>
+        <band height="93">
+            <staticText>
+                <reportElement style="table_TD" x="227" y="10" width="26" height="83" uuid="43a57151-184c-433c-8afc-44158948ab6b"/>
+                <textElement textAlignment="Center" verticalAlignment="Top" rotation="Left">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[Единицы измерения]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="253" y="10" width="55" height="83" uuid="26d2e377-3f4a-43a0-9a2d-63ed80422ea6">
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[Остаток на
+дату]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="308" y="27" width="55" height="66" uuid="56634e39-43e4-434e-ad49-61bd871d36fc">
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[всего
+получено]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="363" y="44" width="55" height="49" uuid="bbdcbde5-193a-4073-a265-f20d4ee74797">
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[из отделов
+СПК
+(ОПК)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="418" y="44" width="55" height="49" uuid="64fd42ce-c541-40b5-bc43-9f9e2463c72e">
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[из других
+учреждений]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="528" y="27" width="55" height="66" uuid="657da93b-ffa2-409f-9fb4-a1950e4de88d">
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[всего
+выдано]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="583" y="44" width="55" height="49" uuid="42166a72-aed3-4be3-b921-720793ee450e">
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[из отделов ОПК]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="693" y="10" width="55" height="83" uuid="2fa2ddb6-06d4-4b18-96d0-bfad4eb4e328"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[Бой,
+брак,
+наруш.
+герм.
+]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="0" y="10" width="227" height="83" uuid="8ab2191e-231a-4cab-bf20-952cbca19c15"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[Наименование сред]]></text>
+            </staticText>
+            <textField pattern="dd.MM.yyyy">
+                <reportElement x="253" y="60" width="55" height="20" uuid="92c9a62d-4032-43f1-970f-ea517a5555df">
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Bottom">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{StartDate}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="table_TD" x="638" y="44" width="55" height="49" uuid="12087931-3037-4a92-83a6-d84a5d77e9bf">
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[из др. учреждений]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="473" y="10" width="55" height="83" uuid="e74bbe2a-c668-44a2-9e57-70084adb90fd">
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="10" isBold="false"/>
+                </textElement>
+                <text><![CDATA[Всего с остатком]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="748" y="10" width="55" height="83" uuid="d2488b52-e347-4a1f-931a-9ef989bcb0d5"/>
+                <textElement textAlignment="Center" verticalAlignment="Top" rotation="Left">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[Остаток на дату]]></text>
+            </staticText>
+            <textField pattern="dd.MM.yyyy">
+                <reportElement x="768" y="10" width="24" height="83" uuid="9d53db22-dc06-4c32-9ece-147550ee3023"/>
+                <textElement textAlignment="Center" verticalAlignment="Top" rotation="Left">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{EndDate}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="table_TD" x="363" y="27" width="110" height="17" uuid="afc955ce-ff6b-417c-b8e1-78b7933774fd">
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[в том числе]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="308" y="10" width="165" height="17" uuid="3b6c4578-f8f3-4d11-83f1-170b4fbd9bf2"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[Приход]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="583" y="27" width="110" height="17" uuid="28890adb-6d36-4582-af84-1eef9891c986"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[в том числе]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="table_TD" x="528" y="10" width="165" height="17" uuid="aa479bed-2367-4bed-965a-938e99a1a440"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma" size="9"/>
+                </textElement>
+                <text><![CDATA[Расход]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="30">
+            <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+            <textField>
+                <reportElement key="" x="0" y="0" width="227" height="30" isPrintWhenDetailOverflows="true" uuid="4809caf9-df60-44c6-afb2-e9ee95cabb73">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{BC_TYPE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement key="" x="253" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="09378c0b-f086-47fb-8499-e19f2e3b9d23">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{BALANCE_ON_START}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement key="" x="308" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="b8f2a7bf-c447-4f8b-818b-a7c8223c0b8d">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{TOTAL_INCOME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement key="" x="363" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="bbab1587-222f-4e96-babc-52ed450e659d">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                    <property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{SELF_INCOME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement key="" x="418" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="98cd6524-2a8f-48c4-bb3c-b1ebfb5b0509">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{OTHER_INCOME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement key="" x="473" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="a2377496-3585-48bf-9f46-c81b867bbf4c">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{GRAND_TOTAL_INCOME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement key="" x="528" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="1a6a9234-40b8-47ff-af50-7d2a11bfbb2a">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{TOTAL_OUTCOME}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement key="" x="583" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="e2778708-f043-42db-8206-8a582fa15735">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{OUTCOME_SELF}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement key="" x="638" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="519e3da3-6669-44ba-aa19-9dbdd5d6f44d">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{OUTCOME_OTHER}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement key="" x="693" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="58a90683-cbb0-4f8e-b5e0-75b81875788b">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{DEFECT}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement key="" x="748" y="0" width="55" height="30" isPrintWhenDetailOverflows="true" uuid="4d08e364-dd4a-4865-8fea-454eb7d6b7e9">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{BALANCE_ON_END_COUNTED}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement key="" x="227" y="0" width="26" height="30" isPrintWhenDetailOverflows="true" uuid="9e54f3d0-9560-4f90-b49b-2eb3320e83e4"/>
+                <box>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <text><![CDATA[л]]></text>
+            </staticText>
+        </band>
+    </detail>
+    <pageFooter>
+        <band height="60" splitType="Stretch">
+            <textField>
+                <reportElement positionType="FixRelativeToBottom" x="227" y="30" width="366" height="20" isPrintWhenDetailOverflows="true" uuid="ce95bfd2-db0b-42a7-8a3c-d1b9b58729ae">
+                    <property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+                    <property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+                </reportElement>
+                <textElement verticalAlignment="Top">
+                    <font fontName="Tahoma"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Заведующий отделением " + $P{Superintendent}+" __________________________"]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+</jasperReport>
