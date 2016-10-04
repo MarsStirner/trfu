@@ -1,15 +1,15 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
+import org.hibernate.sql.JoinType;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.QuarantineType;
 
+import java.util.Collections;
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class QuarantineTypeDAOImpl extends GenericDAOHibernate<QuarantineType> {
 	
 	@Override
@@ -27,9 +27,9 @@ public class QuarantineTypeDAOImpl extends GenericDAOHibernate<QuarantineType> {
         }
         
         if (componentTypeId != 0) {
-        	detachedCriteria.createAlias("componentType", "componentType", CriteriaSpecification.LEFT_JOIN);
+        	detachedCriteria.createAlias("componentType", "componentType", JoinType.LEFT_OUTER_JOIN);
         	detachedCriteria.add(Restrictions.eq("componentType.id", componentTypeId));
-        	return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+        	return (List<QuarantineType>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
         }
         else {
         	return Collections.emptyList();

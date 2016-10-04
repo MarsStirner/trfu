@@ -1,18 +1,16 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.AbstractRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
 
+import java.util.Collection;
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class RequestDAOImpl extends GenericDAOHibernate<AbstractRequest> {
 	
 	/**
@@ -33,7 +31,7 @@ public class RequestDAOImpl extends GenericDAOHibernate<AbstractRequest> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		List<AbstractRequest> result = getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+		List<AbstractRequest> result = (List<AbstractRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 		
 		detachedCriteria = DetachedCriteria.forClass(BloodDonationRequest.class);
 		detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
@@ -47,7 +45,7 @@ public class RequestDAOImpl extends GenericDAOHibernate<AbstractRequest> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		result.addAll(getHibernateTemplate().findByCriteria(detachedCriteria, offset, count));
+		result.addAll((Collection<? extends AbstractRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count));
 		
 		return result;
 	}
@@ -98,7 +96,7 @@ public class RequestDAOImpl extends GenericDAOHibernate<AbstractRequest> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		List<AbstractRequest> result = getHibernateTemplate().findByCriteria(detachedCriteria);
+		List<AbstractRequest> result = (List<AbstractRequest>) getHibernateTemplate().findByCriteria(detachedCriteria);
 		
 		detachedCriteria = DetachedCriteria.forClass(BloodDonationRequest.class);
 		detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
@@ -116,7 +114,7 @@ public class RequestDAOImpl extends GenericDAOHibernate<AbstractRequest> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		result.addAll(getHibernateTemplate().findByCriteria(detachedCriteria));
+		result.addAll((Collection<? extends AbstractRequest>) getHibernateTemplate().findByCriteria(detachedCriteria));
 		
 		return result;
 	}

@@ -1,18 +1,18 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.medicine.niidg.trfu.data.entity.TimeTableEntry;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class TimeTableDAOImpl extends GenericDAOHibernate<TimeTableEntry> {
 	
 	@Override
@@ -37,7 +37,7 @@ public class TimeTableDAOImpl extends GenericDAOHibernate<TimeTableEntry> {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-            return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+            return (List<TimeTableEntry>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
         }
         else {
         	return Collections.EMPTY_LIST;
@@ -82,7 +82,7 @@ public class TimeTableDAOImpl extends GenericDAOHibernate<TimeTableEntry> {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-            return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+            return (List<TimeTableEntry>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
         }
         else {
         	return Collections.EMPTY_LIST;
@@ -139,7 +139,7 @@ public class TimeTableDAOImpl extends GenericDAOHibernate<TimeTableEntry> {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-            return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+            return (List<TimeTableEntry>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
         }
         else {
         	return Collections.EMPTY_LIST;

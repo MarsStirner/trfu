@@ -54,8 +54,7 @@ public class IdentifiedEntity extends AbstractEntity {
 	
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	//@DocumentId
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
     private String uuid = UUID.randomUUID().toString();

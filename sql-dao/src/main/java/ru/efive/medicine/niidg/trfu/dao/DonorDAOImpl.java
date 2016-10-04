@@ -1,24 +1,21 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.Session;
+import org.hibernate.criterion.*;
 import org.hibernate.exception.JDBCConnectionException;
+import org.hibernate.sql.JoinType;
 import org.springframework.dao.DataAccessException;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	
 	@Override
@@ -43,7 +40,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, pattern), offset, count);
+		return (List<Donor>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, pattern), offset, count);
 	}
 	
 	public long countDocument(String pattern, boolean showDeleted) {
@@ -65,7 +62,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	        disjunction.add(Restrictions.ilike("lastName", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("middleName", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("firstName", filter, MatchMode.ANYWHERE));
-	        criteria.createAlias("donorType", "donorType", CriteriaSpecification.LEFT_JOIN);
+	        criteria.createAlias("donorType", "donorType", JoinType.LEFT_OUTER_JOIN);
 	        disjunction.add(Restrictions.ilike("donorType.value", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("passportSeries", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("passportNumber", filter, MatchMode.ANYWHERE));
@@ -97,7 +94,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, pattern), offset, count);
+		return (List<Donor>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, pattern), offset, count);
 	}
 	
 	public long countRejectedDocument(String pattern, boolean showDeleted) {
@@ -124,27 +121,15 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
         }
-        
-        String query = "select req.donor_id from trfu_blood_donation_requests req inner join"
-        	+ "(select donation.id, donation.donor_id, min(idle.days) "
-        	+ "from (select * from trfu_blood_donation_requests group by donor_id desc) donation "
-        	+ "inner join trfu_donors donor on donation.donor_id = donor.id "
-        	+ "left outer join trfu_blood_donation_request_fact_entries fact on donation.id = fact.donation_id "
-        	+ "left outer join trfu_blood_donation_entries entries on fact.entry_id = entries.id "
-        	+ "left outer join trfu_blood_donation_types types on entries.donationType_id = types.id "
-        	+ "left outer join trfu_idle_periods idle on entries.donationType_id = idle.donationType_id "
-        	+ "where (donation.status_id = 4 or donation.id is null) and donor.status_id <> -2 "
-        	+ "and TIMESTAMPDIFF(DAY,date(donation.factDate),curdate()) > idle.days "
-        	+ "group by donation.donor_id) tmp on req.id = tmp.id";
-        List list = getSession().createSQLQuery(query).list();
-        
-        query = "select donor.id from trfu_donors donor "
-        	+ "left outer join trfu_blood_donation_requests donation on donation.donor_id = donor.id "
-        	+ "left outer join trfu_examination_requests exam on exam.donor_id = donor.id "
-        	+ "where donation.id is null and donor.status_id <> -2 and (exam.status_id <> -1 or exam.id is null)";
-        list.addAll(getSession().createSQLQuery(query).list());
-        
-        detachedCriteria.add(Restrictions.in("id", list));
+        try(final Session session = getHibernateTemplate().getSessionFactory().getCurrentSession()) {
+			String query = "select req.donor_id from trfu_blood_donation_requests req inner join" + "(select donation.id, donation.donor_id, min(idle.days) " + "from (select * from trfu_blood_donation_requests group by donor_id desc) donation " + "inner join trfu_donors donor on donation.donor_id = donor.id " + "left outer join trfu_blood_donation_request_fact_entries fact on donation.id = fact.donation_id " + "left outer join trfu_blood_donation_entries entries on fact.entry_id = entries.id " + "left outer join trfu_blood_donation_types types on entries.donationType_id = types.id " + "left outer join trfu_idle_periods idle on entries.donationType_id = idle.donationType_id " + "where (donation.status_id = 4 or donation.id is null) and donor.status_id <> -2 " + "and TIMESTAMPDIFF(DAY,date(donation.factDate),curdate()) > idle.days " + "group by donation.donor_id) tmp on req.id = tmp.id";
+			List list = session.createNativeQuery(query).list();
+
+			query = "select donor.id from trfu_donors donor " + "left outer join trfu_blood_donation_requests donation on donation.donor_id = donor.id " + "left outer join trfu_examination_requests exam on exam.donor_id = donor.id " + "where donation.id is null and donor.status_id <> -2 and (exam.status_id <> -1 or exam.id is null)";
+			list.addAll(session.createNativeQuery(query).list());
+			detachedCriteria.add(Restrictions.in("id", list));
+		}
+
         
         String[] ords = orderBy == null ? null : orderBy.split(",");
 		if (ords != null) {
@@ -154,7 +139,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, pattern), offset, count);
+		return (List<Donor>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, pattern), offset, count);
 	}
 	
 	public long countAvailableDocument(String pattern, boolean showDeleted) {
@@ -164,28 +149,15 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
         }
-        
-        String query = "select req.donor_id from trfu_blood_donation_requests req inner join"
-        	+ "(select donation.id, donation.donor_id, min(idle.days) "
-        	+ "from (select * from trfu_blood_donation_requests group by donor_id desc) donation "
-        	+ "inner join trfu_donors donor on donation.donor_id = donor.id "
-        	+ "left outer join trfu_blood_donation_request_fact_entries fact on donation.id = fact.donation_id "
-        	+ "left outer join trfu_blood_donation_entries entries on fact.entry_id = entries.id "
-        	+ "left outer join trfu_blood_donation_types types on entries.donationType_id = types.id "
-        	+ "left outer join trfu_idle_periods idle on entries.donationType_id = idle.donationType_id "
-        	+ "where (donation.status_id = 4 or donation.id is null) and donor.status_id <> -2 "
-        	+ "and TIMESTAMPDIFF(DAY,date(donation.factDate),curdate()) > idle.days "
-        	+ "group by donation.donor_id) tmp on req.id = tmp.id";
-        List list = getSession().createSQLQuery(query).list();
-        
-        query = "select donor.id from trfu_donors donor "
-        	+ "left outer join trfu_blood_donation_requests donation on donation.donor_id = donor.id "
-        	+ "left outer join trfu_examination_requests exam on exam.donor_id = donor.id "
-        	+ "where donation.id is null and donor.status_id <> -2 and (exam.status_id <> -1 or exam.id is null)";
-        list.addAll(getSession().createSQLQuery(query).list());
-        
-        detachedCriteria.add(Restrictions.in("id", list));
-        
+		try(final Session session = getHibernateTemplate().getSessionFactory().getCurrentSession()) {
+			String query = "select req.donor_id from trfu_blood_donation_requests req inner join" + "(select donation.id, donation.donor_id, min(idle.days) " + "from (select * from trfu_blood_donation_requests group by donor_id desc) donation " + "inner join trfu_donors donor on donation.donor_id = donor.id " + "left outer join trfu_blood_donation_request_fact_entries fact on donation.id = fact.donation_id " + "left outer join trfu_blood_donation_entries entries on fact.entry_id = entries.id " + "left outer join trfu_blood_donation_types types on entries.donationType_id = types.id " + "left outer join trfu_idle_periods idle on entries.donationType_id = idle.donationType_id " + "where (donation.status_id = 4 or donation.id is null) and donor.status_id <> -2 " + "and TIMESTAMPDIFF(DAY,date(donation.factDate),curdate()) > idle.days " + "group by donation.donor_id) tmp on req.id = tmp.id";
+			List list = session.createNativeQuery(query).list();
+
+			query = "select donor.id from trfu_donors donor " + "left outer join trfu_blood_donation_requests donation on donation.donor_id = donor.id " + "left outer join trfu_examination_requests exam on exam.donor_id = donor.id " + "where donation.id is null and donor.status_id <> -2 and (exam.status_id <> -1 or exam.id is null)";
+			list.addAll(session.createNativeQuery(query).list());
+
+			detachedCriteria.add(Restrictions.in("id", list));
+		}
 		return getCountOf(getSearchCriteria(detachedCriteria, pattern));
 	}
 	
@@ -198,15 +170,13 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
         }
-        
-        String query = "select donor.id from trfu_donors donor "
-        	+ "inner join trfu_blood_donation_requests requests on requests.donor_id = donor.id "
-        	+ "inner join trfu_blood_components components on components.donationId = requests.id "
-        	+ "where components.status_id = 2 and components.quarantineFinishDate <= sysdate()";
-        List list = getSession().createSQLQuery(query).list();
-        
-        detachedCriteria.add(Restrictions.in("id", list));
-        
+
+		try(final Session session = getHibernateTemplate().getSessionFactory().getCurrentSession()) {
+			String query = "select donor.id from trfu_donors donor " + "inner join trfu_blood_donation_requests requests on requests.donor_id = donor.id " + "inner join trfu_blood_components components on components.donationId = requests.id " + "where components.status_id = 2 and components.quarantineFinishDate <= sysdate()";
+			List list = session.createNativeQuery(query).list();
+
+			detachedCriteria.add(Restrictions.in("id", list));
+		}
         String[] ords = orderBy == null ? null : orderBy.split(",");
 		if (ords != null) {
 			if (ords.length > 1) {
@@ -215,7 +185,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, pattern), offset, count);
+		return (List<Donor>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, pattern), offset, count);
 	}
 	
 	public long countQuarantineFinishInviteDocument(String pattern, boolean showDeleted) {
@@ -225,15 +195,12 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         if (!showDeleted) {
             detachedCriteria.add(Restrictions.eq("deleted", false));
         }
-        
-        String query = "select donor.id from trfu_donors donor "
-        	+ "inner join trfu_blood_donation_requests requests on requests.donor_id = donor.id "
-        	+ "inner join trfu_blood_components components on components.donationId = requests.id "
-        	+ "where components.status_id = 2 and components.quarantineFinishDate <= sysdate()";
-        List list = getSession().createSQLQuery(query).list();
-        
-        detachedCriteria.add(Restrictions.in("id", list));
-        
+        try(final Session session = getHibernateTemplate().getSessionFactory().getCurrentSession()) {
+            String query = "select donor.id from trfu_donors donor " + "inner join trfu_blood_donation_requests requests on requests.donor_id = donor.id " + "inner join trfu_blood_components components on components.donationId = requests.id " + "where components.status_id = 2 and components.quarantineFinishDate <= sysdate()";
+            List list = session.createNativeQuery(query).list();
+
+            detachedCriteria.add(Restrictions.in("id", list));
+        }
 		return getCountOf(getSearchCriteria(detachedCriteria, pattern));
 	}
 	
@@ -257,22 +224,12 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
         	testsSubQuery.append("binary value = '" + phenotype.getType().getValue() + "'");
         	concat.append(phenotype.getValue());
         }
-        
-        String query = "select donors.id FROM trfu_blood_donation_request_tests_immuno immuno "
-        	+ "inner join trfu_tests tests ON tests.id = immuno.testsImmuno_id "
-        	+ "inner join trfu_blood_donation_requests donations on immuno.trfu_blood_donation_requests_id = donations.id "
-        	+ "inner join trfu_donors donors on donations.donor_id = donors.id "
-        	+ (searchBloodGroup? "inner join trfu_blood_groups groups on donors.bloodGroup_id = groups.id ": "")
-        	+ (searchRhesus? "inner join trfu_classifiers classifiers on donors.rhesusFactor_id = classifiers.id ": "")
-        	+ "where (donors.status_id = 1 or donors.status_id = 2) "
-        	+ (searchBloodGroup? "and groups.value = '" + bloodGroup + "' ": "")
-        	+ (searchRhesus? "and classifiers.value = '" + rhesusFactor + "' ": "")
-        	+ "and tests.type_id in (select id from trfu_analysis_types where " + testsSubQuery + ") "
-        	+ "group by donors.id "
-        	+ "having group_concat(concat('',tests.value) order by tests.id separator '')='" + concat + "'";
-        
-        List list = getSession().createSQLQuery(query).list();
-        
+        List list;
+        try(final Session session = getHibernateTemplate().getSessionFactory().getCurrentSession()) {
+            String query = "select donors.id FROM trfu_blood_donation_request_tests_immuno immuno " + "inner join trfu_tests tests ON tests.id = immuno.testsImmuno_id " + "inner join trfu_blood_donation_requests donations on immuno.trfu_blood_donation_requests_id = donations.id " + "inner join trfu_donors donors on donations.donor_id = donors.id " + (searchBloodGroup ? "inner join trfu_blood_groups groups on donors.bloodGroup_id = groups.id " : "") + (searchRhesus ? "inner join trfu_classifiers classifiers on donors.rhesusFactor_id = classifiers.id " : "") + "where (donors.status_id = 1 or donors.status_id = 2) " + (searchBloodGroup ? "and groups.value = '" + bloodGroup + "' " : "") + (searchRhesus ? "and classifiers.value = '" + rhesusFactor + "' " : "") + "and tests.type_id in (select id from trfu_analysis_types where " + testsSubQuery + ") " + "group by donors.id " + "having group_concat(concat('',tests.value) order by tests.id separator '')='" + concat + "'";
+
+            list = session.createNativeQuery(query).list();
+        }
         if (list != null && list.size() > 0) {
         	detachedCriteria.add(Restrictions.in("id", list));
             
@@ -284,7 +241,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-            return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+            return (List<Donor>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
         }
         else {
         	return Collections.emptyList();
@@ -308,7 +265,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
             detachedCriteria.add(Restrictions.eq("mail", login));
             detachedCriteria.add(Restrictions.eq("password", password));
             
-            List<Donor> donors = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+            List<Donor> donors = (List<Donor>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
             if ((donors != null) && !donors.isEmpty()) {
                 // don't modify this routine work! (for proxy caching such objects as Personage, Location)
                 Donor donor = donors.get(0);
@@ -329,8 +286,10 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	
     @SuppressWarnings("unchecked")
 	public List<String> findDonorsForNewsletter() {
-    	String query = "select mail FROM trfu_donors where deleted = false and send_news = true and mail <> '' and mail is not null";
-    	return getSession().createSQLQuery(query).list();
+        try(final Session session = getHibernateTemplate().getSessionFactory().getCurrentSession()) {
+            String query = "select mail FROM trfu_donors where deleted = false and send_news = true and mail <> '' and mail is not null";
+            return session.createNativeQuery(query).list();
+        }
 	}
 	
 	/*
@@ -339,7 +298,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 		List<Donor> result = new ArrayList<Donor>();
 		try {
 			if (!StringUtils.isEmpty(pattern)) {
-				FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+				FullTextSession fullTextSession = Search.getFullTextSession(getHibernateTemplate().getSessionFactory().openSession());
 				
 				QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_31, new String[] {Donor.DEFAULT_SEARCH_FIELD}, new StandardAnalyzer(Version.LUCENE_31));
 				parser.setAllowLeadingWildcard(true);
@@ -380,7 +339,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 		int result = 0;
 		try {
 			if (!StringUtils.isEmpty(pattern)) {
-				FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+				FullTextSession fullTextSession = Search.getFullTextSession(getHibernateTemplate().getSessionFactory().openSession());
 				
 				QueryParser parser = new MultiFieldQueryParser(Version.LUCENE_31, new String[] {Donor.DEFAULT_SEARCH_FIELD}, new StandardAnalyzer(Version.LUCENE_31));
 				parser.setAllowLeadingWildcard(true);
@@ -404,7 +363,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	@SuppressWarnings("unchecked")
 	public void index() {
 		try {
-			FullTextSession ftSession = Search.getFullTextSession(getSession());
+			FullTextSession ftSession = Search.getFullTextSession(getHibernateTemplate().getSessionFactory().openSession());
 			ftSession.getTransaction().begin();
 			List<Donor> list = ftSession.createCriteria(Donor.class).list();
 			for (Donor donor: list) {
@@ -503,7 +462,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 	        	conjunction.add(Restrictions.eq("rhesusFactor.id", rhesusFactorId));
 	        }
 	        if (pastQuarantineId != DonorsFilter.PAST_QUARANTINE_NULL_VALUE) {
-		        criteria.createAlias("rejection", "rejection", CriteriaSpecification.INNER_JOIN);
+		        criteria.createAlias("rejection", "rejection", JoinType.INNER_JOIN);
 	        	if (pastQuarantineId == DonorsFilter.PAST_QUARANTINE_YES_VALUE) {
 		        	conjunction.add(Restrictions.le("rejection.expiration", new Date()));
 	        	} else {
@@ -524,7 +483,7 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
         addNotDeletedCriteria(detachedCriteria);
         addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, donorsFilter), offset, count);
+		return (List<Donor>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, donorsFilter), offset, count);
 	}
 
 	public List<Donor> findDonorsByBloodGroupAndRh(boolean useBloodGroup, String bloodGroup, boolean useRhesus, String rhesusFactor, String orderBy, boolean orderAsc) {
@@ -539,6 +498,6 @@ public class DonorDAOImpl extends GenericDAOHibernate<Donor> {
 			detachedCriteria.add(Restrictions.eq("rhesusFactor.value", rhesusFactor));
 		}
 		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+		return (List<Donor>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
 	}
 }

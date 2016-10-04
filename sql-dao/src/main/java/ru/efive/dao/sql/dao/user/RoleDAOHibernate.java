@@ -1,7 +1,5 @@
 package ru.efive.dao.sql.dao.user;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
@@ -10,6 +8,10 @@ import org.hibernate.criterion.Restrictions;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.dao.sql.entity.user.Role;
 
+import java.util.List;
+
+
+@org.springframework.transaction.annotation.Transactional
 public class RoleDAOHibernate extends GenericDAOHibernate<Role> {
 	
 	@Override
@@ -34,7 +36,7 @@ public class RoleDAOHibernate extends GenericDAOHibernate<Role> {
             detachedCriteria.addOrder(asc ? Order.asc(orderBy) : Order.desc(orderBy));
         }
 
-        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        return (List<Role>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
     }
     
     /**
@@ -62,7 +64,7 @@ public class RoleDAOHibernate extends GenericDAOHibernate<Role> {
 		if (StringUtils.isNotEmpty(name)) {
 			detachedCriteria.add(Restrictions.eq("name", name));
         }
-		return getHibernateTemplate().findByCriteria(detachedCriteria);
+		return (List<Role>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
     
 }

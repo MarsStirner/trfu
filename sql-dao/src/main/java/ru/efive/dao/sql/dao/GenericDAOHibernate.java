@@ -9,8 +9,9 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.hibernate.sql.JoinType;
+import org.springframework.orm.hibernate5.HibernateCallback;
+import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.util.Assert;
 
 import ru.efive.dao.sql.entity.AbstractEntity;
@@ -25,6 +26,7 @@ import java.util.List;
  * Имплементация базового интерфейса для управления сущностями при помощи Hibernate с использованием generics.
  * Также содержит методы помощи при работе с hibernate и получением результатов запросов.
  */
+@org.springframework.transaction.annotation.Transactional
 public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoSupport implements GenericDAO<T> {
 	
 	/**
@@ -112,7 +114,10 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 	 */
 	@Override
 	public void save(Collection<? extends T> entities) {
-		getHibernateTemplate().saveOrUpdateAll(entities);
+		for (T entity : entities) {
+			save(entity);
+		}
+
 	}
 
 	/**
@@ -133,8 +138,7 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 				return executableCriteria.uniqueResult();
 			}
 		});
-		long res = (Long) result;
-		return result == null ? 0 : (Long) result;
+		return (Long) result;
 	}
 
 	/**
@@ -245,11 +249,11 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 				String[] parts = StringUtils.split(orderBy, "\\.");
 				int length = parts.length;
 				if (length == 2) {
-                    orderingCriteria = detachedCriteria.createCriteria(parts[0], DetachedCriteria.LEFT_JOIN);
+                    orderingCriteria = detachedCriteria.createCriteria(parts[0], JoinType.LEFT_OUTER_JOIN);
 					orderBy = parts[1];
 				} else if (length > 2) {
-					orderingCriteria = detachedCriteria.createCriteria(parts[0], DetachedCriteria.LEFT_JOIN)
-							.createCriteria(parts[1],DetachedCriteria.LEFT_JOIN);
+					orderingCriteria = detachedCriteria.createCriteria(parts[0], JoinType.LEFT_OUTER_JOIN)
+							.createCriteria(parts[1],JoinType.LEFT_OUTER_JOIN);
 					orderBy = parts[2];
 				}
 			}
@@ -285,15 +289,15 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 			String[] parts = StringUtils.split(orders[0], "\\.");
 			int length = parts.length;
 			if (length == 2) {
-				orderingCriteria = detachedCriteria.createCriteria(parts[0], DetachedCriteria.LEFT_JOIN);
+				orderingCriteria = detachedCriteria.createCriteria(parts[0], JoinType.LEFT_OUTER_JOIN);
 			} else if (length == 3) {
-				orderingCriteria = detachedCriteria.createCriteria(parts[0], DetachedCriteria.LEFT_JOIN)
-						.createCriteria(parts[1], DetachedCriteria.LEFT_JOIN);
+				orderingCriteria = detachedCriteria.createCriteria(parts[0], JoinType.LEFT_OUTER_JOIN)
+						.createCriteria(parts[1], JoinType.LEFT_OUTER_JOIN);
 			} else if (length == 4) {
 				orderingCriteria = detachedCriteria
-						.createCriteria(parts[0], DetachedCriteria.LEFT_JOIN)
-						.createCriteria(parts[1], DetachedCriteria.LEFT_JOIN)
-						.createCriteria(parts[2], DetachedCriteria.LEFT_JOIN);
+						.createCriteria(parts[0], JoinType.LEFT_OUTER_JOIN)
+						.createCriteria(parts[1], JoinType.LEFT_OUTER_JOIN)
+						.createCriteria(parts[2], JoinType.LEFT_OUTER_JOIN);
 			}
 		}
 		for (int i = 0; i < orders.length; i++) {
@@ -326,10 +330,10 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 				String[] parts = StringUtils.split(orderBy, "\\.");
 				int length = parts.length;
 				if (length == 2) {
-					orderingCriteria = criteria.createCriteria(parts[0], Criteria.LEFT_JOIN);
+					orderingCriteria = criteria.createCriteria(parts[0], JoinType.LEFT_OUTER_JOIN);
 					orderBy = parts[1];
 				} else if (length > 2) {
-					orderingCriteria = criteria.createCriteria(parts[0], Criteria.LEFT_JOIN).createCriteria(parts[1], Criteria.LEFT_JOIN);
+					orderingCriteria = criteria.createCriteria(parts[0], JoinType.LEFT_OUTER_JOIN).createCriteria(parts[1], JoinType.LEFT_OUTER_JOIN);
 					orderBy = parts[2];
 				}
 			}
@@ -357,7 +361,7 @@ public class GenericDAOHibernate<T extends AbstractEntity> extends HibernateDaoS
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+		return (List<T>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 	}
 
 	/**

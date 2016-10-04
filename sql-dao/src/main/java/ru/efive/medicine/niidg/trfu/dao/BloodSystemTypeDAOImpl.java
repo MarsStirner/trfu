@@ -1,6 +1,5 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import org.hibernate.Criteria;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
@@ -9,6 +8,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 
 import java.util.List;
 
+@org.springframework.transaction.annotation.Transactional
 public class BloodSystemTypeDAOImpl extends DictionaryDAOHibernate<BloodSystemType> {
     @Override
     protected Class<BloodSystemType> getPersistentClass() {
@@ -19,6 +19,6 @@ public class BloodSystemTypeDAOImpl extends DictionaryDAOHibernate<BloodSystemTy
         final DetachedCriteria criteria = DetachedCriteria.forClass(BloodSystemType.class);
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         criteria.add(Restrictions.eq("mnem", mnem));
-        return getHibernateTemplate().findByCriteria(criteria);
+        return (List<BloodSystemType>) getHibernateTemplate().findByCriteria(criteria);
     }
 }

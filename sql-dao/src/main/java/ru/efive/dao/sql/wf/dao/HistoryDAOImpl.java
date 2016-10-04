@@ -1,14 +1,14 @@
 package ru.efive.dao.sql.wf.dao;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 
+import java.util.Collections;
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class HistoryDAOImpl extends GenericDAOHibernate<HistoryEntry> {
 	
 	@Override
@@ -35,7 +35,7 @@ public class HistoryDAOImpl extends GenericDAOHibernate<HistoryEntry> {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-            return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+            return (List<HistoryEntry>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
         }
         else {
         	return Collections.EMPTY_LIST;

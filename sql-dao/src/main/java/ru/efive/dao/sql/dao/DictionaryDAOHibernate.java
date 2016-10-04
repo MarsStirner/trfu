@@ -1,12 +1,11 @@
 package ru.efive.dao.sql.dao;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.entity.DictionaryEntity;
+
+import java.util.List;
 
 /**
  * Интерфейс для управления справочными записями.
@@ -29,7 +28,7 @@ public class DictionaryDAOHibernate<T extends DictionaryEntity> extends GenericD
             detachedCriteria.add(Restrictions.ilike("value", value));
         }
         
-		return getHibernateTemplate().findByCriteria(detachedCriteria);
+		return (List<T>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -40,7 +39,7 @@ public class DictionaryDAOHibernate<T extends DictionaryEntity> extends GenericD
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass());
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         
-		return getHibernateTemplate().findByCriteria(detachedCriteria);
+		return (List<T>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**

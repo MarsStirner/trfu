@@ -1,21 +1,8 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
-
+import org.hibernate.criterion.*;
+import org.hibernate.sql.JoinType;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
@@ -23,6 +10,13 @@ import ru.efive.medicine.niidg.trfu.filters.ExaminationsFilter;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.util.DateHelper;
 
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRequest> {
 
     @Override
@@ -62,7 +56,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
             }
         }
 
-        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        return (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
     }
 
     /**
@@ -115,7 +109,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
             }
         }
 
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        return (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
     }
 
     /**
@@ -143,11 +137,11 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
         if (StringUtils.isNotEmpty(filter)) {
             Disjunction disjunction = Restrictions.disjunction();
             disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-            criteria.createAlias("donor", "donor", CriteriaSpecification.LEFT_JOIN);
+            criteria.createAlias("donor", "donor", JoinType.LEFT_OUTER_JOIN);
             disjunction.add(Restrictions.ilike("donor.lastName", filter, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.ilike("donor.middleName", filter, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.ilike("donor.firstName", filter, MatchMode.ANYWHERE));
-            criteria.createAlias("therapist", "therapist", CriteriaSpecification.LEFT_JOIN);
+            criteria.createAlias("therapist", "therapist", JoinType.LEFT_OUTER_JOIN);
             disjunction.add(Restrictions.ilike("therapist.lastName", filter, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.ilike("therapist.middleName", filter, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.ilike("therapist.firstName", filter, MatchMode.ANYWHERE));
@@ -180,7 +174,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
                     addOrder(detachedCriteria, orderBy, orderAsc);
                 }
             }
-            return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+            return (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
         } else {
             return Collections.EMPTY_LIST;
         }
@@ -232,7 +226,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
                 addOrder(detachedCriteria, orderBy, orderAsc);
             }
         }
-        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        return (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 
     }
 
@@ -260,7 +254,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
                     addOrder(detachedCriteria, orderBy, orderAsc);
                 }
             }
-            return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+            return (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
         } else {
             return Collections.EMPTY_LIST;
         }
@@ -312,7 +306,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
                 addOrder(detachedCriteria, orderBy, orderAsc);
             }
         }
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        return (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
     }
 
     /**
@@ -367,7 +361,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
             }
         }
 
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        return (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
     }
 
     /**
@@ -424,7 +418,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
             }
         }
 
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filterNumberExamination, filterDonorLastName, filterDonorFirstName, filterDonorMiddleName), offset, count);
+        return (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filterNumberExamination, filterDonorLastName, filterDonorFirstName, filterDonorMiddleName), offset, count);
     }
 
     /**
@@ -450,7 +444,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
     private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, String filterNumberExamination, String filterDonorLastName, String filterDonorFirstName, String filterDonorMiddleName) {
     	if (StringUtils.isNotEmpty(filterNumberExamination) || StringUtils.isNotEmpty(filterDonorLastName) || StringUtils.isNotEmpty(filterDonorFirstName) || StringUtils.isNotEmpty(filterDonorMiddleName)) {
     		Disjunction disjunction = Restrictions.disjunction();
-    		criteria.createAlias("donor", "donor", CriteriaSpecification.LEFT_JOIN);
+    		criteria.createAlias("donor", "donor", JoinType.LEFT_OUTER_JOIN);
     		if (StringUtils.isNotEmpty(filterNumberExamination)) {
     			disjunction.add(Restrictions.ilike("number", filterNumberExamination, MatchMode.ANYWHERE));
     		}
@@ -513,7 +507,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
                 addOrder(detachedCriteria, orderBy, orderAsc);
             }
         }
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+        return (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
     }
 
     public long countRequestsForLaboratory(String filter, boolean showDeleted) {
@@ -558,7 +552,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
         DetachedCriteria detachedCriteria = DetachedCriteria.forClass(getPersistentClass()).setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         if (appointmentId > 0) {
             detachedCriteria.add(Restrictions.eq("appointment.id", appointmentId));
-            List<ExaminationRequest> list = getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+            List<ExaminationRequest> list = (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
             if ((list != null) && !list.isEmpty()) {
                 return list.get(0);
             } else {
@@ -576,7 +570,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
 		addNotDeletedCriteria(detachedCriteria);
 		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(
+		return (List<ExaminationRequest>) getHibernateTemplate().findByCriteria(
 				getSearchCriteria(detachedCriteria, filter), offset,
 				count);
 	}
@@ -599,7 +593,7 @@ public class ExaminationRequestDAOImpl extends GenericDAOHibernate<ExaminationRe
 				conjunction.add(Restrictions.ilike("number", number, MatchMode.ANYWHERE));
 			}
 			if (StringUtils.isNotEmpty(firstName) || StringUtils.isNotEmpty(lastName) || StringUtils.isNotEmpty(middleName)) {
-				criteria.createAlias("donor", "donor", CriteriaSpecification.INNER_JOIN);
+				criteria.createAlias("donor", "donor", JoinType.INNER_JOIN);
 				if (StringUtils.isNotEmpty(firstName)) {
 					conjunction.add(Restrictions.ilike("donor.firstName", firstName, MatchMode.ANYWHERE));
 				}

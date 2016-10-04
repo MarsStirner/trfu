@@ -1,18 +1,18 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.criterion.*;
-
+import org.hibernate.sql.JoinType;
 import ru.efive.dao.sql.dao.DictionaryDAOHibernate;
 import ru.efive.dao.sql.entity.DictionaryEntity;
 import ru.efive.dao.sql.entity.IdentifiedEntity;
 import ru.efive.medicine.niidg.trfu.data.dictionary.*;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+@org.springframework.transaction.annotation.Transactional
 public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> {
 	
 	public <T extends IdentifiedEntity> T get(Class<T> persistentClass, Serializable id) {
@@ -31,7 +31,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 			detachedCriteria.add(Restrictions.eq("value", value));
         }
 		
-		return getHibernateTemplate().findByCriteria(detachedCriteria);
+		return (List<DictionaryEntity>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -49,7 +49,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 			detachedCriteria.add(Restrictions.eq("value", val));
         }
 		
-		return getHibernateTemplate().findByCriteria(detachedCriteria);
+		return (List<BloodComponentType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 		if (StringUtils.isNotEmpty(value)) {
 			detachedCriteria.add(Restrictions.eq("value", value));
         }
-		return getHibernateTemplate().findByCriteria(detachedCriteria);
+		return (List<T>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 
     /**
@@ -86,7 +86,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
         if (StringUtils.isNotEmpty(category)) {
             detachedCriteria.add(Restrictions.eq("category", category));
         }
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<T>) getHibernateTemplate().findByCriteria(detachedCriteria);
     }
 	
 	/**
@@ -108,12 +108,12 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 			detachedCriteria.add(Restrictions.eq("category", category));
         }
 		
-		return getHibernateTemplate().findByCriteria(detachedCriteria);
+		return (List<T>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<String> findClassifierCategories() {
-		Query query = getSession().createQuery("select category from Classifier as classifier group by classifier.category");
+		Query query = getHibernateTemplate().getSessionFactory().openSession().createQuery("select category from Classifier as classifier group by classifier.category");
 		return query.list();
 	}
 	
@@ -136,7 +136,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 			}
 		}
 		
-		return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+		return (List<DictionaryEntity>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 	}
 	
 	/**
@@ -178,7 +178,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<Anticoagulant>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -219,7 +219,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<BloodComponentType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	public List<BloodComponentType> findBloodComponentTypes(String filter, boolean showDeleted, String orderBy, boolean orderAsc) {
@@ -242,7 +242,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<BloodComponentType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -274,7 +274,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<BloodComponentType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	
@@ -301,7 +301,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<BloodDonationType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -342,7 +342,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<BloodGroup>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -370,7 +370,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 		DetachedCriteria detachedCriteria = DetachedCriteria.forClass(BloodGroup.class);
         detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
         detachedCriteria.add(Restrictions.eq("number", number));
-        List<BloodGroup> list = getHibernateTemplate().findByCriteria(detachedCriteria);
+        List<BloodGroup> list = (List<BloodGroup>) getHibernateTemplate().findByCriteria(detachedCriteria);
         if (list != null && list.size() > 0) {
         	return list.get(0);
         }
@@ -402,7 +402,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<DonorType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -443,7 +443,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<ProcessingType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -483,7 +483,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<AnalysisType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -517,7 +517,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
             detachedCriteria.add(Restrictions.eq("category", category));
         }
         
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<AnalysisType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	public List<AnalysisType> findAnalysisTypes(String filter, String category, boolean showDeleted) {
@@ -533,7 +533,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
             detachedCriteria.add(Restrictions.eq("category", category));
         }
         
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<AnalysisType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -550,7 +550,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
         }
         detachedCriteria.add(Restrictions.ne("category", "Первичный"));
         
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<AnalysisType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -576,7 +576,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<ExaminationEntryType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -608,7 +608,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
         }
         detachedCriteria.add(Restrictions.isNull("parentEntry.id"));
         addOrder(detachedCriteria, "id", true);
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<ExaminationEntryType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -630,7 +630,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
         }
         addOrder(detachedCriteria, "id", true);
         
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<ExaminationEntryType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 
 	
@@ -657,7 +657,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<DonorRejectionType>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -698,7 +698,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter));
+        return (List<DonorRejectionType>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter));
 	}
 	
 	/**
@@ -739,7 +739,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<Classifier>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -788,7 +788,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<Classifier>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -841,7 +841,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<QualityControlMappingEntry>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	public long countQualityControlMappingEntries(boolean showDeleted) {
@@ -860,9 +860,9 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
         if (!showDeleted) {
         	detachedCriteria.add(Restrictions.eq("deleted", false));
         }
-        detachedCriteria.createAlias("componentTypes", "componentTypes", CriteriaSpecification.LEFT_JOIN);
+        detachedCriteria.createAlias("componentTypes", "componentTypes", JoinType.LEFT_OUTER_JOIN);
         detachedCriteria.add(Restrictions.eq("componentTypes.id", componentType.getId()));
-        List<QualityControlMappingEntry> list = getHibernateTemplate().findByCriteria(detachedCriteria);
+        List<QualityControlMappingEntry> list = (List<QualityControlMappingEntry>) getHibernateTemplate().findByCriteria(detachedCriteria);
         if (list != null && list.size() > 0) {
         	return list.get(0);
         }
@@ -879,7 +879,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
         if (!showDeleted) {
         	detachedCriteria.add(Restrictions.eq("deleted", false));
         }
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<TimeTableSpecialDay>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	public long countSpecialDays(boolean showDeleted) {
@@ -907,7 +907,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<Recommendation>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	public long countRecommendations(boolean showDeleted) {
@@ -926,7 +926,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
             detachedCriteria.add(Restrictions.eq("deleted", false));
         }
         addOrder(detachedCriteria, "id", true);
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<BloodSystemType>) getHibernateTemplate().findByCriteria(detachedCriteria);
     }
 
 	/**
@@ -977,7 +977,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	 */
 	public List<Gender> getGenders() {
 		if (genders == null) {
-			genders = new ArrayList<Gender>();
+			genders = new ArrayList<>();
 			genders.add(new Gender(0, "Ж"));
 			genders.add(new Gender(1, "М"));
 		}		
@@ -990,7 +990,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	 */
 	public List<DonorStatus> getDonorStatuses() {
 		if (donorStatuses == null) {
-			donorStatuses = new ArrayList<DonorStatus>();
+			donorStatuses = new ArrayList<>();
 			donorStatuses.add(new DonorStatus(1, "Кандидат"));
 			donorStatuses.add(new DonorStatus(2, "Донор"));
 			donorStatuses.add(new DonorStatus(-1, "Временный отвод"));
@@ -1004,7 +1004,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	 */
 	public List<BloodComponentStatus> getBloodComponentStatuses() {
 		if (bloodComponentStatuses == null) {
-			bloodComponentStatuses = new ArrayList<BloodComponentStatus>();
+			bloodComponentStatuses = new ArrayList<>();
 			bloodComponentStatuses.add(new BloodComponentStatus(1, "Зарегистрирован"));
 			bloodComponentStatuses.add(new BloodComponentStatus(2, "В карантине"));
 			bloodComponentStatuses.add(new BloodComponentStatus(3, "Готов к выдаче"));
@@ -1026,7 +1026,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	 */
 	public List<ExaminationStatus> getExaminationStatuses() {
 		if (examinationStatuses == null) {
-			examinationStatuses = new ArrayList<ExaminationStatus>();
+			examinationStatuses = new ArrayList<>();
 			examinationStatuses.add(new ExaminationStatus(1, "Заполнение"));
 			examinationStatuses.add(new ExaminationStatus(2, "Осмотр"));
 			examinationStatuses.add(new ExaminationStatus(3, "Получение результатов анализов"));
@@ -1047,7 +1047,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	 */
 	public List<BloodDonationStatus> getBloodDonationStatuses() {
 		if (bloodDonationStatuses == null) {
-			bloodDonationStatuses = new ArrayList<BloodDonationStatus>();
+			bloodDonationStatuses = new ArrayList<>();
 			bloodDonationStatuses.add(new BloodDonationStatus(1, "Заполнение"));
 			bloodDonationStatuses.add(new BloodDonationStatus(2, "Донация"));
 			bloodDonationStatuses.add(new BloodDonationStatus(3, "Получение результатов анализов"));
@@ -1067,7 +1067,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	 */
 	public List<ExaminationType> getExaminationTypes() {
 		if (examinationTypes == null) {
-			examinationTypes = new ArrayList<ExaminationType>();
+			examinationTypes = new ArrayList<>();
 			examinationTypes.add(new ExaminationType(0, "Первичное"));
 			examinationTypes.add(new ExaminationType(1, "Повторное"));
 		}		
@@ -1080,7 +1080,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	 */
 	public List<TransfusionType> getTransfusionTypes() {
 		if (transfusionTypes == null) {
-			transfusionTypes = new ArrayList<TransfusionType>();
+			transfusionTypes = new ArrayList<>();
 			transfusionTypes.add(new TransfusionType(0, "Плановая"));
 			transfusionTypes.add(new TransfusionType(1, "Экстренная"));
 		}		
@@ -1093,7 +1093,7 @@ public class DictionaryDAOImpl extends DictionaryDAOHibernate<DictionaryEntity> 
 	 */
 	public List<DonorCategory> getDonorCategories() {
 		if (donorCategories == null) {
-			donorCategories = new ArrayList<DonorCategory>();
+			donorCategories = new ArrayList<>();
 			donorCategories.add(new DonorCategory(0, "Первичный"));
 			donorCategories.add(new DonorCategory(1, "Кадровый"));
 			donorCategories.add(new DonorCategory(2, "Повторный"));

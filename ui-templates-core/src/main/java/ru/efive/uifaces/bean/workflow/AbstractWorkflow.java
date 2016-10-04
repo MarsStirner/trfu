@@ -51,21 +51,21 @@ public abstract class AbstractWorkflow implements Serializable {
         }
 
         /**
-         * @return <code>true</code> if state is new state</state> and <code>false</code> otherwise.
+         * @return <code>true</code> if state is new state and <code>false</code> otherwise.
          */
         public boolean isStateNew() {
             return stateNew;
         }
 
         /**
-         * @return <code>true</code> if state is error state</state> and <code>false</code> otherwise.
+         * @return <code>true</code> if state is error state and <code>false</code> otherwise.
          */
         public boolean isStateError() {
             return stateError;
         }
 
         /**
-         * @return <code>true</code> if state is final state</state> and <code>false</code> otherwise.
+         * @return <code>true</code> if state is final state and <code>false</code> otherwise.
          */
         public boolean isStateFinal() {
             return stateFinal;

@@ -9,7 +9,6 @@ import ru.efive.medicine.niidg.trfu.data.entity.operational.OperationalRoom;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -18,6 +17,7 @@ import java.util.List;
  * Company: Korus Consulting IT <br>
  * Description: <br>
  */
+@org.springframework.transaction.annotation.Transactional
 public class OperationalDaoImpl extends GenericDAOHibernate<OperationalRoom> {
     @Override
     protected Class<OperationalRoom> getPersistentClass() {
@@ -28,6 +28,6 @@ public class OperationalDaoImpl extends GenericDAOHibernate<OperationalRoom> {
         final DetachedCriteria criteria = DetachedCriteria.forClass(OperationalRoom.class);
         criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         criteria.add(Restrictions.ge("created", DateUtils.truncate(checkDate, Calendar.DATE)));
-        return getHibernateTemplate().findByCriteria(criteria);
+        return (List<OperationalRoom>) getHibernateTemplate().findByCriteria(criteria);
     }
 }

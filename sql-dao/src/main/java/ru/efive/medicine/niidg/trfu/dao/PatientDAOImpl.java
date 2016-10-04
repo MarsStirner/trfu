@@ -1,15 +1,15 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.Patient;
 
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class PatientDAOImpl extends GenericDAOHibernate<Patient> {
 	
 	@Override
@@ -42,7 +42,7 @@ public class PatientDAOImpl extends GenericDAOHibernate<Patient> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+		return (List<Patient>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 	}
 	
 	public long countDocument(String pattern, boolean showDeleted) {

@@ -13,9 +13,8 @@ public final class ConverterUtils {
     /**
      *
      * @param object
-     * @param defaultValue
      * @return
-     * @throws NumberFormatException when object is a not a {@link Number} and {@link Strign} representation
+     * @throws NumberFormatException when object is a not a {@link Number} and {@link String} representation
      * contains invalid integer inside.
      */
     public static Integer objectAsInteger(Object object) {
@@ -35,7 +34,7 @@ public final class ConverterUtils {
      * @param object
      * @param defaultValue 
      * @return
-     * @throws NumberFormatException when object is a not a {@link Number} and {@link Strign} representation
+     * @throws NumberFormatException when object is a not a {@link Number} and {@link String} representation
      * contains invalid integer inside.
      */
     public static Integer objectAsInteger(Object object, Integer defaultValue) {

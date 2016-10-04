@@ -1,13 +1,13 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.List;
-
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.InformationEntry;
 
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class InformationEntryDaoImpl extends GenericDAOHibernate<InformationEntry> {
 	
 	@Override
@@ -35,7 +35,7 @@ public class InformationEntryDaoImpl extends GenericDAOHibernate<InformationEntr
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+		return (List<InformationEntry>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
 	}
 	
 	public long countDocument(boolean showPublished, boolean showDeleted) {

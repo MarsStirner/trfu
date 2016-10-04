@@ -1,28 +1,8 @@
 package ru.efive.medicine.niidg.trfu.data.entity;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.persistence.*;
-
-/*import org.apache.solr.analysis.LowerCaseFilterFactory;
-import org.apache.solr.analysis.StandardFilterFactory;
-import org.apache.solr.analysis.StopFilterFactory;
-//import org.apache.solr.analysis.NGramFilterFactory;*/
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-/*import org.hibernate.search.annotations.Analyzer;
-//import org.hibernate.search.annotations.AnalyzerDef;
-//import org.hibernate.search.annotations.AnalyzerDefs;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
-//import org.hibernate.search.annotations.Indexed;
-//import org.hibernate.search.annotations.Parameter;
-//import org.hibernate.search.annotations.TokenFilterDef;
-//import org.hibernate.search.annotations.TokenizerDef;*/
 import ru.efive.dao.sql.entity.IdentifiedEntity;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
@@ -33,21 +13,29 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.DonorType;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ProcessedData;
 
+import javax.persistence.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/*import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.StandardFilterFactory;
+import org.apache.solr.analysis.StopFilterFactory;
+//import org.apache.solr.analysis.NGramFilterFactory;*/
+/*import org.hibernate.search.annotations.Analyzer;
+//import org.hibernate.search.annotations.AnalyzerDef;
+//import org.hibernate.search.annotations.AnalyzerDefs;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+//import org.hibernate.search.annotations.Indexed;
+//import org.hibernate.search.annotations.Parameter;
+//import org.hibernate.search.annotations.TokenFilterDef;
+//import org.hibernate.search.annotations.TokenizerDef;*/
+
 /**
  * Документ донора
  */
 @Entity
 @Table(name = "trfu_donors")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-/*@Indexed(index="system/donors")
-@AnalyzerDefs({ @AnalyzerDef(name = "donor_content", tokenizer = @TokenizerDef(factory = ru.efive.medicine.niidg.trfu.util.Lucene31StandartTokenizerFactory.class), filters = {
-		@TokenFilterDef(factory = StandardFilterFactory.class),
-		@TokenFilterDef(factory = LowerCaseFilterFactory.class),
-		@TokenFilterDef(factory = StopFilterFactory.class)//,
-		//@TokenFilterDef(factory = NGramFilterFactory.class, params = {
-		//		@Parameter(name = "minGramSize", value = "3"),
-		//		@Parameter(name = "maxGramSize", value = "5") }) 
-				}) })*/
 public class Donor extends IdentifiedEntity implements ProcessedData {
 
 	public Date getCreated() {

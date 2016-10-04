@@ -1,10 +1,11 @@
 package ru.efive.uifaces.component.html;
 
+import ru.efive.uifaces.bean.calendarPlan.CalendarPlanHolder;
+import ru.efive.uifaces.renderkit.html_basic.FileUploadRenderer;
+
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.component.behavior.ClientBehaviorHolder;
-import ru.efive.uifaces.bean.calendarPlan.CalendarPlanHolder;
-import ru.efive.uifaces.renderkit.html_basic.FileUploadRenderer;
 
 /**
  * The component represents a widget to display and operate with calendar tasks and events.
@@ -50,7 +51,7 @@ public class CalendarPlan extends UIComponentBase implements ClientBehaviorHolde
 
     /**
      * Sets the value of property {@code holder}.
-     * @param maxFilesCount value of {@code holder} property
+     * @param holder value of {@code holder} property
      * @see PropertyKeys
      */
     public void setHolder(CalendarPlanHolder holder) {

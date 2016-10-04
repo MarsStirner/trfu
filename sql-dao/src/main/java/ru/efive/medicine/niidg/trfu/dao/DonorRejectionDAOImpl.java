@@ -1,14 +1,13 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.DonorRejection;
 
+import java.util.List;
+@org.springframework.transaction.annotation.Transactional
 public class DonorRejectionDAOImpl extends GenericDAOHibernate<DonorRejection> {
 	
 	@Override
@@ -24,7 +23,7 @@ public class DonorRejectionDAOImpl extends GenericDAOHibernate<DonorRejection> {
 			detachedCriteria.add(Restrictions.eq("request", requestId));
 		}
 		addOrder(detachedCriteria, "created", false);
-		return getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+		return (List<DonorRejection>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
 	}
 	
 }

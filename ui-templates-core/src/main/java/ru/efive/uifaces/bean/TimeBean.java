@@ -1,10 +1,9 @@
 package ru.efive.uifaces.bean;
 
-import java.io.Serializable;
-
-import java.util.TimeZone;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import java.io.Serializable;
+import java.util.TimeZone;
 
 /**
  * <code>TimeBean</code> provides timezone information.
@@ -31,7 +30,7 @@ public class TimeBean implements Serializable {
 
     /**
      * Returns timezone for ID.
-     * 
+     * @param ID
      * @return timezone for ID.
      */
     public TimeZone getTimeZone(String ID) {

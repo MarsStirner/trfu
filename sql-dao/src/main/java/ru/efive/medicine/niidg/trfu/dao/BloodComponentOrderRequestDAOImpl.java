@@ -1,21 +1,16 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
-
+import org.hibernate.criterion.*;
+import org.hibernate.sql.JoinType;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentOrderRequest;
 import ru.efive.medicine.niidg.trfu.filters.AbstractFilter;
 import ru.efive.medicine.niidg.trfu.filters.BloodComponentOrdersFilter;
 
+import java.util.Date;
+import java.util.List;
+@org.springframework.transaction.annotation.Transactional
 public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<BloodComponentOrderRequest> {
 	
 	@Override
@@ -39,7 +34,7 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+		return (List<BloodComponentOrderRequest>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 	
 	public long countDocument(String filter, boolean showDeleted) {
@@ -67,9 +62,9 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 	        disjunction.add(Restrictions.ilike("indication", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("attendingDoctor", filter, MatchMode.ANYWHERE));
 	        
-	        criteria.createAlias("componentType", "componentType", CriteriaSpecification.LEFT_JOIN);
+	        criteria.createAlias("componentType", "componentType", JoinType.LEFT_OUTER_JOIN);
 	        disjunction.add(Restrictions.ilike("componentType.value", filter, MatchMode.ANYWHERE));
-	        criteria.createAlias("staffNurse", "staffNurse", CriteriaSpecification.LEFT_JOIN);
+	        criteria.createAlias("staffNurse", "staffNurse", JoinType.LEFT_OUTER_JOIN);
 	        disjunction.add(Restrictions.ilike("staffNurse.lastName", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("staffNurse.middleName", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("staffNurse.firstName", filter, MatchMode.ANYWHERE));
@@ -100,7 +95,7 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        return (List<BloodComponentOrderRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 	}
 	
 	/**
@@ -151,7 +146,7 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 			}
 		}
 		
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+		return (List<BloodComponentOrderRequest>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 
 	/**
@@ -184,7 +179,7 @@ public class BloodComponentOrderRequestDAOImpl extends GenericDAOHibernate<Blood
 		DetachedCriteria detachedCriteria = createDetachedCriteria();
 		addNotDeletedCriteria(detachedCriteria);
 		addOrderCriteria(orderBy, orderAsc, detachedCriteria);
-		return getHibernateTemplate().findByCriteria(
+		return (List<BloodComponentOrderRequest>) getHibernateTemplate().findByCriteria(
 				getSearchCriteria(detachedCriteria, filter), offset, count
 		);
 	}

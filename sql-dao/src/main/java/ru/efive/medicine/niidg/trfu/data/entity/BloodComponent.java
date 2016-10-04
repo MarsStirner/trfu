@@ -1,6 +1,5 @@
 package ru.efive.medicine.niidg.trfu.data.entity;
 
-import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.*;
 import ru.efive.crm.data.Contragent;
 import ru.efive.dao.sql.entity.IdentifiedEntity;
@@ -24,7 +23,6 @@ import java.util.*;
  */
 @Entity
 @Table(name = "trfu_blood_components")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class BloodComponent extends IdentifiedEntity implements ProcessedData, Cloneable {
 
     private static final long serialVersionUID = -7114694453722100437L;

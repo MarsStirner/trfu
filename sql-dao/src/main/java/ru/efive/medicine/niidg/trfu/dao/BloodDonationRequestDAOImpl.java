@@ -1,22 +1,16 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-
+import org.hibernate.criterion.*;
+import org.hibernate.sql.JoinType;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.filters.BloodDonationsFilter;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+@org.springframework.transaction.annotation.Transactional
 public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonationRequest> {
 	
 	@Override
@@ -44,7 +38,7 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+		return (List<BloodDonationRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 	}
 
 	/**
@@ -91,7 +85,7 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 			}
 		}
 		
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+		return (List<BloodDonationRequest>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 
 	/**
@@ -116,13 +110,13 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 		if (StringUtils.isNotEmpty(filter)) {
 			Disjunction disjunction = Restrictions.disjunction();
 	        disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-	        criteria.createAlias("donorType", "donorType", CriteriaSpecification.LEFT_JOIN);
+	        criteria.createAlias("donorType", "donorType", JoinType.LEFT_OUTER_JOIN);
 	        disjunction.add(Restrictions.ilike("donorType.value", filter, MatchMode.ANYWHERE));
-	        criteria.createAlias("donor", "donor", CriteriaSpecification.LEFT_JOIN);
+	        criteria.createAlias("donor", "donor", JoinType.LEFT_OUTER_JOIN);
 	        disjunction.add(Restrictions.ilike("donor.lastName", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("donor.middleName", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("donor.firstName", filter, MatchMode.ANYWHERE));
-	        /*criteria.createAlias("transfusiologist", "transfusiologist", CriteriaSpecification.LEFT_JOIN);
+	        /*criteria.createAlias("transfusiologist", "transfusiologist", JoinType.LEFT_OUTER_JOIN);
 	        disjunction.add(Restrictions.ilike("transfusiologist.lastName", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("transfusiologist.middleName", filter, MatchMode.ANYWHERE));
 	        disjunction.add(Restrictions.ilike("transfusiologist.firstName", filter, MatchMode.ANYWHERE));*/
@@ -133,8 +127,8 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 	        childCriteria.setProjection(Projections.property("BloodDonationRequest.id"));
 	        disjunction.add(Subqueries.propertyIn("id", childCriteria));*/
 	        
-	        criteria.createAlias("factEntries", "factEntries", CriteriaSpecification.LEFT_JOIN);
-	        criteria.createAlias("factEntries.donationType", "donationType", CriteriaSpecification.LEFT_JOIN);
+	        criteria.createAlias("factEntries", "factEntries", JoinType.LEFT_OUTER_JOIN);
+	        criteria.createAlias("factEntries.donationType", "donationType", JoinType.LEFT_OUTER_JOIN);
 	        disjunction.add(Restrictions.ilike("donationType.value", filter));
 	        
 	        criteria.add(disjunction);
@@ -165,7 +159,7 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 					addOrder(detachedCriteria, orderBy, orderAsc);
 				}
 			}
-	        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+	        return (List<BloodDonationRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
         }
         else {
         	return Collections.emptyList();
@@ -217,7 +211,7 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 					addOrder(detachedCriteria, orderBy, orderAsc);
 				}
 			}
-	        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+	        return (List<BloodDonationRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
         }
         else {
         	return Collections.emptyList();
@@ -248,7 +242,7 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-            return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+            return (List<BloodDonationRequest>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
         }
         else {
         	return Collections.EMPTY_LIST;
@@ -310,7 +304,7 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 			}
 		}
 		
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
+		return (List<BloodDonationRequest>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter), offset, count);
 	}
 
 	/**
@@ -369,7 +363,7 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 						MatchMode.ANYWHERE));
 			}
 			if (StringUtils.isNotEmpty(donor)) {
-	            criteria.createAlias("donor", "donor", CriteriaSpecification.INNER_JOIN);
+	            criteria.createAlias("donor", "donor", JoinType.INNER_JOIN);
 	            Disjunction disjunction = Restrictions.disjunction();
 	            disjunction.add(Restrictions.ilike("donor.lastName", donor, MatchMode.ANYWHERE));
 	            disjunction.add(Restrictions.ilike("donor.middleName", donor, MatchMode.ANYWHERE));
@@ -386,7 +380,7 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 	        	conjunction.add(Restrictions.eq("donorType.id", donorTypeId));
 	        }
 	        if (donationTypeId != BloodDonationsFilter.BLOOD_DONATION_TYPE_NULL_VALUE) {
-		        criteria.createAlias("factEntries", "factEntries", CriteriaSpecification.INNER_JOIN);
+		        criteria.createAlias("factEntries", "factEntries", JoinType.INNER_JOIN);
 		        conjunction.add(Restrictions.eq("factEntries.donationType.id", donationTypeId));
 	        }
 
@@ -408,7 +402,7 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 		addOrderCriteria(orderBy, orderAsc, criteria);
 		criteria.add(Restrictions.in("id", getHibernateTemplate().findByCriteria(detachedCriteriaSub, offset, count)));
 
-		return getHibernateTemplate().findByCriteria(criteria);
+		return (List<BloodDonationRequest>) getHibernateTemplate().findByCriteria(criteria);
 	}
 
 	protected DetachedCriteria createDetachedCriteriaSub() {
@@ -422,6 +416,6 @@ public class BloodDonationRequestDAOImpl extends GenericDAOHibernate<BloodDonati
 		final DetachedCriteria criteria = createDetachedCriteria();
 		addNotDeletedCriteria(criteria);
 		criteria.add(Restrictions.eq("examination.id", examinationId));
-		return getHibernateTemplate().findByCriteria(criteria);
+		return (List<BloodDonationRequest>) getHibernateTemplate().findByCriteria(criteria);
 	}
 }

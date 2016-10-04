@@ -1,7 +1,5 @@
 package ru.efive.uifaces.renderkit.html_basic.base;
 
-import javax.servlet.http.Cookie;
-import java.io.IOException;
 import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
@@ -9,6 +7,8 @@ import javax.faces.component.UIForm;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.context.ResponseWriterWrapper;
+import javax.servlet.http.Cookie;
+import java.io.IOException;
 
 import static java.lang.String.format;
 
@@ -410,7 +410,7 @@ public class AdvancedResponseWriter extends ResponseWriterWrapper {
 
     /**
      * Returns cookie with specified name
-     * @param cookieName
+     * @param cookieName Name of cookie
      * @return cookie's value
      */
     public static Cookie getCookie(String cookieName) {

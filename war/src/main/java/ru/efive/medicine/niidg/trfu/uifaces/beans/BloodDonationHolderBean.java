@@ -30,10 +30,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Named("bloodDonation")
 @ConversationScoped
@@ -147,7 +144,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
                 request.setAdditionalResults(sessionManagement.getDAO(ExternalAnalysisResultDAOImpl.class, "externalAnalysisResultDao").getResultsByAppointmentId(request.getAppointment().getId()));
             }
             if (request.getBloodSystems() == null)
-                request.setBloodSystems(new ArrayList<BloodSystem>());
+                request.setBloodSystems(new HashSet<BloodSystem>(0));
         }
         setDocument(request);
         if (getDocument() == null) {
@@ -197,7 +194,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 
         document.addToHistory(historyEntry);
 
-        document.setBloodSystems(new ArrayList<BloodSystem>());
+        document.setBloodSystems(new HashSet<BloodSystem>(0));
         setDocument(document);
     }
 

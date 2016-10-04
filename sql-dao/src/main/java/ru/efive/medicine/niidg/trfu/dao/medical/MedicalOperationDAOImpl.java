@@ -1,16 +1,11 @@
 package ru.efive.medicine.niidg.trfu.dao.medical;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
-
+import org.hibernate.sql.JoinType;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.dao.sql.entity.document.Document;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
@@ -18,6 +13,11 @@ import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Processing;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	
 	@Override
@@ -49,7 +49,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
         
         detachedCriteria.add(Restrictions.eq("externalId", externalId));
         
-        List<BiomaterialDonor> list = getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+        List<BiomaterialDonor> list = (List<BiomaterialDonor>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
         
         if (list != null && !list.isEmpty()) {
         	return list.get(0);
@@ -79,7 +79,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "BiomaterialDonor"), offset, count);
+		return (List<BiomaterialDonor>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "BiomaterialDonor"), offset, count);
 	}
 	
 	public long countDonors(String filter, boolean showDeleted) {
@@ -113,7 +113,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Operation"), offset, count);
+		return (List<Operation>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Operation"), offset, count);
 	}
 	
 	public long countOperations(String filter, boolean showDeleted) {
@@ -147,7 +147,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Operation"), offset, count);
+    		return (List<Operation>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Operation"), offset, count);
         }
         else {
         	return Collections.emptyList();
@@ -174,7 +174,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial"), offset, count);
+		return (List<Biomaterial>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial"), offset, count);
 	}
 	
 	public long countBiomaterials(String filter, boolean showDeleted) {
@@ -209,7 +209,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial"), offset, count);
+		return (List<Biomaterial>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial"), offset, count);
 	}
 	
 	public long countBiomaterials(String filter, int statusId, boolean showDeleted) {
@@ -247,7 +247,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial"), offset, count);
+    		return (List<Biomaterial>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Biomaterial"), offset, count);
         }
         else {
         	return Collections.emptyList();
@@ -293,7 +293,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Processing"), offset, count);
+		return (List<Processing>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Processing"), offset, count);
 	}
 	
 	public long countProcessings(String filter, boolean showDeleted) {
@@ -327,7 +327,7 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
     				addOrder(detachedCriteria, orderBy, orderAsc);
     			}
     		}
-    		return getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Processing"), offset, count);
+    		return (List<Processing>) getHibernateTemplate().findByCriteria(getSearchCriteria(detachedCriteria, filter, "Processing"), offset, count);
         }
         else {
         	return Collections.emptyList();
@@ -356,41 +356,43 @@ public class MedicalOperationDAOImpl extends GenericDAOHibernate<Document> {
 	private DetachedCriteria getSearchCriteria(DetachedCriteria criteria, String filter, String type) {
 		if (StringUtils.isNotEmpty(filter)) {
 			Disjunction disjunction = Restrictions.disjunction();
-			if (type.equals("BiomaterialDonor")) {
-				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("lastName", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("middleName", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("firstName", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("passportSeries", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("passportNumber", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("insuranceSeries", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("insuranceNumber", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("employment", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("workPhone", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("phone", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("registrationAddress", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("factAddress", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("infectiousStatus", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("pregnancy", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("commentary", filter, MatchMode.ANYWHERE));
-			}
-			else if (type.equals("Operation")) {
-				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-				disjunction.add(Restrictions.ilike("recipient", filter, MatchMode.ANYWHERE));
-				disjunction.add(Restrictions.ilike("ibNumber", filter, MatchMode.ANYWHERE));
-				criteria.createAlias("donor", "donor", CriteriaSpecification.LEFT_JOIN);
-		        disjunction.add(Restrictions.ilike("donor.lastName", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("donor.middleName", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("donor.firstName", filter, MatchMode.ANYWHERE));
-			}
-			else if (type.equals("Biomaterial")) {
-				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
-				criteria.createAlias("operation", "operation", CriteriaSpecification.LEFT_JOIN);
-		        disjunction.add(Restrictions.ilike("operation.number", filter, MatchMode.ANYWHERE));
-		        disjunction.add(Restrictions.ilike("operation.recipient", filter, MatchMode.ANYWHERE));
-			}
-			else if (type.equals("Processing")) {
-				disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
+			switch (type) {
+				case "BiomaterialDonor":
+					disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("lastName", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("middleName", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("firstName", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("passportSeries", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("passportNumber", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("insuranceSeries", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("insuranceNumber", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("employment", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("workPhone", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("phone", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("registrationAddress", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("factAddress", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("infectiousStatus", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("pregnancy", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("commentary", filter, MatchMode.ANYWHERE));
+					break;
+				case "Operation":
+					disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("recipient", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("ibNumber", filter, MatchMode.ANYWHERE));
+					criteria.createAlias("donor", "donor", JoinType.LEFT_OUTER_JOIN);
+					disjunction.add(Restrictions.ilike("donor.lastName", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("donor.middleName", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("donor.firstName", filter, MatchMode.ANYWHERE));
+					break;
+				case "Biomaterial":
+					disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
+					criteria.createAlias("operation", "operation", JoinType.LEFT_OUTER_JOIN);
+					disjunction.add(Restrictions.ilike("operation.number", filter, MatchMode.ANYWHERE));
+					disjunction.add(Restrictions.ilike("operation.recipient", filter, MatchMode.ANYWHERE));
+					break;
+				case "Processing":
+					disjunction.add(Restrictions.ilike("number", filter, MatchMode.ANYWHERE));
+					break;
 			}
 	        criteria.add(disjunction);
 		}

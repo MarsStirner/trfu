@@ -9,6 +9,7 @@ import org.hibernate.criterion.Restrictions;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.dao.sql.entity.user.Appointment;
 
+@org.springframework.transaction.annotation.Transactional
 public class AppointmentDAOHibernate extends GenericDAOHibernate<Appointment> {
 	
 	@Override
@@ -30,7 +31,7 @@ public class AppointmentDAOHibernate extends GenericDAOHibernate<Appointment> {
 		if (StringUtils.isNotEmpty(name)) {
 			detachedCriteria.add(Restrictions.eq("name", name));
         }
-		return getHibernateTemplate().findByCriteria(detachedCriteria);
+		return (List<Appointment>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
     
 }

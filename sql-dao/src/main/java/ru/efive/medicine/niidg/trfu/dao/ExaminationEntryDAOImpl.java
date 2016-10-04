@@ -1,13 +1,12 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.List;
-
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationEntry;
 
+import java.util.List;
+@org.springframework.transaction.annotation.Transactional
 public class ExaminationEntryDAOImpl extends GenericDAOHibernate<ExaminationEntry> {
 	
 	@Override
@@ -31,7 +30,7 @@ public class ExaminationEntryDAOImpl extends GenericDAOHibernate<ExaminationEntr
 		
         addOrder(detachedCriteria, "parent.id", true);
         
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<ExaminationEntry>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -51,7 +50,7 @@ public class ExaminationEntryDAOImpl extends GenericDAOHibernate<ExaminationEntr
 		
         addOrder(detachedCriteria, "id", true);
         
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<ExaminationEntry>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 	/**
@@ -74,7 +73,7 @@ public class ExaminationEntryDAOImpl extends GenericDAOHibernate<ExaminationEntr
         
         addOrder(detachedCriteria, "id", true);
         
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<ExaminationEntry>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 	
 }

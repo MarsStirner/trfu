@@ -1,15 +1,15 @@
 package ru.efive.crm.dao;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
-import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.crm.data.Contragent;
+import ru.efive.dao.sql.dao.GenericDAOHibernate;
 
+import java.util.Collections;
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class ContragentDAOHibernate extends GenericDAOHibernate<Contragent> {
 	
 	@Override
@@ -37,7 +37,7 @@ public class ContragentDAOHibernate extends GenericDAOHibernate<Contragent> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+		return (List<Contragent>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 	}
 	
 	public long countDocument(String pattern, boolean showDeleted) {
@@ -80,7 +80,7 @@ public class ContragentDAOHibernate extends GenericDAOHibernate<Contragent> {
 
 	      detachedCriteria.add(Restrictions.eq("stateCode", stateCode));
 
-	      return getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+	      return (List<Contragent>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
 	    }
 	    return Collections.emptyList();
 	  }
@@ -124,6 +124,6 @@ public class ContragentDAOHibernate extends GenericDAOHibernate<Contragent> {
 		if (!showDeleted) {
 			addNotDeletedCriteria(detachedCriteria);
 		}
-		return getHibernateTemplate().findByCriteria(detachedCriteria);
+		return (List<Contragent>) getHibernateTemplate().findByCriteria(detachedCriteria);
 	}
 }

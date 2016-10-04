@@ -1,22 +1,21 @@
 package ru.efive.dao.sql.dao.user;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.hibernate.exception.JDBCConnectionException;
+import org.hibernate.sql.JoinType;
 import org.springframework.dao.DataAccessException;
-
+import org.springframework.transaction.annotation.Transactional;
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.dao.sql.entity.enums.RoleType;
 import ru.efive.dao.sql.entity.user.Permission;
 import ru.efive.dao.sql.entity.user.Role;
 import ru.efive.dao.sql.entity.user.User;
 
+import java.util.List;
+
+
+@Transactional
 public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserDAO {
 	
 	public UserDAOHibernate() {
@@ -35,6 +34,7 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
      * @param password пароль
      * @return пользователь или null, если такового не существует
      */
+    @SuppressWarnings("unchecked")
 	@Override
     public User findByLoginAndPassword(String login, String password) throws JDBCConnectionException, DataAccessException {
         if (StringUtils.isNotEmpty(login) && StringUtils.isNotEmpty(password)) {
@@ -44,7 +44,7 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
             detachedCriteria.add(Restrictions.eq("login", login));
             detachedCriteria.add(Restrictions.eq("password", password));
 
-            List<User> users = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+            List<User> users = (List<User>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
             if ((users != null) && !users.isEmpty()) {
                 // don't modify this routine work! (for proxy caching such objects as Personage, Location)
                 User user = users.get(0);
@@ -67,6 +67,7 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
      * @param login логин
      * @return пользователь или null, если такового не существует
      */
+    @SuppressWarnings("unchecked")
     @Override
     public User getByLogin(String login) {
         if (StringUtils.isNotEmpty(login)) {
@@ -74,23 +75,14 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
             detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
 
             detachedCriteria.add(Restrictions.eq("login", login));
-
-            List<User> users = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
-            if ((users != null) && !users.isEmpty()) {
-                // don't modify this routine work! (for proxy caching such objects as Role, etc.)
-                User user = users.get(0);
-                if (user != null) {
-                	
-                }
-                return user;
-            } else {
-                return null;
-            }
+            final List<User> resultList = (List<User>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+            return resultList.iterator().hasNext() ? resultList.iterator().next() : null;
         } else {
             return null;
         }
     }
-    
+
+    @SuppressWarnings("unchecked")
     @Override
     public User getByLogin(String login, Integer excludeUserId) {
         if (StringUtils.isNotEmpty(login)) {
@@ -100,17 +92,8 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
             detachedCriteria.add(Restrictions.eq("login", login));
             detachedCriteria.add(Restrictions.ne("id", excludeUserId));
 
-            List<User> users = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
-            if ((users != null) && !users.isEmpty()) {
-                // don't modify this routine work! (for proxy caching such objects as Role, etc.)
-                User user = users.get(0);
-                if (user != null) {
-                	
-                }
-                return user;
-            } else {
-                return null;
-            }
+            final List<User> resultList = (List<User>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+            return resultList.iterator().hasNext() ? resultList.iterator().next() : null;
         } else {
             return null;
         }
@@ -123,24 +106,21 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
      * @param email адрес электронной почты
      * @return пользователь или null, если такового не существует
      */
+    @SuppressWarnings("unchecked")
     public User getByEmail(String email) {
         if (StringUtils.isNotEmpty(email)) {
             DetachedCriteria detachedCriteria = DetachedCriteria.forClass(User.class);
             detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
 
             detachedCriteria.add(Restrictions.eq("email", email));
-
-            List<User> users = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
-            if ((users != null) && !users.isEmpty()) {
-                return users.get(0);
-            } else {
-                return null;
-            }
+            final List<User> resultList = (List<User>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+            return resultList.iterator().hasNext() ? resultList.iterator().next() : null;
         } else {
             return null;
         }
     }
 
+    @SuppressWarnings("unchecked")
     public User getByEmail(String email, Integer excludeUserId) {
         if (StringUtils.isNotEmpty(email)) {
             DetachedCriteria detachedCriteria = DetachedCriteria.forClass(User.class);
@@ -149,12 +129,8 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
             detachedCriteria.add(Restrictions.eq("email", email));
             detachedCriteria.add(Restrictions.ne("id", excludeUserId));
 
-            List<User> users = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
-            if ((users != null) && !users.isEmpty()) {
-                return users.get(0);
-            } else {
-                return null;
-            }
+            final List<User> resultList = (List<User>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+            return resultList.iterator().hasNext() ? resultList.iterator().next() : null;
         } else {
             return null;
         }
@@ -188,7 +164,7 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
             detachedCriteria.addOrder(asc ? Order.asc(orderBy) : Order.desc(orderBy));
         }
 
-        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        return (List<Role>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
     }
 
     /**
@@ -248,11 +224,11 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
             DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Role.class);
             detachedCriteria.setResultTransformer(DetachedCriteria.DISTINCT_ROOT_ENTITY);
 
-            detachedCriteria.createCriteria("users", DetachedCriteria.LEFT_JOIN).add(Restrictions.idEq(user.getId()));
+            detachedCriteria.createCriteria("users", JoinType.LEFT_OUTER_JOIN).add(Restrictions.idEq(user.getId()));
 
-            detachedCriteria.createCriteria("permissions", DetachedCriteria.LEFT_JOIN).add(Restrictions.eq("permissionType", permissionType));
+            detachedCriteria.createCriteria("permissions", JoinType.LEFT_OUTER_JOIN).add(Restrictions.eq("permissionType", permissionType));
 
-            List<Role> roles = getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
+            List<Role> roles = (List<Role>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, 1);
             return ((roles != null) && !roles.isEmpty());
         } else {
             return false;
@@ -280,7 +256,7 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
         } else {
             return null;
         }
-        return getHibernateTemplate().findByCriteria(detachedCriteria);
+        return (List<Permission>) getHibernateTemplate().findByCriteria(detachedCriteria);
     }
 
 
@@ -304,7 +280,7 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
     public List<User> findUsers(String login, String firstname, String lastname, String middlename, String email, Role role, boolean showDeleted, int offset, int count, String orderBy, boolean orderAsc) {
         DetachedCriteria detachedCriteria = createCriteriaForUsers(login, firstname, lastname, middlename, email, role, showDeleted);
         addOrder(detachedCriteria, orderBy, orderAsc);
-        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        return (List<User>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
     }
 
     /**
@@ -352,7 +328,7 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+		return (List<User>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 	}
 	
     /**
@@ -389,7 +365,7 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+		return (List<User>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
     }
     
     public long countUsersByAppointment(String appointment, String pattern, boolean showDeleted) {
@@ -432,7 +408,7 @@ public class UserDAOHibernate extends GenericDAOHibernate<User> implements UserD
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-        return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+        return (List<User>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
     }
 
     public long countUsersByRole(Role role, boolean showDeleted) {

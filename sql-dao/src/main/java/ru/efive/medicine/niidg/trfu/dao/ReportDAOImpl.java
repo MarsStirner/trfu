@@ -1,14 +1,14 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.List;
-
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.dao.sql.entity.document.ReportTemplate;
 import ru.efive.dao.sql.entity.user.Role;
 
+import java.util.List;
+
+@org.springframework.transaction.annotation.Transactional
 public class ReportDAOImpl extends GenericDAOHibernate<ReportTemplate> {
 	
 	@Override
@@ -23,7 +23,7 @@ public class ReportDAOImpl extends GenericDAOHibernate<ReportTemplate> {
         
         detachedCriteria.add(Restrictions.eq("templateName", templateName));
         
-		List<ReportTemplate> list = getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
+		List<ReportTemplate> list = (List<ReportTemplate>) getHibernateTemplate().findByCriteria(detachedCriteria, -1, -1);
 		if (list != null && !list.isEmpty()) {
 			return list.get(0);
         } else {
@@ -53,7 +53,7 @@ public class ReportDAOImpl extends GenericDAOHibernate<ReportTemplate> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+		return (List<ReportTemplate>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class ReportDAOImpl extends GenericDAOHibernate<ReportTemplate> {
 				addOrder(detachedCriteria, orderBy, orderAsc);
 			}
 		}
-		return getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
+		return (List<ReportTemplate>) getHibernateTemplate().findByCriteria(detachedCriteria, offset, count);
 	}
 	
 	public long countDocument(Role currentRole, boolean showDeleted) {

@@ -1,7 +1,5 @@
 package ru.efive.medicine.niidg.trfu.servlet;
 
-import java.io.IOException;
-
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.component.UIViewRoot;
@@ -14,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public abstract class AbstractFacesServlet extends HttpServlet {
 	private static final long serialVersionUID = -2084766298989814766L;
@@ -71,8 +70,7 @@ public abstract class AbstractFacesServlet extends HttpServlet {
 			Lifecycle lifecycle = lifecycleFactory
 					.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
 
-			facesContext = contextFactory.getFacesContext(request.getSession()
-					.getServletContext(), request, response, lifecycle);
+			facesContext = contextFactory.getFacesContext(request.getSession().getServletContext(), request, response, lifecycle);
 
 			// Set using our inner class
 			InnerFacesContext.setFacesContextAsCurrentInstance(facesContext);

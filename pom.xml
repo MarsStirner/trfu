@@ -57,13 +57,14 @@
 
         <!-- Components -->
         <version.javaee-api>7.0</version.javaee-api>
+        <version.spring>4.3.3.RELEASE</version.spring>
         <version.hibernate>5.2.2.Final</version.hibernate>
 
         <!-- Test Environment -->
         <version.junit>4.8.2</version.junit>
 
         <!-- Maven plugins version -->
-        <version.mvn.plugin.compiler>2.3.2</version.mvn.plugin.compiler>
+        <version.mvn.plugin.compiler>3.5.1</version.mvn.plugin.compiler>
         <version.mvn.plugin.resource>2.5</version.mvn.plugin.resource>
         <version.mvn.plugin.javadoc>2.8</version.mvn.plugin.javadoc>
         <version.mvn.plugin.site>3.2</version.mvn.plugin.site>
@@ -132,15 +133,8 @@
 
     <!-- Build section -->
     <build>
-
         <pluginManagement>
-
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${version.mvn.plugin.compiler}</version>
-                </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -184,6 +178,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${version.mvn.plugin.compiler}</version>
                 <configuration>
                     <source>${version.jdk}</source>
                     <target>${version.jdk.target}</target>
