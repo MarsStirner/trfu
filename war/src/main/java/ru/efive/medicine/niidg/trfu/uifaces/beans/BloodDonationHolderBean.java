@@ -339,7 +339,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
                     return false;
                 }
             }
-            if (getDocument().getFactEntryList() != null && getDocument().getFactEntryList().size() > 0) {
+            if (getDocument().getFactEntryList().size() > 0) {
                 return true;
             }
         }

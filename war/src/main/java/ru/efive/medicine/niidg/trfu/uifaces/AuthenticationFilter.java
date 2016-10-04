@@ -59,7 +59,6 @@ public class AuthenticationFilter implements Filter {
 		if (requestPath.contains("/component/")) {
 			request.getSession().setAttribute(SessionManagementBean.BACK_URL, redirectTo.toString());
 		}
-		HttpServletResponse httpServletResponse = (HttpServletResponse) resp;
 		((HttpServletResponse) resp).sendRedirect(request.getContextPath().concat("/").concat(LOGIN_PAGE));
 	}
 

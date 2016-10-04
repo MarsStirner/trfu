@@ -26,7 +26,7 @@ public class DonorSearchBean extends AbstractDocumentListHolderBean<DonorFullTex
 
 	@Override
 	protected List<DonorFullTextEntry> loadDocuments() {
-		List<DonorFullTextEntry> result = new ArrayList<DonorFullTextEntry>();
+		List<DonorFullTextEntry> result = new ArrayList<>();
 		try {
 			if (filter != null && !filter.equals("")) {
 				DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, "donorDao");

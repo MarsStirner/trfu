@@ -40,7 +40,7 @@ public class BloodComponentOrderReservedListHolderBean extends AbstractDocumentL
 	
 	@Override
 	protected List<BloodComponentOrderRequest> loadDocuments() {
-		List<BloodComponentOrderRequest> result = new ArrayList<BloodComponentOrderRequest>();
+		List<BloodComponentOrderRequest> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO).findDocumentsByStatus(4, filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

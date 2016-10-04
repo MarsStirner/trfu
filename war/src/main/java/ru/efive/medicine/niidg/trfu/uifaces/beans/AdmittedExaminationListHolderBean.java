@@ -40,7 +40,7 @@ public class AdmittedExaminationListHolderBean extends AbstractDocumentListHolde
 
 	@Override
 	protected List<ExaminationRequest> loadDocuments() {
-		List<ExaminationRequest> result = new ArrayList<ExaminationRequest>();
+		List<ExaminationRequest> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).findDocumentsByStatus(5, 
 					filterNumberExamination, filterDonorLastName, filterDonorFirstName, filterDonorMiddleName, false,

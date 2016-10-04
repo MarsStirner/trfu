@@ -46,7 +46,7 @@ public class PersonalRequestsListHolderBean extends AbstractDocumentListHolderBe
 
 	@Override
 	protected List<AbstractRequest> loadDocuments() {
-		List<AbstractRequest> result = new ArrayList<AbstractRequest>();
+		List<AbstractRequest> result = new ArrayList<>();
 		try {
 			if (filterExaminationRequests) {
 				List<ExaminationRequest> list = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).findDocumentsByPerson(false,

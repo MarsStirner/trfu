@@ -73,7 +73,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-            return new ArrayList<BloodComponent>(0);
+            return new ArrayList<>(0);
 		}
 	}
 

@@ -39,7 +39,7 @@ public class ExternalAnalysisResultListHolderBean extends AbstractDocumentListHo
 
 	@Override
 	protected List<ExternalAnalysisResult> loadDocuments() {
-		List<ExternalAnalysisResult> result = new ArrayList<ExternalAnalysisResult>();
+		List<ExternalAnalysisResult> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(ExternalAnalysisResultDAOImpl.class, "externalAnalysisResultDao").findDocuments(getPagination().getOffset(), 
 					getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

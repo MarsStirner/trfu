@@ -40,7 +40,7 @@ public class RoleListHolderBean extends AbstractDocumentListHolderBean<Role> {
 
 	@Override
 	protected List<Role> loadDocuments() {
-		List<Role> result = new ArrayList<Role>();
+		List<Role> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO).findRoles(getPagination().getOffset(), 
 					getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
@@ -52,7 +52,7 @@ public class RoleListHolderBean extends AbstractDocumentListHolderBean<Role> {
 	}
 	
 	public List<Role> getAvailableRoles() {
-		List<Role> result = new ArrayList<Role>();
+		List<Role> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO).findRoles(-1, -1, "name", true);
 		}

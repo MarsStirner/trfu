@@ -37,7 +37,7 @@ public class BloodDonationFilterableListHolderBean
 
 	@Override
 	public List<FilterParameter> getNotNullFilterParameters() {
-		List<FilterParameter> parameters = new ArrayList<FilterParameter>();
+		List<FilterParameter> parameters = new ArrayList<>();
 		String number = storedFilter.getNumber();
 		String donor = storedFilter.getDonor();
 		Date created = storedFilter.getCreated();
@@ -98,7 +98,7 @@ public class BloodDonationFilterableListHolderBean
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<BloodDonationRequest>(0);
+		return new ArrayList<>(0);
 	}
 
 	@Override
@@ -119,8 +119,9 @@ public class BloodDonationFilterableListHolderBean
 
 	@Override
 	public List<String> getFormColumns() {
-		return Arrays.asList(new String[] { "Номер", "Дата\nсоздания", "Донор",
-				"Тип донора", "Вид донорства", "Статус", "Комментарии" });
+		return Arrays.asList(
+				"Номер", "Дата\nсоздания", "Донор", "Тип донора", "Вид донорства", "Статус", "Комментарии"
+		);
 	}
 
 	@Override

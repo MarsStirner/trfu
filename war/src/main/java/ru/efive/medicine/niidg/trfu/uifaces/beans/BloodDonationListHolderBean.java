@@ -39,7 +39,7 @@ public class BloodDonationListHolderBean extends AbstractDocumentListHolderBean<
 
 	@Override
 	protected List<BloodDonationRequest> loadDocuments() {
-		List<BloodDonationRequest> result = new ArrayList<BloodDonationRequest>();
+		List<BloodDonationRequest> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).findDocuments(filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
@@ -56,7 +56,7 @@ public class BloodDonationListHolderBean extends AbstractDocumentListHolderBean<
 	}
 	
 	public List<BloodDonationRequest> getDocumentsByParent(int parentId) {
-		List<BloodDonationRequest> result = new ArrayList<BloodDonationRequest>();
+		List<BloodDonationRequest> result = new ArrayList<>();
 		try {
 			if (parentId != 0) {
 				result = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).findDonationRequestsByDonorId(false, parentId, -1, -1, "created", false);

@@ -40,7 +40,7 @@ public class BloodComponentOrderFilterableListHolderBean
 
 	@Override
 	public List<FilterParameter> getNotNullFilterParameters() {
-		List<FilterParameter> parameters = new ArrayList<FilterParameter>();
+		List<FilterParameter> parameters = new ArrayList<>();
 		String number = storedFilter.getNumber();
 		String ibNumber = storedFilter.getIbNumber();
 		Date createdFrom = storedFilter.getCreatedFrom();
@@ -172,7 +172,7 @@ public class BloodComponentOrderFilterableListHolderBean
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<BloodComponentOrderRequest>();
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -194,9 +194,9 @@ public class BloodComponentOrderFilterableListHolderBean
 
 	@Override
 	public List<String> getFormColumns() {
-		return Arrays.asList(new String[] { "Номер", "Дата\nрегистрации",
-				"Реципиент", "Компонент", "Вид трансфузии", "Отделение",
-				"Статус" });
+		return Arrays.asList(
+				"Номер", "Дата\nрегистрации", "Реципиент", "Компонент", "Вид трансфузии", "Отделение", "Статус"
+		);
 	}
 
 	@Override

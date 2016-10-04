@@ -1,15 +1,5 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import ru.efive.dao.sql.dao.user.RoleDAOHibernate;
 import ru.efive.dao.sql.entity.enums.RoleType;
 import ru.efive.dao.sql.entity.user.Role;
@@ -17,6 +7,16 @@ import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
+
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Named("role")
 @ConversationScoped
@@ -135,10 +135,8 @@ public class RoleHolderBean extends AbstractDocumentHolderBean<Role, Integer> im
     }
     
     public List<RoleType> getTypes() {
-    	List<RoleType> result = new ArrayList<RoleType>();
-    	for (RoleType type: RoleType.values()) {
-    		result.add(type);
-    	}
+    	List<RoleType> result = new ArrayList<>();
+		Collections.addAll(result, RoleType.values());
     	return result;
     }
 }

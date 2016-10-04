@@ -79,8 +79,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
 
     @Override
     protected void initDocument(Integer id) {
-        setDocument((BloodComponentOrderRequest)
-                sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO).get(id));
+        setDocument(sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO).get(id));
         if (getDocument() == null) {
             setState(STATE_NOT_FOUND);
         }
@@ -120,8 +119,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
     protected boolean saveDocument() {
         boolean result = false;
         try {
-            BloodComponentOrderRequest bloodComponentOrder = (BloodComponentOrderRequest)
-                    sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO).update(getDocument());
+            BloodComponentOrderRequest bloodComponentOrder = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO).update(getDocument());
             if (bloodComponentOrder == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_ERROR,
@@ -145,7 +143,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
         boolean result = false;
         try {
             BloodComponentOrderRequestDAOImpl dao = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO);
-            BloodComponentOrderRequest bloodComponentOrder = (BloodComponentOrderRequest) dao.save(getDocument());
+            BloodComponentOrderRequest bloodComponentOrder = dao.save(getDocument());
             if (bloodComponentOrder == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_ERROR,
@@ -178,7 +176,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
 
         public void setComponents(List<BloodComponent> components) {
             if (components == null) {
-                this.components = new ArrayList<BloodComponent>();
+                this.components = new ArrayList<>();
             } else {
                 this.components = components;
             }
@@ -224,7 +222,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
             }
         }
 
-        private List<BloodComponent> components = new ArrayList<BloodComponent>();
+        private List<BloodComponent> components = new ArrayList<>();
 
         private static final long serialVersionUID = -9107594037615723746L;
     }
@@ -245,7 +243,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
 
         public void setComponents(List<BloodComponent> components) {
             if (components == null) {
-                this.components = new ArrayList<BloodComponent>();
+                this.components = new ArrayList<>();
             } else {
                 this.components = components;
             }
@@ -292,7 +290,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
         }
 
         public void search() {
-            List<Analysis> phenotypeList = new ArrayList<Analysis>();
+            List<Analysis> phenotypeList = new ArrayList<>();
             for (BloodComponentMatchCriteria criteria : criteriaList) {
                 if (criteria.isNecessary()) phenotypeList.add(criteria.getPhenotype());
             }
@@ -329,7 +327,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
             components = dao.findComponentsByOrder(getDocumentId());
 
             List<AnalysisType> types = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
-            criteriaList = new ArrayList<BloodComponentMatchCriteria>();
+            criteriaList = new ArrayList<>();
 
             for (AnalysisType type : types) {
                 Analysis analysis = new Analysis();
@@ -353,9 +351,9 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
         }
 
 
-        private List<BloodComponent> availableComponents = new ArrayList<BloodComponent>();
-        private List<BloodComponent> components = new ArrayList<BloodComponent>();
-        private List<BloodComponentMatchCriteria> criteriaList = new ArrayList<BloodComponentMatchCriteria>();
+        private List<BloodComponent> availableComponents = new ArrayList<>();
+        private List<BloodComponent> components = new ArrayList<>();
+        private List<BloodComponentMatchCriteria> criteriaList = new ArrayList<>();
         private BloodGroup bloodGroup;
         private boolean searchBloodGroup;
         private Classifier rhesusFactor;
@@ -409,7 +407,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
             if (getSelectedAction().isHistoryAction()) {
                 Set<HistoryEntry> history = request.getHistory();
                 if (history == null) {
-                    history = new HashSet<HistoryEntry>();
+                    history = new HashSet<>();
                 }
                 history.add(getHistoryEntry());
                 request.setHistory(history);

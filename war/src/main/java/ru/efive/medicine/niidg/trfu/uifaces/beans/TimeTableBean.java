@@ -52,7 +52,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 	
 	@Override
 	protected List<TimeTableEntry> loadDocuments() {
-		List<TimeTableEntry> result = new ArrayList<TimeTableEntry>();
+		List<TimeTableEntry> result = new ArrayList<>();
 		try {
 			logger.info("Selected date is: " + new java.text.SimpleDateFormat("dd.MM.yyyy").format(selectedDate));
 			result = sessionManagement.getDAO(TimeTableDAOImpl.class, ApplicationHelper.TIMETABLE_DAO).findUserTimeTable(selectedDate,

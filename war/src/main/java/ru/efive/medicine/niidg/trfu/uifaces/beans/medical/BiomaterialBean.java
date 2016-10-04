@@ -1,24 +1,6 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.medical;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
-
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
@@ -36,6 +18,15 @@ import ru.efive.uifaces.bean.ModalWindowHolderBean;
 import ru.efive.wf.core.ActionResult;
 import ru.efive.wf.core.activity.EditableProperty;
 import ru.efive.wf.core.util.EngineHelper;
+
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Named("biomaterial")
 @ConversationScoped
@@ -164,7 +155,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			MedicalOperationDAOImpl dao = (MedicalOperationDAOImpl) sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO);
+			MedicalOperationDAOImpl dao = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO);
 			Biomaterial biomaterial = getDocument();
 			if (biomaterial.getOperation() != null && biomaterial.getNumber() == null) {
 				int count = new Long(dao.countBiomaterialsByOperation(biomaterial.getOperation(), "", false)).intValue() + 1;
@@ -233,7 +224,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
     
     public void previewBigLabel() {
     	try {
-    		Map<String,String> requestProperties = new HashMap<String, String>();
+    		Map<String,String> requestProperties = new HashMap<>();
     		requestProperties.put("reportName", "BiomaterialLabel.jrxml");
     		requestProperties.put("docId", Integer.toString(getDocument().getId()));
     		reportsManagement.sqlPrintReportByRequestParams(requestProperties);
@@ -328,7 +319,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
     		super.doShow();
     		invalid = false;
     		message = "";
-    		volumeList = new ArrayList<VolumeEntry>();
+    		volumeList = new ArrayList<>();
     		volumeList.add(new VolumeEntry(0));
     		volumeList.add(new VolumeEntry(0));
     	}
@@ -444,7 +435,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
     		return message;
     	}
     	
-    	private List<VolumeEntry> volumeList = new ArrayList<VolumeEntry>();
+    	private List<VolumeEntry> volumeList = new ArrayList<>();
     	
     	private boolean invalid = false;
     	private String message = "";

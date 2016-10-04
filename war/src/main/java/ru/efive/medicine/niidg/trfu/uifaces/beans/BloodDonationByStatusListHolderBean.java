@@ -34,7 +34,7 @@ public class BloodDonationByStatusListHolderBean extends AbstractDocumentListHol
 
 	@Override
 	protected List<BloodDonationRequest> loadDocuments() {
-		List<BloodDonationRequest> result = new ArrayList<BloodDonationRequest>();
+		List<BloodDonationRequest> result = new ArrayList<>();
 		try {
 			List<BloodDonationRequest> list = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).findDocuments(
 					filter, false, getPagination().getOffset(), getPagination().getPageSize(), "statusId,number", false);

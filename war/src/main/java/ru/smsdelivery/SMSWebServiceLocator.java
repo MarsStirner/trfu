@@ -81,7 +81,7 @@ public class SMSWebServiceLocator extends org.apache.axis.client.Service impleme
         catch (java.lang.Throwable t) {
             throw new javax.xml.rpc.ServiceException(t);
         }
-        throw new javax.xml.rpc.ServiceException("There is no stub implementation for the interface:  " + (serviceEndpointInterface == null ? "null" : serviceEndpointInterface.getName()));
+        throw new javax.xml.rpc.ServiceException("There is no stub implementation for the interface:  " + (serviceEndpointInterface.getName()));
     }
 
     /**

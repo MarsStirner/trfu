@@ -34,7 +34,7 @@ public class RequestsListHolderBean extends AbstractDocumentListHolderBean<Abstr
 
 	@Override
 	protected List<AbstractRequest> loadDocuments() {
-		List<AbstractRequest> result = new ArrayList<AbstractRequest>();
+		List<AbstractRequest> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(RequestDAOImpl.class, ApplicationHelper.REQUEST_DAO).findDocuments(false,
 					getPagination().getOffset(), getPagination().getPageSize(), "created", false);
@@ -61,7 +61,7 @@ public class RequestsListHolderBean extends AbstractDocumentListHolderBean<Abstr
 	}
 	
 	public List<AbstractRequest> getDocumentsByParent(int parentId) {
-		List<AbstractRequest> result = new ArrayList<AbstractRequest>();
+		List<AbstractRequest> result = new ArrayList<>();
 		try {
 			if (parentId != 0) {
 				result = sessionManagement.getDAO(RequestDAOImpl.class, ApplicationHelper.REQUEST_DAO).findRequestsByDonor(false, parentId, "created", false);

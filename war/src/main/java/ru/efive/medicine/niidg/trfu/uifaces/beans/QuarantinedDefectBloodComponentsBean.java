@@ -40,7 +40,7 @@ public class QuarantinedDefectBloodComponentsBean extends AbstractDocumentListHo
 
 	@Override
 	protected List<BloodComponent> loadDocuments() {
-		List<BloodComponent> result = new ArrayList<BloodComponent>();
+		List<BloodComponent> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findQuarantinedComponentsByStatusId(filter, 6, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

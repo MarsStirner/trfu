@@ -39,7 +39,7 @@ public class BloodDonationByDateListHolderBean extends AbstractDocumentListHolde
 
 	@Override
 	protected List<BloodDonationRequest> loadDocuments() {
-		List<BloodDonationRequest> result = new ArrayList<BloodDonationRequest>();
+		List<BloodDonationRequest> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).findDocuments(filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

@@ -73,7 +73,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             if (getSelectedAction().isHistoryAction()) {
                 Set<HistoryEntry> history = component.getHistory();
                 if (history == null) {
-                    history = new HashSet<HistoryEntry>();
+                    history = new HashSet<>();
                 }
                 history.add(getHistoryEntry());
                 component.setHistory(history);
@@ -301,7 +301,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         historyEntry.setEndDate(created);
         historyEntry.setProcessed(true);
         historyEntry.setCommentary("");
-        Set<HistoryEntry> history = new HashSet<HistoryEntry>();
+        Set<HistoryEntry> history = new HashSet<>();
         history.add(historyEntry);
         bloodComponent.setHistory(history);
 
@@ -748,7 +748,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
 
     public void previewBigLabel() {
        if(BloodComponentHelper.validateBeforePrint(getDocument())){
-           final Map<String, String> requestProperties = new HashMap<String, String>();
+           final Map<String, String> requestProperties = new HashMap<>();
            if(getDocument().isPurchased() && getDocument().getMaker().getId() == 13){
                requestProperties.put("reportName", "BigBarcode4JReport_fmba.jrxml");
            } else {
@@ -888,7 +888,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     public class SplitModalHolder extends ModalWindowHolderBean {
 
         private static final long serialVersionUID = -5600215387042330919L;
-        private List<VolumeEntry> volumeList = new ArrayList<VolumeEntry>();
+        private List<VolumeEntry> volumeList = new ArrayList<>();
         private boolean invalid = false;
         private String message = "";
 
@@ -899,7 +899,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             super.doShow();
             invalid = false;
             message = "";
-            volumeList = new ArrayList<VolumeEntry>();
+            volumeList = new ArrayList<>();
             volumeList.add(new VolumeEntry(0));
             volumeList.add(new VolumeEntry(0));
         }
@@ -990,7 +990,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                             );
                     newEntry.setCommentary(sb.toString());
 
-                    Set<HistoryEntry> history = new HashSet<HistoryEntry>();
+                    Set<HistoryEntry> history = new HashSet<>();
                     history.add(newEntry);
                     component.setHistory(history);
 

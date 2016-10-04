@@ -160,7 +160,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 	public boolean previewReport() {
 		boolean result = false;
 		try {
-			Map<String, Object> genericProperties = new HashMap<String, Object>();
+			Map<String, Object> genericProperties = new HashMap<>();
 			if (propertiesHolder != null) {
 				genericProperties.put("Institution", propertiesHolder.getProperty("application", "reports.institution.name"));
 				genericProperties.put("Division", propertiesHolder.getProperty("application", "reports.division.name"));
@@ -225,7 +225,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 		@Override
 		protected void doShow() {
 			super.doShow();
-			requestList = new ArrayList<BloodComponentOrderRequest>();
+			requestList = new ArrayList<>();
 		}
 		
 		@Override

@@ -139,7 +139,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 	
 	@Override
 	protected List<DictionaryEntity> loadDocuments() {
-		List<DictionaryEntity> result = new ArrayList<DictionaryEntity>();
+		List<DictionaryEntity> result = new ArrayList<>();
 		try {
 			if (filterAnalysisType) {
 				List<AnalysisType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
@@ -443,7 +443,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 		
 		public void setBloodComponentTypeList(List<BloodComponentType> componentTypeList) {
 			if (componentTypeList == null) {
-				this.componentTypeList = new ArrayList<BloodComponentType>();
+				this.componentTypeList = new ArrayList<>();
 			}
 			else{
 				this.componentTypeList = componentTypeList;
@@ -485,7 +485,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 		@Override
 		protected void doShow() {
 			super.doShow();
-			componentTypeList = new ArrayList<BloodComponentType>();
+			componentTypeList = new ArrayList<>();
 			availableComponentTypeList = dictionaryManagement.getBloodComponentTypes();
 			if (getDocument() instanceof QualityControlMappingEntry) {
 				setBloodComponentTypeList(((QualityControlMappingEntry) getDocument()).getComponentTypes());
@@ -520,7 +520,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 		
 		public void setAnalysisTypeList(List<AnalysisType> analysisTypeList) {
 			if (analysisTypeList == null) {
-				this.analysisTypeList = new ArrayList<AnalysisType>();
+				this.analysisTypeList = new ArrayList<>();
 			}
 			else{
 				this.analysisTypeList = analysisTypeList;
@@ -562,7 +562,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 		@Override
 		protected void doShow() {
 			super.doShow();
-			analysisTypeList = new ArrayList<AnalysisType>();
+			analysisTypeList = new ArrayList<>();
 			availableAnalysisTypeList = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Контроль качества", false);
 			if (getDocument() instanceof QualityControlMappingEntry) {
 				setAnalysisTypeList(((QualityControlMappingEntry) getDocument()).getAnalysisTypes());
@@ -631,7 +631,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 
     public class ConverterNameSelect extends ModalWindowHolderBean{
         public List<String> getAllNames(){
-            List<String> names = new ArrayList<String>();
+            List<String> names = new ArrayList<>();
             for (ConverterName cn:ConverterName.values())
                 names.add(cn.alias);
             return names;

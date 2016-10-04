@@ -41,7 +41,7 @@ public class InformationEntryListHolderBean extends AbstractDocumentListHolderBe
 
 	@Override
 	protected List<InformationEntry> loadDocuments() {
-		List<InformationEntry> result = new ArrayList<InformationEntry>();
+		List<InformationEntry> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(InformationEntryDaoImpl.class, ApplicationHelper.INFORMATION_DAO).findDocuments(false, -1, -1,
 					getSorting().getColumnId(), getSorting().isAsc());

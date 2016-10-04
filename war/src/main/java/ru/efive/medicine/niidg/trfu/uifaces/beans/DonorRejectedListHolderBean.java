@@ -39,7 +39,7 @@ public class DonorRejectedListHolderBean extends AbstractDocumentListHolderBean<
 
 	@Override
 	protected List<Donor> loadDocuments() {
-		List<Donor> result = new ArrayList<Donor>();
+		List<Donor> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(DonorDAOImpl.class, "donorDao").findRejectedDocuments(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

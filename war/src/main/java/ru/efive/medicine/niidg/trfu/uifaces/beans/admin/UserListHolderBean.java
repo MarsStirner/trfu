@@ -40,7 +40,7 @@ public class UserListHolderBean extends AbstractDocumentListHolderBean<User> {
 
 	@Override
 	protected List<User> loadDocuments() {
-		List<User> result = new ArrayList<User>();
+		List<User> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO).findUsers(filter, false, 
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

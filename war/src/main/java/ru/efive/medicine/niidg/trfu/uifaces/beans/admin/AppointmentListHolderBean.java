@@ -36,7 +36,7 @@ public class AppointmentListHolderBean extends AbstractDocumentListHolderBean<Ap
 
 	@Override
 	protected List<Appointment> loadDocuments() {
-		List<Appointment> result = new ArrayList<Appointment>();
+		List<Appointment> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(AppointmentDAOHibernate.class, "appointmentDao").findDocuments(false, -1, -1, getSorting().getColumnId(), getSorting().isAsc());
 		}

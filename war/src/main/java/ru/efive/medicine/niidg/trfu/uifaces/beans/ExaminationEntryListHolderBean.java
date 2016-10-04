@@ -34,7 +34,7 @@ public class ExaminationEntryListHolderBean extends AbstractDocumentListHolderBe
 
 	@Override
 	protected List<ExaminationEntry> loadDocuments() {
-		List<ExaminationEntry> result = new ArrayList<ExaminationEntry>();
+		List<ExaminationEntry> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(ExaminationEntryDAOImpl.class, ApplicationHelper.EXAMINATION_ENTRY_DAO).findDocuments(false,
 					getPagination().getOffset(), getPagination().getPageSize(), "id", true);
@@ -51,7 +51,7 @@ public class ExaminationEntryListHolderBean extends AbstractDocumentListHolderBe
 	}
 	
 	public List<ExaminationEntry> getEntriesByExaminationRequest(int examinationRequestId) {
-		List<ExaminationEntry> result = new ArrayList<ExaminationEntry>();
+		List<ExaminationEntry> result = new ArrayList<>();
 		try {
 			ExaminationEntryDAOImpl dao = sessionManagement.getDAO(ExaminationEntryDAOImpl.class, ApplicationHelper.EXAMINATION_ENTRY_DAO);
 			List<ExaminationEntry> baseList = dao.findBaseEntries(examinationRequestId);

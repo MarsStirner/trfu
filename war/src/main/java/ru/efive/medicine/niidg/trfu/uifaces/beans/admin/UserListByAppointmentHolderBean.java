@@ -43,7 +43,7 @@ public class UserListByAppointmentHolderBean extends AbstractDocumentListHolderB
 
 	@Override
 	protected List<User> loadDocuments() {
-		List<User> result = new ArrayList<User>();
+		List<User> result = new ArrayList<>();
 		try {
 			result = dao.getUsersByAppointment(appointment, filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc()); 

@@ -33,7 +33,7 @@ public class ContragentListHolderBean extends AbstractDocumentListHolderBean<Con
 
     @Override
     protected List<Contragent> loadDocuments() {
-        List<Contragent> result = new ArrayList<Contragent>();
+        List<Contragent> result = new ArrayList<>();
         try {
             result = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).
                     findDocuments(filter, false, getPagination().getOffset(), getPagination().getPageSize(), "fullName", true);
@@ -52,7 +52,7 @@ public class ContragentListHolderBean extends AbstractDocumentListHolderBean<Con
     }
 
     public List<Contragent> getContragentsWithEmpty() {
-        List<Contragent> result = new ArrayList<Contragent>();
+        List<Contragent> result = new ArrayList<>();
         Contragent contragent = new Contragent();
         contragent.setFullName("");
         contragent.setShortName("");

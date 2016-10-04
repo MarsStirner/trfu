@@ -47,12 +47,12 @@ public class DonorFilterableListHolderBean extends
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<Donor>();
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<FilterParameter> getNotNullFilterParameters() {
-		List<FilterParameter> parameters = new ArrayList<FilterParameter>();
+		List<FilterParameter> parameters = new ArrayList<>();
 		String number = storedFilter.getNumber();
 		String lastName = storedFilter.getLastName();
 		String firstName = storedFilter.getFirstName();
@@ -192,7 +192,7 @@ public class DonorFilterableListHolderBean extends
 	 */
 	public List<DocumentType> getDocumentTypes() {
 		if (documentTypes == null) {
-			documentTypes = new ArrayList<DocumentType>();
+			documentTypes = new ArrayList<>();
 			documentTypes.add(new DocumentType(1, "Паспорт"));
 			documentTypes.add(new DocumentType(2, "Полис"));
 		}
@@ -207,7 +207,7 @@ public class DonorFilterableListHolderBean extends
 	 */
 	public List<PastQuarantine> getPastQuarantineObjects() {
 		if (pastQuarantineObjects == null) {
-			pastQuarantineObjects = new ArrayList<PastQuarantine>();
+			pastQuarantineObjects = new ArrayList<>();
 			pastQuarantineObjects.add(new PastQuarantine(1, "да"));
 			pastQuarantineObjects.add(new PastQuarantine(2, "нет"));
 		}
@@ -254,8 +254,9 @@ public class DonorFilterableListHolderBean extends
 
 	@Override
 	public List<String> getFormColumns() {
-		return Arrays.asList(new String[] { "ФИО", "Номер", "Категория",
-				"Группа крови", "Статус", "Комментарии" });
+		return Arrays.asList(
+				"ФИО", "Номер", "Категория", "Группа крови", "Статус", "Комментарии"
+		);
 	}
 
 	@Override

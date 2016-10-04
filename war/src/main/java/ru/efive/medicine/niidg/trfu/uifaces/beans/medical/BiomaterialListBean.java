@@ -41,7 +41,7 @@ public class BiomaterialListBean extends AbstractDocumentListHolderBean<Biomater
 
 	@Override
 	protected List<Biomaterial> loadDocuments() {
-		List<Biomaterial> result = new ArrayList<Biomaterial>();
+		List<Biomaterial> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findBiomaterials(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
@@ -58,7 +58,7 @@ public class BiomaterialListBean extends AbstractDocumentListHolderBean<Biomater
 	}
 	
 	public List<Biomaterial> getBiomaterialsByOperation(Operation operation) {
-		List<Biomaterial> result = new ArrayList<Biomaterial>();
+		List<Biomaterial> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findBiomaterialsByOperation(operation,
 					"", false, -1, -1, "number", false);

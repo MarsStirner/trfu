@@ -39,7 +39,7 @@ public class ExaminationAwaitListHolderBean extends AbstractDocumentListHolderBe
 
 	@Override
 	protected List<ExaminationRequest> loadDocuments() {
-		List<ExaminationRequest> result = new ArrayList<ExaminationRequest>();
+		List<ExaminationRequest> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).findDocumentsByStatus(2, filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

@@ -45,12 +45,12 @@ public class ExaminationRequestFilterableListHolderBean
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<ExaminationRequest>();
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<FilterParameter> getNotNullFilterParameters() {
-		List<FilterParameter> parameters = new ArrayList<FilterParameter>();
+		List<FilterParameter> parameters = new ArrayList<>();
 		String number = storedFilter.getNumber();
 		String firstName = storedFilter.getFirstName();
 		String lastName = storedFilter.getLastName();
@@ -131,8 +131,9 @@ public class ExaminationRequestFilterableListHolderBean
 
 	@Override
 	public List<String> getFormColumns() {
-		return Arrays.asList(new String[] { "Номер", "Дата\nсоздания", "Донор",
-				"Обследование", "Планируемая\nдата", "Статус", "Комментарии" });
+		return Arrays.asList(
+				"Номер", "Дата\nсоздания", "Донор", "Обследование", "Планируемая\nдата", "Статус", "Комментарии"
+		);
 	}
 
 	@Override

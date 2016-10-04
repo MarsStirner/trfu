@@ -39,7 +39,7 @@ public class ExaminationListHolderBean extends AbstractDocumentListHolderBean<Ex
 
 	@Override
 	protected List<ExaminationRequest> loadDocuments() {
-		List<ExaminationRequest> result = new ArrayList<ExaminationRequest>();
+		List<ExaminationRequest> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).findDocuments(filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
@@ -64,7 +64,7 @@ public class ExaminationListHolderBean extends AbstractDocumentListHolderBean<Ex
 	}
 	
 	public List<ExaminationRequest> getAdmittedExaminationList() {
-		List<ExaminationRequest> result = new ArrayList<ExaminationRequest>();
+		List<ExaminationRequest> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).findDocumentsByStatus(5, filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

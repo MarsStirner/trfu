@@ -39,7 +39,7 @@ public class BloodComponentFilterableListHolderBean extends AbstractFilterableLi
 
     @Override
     public List<FilterParameter> getNotNullFilterParameters() {
-        List<FilterParameter> parameters = new ArrayList<FilterParameter>();
+        List<FilterParameter> parameters = new ArrayList<>();
         String number = storedFilter.getNumber();
         int bloodComponentTypeId = storedFilter.getBloodComponentTypeId();
         String donorCode = storedFilter.getDonorCode();
@@ -230,7 +230,7 @@ public class BloodComponentFilterableListHolderBean extends AbstractFilterableLi
     @Override
     public List<String> getFormColumns() {
         return Arrays.asList(
-                new String[]{"Номер", "Компонент", "Объем", "Антикоагулянт", "Группа крови", "Срок\nхранения", "Статус"}
+                "Номер", "Компонент", "Объем", "Антикоагулянт", "Группа крови", "Срок\nхранения", "Статус"
         );
     }
 

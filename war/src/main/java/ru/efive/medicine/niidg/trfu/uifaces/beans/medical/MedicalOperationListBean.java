@@ -41,7 +41,7 @@ public class MedicalOperationListBean extends AbstractDocumentListHolderBean<Ope
 
 	@Override
 	protected List<Operation> loadDocuments() {
-		List<Operation> result = new ArrayList<Operation>();
+		List<Operation> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findOperations(filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
@@ -67,7 +67,7 @@ public class MedicalOperationListBean extends AbstractDocumentListHolderBean<Ope
 	
 	
 	public List<Operation> getOperationsByDonor(BiomaterialDonor donor) {
-		List<Operation> result = new ArrayList<Operation>();
+		List<Operation> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findOperationsByDonor(donor, "", false,
 					-1, -1, "number", false);

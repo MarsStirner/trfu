@@ -224,27 +224,6 @@
           	    <encoding>${project.build.sourceEncoding}</encoding>
         	</configuration>
       	    </plugin>
-
-            <!-- Generate javadoc for project sources -->
-            <!-- Usage: javadoc:javadoc, javadoc:jar, javadoc:aggregate -->
-            <plugin>
-            	<groupId>org.apache.maven.plugins</groupId>
-            	<artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <charset>utf-8</charset>
-                    <show>protected</show>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>check-headers</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>

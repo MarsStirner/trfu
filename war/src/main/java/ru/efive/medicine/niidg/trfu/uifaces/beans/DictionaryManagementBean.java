@@ -41,7 +41,7 @@ import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 public class DictionaryManagementBean implements Serializable {
 	
 	public List<BloodGroup> getBloodGroups() {
-		List<BloodGroup> result = new ArrayList<BloodGroup>();
+		List<BloodGroup> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodGroups(false, null, false);
 		}
@@ -52,7 +52,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<BloodGroup> getBloodGroupsWithEmpty() {
-		List<BloodGroup> result = new ArrayList<BloodGroup>();
+		List<BloodGroup> result = new ArrayList<>();
 		BloodGroup bloodGroup = new BloodGroup();
 		bloodGroup.setValue("");
 		result.add(bloodGroup);
@@ -77,7 +77,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<Anticoagulant> getAnticoagulants() {
-		List<Anticoagulant> result = new ArrayList<Anticoagulant>();
+		List<Anticoagulant> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnticoagulants(false, null, false);
 		}
@@ -88,7 +88,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 
 	public List<ContragentNomenclature> getContragentNomenclature() {
-		List<ContragentNomenclature> result = new ArrayList<ContragentNomenclature>();
+		List<ContragentNomenclature> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(ru.efive.crm.dao.NomenclatureDAOImpl.class, "contragentNomenclatureDao").findDocuments();
 		}
@@ -99,7 +99,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<ExaminationEntryType> getExaminationEntryTypes() {
-		List<ExaminationEntryType> result = new ArrayList<ExaminationEntryType>();
+		List<ExaminationEntryType> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findExaminationEntryTypes(false, null, false);
 		}
@@ -110,7 +110,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<ExaminationEntryType> getExaminationEntryTypesWithEmpty() {
-		List<ExaminationEntryType> result = new ArrayList<ExaminationEntryType>();
+		List<ExaminationEntryType> result = new ArrayList<>();
 		ExaminationEntryType entryType = new ExaminationEntryType();
 		entryType.setValue("");
 		result.add(entryType);
@@ -124,7 +124,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<BloodComponentType> getBloodComponentTypes() {
-		List<BloodComponentType> result = new ArrayList<BloodComponentType>();
+		List<BloodComponentType> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodComponentTypes(false, "code", true);
 		}
@@ -135,7 +135,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 
 	public List<BloodComponentType> getBloodComponentTypes(String filter) {
-		List<BloodComponentType> result = new ArrayList<BloodComponentType>();
+		List<BloodComponentType> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodComponentTypes(filter, false, "code", true);
 		}
@@ -146,7 +146,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<BloodComponentType> getUsedBloodComponentTypes() {
-		List<BloodComponentType> result = new ArrayList<BloodComponentType>();
+		List<BloodComponentType> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findUsedBloodComponentTypes(false, "code", true);
 		}
@@ -157,7 +157,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<BloodComponentType> getUsedBloodComponentTypesWithEmpty() {
-		List<BloodComponentType> result = new ArrayList<BloodComponentType>();
+		List<BloodComponentType> result = new ArrayList<>();
 		BloodComponentType componentType = new BloodComponentType();
 		componentType.setCode("");
 		componentType.setValue("");
@@ -172,7 +172,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<ProcessingType> getProcessingTypes() {
-		List<ProcessingType> result = new ArrayList<ProcessingType>();
+		List<ProcessingType> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findProcessingTypes(false, null, false);
 		}
@@ -183,7 +183,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<BloodDonationType> getBloodDonationTypes() {
-		List<BloodDonationType> result = new ArrayList<BloodDonationType>();
+		List<BloodDonationType> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodDonationTypes(false, null, false);
 		}
@@ -194,7 +194,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<DonorType> getDonorTypes() {
-		List<DonorType> result = new ArrayList<DonorType>();
+		List<DonorType> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findDonorTypes(false, null, false);
 		}
@@ -216,7 +216,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<Recommendation> getRecommendations() {
-		List<Recommendation> result = new ArrayList<Recommendation>();
+		List<Recommendation> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findRecommendations(false, null, false);
 		}
@@ -243,7 +243,7 @@ public class DictionaryManagementBean implements Serializable {
     }
 	
 	public List<Classifier> getByCategoryWithEmpty(String category) {
-		List<Classifier> result = new ArrayList<Classifier>();
+		List<Classifier> result = new ArrayList<>();
 		Classifier classifier = new Classifier();
 		classifier.setValue("");
 		result.add(classifier);
@@ -257,7 +257,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<String> getValuesByCategory(String category) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		try {
 			List<Classifier> list =  sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByCategory(Classifier.class, category, false);
 			for (Classifier classifier: list) {
@@ -271,7 +271,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<String> getValuesByCategoryWithEmpty(String category) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		String empty = "";
 		result.add(empty);
 		try {
@@ -284,7 +284,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<String> getClassifierCategories() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		try {
 			result =  sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findClassifierCategories();
 		}
@@ -295,7 +295,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<String> getAvailableStatusName() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		result.add("Брак");
 		result.add("В карантине");
 		result.add("Выдан");
@@ -310,7 +310,7 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<String> getAvailableStatusNameWithEmpty() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		result.add("");
 		result.add("Брак");
 		result.add("В карантине");
@@ -331,7 +331,7 @@ public class DictionaryManagementBean implements Serializable {
 	 */
 	public List<Division> getDivisionsWithEmpty() {
 		if (divisions == null) {
-			divisions = new ArrayList<Division>();
+			divisions = new ArrayList<>();
 			Division emptyDivision = new Division();
 			emptyDivision.setName("");
 			divisions.add(emptyDivision);

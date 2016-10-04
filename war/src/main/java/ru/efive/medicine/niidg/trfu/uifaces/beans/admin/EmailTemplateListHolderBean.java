@@ -37,7 +37,7 @@ public class EmailTemplateListHolderBean extends AbstractDocumentListHolderBean<
 
     @Override
     protected List<EmailTemplate> loadDocuments() {
-        List<EmailTemplate> result = new ArrayList<EmailTemplate>();
+        List<EmailTemplate> result = new ArrayList<>();
         try {
             result = sessionManagement.getDAO(EmailTemplateDAOImpl.class, ApplicationHelper.EMAIL_TEMPLATE_DAO).findDocuments(false,-1,-1,"name", true);
         }

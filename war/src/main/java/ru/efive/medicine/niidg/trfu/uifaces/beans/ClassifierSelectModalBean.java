@@ -48,7 +48,7 @@ public class ClassifierSelectModalBean extends ModalWindowHolderBean {
     }
 	
 	
-	private List<Classifier> classifierList = new ArrayList<Classifier>();
+	private List<Classifier> classifierList = new ArrayList<>();
 	private Classifier classifier;
 	
 	private static final long serialVersionUID = -3570593767875877766L;

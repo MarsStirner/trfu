@@ -38,7 +38,7 @@ public class DonorByBloodGroupListHolderBean extends AbstractDocumentListHolderB
 
 	@Override
 	protected List<Donor> loadDocuments() {
-		List<Donor> result = new ArrayList<Donor>();
+		List<Donor> result = new ArrayList<>();
 		try {
 			List<Donor> list = sessionManagement.getDAO(DonorDAOImpl.class, "donorDao").findDocuments(filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), null, true);

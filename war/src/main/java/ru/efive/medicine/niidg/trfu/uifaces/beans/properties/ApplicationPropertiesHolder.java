@@ -24,7 +24,7 @@ import java.util.Map;
 @Named("propertiesHolder")
 @ApplicationScoped
 public class ApplicationPropertiesHolder {
-    private Map<String, ExtendedProperties> properties = new HashMap<String, ExtendedProperties>();
+    private Map<String, ExtendedProperties> properties = new HashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(ApplicationPropertiesHolder.class);
 
     @Inject
@@ -56,7 +56,7 @@ public class ApplicationPropertiesHolder {
     }
 
     public List<String> getFileNames(){
-        return new ArrayList<String>(properties.keySet());
+        return new ArrayList<>(properties.keySet());
     }
 
     public ExtendedProperties getExtendedProperties(String fileAlias) {

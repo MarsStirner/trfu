@@ -39,7 +39,7 @@ public class DivisionListHolderBean extends AbstractDocumentListHolderBean<Divis
 
 	@Override
 	protected List<Division> loadDocuments() {
-		List<Division> result = new ArrayList<Division>();
+		List<Division> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findByName(filter, false, getSorting().getColumnId(), getSorting().isAsc());
 		}

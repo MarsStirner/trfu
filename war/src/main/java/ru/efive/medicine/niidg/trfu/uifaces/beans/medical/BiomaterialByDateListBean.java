@@ -40,7 +40,7 @@ public class BiomaterialByDateListBean extends AbstractDocumentListHolderBean<Bi
 
 	@Override
 	protected List<Biomaterial> loadDocuments() {
-		List<Biomaterial> result = new ArrayList<Biomaterial>();
+		List<Biomaterial> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findBiomaterials(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

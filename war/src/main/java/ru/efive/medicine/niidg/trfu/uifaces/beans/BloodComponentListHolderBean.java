@@ -41,7 +41,7 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 
 	@Override
 	protected List<BloodComponent> loadDocuments() {
-		List<BloodComponent> result = new ArrayList<BloodComponent>();
+		List<BloodComponent> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocuments(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
@@ -58,7 +58,7 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 	}
 	
 	public List<BloodComponent> getDocumentsByDonation(int donationId) {
-		List<BloodComponent> result = new ArrayList<BloodComponent>();
+		List<BloodComponent> result = new ArrayList<>();
 		try {
 			if (donationId != 0) {
 				result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findComponentsByDonation(donationId);
@@ -71,7 +71,7 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 	}
 	
 	public List<BloodComponent> getDocumentsByOrder(int orderId) {
-		List<BloodComponent> result = new ArrayList<BloodComponent>();
+		List<BloodComponent> result = new ArrayList<>();
 		try {
 			if (orderId != 0) {
 				result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findComponentsByOrder(orderId);
@@ -84,7 +84,7 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 	}
 	
 	public List<BloodComponent> getDocumentsByPhenotypes(List<Analysis> phenotypes, boolean searchBloodGroup, String bloodGroup, boolean searchRhesus, String rhesusFactor) {
-		List<BloodComponent> result = new ArrayList<BloodComponent>();
+		List<BloodComponent> result = new ArrayList<>();
 		try {
 			if (phenotypes != null) {
 				result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findComponentsByPhenotypes(

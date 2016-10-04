@@ -57,7 +57,6 @@
 
         <!-- Components -->
         <version.javaee-api>7.0</version.javaee-api>
-        <version.hibernate>5.2.2.Final</version.hibernate>
 
         <!-- Test Environment -->
         <version.junit>4.8.2</version.junit>
@@ -204,6 +203,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <show>private</show>
+                    <failOnError>false</failOnError>
                 </configuration>
             </plugin>
 

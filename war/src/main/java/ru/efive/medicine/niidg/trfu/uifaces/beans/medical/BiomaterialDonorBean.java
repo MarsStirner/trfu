@@ -1,19 +1,6 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.medical;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
-
-import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.AddressSelectModal;
@@ -23,6 +10,14 @@ import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 import ru.efive.wf.core.ActionResult;
+
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Calendar;
+import java.util.Date;
 
 @Named("biomaterialDonor")
 @ConversationScoped
@@ -210,7 +205,7 @@ public class BiomaterialDonorBean extends AbstractDocumentHolderBean<Biomaterial
 	private AddressSelectModal registrationAddressSelect = new AddressSelectModal() {
 		@Override
 		protected void doSave() {
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			if (StringUtils.isNotEmpty(getCountry())) { buffer.append(getCountry()); }
 			if (StringUtils.isNotEmpty(getState())) { buffer.append(" ").append(getState()); }
 			if (StringUtils.isNotEmpty(getDistrict())) { buffer.append(" ").append(getDistrict()); }
@@ -229,7 +224,7 @@ public class BiomaterialDonorBean extends AbstractDocumentHolderBean<Biomaterial
 	private AddressSelectModal factAddressSelect = new AddressSelectModal() {
 		@Override
 		protected void doSave() {
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			if (StringUtils.isNotEmpty(getCountry())) { buffer.append(getCountry()); }
 			if (StringUtils.isNotEmpty(getState())) { buffer.append(" ").append(getState()); }
 			if (StringUtils.isNotEmpty(getDistrict())) { buffer.append(" ").append(getDistrict()); }

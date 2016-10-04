@@ -352,7 +352,7 @@ public class SMSWebServiceSoapStub extends org.apache.axis.client.Stub implement
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {userName, password, new java.lang.Integer(messageID)});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {userName, password, messageID});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -386,7 +386,7 @@ public class SMSWebServiceSoapStub extends org.apache.axis.client.Stub implement
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {userName, password, new java.lang.Integer(messageID)});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {userName, password, messageID});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -420,7 +420,7 @@ public class SMSWebServiceSoapStub extends org.apache.axis.client.Stub implement
 
         setRequestHeaders(_call);
         setAttachments(_call);
- try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {userName, password, new java.lang.Boolean(isFlash), new java.lang.Integer(lifeTime), destNumber, senderAddr, text});
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {userName, password, isFlash, lifeTime, destNumber, senderAddr, text});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

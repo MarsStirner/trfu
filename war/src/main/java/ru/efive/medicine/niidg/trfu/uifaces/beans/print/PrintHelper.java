@@ -1,9 +1,9 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.print;
 
+import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.FilterParameter;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.FilterParameter;
 
 /**
  * Утилитарный класс. Предназначен для подготовки к печати параметров фильтрации.
@@ -30,7 +30,7 @@ public class PrintHelper {
 	
 	protected static List<FilterParametersPair> putParametersInTwoColumns(
 			List<FilterParameter> parameters, int parametersCount) {
-		List<FilterParametersPair> parametersForPrinting = new ArrayList<FilterParametersPair>();
+		List<FilterParametersPair> parametersForPrinting = new ArrayList<>();
 		int rowsCount = (parametersCount + 1) / 2;
 		for (int rowIndex = 0; rowIndex < rowsCount; rowIndex++) {
 			FilterParameter leftParameter = parameters.get(rowIndex);
@@ -46,7 +46,7 @@ public class PrintHelper {
 
 	protected static List<FilterParametersPair> putParametersInOneColumn(
 			List<FilterParameter> parameters) {
-		List<FilterParametersPair> parametersForPrinting = new ArrayList<FilterParametersPair>();
+		List<FilterParametersPair> parametersForPrinting = new ArrayList<>();
 		for (FilterParameter filterParameter : parameters) {
 			parametersForPrinting.add(new FilterParametersPair(filterParameter, null));
 		}

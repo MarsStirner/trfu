@@ -45,7 +45,7 @@ public class ReportTemplateListBean extends AbstractDocumentListHolderBean<Repor
 
 	@Override
 	protected List<ReportTemplate> loadDocuments() {
-		List<ReportTemplate> result = new ArrayList<ReportTemplate>();
+		List<ReportTemplate> result = new ArrayList<>();
 		try {
 			if (sessionManagement.isAdmin()) {
 				result = sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).findDocuments(false, 

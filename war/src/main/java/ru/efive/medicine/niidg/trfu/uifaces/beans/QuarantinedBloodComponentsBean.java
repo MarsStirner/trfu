@@ -39,7 +39,7 @@ public class QuarantinedBloodComponentsBean extends AbstractDocumentListHolderBe
 
 	@Override
 	protected List<BloodComponent> loadDocuments() {
-		List<BloodComponent> result = new ArrayList<BloodComponent>();
+		List<BloodComponent> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocuments(filter, 3, false, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

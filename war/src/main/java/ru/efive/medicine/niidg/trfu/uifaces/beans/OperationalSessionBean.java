@@ -134,13 +134,13 @@ public class OperationalSessionBean implements java.io.Serializable {
         }
 
         //Выбранные типы систем крови
-        private List<BloodSystemType> bloodSystemTypes = new ArrayList<BloodSystemType>(4);
+        private List<BloodSystemType> bloodSystemTypes = new ArrayList<>(4);
 
         // Выбранные врачи-трансфузиологи
-        private List<User> doctors = new ArrayList<User>(2);
+        private List<User> doctors = new ArrayList<>(2);
 
         // Выбранные медсестры
-        private List<User> nurses = new ArrayList<User>(2);
+        private List<User> nurses = new ArrayList<>(2);
 
         // Наименование операционной
         private String name = "";
@@ -182,9 +182,9 @@ public class OperationalSessionBean implements java.io.Serializable {
 
         public OperationalRoom createRoom(final User author) {
             final OperationalRoom newInstance = new OperationalRoom(author, name);
-            newInstance.setBloodTypes(new HashSet<BloodSystemType>(bloodSystemTypes));
-            newInstance.setDoctors(new HashSet<User>(doctors));
-            newInstance.setNurses(new HashSet<User>(nurses));
+            newInstance.setBloodTypes(new HashSet<>(bloodSystemTypes));
+            newInstance.setDoctors(new HashSet<>(doctors));
+            newInstance.setNurses(new HashSet<>(nurses));
             return newInstance;
         }
 

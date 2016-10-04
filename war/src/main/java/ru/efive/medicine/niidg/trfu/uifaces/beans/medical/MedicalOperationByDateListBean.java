@@ -40,7 +40,7 @@ public class MedicalOperationByDateListBean extends AbstractDocumentListHolderBe
 
 	@Override
 	protected List<Operation> loadDocuments() {
-		List<Operation> result = new ArrayList<Operation>();
+		List<Operation> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findOperations(filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

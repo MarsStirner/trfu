@@ -49,7 +49,7 @@ public class UserListByRoleTypeHolderBean  extends AbstractDocumentListHolderBea
 
 	@Override
 	protected List<User> loadDocuments() {
-		List<User> result = new ArrayList<User>();
+		List<User> result = new ArrayList<>();
 		try {
 			result = userDao.findUsersByRole(getRole(), false, 
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

@@ -40,7 +40,7 @@ public class DonorListHolderBean extends AbstractDocumentListHolderBean<Donor> {
 
     @Override
     protected List<Donor> loadDocuments() {
-        List<Donor> result = new ArrayList<Donor>();
+        List<Donor> result = new ArrayList<>();
         try {
             result = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).findDocuments(filter,
 					false, getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(),
@@ -66,7 +66,7 @@ public class DonorListHolderBean extends AbstractDocumentListHolderBean<Donor> {
 
     public List<Donor> getDocumentsByPhenotypes(List<Analysis> phenotypes, boolean searchBloodGroup, String
 			bloodGroup, boolean searchRhesus, String rhesusFactor) {
-        List<Donor> result = new ArrayList<Donor>();
+        List<Donor> result = new ArrayList<>();
         try {
             if (phenotypes != null && !phenotypes.isEmpty()) {
                 result = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO)

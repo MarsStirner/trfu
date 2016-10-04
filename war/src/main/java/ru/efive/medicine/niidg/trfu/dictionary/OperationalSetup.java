@@ -1,16 +1,16 @@
 package ru.efive.medicine.niidg.trfu.dictionary;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodSystem;
 import ru.efive.medicine.niidg.trfu.data.entity.OperationalCrew;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class OperationalSetup {
-	private List<BloodSystemType> systemTypes = new ArrayList<BloodSystemType>();
+	private List<BloodSystemType> systemTypes = new ArrayList<>();
     private OperationalCrew crew;
     private Date created;
     private String name;

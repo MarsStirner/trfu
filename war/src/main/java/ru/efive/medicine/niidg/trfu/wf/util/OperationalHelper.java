@@ -30,13 +30,12 @@ public final class OperationalHelper {
 	
 	public static ActionResult operationalReject(final BloodDonationRequest request, final String description, final Contragent maker) throws Exception {
 		final FacesContext context = FacesContext.getCurrentInstance();
-		final SessionManagementBean sessionManagement =
-			(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
+		final SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
 		final ActionResult result = new ActionResult();
 		result.setProcessed(false);
 		List<BloodDonationEntry> entries = request.getFactEntryList();
 		if (!entries.isEmpty()) {
-			List<Integer> doseList = new ArrayList<Integer>(0);
+			List<Integer> doseList = new ArrayList<>(0);
 			for (BloodDonationEntry entry: entries) {
 				if (entry.getDonationType() != null && StringUtils.equalsIgnoreCase(entry.getDonationType().getValue(), "кроводача")) {
 					doseList.add(entry.getDose());
@@ -176,8 +175,7 @@ public final class OperationalHelper {
 	
 	public static ActionResult operationalRegisterComponents(final BloodDonationRequest request, final Contragent maker) throws Exception {
 		FacesContext context = FacesContext.getCurrentInstance();
-		SessionManagementBean sessionManagement = 
-			(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
+		SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
 		ActionResult result = new ActionResult();
 		result.setProcessed(false);
 		if (request.getReport() != null) {

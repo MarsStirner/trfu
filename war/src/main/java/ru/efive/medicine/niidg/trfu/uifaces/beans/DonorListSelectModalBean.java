@@ -23,7 +23,7 @@ public class DonorListSelectModalBean extends ModalWindowHolderBean {
 
     public void setDonors(List<Donor> donors) {
         if(donors==null){
-            this.donors=new ArrayList<Donor>();
+            this.donors= new ArrayList<>();
         }else{
             this.donors=donors;
         }
@@ -59,7 +59,7 @@ public class DonorListSelectModalBean extends ModalWindowHolderBean {
 
     private DonorListHolderBean donorList;
 
-    private List<Donor> donors = new ArrayList<Donor>();
+    private List<Donor> donors = new ArrayList<>();
 
     private static final long serialVersionUID = -9107594037615723746L;
 }

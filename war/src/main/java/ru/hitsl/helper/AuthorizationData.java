@@ -35,8 +35,8 @@ public class AuthorizationData implements Serializable {
     /**
      * Список замещаемых пользователей
      */
-    private final Set<User> substitutedUsers = new HashSet<User>(0);
-    private final Set<Integer> userIds = new HashSet<Integer>(1);
+    private final Set<User> substitutedUsers = new HashSet<>(0);
+    private final Set<Integer> userIds = new HashSet<>(1);
 
     //Замещает ли текущий пользователь кого-либо
     private boolean isSubstitution = false;
@@ -49,8 +49,8 @@ public class AuthorizationData implements Serializable {
         this.authorized = authorized;
         this.userIds.add(authorized.getId());
         final Set<Role> authorizedRoles = authorized.getRoles();
-        this.roles = new HashSet<Role>(authorizedRoles.size());
-        this.roleIds = new HashSet<Integer>(authorizedRoles.size());
+        this.roles = new HashSet<>(authorizedRoles.size());
+        this.roleIds = new HashSet<>(authorizedRoles.size());
         for(Role current : authorizedRoles){
             roles.add(current);
             roleIds.add(current.getId());

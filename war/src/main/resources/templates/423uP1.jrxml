@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-09-20T17:49:58 -->
+<!-- 2016-10-03T17:55:02 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report3" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryNewPage="true" uuid="43ebe6e1-fb59-4ea6-9649-3e7c587d68a7">
     <property name="ireport.zoom" value="1.0"/>
     <property name="ireport.x" value="0"/>
@@ -236,8 +236,8 @@ LEFT JOIN
 LEFT JOIN
 (
 	SELECT
-  	SUM(IF(tbc.maker_id = 11, tbc.volume, 0)) AS self,
-  	SUM(IF(tbc.maker_id <> 11, tbc.volume, 0)) AS other,
+  	SUM(IF(tbc.maker_id = 11, tbc.volume-tbc.preInactivatedVolume, 0)) AS self,
+  	SUM(IF(tbc.maker_id <> 11, tbc.volume-tbc.preInactivatedVolume, 0)) AS other,
 	  tbc.componentType_id AS BC_TYPE_ID
 	FROM
     trfu_blood_components tbc
@@ -248,9 +248,10 @@ LEFT JOIN
     wh.from_status_id=wh.to_status_id
     AND wh.to_status_id=3
     AND wh.action_id=14
-    AND tbc.split=1
     AND wh.startDate BETWEEN ADDDATE(DATE($P{StartDate}), INTERVAL '00:00:00' HOUR_SECOND) and ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
-    AND tbc.deleted=0
+    AND tbc.deleted=0 
+    AND tbc.virusInactivationDate  BETWEEN ADDDATE(DATE($P{StartDate}), INTERVAL '00:00:00' HOUR_SECOND) and ADDDATE(DATE($P{EndDate}), INTERVAL '23:59:59' HOUR_SECOND)
+    AND tbc.split = TRUE
   GROUP BY tbc.componentType_id
 ) AS VOLUME_ADDED ON VOLUME_ADDED.BC_TYPE_ID = bcType.id
 

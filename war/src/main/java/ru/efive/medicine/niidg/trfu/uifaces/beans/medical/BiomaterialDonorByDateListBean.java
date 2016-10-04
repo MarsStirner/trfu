@@ -41,7 +41,7 @@ public class BiomaterialDonorByDateListBean extends AbstractDocumentListHolderBe
 
 	@Override
 	protected List<BiomaterialDonor> loadDocuments() {
-		List<BiomaterialDonor> result = new ArrayList<BiomaterialDonor>();
+		List<BiomaterialDonor> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findDonors(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());

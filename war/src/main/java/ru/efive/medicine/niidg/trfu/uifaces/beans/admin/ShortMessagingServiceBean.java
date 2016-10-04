@@ -24,8 +24,8 @@ import java.util.List;
 @SessionScoped
 public class ShortMessagingServiceBean implements Serializable {
     private String message;
-    private List<User> users = new ArrayList<User>();
-    private List<Donor> donors = new ArrayList<Donor>();
+    private List<User> users = new ArrayList<>();
+    private List<Donor> donors = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(ShortMessagingServiceBean.class);
 
     private static final long serialVersionUID = 1L;

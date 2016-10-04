@@ -39,7 +39,7 @@ public class ControlledDefectBloodComponentsBean extends AbstractDocumentListHol
 
     @Override
     protected List<BloodComponent> loadDocuments() {
-        List<BloodComponent> result = new ArrayList<BloodComponent>();
+        List<BloodComponent> result = new ArrayList<>();
         try {
             result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO)
 					.findControlledComponentsByStatusId(filter, -1, false, getPagination().getOffset(), getPagination

@@ -1,17 +1,16 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAnalysisEntry;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAnalysisResult;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAppointment;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named("applicationSetup")
 @SessionScoped
@@ -50,7 +49,7 @@ public class ApplicationSetupBean implements Serializable {
 		@Override
 		protected void doShow() {
 			super.doShow();
-			entries = new ArrayList<ExternalAnalysisResult>();
+			entries = new ArrayList<>();
 			if (appointment != null) {
 				for (ExternalAnalysisEntry entry: appointment.getHistoryEntries()) {
 					if (entry.getResults() != null) {

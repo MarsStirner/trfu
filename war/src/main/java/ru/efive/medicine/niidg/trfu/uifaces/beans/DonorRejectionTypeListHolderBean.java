@@ -34,7 +34,7 @@ public class DonorRejectionTypeListHolderBean extends AbstractDocumentListHolder
 
 	@Override
 	protected List<DonorRejectionType> loadDocuments() {
-		List<DonorRejectionType> result = new ArrayList<DonorRejectionType>();
+		List<DonorRejectionType> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findDonorRejectionTypes(filter, false, "id", true);
 		}

@@ -35,7 +35,7 @@ public class BloodSystemTypeListHolderBean extends AbstractDocumentListHolderBea
 
     @Override
     protected List<BloodSystemType> loadDocuments() {
-        List<BloodSystemType> result = new ArrayList<BloodSystemType>();
+        List<BloodSystemType> result = new ArrayList<>();
         try {
             result = sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_TYPE_DAO).findDocuments();
         }

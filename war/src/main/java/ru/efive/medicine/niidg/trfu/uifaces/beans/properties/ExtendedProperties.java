@@ -15,7 +15,7 @@ public class ExtendedProperties {
         this.path = path;
         properties = new Properties();
         properties.load(new InputStreamReader(new FileInputStream(path), "UTF-8"));
-        extendedProperties = new LinkedHashMap<String, ExtendedProperty>();
+        extendedProperties = new LinkedHashMap<>();
         for (Map.Entry entry : properties.entrySet()) {
             String key = entry.getKey().toString();
             String value = entry.getValue().toString();
@@ -26,7 +26,8 @@ public class ExtendedProperties {
                 keyPrefix = key.substring(0, separator);
                 keySufix = key.substring(separator + 1);
             }
-            Boolean isSimple = !((keyPrefix != null) && (keySufix != null) && (keySufix.equals("value") || keySufix.equals("type") || keySufix.equals("pattern")|| keySufix.equals("alias")));
+            Boolean isSimple = !((keyPrefix != null) && (keySufix.equals("value") || keySufix.equals("type") || keySufix.equals("pattern") || keySufix
+                    .equals("alias")));
             if (!isSimple) {
                 if (!extendedProperties.containsKey(keyPrefix)) {
                     extendedProperties.put(keyPrefix, new ExtendedProperty());
@@ -34,14 +35,19 @@ public class ExtendedProperties {
                     extendedProperties.get(keyPrefix).setName(keyPrefix);
                 }
 
-                if (keySufix.equals("value")) {
-                    extendedProperties.get(keyPrefix).setStringValue(value);
-                } else if (keySufix.equals("type")) {
-                    extendedProperties.get(keyPrefix).setType(value);
-                } else if (keySufix.equals("pattern")) {
-                    extendedProperties.get(keyPrefix).setPattern(value);
-                } else if (keySufix.equals("alias")) {
-                    extendedProperties.get(keyPrefix).setAlias(value);
+                switch (keySufix) {
+                    case "value":
+                        extendedProperties.get(keyPrefix).setStringValue(value);
+                        break;
+                    case "type":
+                        extendedProperties.get(keyPrefix).setType(value);
+                        break;
+                    case "pattern":
+                        extendedProperties.get(keyPrefix).setPattern(value);
+                        break;
+                    case "alias":
+                        extendedProperties.get(keyPrefix).setAlias(value);
+                        break;
                 }
             } else {
                 if (!extendedProperties.containsKey(key)){
@@ -88,7 +94,7 @@ public class ExtendedProperties {
     }
 
     public List<String> getKeys() {
-        return new ArrayList<String>(extendedProperties.keySet());
+        return new ArrayList<>(extendedProperties.keySet());
     }
 
     public Map<String, ExtendedProperty> getExtendedProperties() {

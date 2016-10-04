@@ -35,7 +35,7 @@ public class ExaminationScheduleBean implements Serializable {
     private Date possibleStartTime;
     private Date possibleFinishTime;
     private Date selectedTime;
-    private List<Date> possibleTimes = new ArrayList<Date>();
+    private List<Date> possibleTimes = new ArrayList<>();
     private List<ExaminationRequest> previousRequests;
     ExaminationRequest examinationRequest;
 

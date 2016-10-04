@@ -1,29 +1,18 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import javax.faces.context.FacesContext;
-
 import org.apache.commons.lang.StringUtils;
-
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.data.entity.Person;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
-import ru.efive.wf.core.ActionResult;
-import ru.efive.wf.core.Engine;
-import ru.efive.wf.core.IAction;
-import ru.efive.wf.core.IActivity;
-import ru.efive.wf.core.ProcessedData;
-import ru.efive.wf.core.StatusChangeAction;
+import ru.efive.wf.core.*;
 import ru.efive.wf.core.activity.EditableProperty;
 import ru.efive.wf.core.activity.LocalActivity;
 import ru.efive.wf.core.activity.enums.ProcessState;
 import ru.efive.wf.core.util.EngineHelper;
+
+import javax.faces.context.FacesContext;
+import java.util.*;
 
 public class ProcessorModalBean extends ModalWindowHolderBean {
 
@@ -38,7 +27,7 @@ public class ProcessorModalBean extends ModalWindowHolderBean {
 				state = ProcessState.FAILURE;
 			}
 			FacesContext context = FacesContext.getCurrentInstance();
-			sessionManagement = (SessionManagementBean) context.getApplication().evaluateExpressionGet(
+			sessionManagement = context.getApplication().evaluateExpressionGet(
 					context, "#{sessionManagement}", SessionManagementBean.class);
 			if (sessionManagement == null) {
 				actionResult = EngineHelper.DEFAULT_ERROR_MESSAGE;
@@ -162,9 +151,6 @@ public class ProcessorModalBean extends ModalWindowHolderBean {
 						if (documentInitializationResult.getDescription() != null && !documentInitializationResult.getDescription().equals("")) {
 							actionResult = documentInitializationResult.getDescription();
 							state = ProcessState.FAILURE;
-						}
-						else {
-							
 						}
 						return;
 					}

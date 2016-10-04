@@ -57,7 +57,7 @@ public class BloodComponentFilterListHolderBean extends AbstractDocumentListHold
 	@Override
 	protected List<BloodComponent> loadDocuments() {
 		logger.info("load start");
-		List<BloodComponent> result = new ArrayList<BloodComponent>();
+		List<BloodComponent> result = new ArrayList<>();
 		try {
 			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocuments(in_filters, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
@@ -187,7 +187,7 @@ public class BloodComponentFilterListHolderBean extends AbstractDocumentListHold
 	
 	public void clear() {
 		try {
-			in_filters = new HashMap<String, Object>();
+			in_filters = new HashMap<>();
 			refresh();
 		}
 		catch (Exception e) {
@@ -197,7 +197,7 @@ public class BloodComponentFilterListHolderBean extends AbstractDocumentListHold
 	}
 	
 	
-	private Map<String, Object> in_filters = new HashMap<String, Object>();
+	private Map<String, Object> in_filters = new HashMap<>();
 
 	@Inject @Named("sessionManagement")
 	private transient SessionManagementBean sessionManagement = new SessionManagementBean();
