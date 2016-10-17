@@ -8,7 +8,7 @@ import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.util.PropertyTypeNotSupported;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class SimpleTest {
 
     //@Test
     public void testCountDecrease() throws UnsupportedEncodingException, JAXBException {
-        BloodDonationRequestDAOImpl donationRequestDAO = (BloodDonationRequestDAOImpl) ctx.getBean(ApplicationHelper.DONATION_DAO);
+        BloodDonationRequestDAOImpl donationRequestDAO = (BloodDonationRequestDAOImpl) ctx.getBean(DONATION_DAO);
 
         //BloodSystemType systemType = new BloodSystemType();
         //systemType.setCode("2450bf0b-8a08-11e1-a073-005056a41f97");

@@ -15,6 +15,8 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Calendar;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.USER_DAO;
+
 @Named("user")
 @ViewScoped
 public class UserHolderBean extends AbstractDocumentHolderBean<User, Integer> implements Serializable {
@@ -23,7 +25,7 @@ public class UserHolderBean extends AbstractDocumentHolderBean<User, Integer> im
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO).delete(getDocument());
+			sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO).delete(getDocument());
 			result = true;
 		}
 		catch (Exception e) {
@@ -46,7 +48,7 @@ public class UserHolderBean extends AbstractDocumentHolderBean<User, Integer> im
 	
 	@Override
 	protected void initDocument(Integer id) {
-		setDocument(sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO).get(id));
+		setDocument(sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO).get(id));
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
 		}
@@ -64,7 +66,7 @@ public class UserHolderBean extends AbstractDocumentHolderBean<User, Integer> im
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			User user = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO).update(getDocument());
+			User user = sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO).update(getDocument());
 			if (user == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -89,7 +91,7 @@ public class UserHolderBean extends AbstractDocumentHolderBean<User, Integer> im
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			User user = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO).save(getDocument());
+			User user = sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO).save(getDocument());
 			if (user == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,

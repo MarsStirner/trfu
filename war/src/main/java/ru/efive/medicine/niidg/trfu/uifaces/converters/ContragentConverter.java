@@ -10,7 +10,7 @@ import org.apache.axis.utils.StringUtils;
 import ru.efive.crm.dao.ContragentDAOHibernate;
 import ru.efive.crm.data.Contragent;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @FacesConverter("ContragentConverter")
 public class ContragentConverter implements Converter {
@@ -22,7 +22,7 @@ public class ContragentConverter implements Converter {
 			}
 			SessionManagementBean sessionManagement =  context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
 						SessionManagementBean.class);
-			final Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).getByFullName(value);
+			final Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO).getByFullName(value);
 			if (contragent == null) {
 				System.out.println("Не найдены значения");
 			}  else {

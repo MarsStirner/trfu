@@ -2,7 +2,6 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import ru.efive.medicine.niidg.trfu.dao.ExaminationEntryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationEntry;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -10,6 +9,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.EXAMINATION_ENTRY_DAO;
 
 @Named("examinationEntryList")
 @SessionScoped
@@ -24,7 +25,7 @@ public class ExaminationEntryListHolderBean extends AbstractDocumentListHolderBe
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			result = new Long(sessionManagement.getDAO(ExaminationEntryDAOImpl.class, ApplicationHelper.EXAMINATION_ENTRY_DAO).countDocument(false)).intValue();
+			result = new Long(sessionManagement.getDAO(ExaminationEntryDAOImpl.class, EXAMINATION_ENTRY_DAO).countDocument(false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -36,7 +37,7 @@ public class ExaminationEntryListHolderBean extends AbstractDocumentListHolderBe
 	protected List<ExaminationEntry> loadDocuments() {
 		List<ExaminationEntry> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(ExaminationEntryDAOImpl.class, ApplicationHelper.EXAMINATION_ENTRY_DAO).findDocuments(false,
+			result = sessionManagement.getDAO(ExaminationEntryDAOImpl.class, EXAMINATION_ENTRY_DAO).findDocuments(false,
 					getPagination().getOffset(), getPagination().getPageSize(), "id", true);
 		}
 		catch (Exception e) {
@@ -53,7 +54,7 @@ public class ExaminationEntryListHolderBean extends AbstractDocumentListHolderBe
 	public List<ExaminationEntry> getEntriesByExaminationRequest(int examinationRequestId) {
 		List<ExaminationEntry> result = new ArrayList<>();
 		try {
-			ExaminationEntryDAOImpl dao = sessionManagement.getDAO(ExaminationEntryDAOImpl.class, ApplicationHelper.EXAMINATION_ENTRY_DAO);
+			ExaminationEntryDAOImpl dao = sessionManagement.getDAO(ExaminationEntryDAOImpl.class, EXAMINATION_ENTRY_DAO);
 			List<ExaminationEntry> baseList = dao.findBaseEntries(examinationRequestId);
 			for (ExaminationEntry entry: baseList) {
 				entry.setGrouping(0);

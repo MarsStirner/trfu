@@ -2,7 +2,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -29,7 +29,7 @@ public class PlannedExaminationListHolderBean extends AbstractDocumentListHolder
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			return new Long(sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).countPlannedDocument(filter, false)).intValue();
+			return new Long(sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).countPlannedDocument(filter, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -41,7 +41,7 @@ public class PlannedExaminationListHolderBean extends AbstractDocumentListHolder
 	protected List<ExaminationRequest> loadDocuments() {
 		List<ExaminationRequest> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).findPlannedDocuments(filter, false,
+			result = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).findPlannedDocuments(filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {

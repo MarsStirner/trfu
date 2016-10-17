@@ -25,6 +25,8 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+
 @WebService(name = "trfu-laboratory-integration", targetNamespace = "http://www.korusconsulting.ru", serviceName =
         "trfu-laboratory-integration", portName = "trfu-laboratory-integration")
 public class LaboratoryIntegration {
@@ -66,7 +68,7 @@ public class LaboratoryIntegration {
 
             final ApplicationContext applicationContext = ApplicationContextHelper.getApplicationContext();
 
-            final ExternalAppointmentDaoImpl dao = (ExternalAppointmentDaoImpl) applicationContext.getBean(ApplicationHelper.EXTERNAL_APPOINTMENT_DAO);
+            final ExternalAppointmentDaoImpl dao = (ExternalAppointmentDaoImpl) applicationContext.getBean(EXTERNAL_APPOINTMENT_DAO);
             List<ExternalAppointment> appointments = dao.getAppoitments(orderBarCode);
             if (appointments == null || appointments.isEmpty()) {
                 result = String.format(EXTERNAL_APPOINTMENT_NOT_FOUND, orderId, orderBarCode);
@@ -80,10 +82,10 @@ public class LaboratoryIntegration {
             }
 
             BloodDonationRequest donationRequest = ((BloodDonationRequestDAOImpl) applicationContext.getBean
-                    (ApplicationHelper.DONATION_DAO)).findDocumentByBarCode(orderBarCode);
+                    (DONATION_DAO)).findDocumentByBarCode(orderBarCode);
             if (donationRequest != null) {
                 updateDonationRequest(donationRequest, results);
-                ((BloodDonationRequestDAOImpl) applicationContext.getBean(ApplicationHelper.DONATION_DAO)).save(donationRequest);
+                ((BloodDonationRequestDAOImpl) applicationContext.getBean(DONATION_DAO)).save(donationRequest);
 
                 //TICKET TRFU-22/41
                 if (donationRequest.getDonor() != null) {
@@ -166,7 +168,7 @@ public class LaboratoryIntegration {
                 }
             }
             if (needFlushToDatabase) {
-                ((DonorDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DONOR_DAO)
+                ((DonorDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DONOR_DAO)
                 ).save(donor);
                 logger.info(String.format("Donor[%d] upadated", donorId));
             }
@@ -178,7 +180,7 @@ public class LaboratoryIntegration {
 
     private Classifier getRhesusFactorFromString(String valueText) {
         final List<Classifier> rhesusFactors = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext()
-                .getBean(ApplicationHelper.DICTIONARY_DAO)).findByValueAndCategory(Classifier.class, valueText,
+                .getBean(DICTIONARY_DAO)).findByValueAndCategory(Classifier.class, valueText,
                 RHESUS_FACTOR_CATEGORY);
         final Iterator<Classifier> iterator = rhesusFactors.iterator();
         if (iterator.hasNext()) {
@@ -191,7 +193,7 @@ public class LaboratoryIntegration {
 
     private BloodGroup getBloodGroupFromString(String valueText) {
         final List<BloodGroup> bloodGroups = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext()
-                .getBean(ApplicationHelper.DICTIONARY_DAO)).findByValue(BloodGroup.class, valueText);
+                .getBean(DICTIONARY_DAO)).findByValue(BloodGroup.class, valueText);
         final Iterator<BloodGroup> iterator = bloodGroups.iterator();
         if (iterator.hasNext()) {
             return iterator.next();
@@ -212,7 +214,7 @@ public class LaboratoryIntegration {
                         if (resultValue != null) {
                             analysis.setValue(resultValue);
                             ((AnalysisDAOImpl) ApplicationContextHelper.getApplicationContext().getBean
-                                    (ApplicationHelper.ANALYSIS_DAO)).save(analysis);
+                                    (ANALYSIS_DAO)).save(analysis);
                         }
                     }
                 }

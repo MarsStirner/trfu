@@ -10,7 +10,7 @@ import javax.faces.convert.FacesConverter;
 import ru.efive.dao.sql.dao.user.AppointmentDAOHibernate;
 import ru.efive.dao.sql.entity.user.Appointment;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @FacesConverter("AppointmentConverter")
 public class AppointmentConverter implements Converter {
@@ -21,7 +21,7 @@ public class AppointmentConverter implements Converter {
 			SessionManagementBean sessionManagement = 
 				(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
 						SessionManagementBean.class);
-			List<Appointment> list = sessionManagement.getDAO(AppointmentDAOHibernate.class, ApplicationHelper.APPOINTMENT_DAO).findByName(value);
+			List<Appointment> list = sessionManagement.getDAO(AppointmentDAOHibernate.class, APPOINTMENT_DAO).findByName(value);
 			if (list.size() > 0) {
 				result = list.get(0);
 			}

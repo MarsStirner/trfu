@@ -17,6 +17,8 @@ import ru.efive.wf.core.util.EngineHelper;
 import javax.faces.context.FacesContext;
 import java.util.*;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+
 public final class WorkflowHelper {
 	
 	public static boolean initializeExamination(ExaminationRequest examination) {
@@ -33,11 +35,11 @@ public final class WorkflowHelper {
 				examination.setAnamnesis(anamnesis);
 			}
 			if (examination.getAnamnesis() != null) {
-				sessionManagement.getDAO(AnamnesisDAOImpl.class, ApplicationHelper.ANAMNESIS_DAO).save(examination.getAnamnesis());
+				sessionManagement.getDAO(AnamnesisDAOImpl.class, ANAMNESIS_DAO).save(examination.getAnamnesis());
 			}
-			List<AnalysisType> types = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Обследование", false);
+			List<AnalysisType> types = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes("Обследование", false);
 			List<Analysis> analysisList = new ArrayList<>();
-			AnalysisDAOImpl adao = sessionManagement.getDAO(AnalysisDAOImpl.class, ApplicationHelper.ANALYSIS_DAO);
+			AnalysisDAOImpl adao = sessionManagement.getDAO(AnalysisDAOImpl.class, ANALYSIS_DAO);
 			for (AnalysisType type: types) {
 				Analysis analysis = new Analysis();
 				analysis.setType(type);
@@ -54,8 +56,8 @@ public final class WorkflowHelper {
 			examination.setAppointment(appointment);
 			
 			Set<ExaminationEntry> entryList = new HashSet<>();
-			DictionaryDAOImpl ddao = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO);
-			ExaminationEntryDAOImpl dao = sessionManagement.getDAO(ExaminationEntryDAOImpl.class, ApplicationHelper.EXAMINATION_ENTRY_DAO);
+			DictionaryDAOImpl ddao = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO);
+			ExaminationEntryDAOImpl dao = sessionManagement.getDAO(ExaminationEntryDAOImpl.class, EXAMINATION_ENTRY_DAO);
 			List<ExaminationEntryType> list = ddao.findBaseExaminationEntryTypes(false);
 			for (ExaminationEntryType type:list) {
 				List<ExaminationEntryType> child = ddao.findChildExaminationEntryTypes(false, type.getId());
@@ -110,11 +112,11 @@ public final class WorkflowHelper {
 				donation.setReport(new PheresisReport());
 			}
 			if (donation.getReport() != null) {
-				sessionManagement.getDAO(PheresisDAOImpl.class, ApplicationHelper.PHERESIS_DAO).save(donation.getReport());
+				sessionManagement.getDAO(PheresisDAOImpl.class, PHERESIS_DAO).save(donation.getReport());
 			}
-			List<AnalysisType> types = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Донация", false);
+			List<AnalysisType> types = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes("Донация", false);
 			List<Analysis> analysisList = new ArrayList<>();
-			AnalysisDAOImpl adao = sessionManagement.getDAO(AnalysisDAOImpl.class, ApplicationHelper.ANALYSIS_DAO);
+			AnalysisDAOImpl adao = sessionManagement.getDAO(AnalysisDAOImpl.class, ANALYSIS_DAO);
 			for (AnalysisType type: types) {
 				Analysis analysis = new Analysis();
 				analysis.setType(type);
@@ -131,7 +133,7 @@ public final class WorkflowHelper {
 			//donation.setTests(analysisList);
 			donation.setAppointment(appointment);
 			
-			types = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
+			types = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
 			Set<Analysis> analysisSet = new HashSet<>();
 			for (AnalysisType type: types) {
 				Analysis analysis = new Analysis();
@@ -160,7 +162,7 @@ public final class WorkflowHelper {
 				context, "#{sessionManagement}", SessionManagementBean.class
 		);
 		final BloodComponentOrderRequestDAOImpl dao = sessionManagement.getDAO(
-				BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO
+				BloodComponentOrderRequestDAOImpl.class, COMPONENT_ORDER_DAO
 		);
 		final BloodComponentOrderRequest currentState = dao.get(request.getId());
 		final boolean processed = currentState.getCreated().equals(request.getCreated());
@@ -178,7 +180,7 @@ public final class WorkflowHelper {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
 			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
-			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
 			List<BloodComponent> list = dao.findComponentsByDonation(donation.getId());
 			for (BloodComponent bloodComponent: list) {
 				bloodComponent.setStatusId(statusId);
@@ -198,7 +200,7 @@ public final class WorkflowHelper {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
 			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
-			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
 			List<BloodComponent> list = dao.findComponentsByOrder(request.getId());
 			for (BloodComponent bloodComponent: list) {
 				bloodComponent.setStatusId(statusId);
@@ -218,7 +220,7 @@ public final class WorkflowHelper {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
 			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
-			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
 			List<BloodComponent> list = dao.findComponentsByOrder(request.getId());
 			for (BloodComponent bloodComponent: list) {
 				HistoryEntry historyEntry = new HistoryEntry();
@@ -260,7 +262,7 @@ public final class WorkflowHelper {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
 			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
-			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO);
+			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO);
 			Donor donor = dao.get(request.getDonor().getId());
 			if (donor != null) {
 				donor.setStatusId(statusId);
@@ -280,7 +282,7 @@ public final class WorkflowHelper {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
 			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
-			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO);
+			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO);
 			Donor donor = dao.get(request.getDonor().getId());
 			if (donor != null) {
 				donor.setStatusId(statusId);
@@ -313,9 +315,9 @@ public final class WorkflowHelper {
 				}
 			}
 			boolean needUpdate = false;
-			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
 			List<BloodComponent> components = dao.findComponentsByDonation(donation.getId());
-			DictionaryDAOImpl dictionaryDao = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO);
+			DictionaryDAOImpl dictionaryDao = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO);
 			List<BloodGroup> bloodGroupList = dictionaryDao.findByValue(BloodGroup.class, bloodGroup);
 			if (bloodGroupList.size() > 0 && bloodGroupList.get(0).getValue() != null && !bloodGroupList.get(0).getValue().equals("") && !bloodGroupList.get(0).getValue().equals("Не определена")) {
 				if (donor.getBloodGroup().getValue().equals("Не определена")) {
@@ -339,7 +341,7 @@ public final class WorkflowHelper {
 				}
 			}
 			if (needUpdate) {
-				sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).save(donor);
+				sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO).save(donor);
 			}
 			result = true;
 		}
@@ -354,8 +356,8 @@ public final class WorkflowHelper {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
 			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
-			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO);
-			DonorRejectionDAOImpl rejdao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, ApplicationHelper.REJECTION_DAO);
+			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO);
+			DonorRejectionDAOImpl rejdao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, REJECTION_DAO);
 			Donor donor = dao.get(request.getDonor().getId());
 			DonorRejection rejection = request.getRejection();
 			if (donor != null && rejection != null) {
@@ -396,8 +398,8 @@ public final class WorkflowHelper {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
 			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
-			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO);
-			DonorRejectionDAOImpl rejdao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, ApplicationHelper.REJECTION_DAO);
+			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO);
+			DonorRejectionDAOImpl rejdao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, REJECTION_DAO);
 			Donor donor = dao.get(request.getDonor().getId());
 			DonorRejection rejection = request.getRejection();
 			if (donor != null && rejection != null) {
@@ -455,7 +457,7 @@ public final class WorkflowHelper {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
 			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
-			QuarantineTypeDAOImpl dao = sessionManagement.getDAO(QuarantineTypeDAOImpl.class, ApplicationHelper.QUARANTINE_TYPE_DAO);
+			QuarantineTypeDAOImpl dao = sessionManagement.getDAO(QuarantineTypeDAOImpl.class, QUARANTINE_TYPE_DAO);
 			List<QuarantineType> types = dao.findDocumentsByComponentType(component.getComponentType().getId(), false);
 			if (types.size() > 0) {
 				QuarantineType type = types.get(0);
@@ -479,7 +481,7 @@ public final class WorkflowHelper {
 		try {
 			FacesContext context = FacesContext.getCurrentInstance();
 			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
-			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO);
+			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO);
 			Donor donor = dao.get(request.getDonor().getId());
 			if (donor != null && (donor.getStatusId() == -1 || donor.getStatusId() == -2)) {
 				HistoryEntry historyEntry = new HistoryEntry();
@@ -524,7 +526,7 @@ public final class WorkflowHelper {
 			}
 			FacesContext context = FacesContext.getCurrentInstance();
 			SessionManagementBean sessionManagement = context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}", SessionManagementBean.class);
-			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+			BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
 			
 			if (infected) {
 				// Перевод компонентов из карантина в брак
@@ -604,7 +606,7 @@ public final class WorkflowHelper {
 			
 			List<AnalysisType> types = dictionaryManagement.getQualityControlMappingEntry(bloodComponent.getComponentType()).getAnalysisTypes();
 			List<Analysis> analysisList = new ArrayList<>();
-			AnalysisDAOImpl adao = sessionManagement.getDAO(AnalysisDAOImpl.class, ApplicationHelper.ANALYSIS_DAO);
+			AnalysisDAOImpl adao = sessionManagement.getDAO(AnalysisDAOImpl.class, ANALYSIS_DAO);
 			for (AnalysisType type: types) {
 				Analysis analysis = new Analysis();
 				analysis.setType(type);
@@ -683,7 +685,7 @@ public final class WorkflowHelper {
 		ActionResult result = new ActionResult();
 		result.setProcessed(true);
 		try {
-			BloodDonationRequest request = ((BloodDonationRequestDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DONATION_DAO)).get(component.getDonationId());
+			BloodDonationRequest request = ((BloodDonationRequestDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DONATION_DAO)).get(component.getDonationId());
 			
 			if (request != null) {
 				List<Analysis> tests = request.getTestList();

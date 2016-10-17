@@ -21,7 +21,7 @@ import org.apache.axis.utils.StringUtils;
 import ru.efive.dao.sql.dao.GenericDAO;
 import ru.efive.dao.sql.dao.user.UserDAO;
 import ru.efive.dao.sql.entity.user.User;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.wf.core.activity.SendMailActivity;
 import ru.efive.wf.core.activity.MailMessage;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
@@ -60,7 +60,7 @@ public class ForgetPasswordBean implements Serializable {
 
 	public void sendMail() {
 		if (!StringUtils.isEmpty(email)) {
-			UserDAO dao = getDAO(UserDAO.class, ApplicationHelper.USER_DAO);
+			UserDAO dao = getDAO(UserDAO.class, USER_DAO);
 			User user = dao.getByEmail(email);
 			if (user != null) {
 				MailMessage message = setupMessage(user);

@@ -8,7 +8,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.*;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalIndicator;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.DictionaryManagementBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
 
@@ -39,7 +39,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 	 */
 	public void newDelete() {
 		document.setDeleted(true);
-		sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).save(document);
+		sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).save(document);
 		refresh();
 		setDocument(getDocuments().get(0));
 	}
@@ -78,7 +78,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 	public boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			DictionaryEntity document = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).save(getDocument());
+			DictionaryEntity document = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).save(getDocument());
 			if (document == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -106,28 +106,28 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 		try {
 			long count;
 			if (filterAnalysisType) {
-				count = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).countAnalysisTypes(false);
+				count = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).countAnalysisTypes(false);
 			}
 			else if (filterBloodGroup) {
-				count = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).countBloodGroups(false);
+				count = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).countBloodGroups(false);
 			}
 			else if (filterBloodComponentType) {
-				count = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).countBloodComponentTypes(false);
+				count = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).countBloodComponentTypes(false);
 			}
 			else if (filterBloodDonationType) {
-				count = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).countBloodDonationTypes(false);
+				count = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).countBloodDonationTypes(false);
 			}
 			else if (filterClassifier) {
-				count = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).countClassifier(filter, false);
+				count = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).countClassifier(filter, false);
 			}
 			else if (filterDonorRejectionType) {
-				count = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).countDonorRejectionTypes(false);
+				count = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).countDonorRejectionTypes(false);
 			}
 			else if (filterQualityControl) {
-				count = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).countQualityControlMappingEntries(false);
+				count = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).countQualityControlMappingEntries(false);
 			}
 			else {
-				count = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).countExaminationEntryTypes(false);
+				count = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).countExaminationEntryTypes(false);
 			}
 			result = new Long(count).intValue();
 		}
@@ -142,7 +142,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 		List<DictionaryEntity> result = new ArrayList<>();
 		try {
 			if (filterAnalysisType) {
-				List<AnalysisType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+				List<AnalysisType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes(
 						false, "id", false);
 				for (AnalysisType type: list) {
 					result.add(type);
@@ -152,7 +152,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 				}
 			}
 			else if (filterBloodGroup) { 
-				List<BloodGroup> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodGroups(
+				List<BloodGroup> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodGroups(
 						false, "id", false);
 				for (BloodGroup type: list) {
 					result.add(type);
@@ -162,7 +162,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 				}
 			}
 			else if (filterBloodComponentType) { 
-				List<BloodComponentType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodComponentTypes(
+				List<BloodComponentType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodComponentTypes(
 						false, "id", false);
 				for (BloodComponentType type: list) {
 					result.add(type);
@@ -172,7 +172,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 				}
 			}
 			else if (filterBloodDonationType) { 
-				List<BloodDonationType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodDonationTypes(
+				List<BloodDonationType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodDonationTypes(
 						false, "id", false);
 				for (BloodDonationType type: list) {
 					result.add(type);
@@ -182,7 +182,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 				}
 			}
 			else if (filterClassifier) { 
-				List<Classifier> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findClassifier(filter,
+				List<Classifier> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findClassifier(filter,
 						false, "id", false);
 				for (Classifier type: list) {
 					result.add(type);
@@ -192,7 +192,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 				}
 			}
 			else if (filterDonorRejectionType) { 
-				List<DonorRejectionType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findDonorRejectionTypes(
+				List<DonorRejectionType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findDonorRejectionTypes(
 						false, "id", false);
 				for (DonorRejectionType type: list) {
 					result.add(type);
@@ -202,7 +202,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 				}
 			}
 			else if (filterQualityControl) {
-				List<QualityControlMappingEntry> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findQualityControlMappingEntries(
+				List<QualityControlMappingEntry> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findQualityControlMappingEntries(
 						false, "id", false);
 				for (QualityControlMappingEntry type: list) {
 					result.add(type);
@@ -212,7 +212,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 				}
 			}
 			else {
-				List<ExaminationEntryType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findExaminationEntryTypes(
+				List<ExaminationEntryType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findExaminationEntryTypes(
 						false, getSorting().getColumnId(), getSorting().isAsc());
 				for (ExaminationEntryType type: list) {
 					result.add(type);
@@ -548,7 +548,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 		}
 		
 		public void search() {
-			availableAnalysisTypeList = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(filter, "Контроль качества", false);
+			availableAnalysisTypeList = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes(filter, "Контроль качества", false);
 		}
 		
 		@Override
@@ -563,7 +563,7 @@ public class SettingsListHolderBean extends AbstractDocumentListHolderBean<Dicti
 		protected void doShow() {
 			super.doShow();
 			analysisTypeList = new ArrayList<>();
-			availableAnalysisTypeList = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Контроль качества", false);
+			availableAnalysisTypeList = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes("Контроль качества", false);
 			if (getDocument() instanceof QualityControlMappingEntry) {
 				setAnalysisTypeList(((QualityControlMappingEntry) getDocument()).getAnalysisTypes());
 			}

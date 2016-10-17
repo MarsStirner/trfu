@@ -2,7 +2,6 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentOrderRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentOrderRequest;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -10,6 +9,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.COMPONENT_ORDER_DAO;
 
 @Named("bloodComponentOrderList")
 @SessionScoped
@@ -25,7 +26,7 @@ public class BloodComponentOrderListHolderBean extends AbstractDocumentListHolde
     protected int getTotalCount() {
         int result = 0;
         try {
-            long count = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO)
+            long count = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, COMPONENT_ORDER_DAO)
                     .countDocument(filter, false);
             return new Long(count).intValue();
         } catch (Exception e) {
@@ -38,7 +39,7 @@ public class BloodComponentOrderListHolderBean extends AbstractDocumentListHolde
     protected List<BloodComponentOrderRequest> loadDocuments() {
         List<BloodComponentOrderRequest> result = new ArrayList<>();
         try {
-            result = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO).findDocuments(
+            result = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, COMPONENT_ORDER_DAO).findDocuments(
                     filter, false, getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc()
             );
         } catch (Exception e) {

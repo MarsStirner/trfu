@@ -1,20 +1,7 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
 import org.primefaces.event.SelectEvent;
-
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
@@ -26,6 +13,19 @@ import ru.efive.medicine.niidg.trfu.dictionary.impl.OnePlanTimesheetTemplate;
 import ru.efive.medicine.niidg.trfu.dictionary.impl.PeriodTimesheetTemplate;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
+
+import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.TIMETABLE_DAO;
 
 @Named("timeTable")
 @SessionScoped
@@ -41,7 +41,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 		int result = 0;
 		try {
 			logger.info("Selected date is: " + new java.text.SimpleDateFormat("dd.MM.yyyy").format(selectedDate));
-			result = new Long(sessionManagement.getDAO(TimeTableDAOImpl.class, ApplicationHelper.TIMETABLE_DAO).countUserTimeTable(selectedDate,
+			result = new Long(sessionManagement.getDAO(TimeTableDAOImpl.class, TIMETABLE_DAO).countUserTimeTable(selectedDate,
 					selectedUser, false)).intValue();
 		}
 		catch (Exception e) {
@@ -55,7 +55,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 		List<TimeTableEntry> result = new ArrayList<>();
 		try {
 			logger.info("Selected date is: " + new java.text.SimpleDateFormat("dd.MM.yyyy").format(selectedDate));
-			result = sessionManagement.getDAO(TimeTableDAOImpl.class, ApplicationHelper.TIMETABLE_DAO).findUserTimeTable(selectedDate,
+			result = sessionManagement.getDAO(TimeTableDAOImpl.class, TIMETABLE_DAO).findUserTimeTable(selectedDate,
 					selectedUser, false, -1, -1, getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
@@ -168,7 +168,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 					context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не указан период формирования расписания", ""));
 					return;
 				}
-				TimeTableDAOImpl dao = (TimeTableDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.TIMETABLE_DAO);
+				TimeTableDAOImpl dao = (TimeTableDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(TIMETABLE_DAO);
 				if (dao.countUserTimeTable(timesheetTemplate.getPeriodStartDate(), timesheetTemplate.getPeriodEndDate(), getSelectedUser(), false) > 0) {
 					context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "В указанный период уже сформировано расписание", ""));
 					return;
@@ -214,7 +214,7 @@ public class TimeTableBean extends AbstractDocumentListHolderBean<TimeTableEntry
 	public void deleteSelectedEntry() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		try {
-			TimeTableDAOImpl dao = (TimeTableDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.TIMETABLE_DAO);
+			TimeTableDAOImpl dao = (TimeTableDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(TIMETABLE_DAO);
 			if (selectedTimeTableEntries != null && selectedTimeTableEntries.length > 0) {
 				for (TimeTableEntry entry: selectedTimeTableEntries) {
 					entry.setDeleted(true);

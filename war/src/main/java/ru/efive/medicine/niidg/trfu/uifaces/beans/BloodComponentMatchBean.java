@@ -1,17 +1,5 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-//import ru.efive.medicine.niidg.trfu.dao.BloodComponentMatchDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.AnalysisType;
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
@@ -21,6 +9,20 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentMatchCriteria;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
+
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
+
+//import ru.efive.medicine.niidg.trfu.dao.BloodComponentMatchDAOImpl;
 
 @Named("bloodComponentMatch")
 @ConversationScoped
@@ -81,7 +83,7 @@ public class BloodComponentMatchBean extends AbstractDocumentHolderBean<BloodCom
 		match.setDeleted(false);
 		
 		try {
-			List<AnalysisType> types = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
+			List<AnalysisType> types = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
 			List<BloodComponentMatchCriteria> criteriaList = new ArrayList<>(types.size());
 			
 			for (AnalysisType type: types) {

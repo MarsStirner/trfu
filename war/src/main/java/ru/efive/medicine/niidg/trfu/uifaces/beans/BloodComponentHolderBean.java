@@ -34,6 +34,8 @@ import javax.inject.Named;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+
 @Named("bloodComponent")
 @ConversationScoped
 public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodComponent, Integer> {
@@ -100,7 +102,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             System.out.println("VirusInactivation");
             if (isValid()) {
                 BloodComponentDAOImpl dao = sessionManagement.getDAO(
-                        BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO
+                        BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO
                 );
                 BloodComponent bloodComponent = getDocument();
                 bloodComponent.setPreInactivatedVolume(bloodComponent.getVolume());
@@ -152,7 +154,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     protected boolean deleteDocument() {
         boolean result = false;
         try {
-            sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).delete(getDocument());
+            sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).delete(getDocument());
             result = true;
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(
@@ -185,13 +187,13 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                     bloodComponent.setPurchased(true);
                     bloodComponent.setIrradiated(true);
 
-                    final List<Classifier> preservativeTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByValueAndCategory(Classifier.class, "SAGM", "Ресуспендирующий раствор");
+                    final List<Classifier> preservativeTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByValueAndCategory(Classifier.class, "SAGM", "Ресуспендирующий раствор");
                     if(!preservativeTypes.isEmpty()){
                         bloodComponent.setPreservative(preservativeTypes.get(0));
                         bloodComponent.setPreservativeVolume(100);
                     }
 
-                    final List<Anticoagulant> anticoagulants =  sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByValueAndCategory(Anticoagulant.class, "CPD", null);
+                    final List<Anticoagulant> anticoagulants =  sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByValueAndCategory(Anticoagulant.class, "CPD", null);
                     if(!anticoagulants.isEmpty()){
                        bloodComponent.setAnticoagulant(anticoagulants.get(0));
                         bloodComponent.setAnticoagulantVolume(63.0d);
@@ -215,7 +217,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                     try {
                         if (StringUtils.isNotEmpty(stateCode) && StringUtils.isNotEmpty(organizationCode)) {
                             System.out.println("stateCode: " + stateCode + ", organizationCode: " + organizationCode);
-                            Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO)
+                            Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO)
                                     .getByStateAndOrganizationCode(Integer.parseInt(stateCode), Integer.parseInt(organizationCode));
                             if (contragent != null) {
                                 bloodComponent.setMaker(contragent);
@@ -225,7 +227,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                         System.out.println("Cannot parse externalNumber Organisation part to Integers : "+e.getMessage());
                     }
                     //Добавление результатов тестов (иммуносерология)
-                    final List<AnalysisType> allAnalysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO)
+                    final List<AnalysisType> allAnalysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO)
                             .findAnalysisTypes("Иммуносерология", false);
 
                     final List<Analysis> bctl = bloodComponent.getTestList();
@@ -249,7 +251,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                     }
                     if(bloodComponent.getFactEntry()== null){
                         final BloodDonationEntry currentFactEntry = new BloodDonationEntry();
-                        currentFactEntry.setDonationType(sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodDonationTypes(false,null,false).get(0));
+                        currentFactEntry.setDonationType(sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodDonationTypes(false,null,false).get(0));
                         currentFactEntry.setDose(450);
                         bloodComponent.setFactEntry(currentFactEntry);
                     }
@@ -264,7 +266,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                 }
             } else {
                 String fullNameContragent = (String) propertiesEditorBean.getSelectedProperties().getProperty("reports.institution.name");
-                Contragent currentContragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).getByFullName(
+                Contragent currentContragent = sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO).getByFullName(
                         fullNameContragent
                 );
                 if (currentContragent != null) {
@@ -274,7 +276,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                 if (StringUtils.isNotEmpty(donationId)) {
                     int id = Integer.parseInt(donationId);
                     bloodComponent.setDonationId(id);
-                    BloodDonationRequest donation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO)
+                    BloodDonationRequest donation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, DONATION_DAO)
                             .get(id);
                     if (donation != null && donation.getId() == id) {
                         bloodComponent.setBloodGroup(donation.getDonor().getBloodGroup());
@@ -338,7 +340,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     protected void initDocument(Integer id) {
         try {
             needRefreshVirusinactivationList = false;
-            setDocument(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).get(id));
+            setDocument(sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).get(id));
             if (getDocument() == null) {
                 setState(STATE_NOT_FOUND);
             }
@@ -348,7 +350,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                 haveConsumableMaterial = true;
                 Integer bloodSystemId = Integer.valueOf(getBloodSystemId());
                 BloodSystemDAOImpl bloodSystemDAO = sessionManagement.getDAO(
-                        BloodSystemDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_DAO
+                        BloodSystemDAOImpl.class, BLOOD_SYSTEM_DAO
                 );
                 BloodSystem bloodSystem = bloodSystemDAO.get(bloodSystemId);
                 getDocument().setBloodSystem(bloodSystem);
@@ -377,7 +379,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     protected boolean saveNewDocument() {
         boolean result = false;
         try {
-            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
             BloodComponent bloodComponent = getDocument();
 
             if (bloodComponent.getExpirationDate() == null && expirationDays > 1) {
@@ -398,7 +400,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
                 int count = new Long(dao.countComponentsByDonation(bloodComponent.getDonationId())).intValue() + 1;
                 bloodComponent.setNumber(StringUtils.right("0" + count, 2));
                 BloodDonationRequest donation = sessionManagement.getDAO(
-                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                        BloodDonationRequestDAOImpl.class, DONATION_DAO
                 ).get(bloodComponent.getDonationId());
                 if (donation != null) {
                     bloodComponent.setParentNumber(donation.getNumber());
@@ -431,7 +433,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
     protected boolean saveDocument() {
         boolean result = false;
         try {
-            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
 
             if (!validate()) {
                 return false;
@@ -471,26 +473,26 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         BloodComponent bloodComponent = getDocument();
         if (bloodComponent.isPurchased()) {
             //Добавление результатов тестов (иммуносерология + 5 тестов на вич, сифилис, гепатиты)
-            final List<AnalysisType> allAnalysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO)
+            final List<AnalysisType> allAnalysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO)
                     .findAnalysisTypes("Иммуносерология", false);
             allAnalysisTypes.addAll(
-                    sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                    sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes(
                             "Гепатит B", "Донация", false
                     )
             );
             allAnalysisTypes.addAll(
-                    sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                    sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes(
                             "Гепатит C", "Донация", false
                     )
             );
             allAnalysisTypes.addAll(
-                    sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("ВИЧ 1", "Донация", false)
+                    sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes("ВИЧ 1", "Донация", false)
             );
             allAnalysisTypes.addAll(
-                    sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("ВИЧ 2", "Донация", false)
+                    sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes("ВИЧ 2", "Донация", false)
             );
             allAnalysisTypes.addAll(
-                    sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes(
+                    sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes(
                             "Сифилис (RW)", "Донация", false
                     )
             );
@@ -519,7 +521,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             }
             if(bloodComponent.getFactEntry()== null){
                 final BloodDonationEntry currentFactEntry = new BloodDonationEntry();
-                currentFactEntry.setDonationType(sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodDonationTypes(false,null,false).get(0));
+                currentFactEntry.setDonationType(sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodDonationTypes(false,null,false).get(0));
                 currentFactEntry.setDose(450);
                 bloodComponent.setFactEntry(currentFactEntry);
             }
@@ -575,7 +577,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         try {
             if (getDocument().getDonationId() > 0 && donor == null) {
                 donation = sessionManagement.getDAO(
-                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                        BloodDonationRequestDAOImpl.class, DONATION_DAO
                 ).get(getDocument().getDonationId());
                 if (donation != null) {
                     donor = donation.getDonor();
@@ -591,7 +593,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         try {
             if (getDocument().getDonationId() > 0 && donation == null) {
                 donation = sessionManagement.getDAO(
-                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                        BloodDonationRequestDAOImpl.class, DONATION_DAO
                 ).get(getDocument().getDonationId());
                 if (donation != null) {
                     donor = donation.getDonor();
@@ -664,7 +666,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         try {
             if (getDocument().getDonationId() != 0) {
                 BloodDonationRequest request = sessionManagement.getDAO(
-                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                        BloodDonationRequestDAOImpl.class, DONATION_DAO
                 ).get(getDocument().getDonationId());
                 if (request != null && request.getStatusId() == 21 && getDocument().getComponentType() != null &&
                         !getDocument().getComponentType().isLite()) {
@@ -682,7 +684,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         try {
             if (getDocument().getDonationId() != 0) {
                 BloodDonationRequest request = sessionManagement.getDAO(
-                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                        BloodDonationRequestDAOImpl.class, DONATION_DAO
                 ).get(getDocument().getDonationId());
                 if (request != null && request.getStatusId() > 3 && getDocument().getComponentType() != null &&
                         (StringUtils.contains(getDocument().getComponentType().getValue(), "Эритроцитная") || StringUtils.contains(
@@ -714,7 +716,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         try {
             if (getDocument().getDonationId() > 0) {
                 BloodDonationRequest donation = sessionManagement.getDAO(
-                        BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO
+                        BloodDonationRequestDAOImpl.class, DONATION_DAO
                 ).get(getDocument().getDonationId());
                 if (donation != null && donation.getStatusId() == 21) {
                     result = true;
@@ -935,7 +937,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
             if (sum == getDocument().getVolume()) {
                 final Date splitDate = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();
                 BloodComponentDAOImpl dao = sessionManagement.getDAO(
-                        BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO
+                        BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO
                 );
                 int lastBCNumber = dao.getLastNumberByDonation(getDocument().getParentNumber(), getDocument().isPurchased());
                 for (VolumeEntry volume : volumeList) {
@@ -1086,7 +1088,7 @@ public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodCo
         }
 
         public void perfomVirusinaktivation() {
-            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
             BloodComponent bloodComponent = getDocument();
 
             Date created = Calendar.getInstance(ApplicationHelper.getLocale()).getTime();

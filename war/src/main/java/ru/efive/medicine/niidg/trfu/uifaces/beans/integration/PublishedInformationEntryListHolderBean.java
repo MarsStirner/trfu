@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.efive.medicine.niidg.trfu.dao.InformationEntryDaoImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.InformationEntry;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -29,7 +29,7 @@ public class PublishedInformationEntryListHolderBean extends AbstractDocumentLis
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			long count = sessionManagement.getDAO(InformationEntryDaoImpl.class, ApplicationHelper.INFORMATION_DAO).countDocument(true, false);
+			long count = sessionManagement.getDAO(InformationEntryDaoImpl.class, INFORMATION_DAO).countDocument(true, false);
 			return new Long(count).intValue();
 		}
 		catch (Exception e) {
@@ -43,7 +43,7 @@ public class PublishedInformationEntryListHolderBean extends AbstractDocumentLis
 	protected List<InformationEntry> loadDocuments() {
 		List<InformationEntry> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(InformationEntryDaoImpl.class, ApplicationHelper.INFORMATION_DAO).findDocuments(true, false,
+			result = sessionManagement.getDAO(InformationEntryDaoImpl.class, INFORMATION_DAO).findDocuments(true, false,
 					getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {

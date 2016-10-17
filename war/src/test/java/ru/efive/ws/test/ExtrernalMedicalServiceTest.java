@@ -8,7 +8,6 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentOrderRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.Division;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.util.PropertyTypeNotSupported;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper;
 import ru.efive.wf.core.ActionResult;
 import ru.korusconsulting.external.DivisionInfo;
@@ -19,6 +18,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.COMPONENT_ORDER_DAO;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.DIVISION_DAO;
 
 public class ExtrernalMedicalServiceTest {
 	ClassPathXmlApplicationContext ctx;
@@ -38,7 +40,7 @@ public class ExtrernalMedicalServiceTest {
     //@Test
     public void divisionListTest() {
     	ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
-    	DivisionDAOImpl dao = (DivisionDAOImpl) ctx.getBean(ApplicationHelper.DIVISION_DAO);
+    	DivisionDAOImpl dao = (DivisionDAOImpl) ctx.getBean(DIVISION_DAO);
         List<DivisionInfo> divisionsInfo = medicalService.getPortTransfusion().getDivisions();
         for (DivisionInfo divisionInfo: divisionsInfo) {
         	Division division = dao.findByExternalId(divisionInfo.getId());
@@ -57,7 +59,7 @@ public class ExtrernalMedicalServiceTest {
     
     //@Test
     public void processComponentRequestTest() throws Exception {
-    	BloodComponentOrderRequest request = ((BloodComponentOrderRequestDAOImpl) ctx.getBean(ApplicationHelper.COMPONENT_ORDER_DAO)).get(1452);
+    	BloodComponentOrderRequest request = ((BloodComponentOrderRequestDAOImpl) ctx.getBean(COMPONENT_ORDER_DAO)).get(1452);
     	ActionResult result = IntegrationHelper.processComponentRequest(request);
     	System.out.println(result.getDescription());
     }

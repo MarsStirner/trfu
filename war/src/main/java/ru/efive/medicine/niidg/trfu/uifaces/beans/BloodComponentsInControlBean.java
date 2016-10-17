@@ -2,7 +2,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.faces.bean.ManagedBean;
@@ -30,7 +30,7 @@ public class BloodComponentsInControlBean extends AbstractDocumentListHolderBean
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			result = new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).countDocumentsInControl(filter, false)).intValue();
+			result = new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).countDocumentsInControl(filter, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -42,7 +42,7 @@ public class BloodComponentsInControlBean extends AbstractDocumentListHolderBean
 	protected List<BloodComponent> loadDocuments() {
 		List<BloodComponent> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocumentsInControl(filter, false,
+			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).findDocumentsInControl(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {

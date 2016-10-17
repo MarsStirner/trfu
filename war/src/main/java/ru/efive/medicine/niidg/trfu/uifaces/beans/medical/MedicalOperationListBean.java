@@ -4,7 +4,7 @@ import ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -31,7 +31,7 @@ public class MedicalOperationListBean extends AbstractDocumentListHolderBean<Ope
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			return new Long(sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).countOperations(filter, false)).intValue();
+			return new Long(sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).countOperations(filter, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -43,7 +43,7 @@ public class MedicalOperationListBean extends AbstractDocumentListHolderBean<Ope
 	protected List<Operation> loadDocuments() {
 		List<Operation> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findOperations(filter, false,
+			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).findOperations(filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
@@ -69,7 +69,7 @@ public class MedicalOperationListBean extends AbstractDocumentListHolderBean<Ope
 	public List<Operation> getOperationsByDonor(BiomaterialDonor donor) {
 		List<Operation> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findOperationsByDonor(donor, "", false,
+			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).findOperationsByDonor(donor, "", false,
 					-1, -1, "number", false);
 		}
 		catch (Exception e) {

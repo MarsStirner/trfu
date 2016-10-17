@@ -16,7 +16,6 @@ import ru.efive.dao.sql.entity.document.ReportTemplate;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -49,6 +48,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
 
 @Named("reports")
 @RequestScoped
@@ -566,7 +567,7 @@ public class ReportsManagmentBean implements Serializable {
     }
 
     private boolean storePictureLinkToBloodComponent(final File file, final String id) {
-        final BloodComponentDAOImpl bloodComponentDAO = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+        final BloodComponentDAOImpl bloodComponentDAO = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
         final BloodComponent bloodComponent = bloodComponentDAO.get(Integer.parseInt(id));
         bloodComponent.setBigLabelPath(file.getPath());
         return bloodComponentDAO.update(bloodComponent).getBigLabelPath().equals(file.getPath());

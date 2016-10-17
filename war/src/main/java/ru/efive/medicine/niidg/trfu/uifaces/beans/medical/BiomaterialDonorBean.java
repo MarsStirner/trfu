@@ -19,6 +19,8 @@ import javax.inject.Named;
 import java.util.Calendar;
 import java.util.Date;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.MEDICAL_DAO;
+
 @Named("biomaterialDonor")
 @ConversationScoped
 public class BiomaterialDonorBean extends AbstractDocumentHolderBean<BiomaterialDonor, Integer> {
@@ -27,7 +29,7 @@ public class BiomaterialDonorBean extends AbstractDocumentHolderBean<Biomaterial
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).delete(getDocument());
+			sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).delete(getDocument());
 			result = true;
 		}
 		catch (Exception e) {
@@ -50,7 +52,7 @@ public class BiomaterialDonorBean extends AbstractDocumentHolderBean<Biomaterial
 	
 	@Override
 	protected void initDocument(Integer id) {
-		setDocument(sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).get(BiomaterialDonor.class, id));
+		setDocument(sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).get(BiomaterialDonor.class, id));
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
 		}
@@ -86,7 +88,7 @@ public class BiomaterialDonorBean extends AbstractDocumentHolderBean<Biomaterial
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			BiomaterialDonor donor = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).update(BiomaterialDonor.class, getDocument());
+			BiomaterialDonor donor = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).update(BiomaterialDonor.class, getDocument());
 			if (donor == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -111,7 +113,7 @@ public class BiomaterialDonorBean extends AbstractDocumentHolderBean<Biomaterial
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			MedicalOperationDAOImpl dao = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO);
+			MedicalOperationDAOImpl dao = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO);
 			BiomaterialDonor donor = dao.save(BiomaterialDonor.class, getDocument());
 			if (donor == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(

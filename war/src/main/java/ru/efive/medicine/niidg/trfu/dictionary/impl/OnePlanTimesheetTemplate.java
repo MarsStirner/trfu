@@ -1,14 +1,14 @@
 package ru.efive.medicine.niidg.trfu.dictionary.impl;
 
-import java.util.Calendar;
-
-import org.slf4j.Logger;
-
 import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dao.TimeTableDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.TimeTableEntry;
 import ru.efive.medicine.niidg.trfu.dictionary.TimesheetTemplate;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+
+import java.util.Calendar;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.TIMETABLE_DAO;
 
 /**
  * Один план
@@ -29,7 +29,7 @@ public class OnePlanTimesheetTemplate extends TimesheetTemplate {
 	public boolean compose() {
 		boolean result = false;
 		try {
-			TimeTableDAOImpl dao = (TimeTableDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.TIMETABLE_DAO);
+			TimeTableDAOImpl dao = (TimeTableDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(TIMETABLE_DAO);
 			
 			Calendar periodCalendar = Calendar.getInstance(ApplicationHelper.getLocale());
 			periodCalendar.setTime(getPeriodStartDate());

@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+
 @Named("bloodComponentFilterableList")
 @SessionScoped
 public class BloodComponentFilterableListHolderBean extends AbstractFilterableListHolderBean<BloodComponent, BloodComponentsFilter> {
@@ -204,7 +206,7 @@ public class BloodComponentFilterableListHolderBean extends AbstractFilterableLi
     ) {
         logger.info("start load");
             final List<BloodComponent> documents = sessionManagement.getDAO(
-                    BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO
+                    BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO
             ).findDocuments(
                     filter, offset, pageSize, getSorting().getColumnId(), getSorting().isAsc()
             );
@@ -244,7 +246,7 @@ public class BloodComponentFilterableListHolderBean extends AbstractFilterableLi
         try {
             logger.info("start count");
             long count = sessionManagement.getDAO(
-                    BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO
+                    BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO
             ).countDocument(
                     filter
             );

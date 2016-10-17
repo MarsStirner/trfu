@@ -6,7 +6,6 @@ import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodSystem;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
 
@@ -19,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @Named("virusinactivationComponentList")
 @SessionScoped
@@ -57,7 +58,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 	@Override
 	protected int getTotalCount() {
 		try {
-			return new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).countVirusinactivatedDocumentsByFinalBarcode(filter, bloodComponentStatusIdList, donationStatusIdList, false, false)).intValue();
+			return new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).countVirusinactivatedDocumentsByFinalBarcode(filter, bloodComponentStatusIdList, donationStatusIdList, false, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -68,7 +69,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 	@Override
 	protected List<BloodComponent> loadDocuments() {
 		try {
-			return sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findVirusinactivatedDocumentsByFinalBarcode(filter, bloodComponentStatusIdList, donationStatusIdList, false, false,
+			return sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).findVirusinactivatedDocumentsByFinalBarcode(filter, bloodComponentStatusIdList, donationStatusIdList, false, false,
                     getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
@@ -126,7 +127,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 		}
 		
         public List<BloodSystemType> getAllTypes(){
-            return sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodSystemTypes(false);
+            return sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodSystemTypes(false);
         }
 
         public void select(BloodSystemType selected) {
@@ -225,7 +226,7 @@ public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHol
 			currentBloodSystem.setRoleId(roleId);
 			Integer userId = sessionManagement.getLoggedUser().getId();
 			currentBloodSystem.setUserId(userId);
-			BloodSystemDAOImpl bloodSystemDAO = sessionManagement.getDAO(BloodSystemDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_DAO);
+			BloodSystemDAOImpl bloodSystemDAO = sessionManagement.getDAO(BloodSystemDAOImpl.class, BLOOD_SYSTEM_DAO);
 			bloodSystemDAO.save(currentBloodSystem);
 		}
     }

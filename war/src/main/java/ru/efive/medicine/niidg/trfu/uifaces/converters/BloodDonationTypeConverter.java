@@ -10,7 +10,7 @@ import javax.faces.convert.FacesConverter;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationType;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @FacesConverter("BloodDonationTypeConverter")
 public class BloodDonationTypeConverter implements Converter {
@@ -21,7 +21,7 @@ public class BloodDonationTypeConverter implements Converter {
 			SessionManagementBean sessionManagement = 
 				(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
 						SessionManagementBean.class);
-			List<BloodDonationType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByValue(BloodDonationType.class, value);
+			List<BloodDonationType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByValue(BloodDonationType.class, value);
 			if (list.size() > 0) {
 				result = list.get(0);
 			}

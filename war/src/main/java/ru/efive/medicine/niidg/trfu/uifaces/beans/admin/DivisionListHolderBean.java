@@ -13,7 +13,7 @@ import javax.inject.Named;
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.Division;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
@@ -29,7 +29,7 @@ public class DivisionListHolderBean extends AbstractDocumentListHolderBean<Divis
 	@Override
 	protected int getTotalCount() {
 		try {
-            return new Long(sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).countDocument(false)).intValue();
+            return new Long(sessionManagement.getDAO(DivisionDAOImpl.class, DIVISION_DAO).countDocument(false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -41,7 +41,7 @@ public class DivisionListHolderBean extends AbstractDocumentListHolderBean<Divis
 	protected List<Division> loadDocuments() {
 		List<Division> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findByName(filter, false, getSorting().getColumnId(), getSorting().isAsc());
+			result = sessionManagement.getDAO(DivisionDAOImpl.class, DIVISION_DAO).findByName(filter, false, getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
 			e.printStackTrace();

@@ -28,6 +28,8 @@ import ru.efive.wf.core.util.GroovyProcessor;
 
 import java.util.*;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+
 public final class ProcessFactory {
 
     public static <T extends ProcessedData> Process getProcessByType(T t, ProcessUser user) {
@@ -333,7 +335,7 @@ public final class ProcessFactory {
                         ActionResult result = new ActionResult();
                         try {
                             ExaminationRequestDAOImpl dao = (ExaminationRequestDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(
-                                    ApplicationHelper.EXAMINATION_DAO
+                                    EXAMINATION_DAO
                             );
                             Calendar actionCalendar = Calendar.getInstance(ApplicationHelper.getLocale());
                             actionCalendar.setTime(getActionDate());
@@ -1068,7 +1070,7 @@ public final class ProcessFactory {
 
                             BloodComponent component = (BloodComponent) data;
                             BloodDonationRequest request = ((BloodDonationRequestDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(
-                                    ApplicationHelper.DONATION_DAO
+                                    DONATION_DAO
                             )).get(component.getDonationId());
                             if (request != null && (request.getStatusId() == 2 || request.getStatusId() == 21 || request
                                     .getStatusId() == 3) && component.getComponentType() != null && !component.getComponentType().isLite()) {
@@ -1158,7 +1160,7 @@ public final class ProcessFactory {
 
                             BloodComponent component = (BloodComponent) data;
                             BloodDonationRequest request = ((BloodDonationRequestDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(
-                                    ApplicationHelper.DONATION_DAO
+                                    DONATION_DAO
                             )).get(component.getDonationId());
                             if (request != null && (request.getStatusId() == 2 || request.getStatusId() == 21) && component
                                     .getComponentType() != null && !component.getComponentType().isLite()) {
@@ -3506,7 +3508,7 @@ public final class ProcessFactory {
 
     private static IActivity createMailActivity(Donor donor, ProcessedData t) throws Exception, NoSuchMethodException, IllegalAccessException {
         EmailTemplate emailTemplate = ((EmailTemplateDAOImpl) ApplicationContextHelper.getApplicationContext()
-                .getBean(ApplicationHelper.EMAIL_TEMPLATE_DAO)).findByName("Приглашение на донацию");
+                .getBean(EMAIL_TEMPLATE_DAO)).findByName("Приглашение на донацию");
         SendMailActivity mailActivity = new SendMailActivity();
         Map<String, Object> localContext = new HashMap<String, Object>();
         localContext.put("donor", donor);

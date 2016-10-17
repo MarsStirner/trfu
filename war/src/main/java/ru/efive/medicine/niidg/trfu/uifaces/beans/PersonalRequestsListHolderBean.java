@@ -5,7 +5,7 @@ import ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.AbstractRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -29,11 +29,11 @@ public class PersonalRequestsListHolderBean extends AbstractDocumentListHolderBe
 		try {
 			long count;
 			if (filterExaminationRequests) {
-				count = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).countDocumentsByPerson(
+				count = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).countDocumentsByPerson(
 						false, sessionManagement.getLoggedUser().getId());
 			}
 			else {
-				count = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).countDocumentsByPerson(
+				count = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, DONATION_DAO).countDocumentsByPerson(
 						false, sessionManagement.getLoggedUser().getId());
 			}
 			result = new Long(count).intValue();
@@ -49,14 +49,14 @@ public class PersonalRequestsListHolderBean extends AbstractDocumentListHolderBe
 		List<AbstractRequest> result = new ArrayList<>();
 		try {
 			if (filterExaminationRequests) {
-				List<ExaminationRequest> list = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).findDocumentsByPerson(false,
+				List<ExaminationRequest> list = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).findDocumentsByPerson(false,
 						sessionManagement.getLoggedUser().getId(), getPagination().getOffset(), getPagination().getPageSize(), "number", false);
 				for (ExaminationRequest request: list) {
 					result.add(request);
 				}
 			}
 			else {
-				List<BloodDonationRequest> list = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).findDocumentsByPerson(false,
+				List<BloodDonationRequest> list = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, DONATION_DAO).findDocumentsByPerson(false,
 						sessionManagement.getLoggedUser().getId(), getPagination().getOffset(), getPagination().getPageSize(), "number", false);
 				for (BloodDonationRequest request: list) {
 					result.add(request);

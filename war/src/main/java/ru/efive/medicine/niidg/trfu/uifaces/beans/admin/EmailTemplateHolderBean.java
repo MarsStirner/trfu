@@ -1,13 +1,10 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import ru.efive.medicine.niidg.trfu.dao.BloodSystemTypeDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.EmailTemplateDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.TextTemplateDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.EmailTemplate;
 import ru.efive.medicine.niidg.trfu.data.entity.TextTemplate;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 
@@ -18,6 +15,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.EMAIL_TEMPLATE_DAO;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.TEXT_TEMPLATE_DAO;
 
 @Named("emailTemplate")
 @ConversationScoped
@@ -32,7 +32,7 @@ public class EmailTemplateHolderBean extends AbstractDocumentHolderBean<EmailTem
     protected boolean deleteDocument() {
         boolean result = false;
         try {
-            sessionManagement.getDAO(EmailTemplateDAOImpl.class, ApplicationHelper.EMAIL_TEMPLATE_DAO).delete(getDocument());
+            sessionManagement.getDAO(EmailTemplateDAOImpl.class, EMAIL_TEMPLATE_DAO).delete(getDocument());
             result = true;
         }
         catch (Exception e) {
@@ -55,7 +55,7 @@ public class EmailTemplateHolderBean extends AbstractDocumentHolderBean<EmailTem
 
     @Override
     protected void initDocument(Integer id) {
-        setDocument(sessionManagement.getDAO(EmailTemplateDAOImpl.class, ApplicationHelper.EMAIL_TEMPLATE_DAO).get(id));
+        setDocument(sessionManagement.getDAO(EmailTemplateDAOImpl.class, EMAIL_TEMPLATE_DAO).get(id));
         if (getDocument() == null) {
             setState(STATE_NOT_FOUND);
         }
@@ -65,7 +65,7 @@ public class EmailTemplateHolderBean extends AbstractDocumentHolderBean<EmailTem
     protected boolean saveNewDocument() {
         boolean result = false;
         try {
-            TextTemplateDAOImpl textTemplateDAO = sessionManagement.getDAO(TextTemplateDAOImpl.class, ApplicationHelper.TEXT_TEMPLATE_DAO);
+            TextTemplateDAOImpl textTemplateDAO = sessionManagement.getDAO(TextTemplateDAOImpl.class, TEXT_TEMPLATE_DAO);
             if(getDocument().getSendTo()!=null)
                 for(TextTemplate t:getDocument().getSendTo()){
                     textTemplateDAO.save(t);
@@ -79,7 +79,7 @@ public class EmailTemplateHolderBean extends AbstractDocumentHolderBean<EmailTem
                     textTemplateDAO.save(t);
                 }
 
-            EmailTemplate emailTemplate = sessionManagement.getDAO(EmailTemplateDAOImpl.class, ApplicationHelper.EMAIL_TEMPLATE_DAO).save(getDocument());
+            EmailTemplate emailTemplate = sessionManagement.getDAO(EmailTemplateDAOImpl.class, EMAIL_TEMPLATE_DAO).save(getDocument());
             if (emailTemplate == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_ERROR,
@@ -104,7 +104,7 @@ public class EmailTemplateHolderBean extends AbstractDocumentHolderBean<EmailTem
     protected boolean saveDocument() {
         boolean result = false;
         try {
-            TextTemplateDAOImpl textTemplateDAO = sessionManagement.getDAO(TextTemplateDAOImpl.class, ApplicationHelper.TEXT_TEMPLATE_DAO);
+            TextTemplateDAOImpl textTemplateDAO = sessionManagement.getDAO(TextTemplateDAOImpl.class, TEXT_TEMPLATE_DAO);
             for(TextTemplate t:getDocument().getSendTo()){
                 textTemplateDAO.save(t);
             }
@@ -115,7 +115,7 @@ public class EmailTemplateHolderBean extends AbstractDocumentHolderBean<EmailTem
                 textTemplateDAO.save(t);
             }
 
-            EmailTemplate emailTemplate = sessionManagement.getDAO(EmailTemplateDAOImpl.class, ApplicationHelper.EMAIL_TEMPLATE_DAO).update(getDocument());
+            EmailTemplate emailTemplate = sessionManagement.getDAO(EmailTemplateDAOImpl.class, EMAIL_TEMPLATE_DAO).update(getDocument());
             if (emailTemplate == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_ERROR,

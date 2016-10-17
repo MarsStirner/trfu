@@ -27,6 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+
 @Named("examination")
 @ConversationScoped
 public class ExaminationHolderBean extends AbstractDocumentHolderBean<ExaminationRequest, Integer> {
@@ -35,7 +37,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
     protected boolean deleteDocument() {
         boolean result = false;
         try {
-            sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).delete(getDocument());
+            sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).delete(getDocument());
             result = true;
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -56,15 +58,13 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
 
     @Override
     protected void initDocument(Integer id) {
-        ExaminationRequest examination = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper
-				.EXAMINATION_DAO).get(id);
+        ExaminationRequest examination = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).get(id);
         if (examination == null) {
             setState(STATE_NOT_FOUND);
             return;
         }
         examination.setExaminationEntryList(examinationEntryList.getEntriesByExaminationRequest(id));
-        DonorRejectionDAOImpl dao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, ApplicationHelper
-				.REJECTION_DAO);
+        DonorRejectionDAOImpl dao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, REJECTION_DAO);
         List<DonorRejection> list = dao.findDocumentsByRequestId("e_" + id);
         if (!list.isEmpty()) {
             examination.setRejection(list.get(0));
@@ -75,7 +75,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
         }
         setDocument(examination);
         final List<BloodDonationRequest> donations = sessionManagement.getDAO
-                (BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).findDocumentsByExaminationId
+                (BloodDonationRequestDAOImpl.class, DONATION_DAO).findDocumentsByExaminationId
                 (examination.getId());
         if(donations != null && !donations.isEmpty()){
             donation = donations.get(0);
@@ -92,7 +92,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
         final String parentId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get
 				("parentId");
         if (StringUtils.isNotEmpty(parentId)) {
-            examination.setDonor(sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).get
+            examination.setDonor(sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO).get
 					(Integer.parseInt(parentId)));
             examination.setExaminationType(examination.getDonor().getCategory());
         }
@@ -118,21 +118,21 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
         boolean result = false;
         try {
             ExaminationRequest examination = sessionManagement.getDAO(ExaminationRequestDAOImpl.class,
-					ApplicationHelper.EXAMINATION_DAO).save(getDocument());
+					EXAMINATION_DAO).save(getDocument());
             if (examination == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 						"Невозможно сохранить документ. Попробуйте повторить позже.", ""));
             } else {
                 if (getDocument().getAnamnesis() != null) {
-                    sessionManagement.getDAO(AnamnesisDAOImpl.class, ApplicationHelper.ANAMNESIS_DAO).save
+                    sessionManagement.getDAO(AnamnesisDAOImpl.class, ANAMNESIS_DAO).save
 							(getDocument().getAnamnesis());
                 }
-                AnalysisDAOImpl dao = sessionManagement.getDAO(AnalysisDAOImpl.class, ApplicationHelper.ANALYSIS_DAO);
+                AnalysisDAOImpl dao = sessionManagement.getDAO(AnalysisDAOImpl.class, ANALYSIS_DAO);
                 for (int i = 0; i < getDocument().getTestList().size(); i++) {
                     dao.save(getDocument().getTestList().get(i));
                 }
                 ExaminationEntryDAOImpl edao = sessionManagement.getDAO(ExaminationEntryDAOImpl.class,
-						ApplicationHelper.EXAMINATION_ENTRY_DAO);
+						EXAMINATION_ENTRY_DAO);
                 for (int i = 0; i < getDocument().getExaminationEntryList().size(); i++) {
                     if (getDocument().getExaminationEntryList().get(i).getId() > 0) {
                         edao.save(getDocument().getExaminationEntryList().get(i));
@@ -154,7 +154,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
         boolean result = false;
         try {
             ExaminationRequestDAOImpl dao = sessionManagement.getDAO(ExaminationRequestDAOImpl.class,
-					ApplicationHelper.EXAMINATION_DAO);
+					EXAMINATION_DAO);
             ExaminationRequest examination = dao.save(getDocument());
             if (examination == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -163,7 +163,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
                 examination.setNumber(StringUtils.right("00000" + getDocument().getId(), 5));
                 examination = dao.save(examination);
                 ExaminationEntryDAOImpl edao = sessionManagement.getDAO(ExaminationEntryDAOImpl.class,
-						ApplicationHelper.EXAMINATION_ENTRY_DAO);
+						EXAMINATION_ENTRY_DAO);
                 for (int i = 0; i < getDocument().getExaminationEntryList().size(); i++) {
                     if (getDocument().getExaminationEntryList().get(i).getId() > 0) {
                         edao.save(getDocument().getExaminationEntryList().get(i));
@@ -285,8 +285,8 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
     private AbstractUserSelectModalBean therapistSelectModal = new AbstractUserSelectModalBean() {
         public UserListByRoleTypeHolderBean getUserList() {
             if (transfusiologistUserListBean == null) {
-                UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
-                RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO);
+                UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO);
+                RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO);
                 transfusiologistUserListBean = new UserListByRoleTypeHolderBean(RoleType.THERAPIST, userDAO, roleDAO);
             }
             return transfusiologistUserListBean;
@@ -338,8 +338,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
         @Override
         protected void doShow() {
             super.doShow();
-            setClassifierList(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper
-					.DICTIONARY_DAO).findByCategory(Classifier.class, "Наследственность", false));
+            setClassifierList(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByCategory(Classifier.class, "Наследственность", false));
         }
 
         @Override
@@ -360,7 +359,7 @@ public class ExaminationHolderBean extends AbstractDocumentHolderBean<Examinatio
         @Override
         protected void doShow() {
             super.doShow();
-            setClassifierList(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByCategory(Classifier.class, "Перенесенные заболевания", false));
+            setClassifierList(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByCategory(Classifier.class, "Перенесенные заболевания", false));
         }
 
         @Override

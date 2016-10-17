@@ -10,6 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.REQUEST_DAO;
+
 @Named("requests")
 @SessionScoped
 public class RequestsListHolderBean extends AbstractDocumentListHolderBean<AbstractRequest> {
@@ -23,7 +25,7 @@ public class RequestsListHolderBean extends AbstractDocumentListHolderBean<Abstr
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			long count = sessionManagement.getDAO(RequestDAOImpl.class, ApplicationHelper.REQUEST_DAO).countDocument(false);
+			long count = sessionManagement.getDAO(RequestDAOImpl.class, REQUEST_DAO).countDocument(false);
 			return new Long(count).intValue();
 		}
 		catch (Exception e) {
@@ -36,7 +38,7 @@ public class RequestsListHolderBean extends AbstractDocumentListHolderBean<Abstr
 	protected List<AbstractRequest> loadDocuments() {
 		List<AbstractRequest> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(RequestDAOImpl.class, ApplicationHelper.REQUEST_DAO).findDocuments(false,
+			result = sessionManagement.getDAO(RequestDAOImpl.class, REQUEST_DAO).findDocuments(false,
 					getPagination().getOffset(), getPagination().getPageSize(), "created", false);
 			Collections.sort(result, new Comparator<AbstractRequest>() {
 				@Override
@@ -64,7 +66,7 @@ public class RequestsListHolderBean extends AbstractDocumentListHolderBean<Abstr
 		List<AbstractRequest> result = new ArrayList<>();
 		try {
 			if (parentId != 0) {
-				result = sessionManagement.getDAO(RequestDAOImpl.class, ApplicationHelper.REQUEST_DAO).findRequestsByDonor(false, parentId, "created", false);
+				result = sessionManagement.getDAO(RequestDAOImpl.class, REQUEST_DAO).findRequestsByDonor(false, parentId, "created", false);
 				Collections.sort(result, new Comparator<AbstractRequest>() {
 					@Override
 					public int compare(AbstractRequest o1, AbstractRequest o2) {

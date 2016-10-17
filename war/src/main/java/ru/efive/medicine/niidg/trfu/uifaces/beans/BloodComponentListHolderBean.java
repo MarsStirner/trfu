@@ -3,7 +3,6 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -12,6 +11,8 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
 
 @Named("bloodComponentList")
 @SessionScoped
@@ -31,7 +32,7 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			result = new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).countDocument(filter, false)).intValue();
+			result = new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).countDocument(filter, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -43,7 +44,7 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 	protected List<BloodComponent> loadDocuments() {
 		List<BloodComponent> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocuments(filter, false,
+			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).findDocuments(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
@@ -61,7 +62,7 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 		List<BloodComponent> result = new ArrayList<>();
 		try {
 			if (donationId != 0) {
-				result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findComponentsByDonation(donationId);
+				result = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).findComponentsByDonation(donationId);
 			}
 		}
 		catch (Exception e) {
@@ -74,7 +75,7 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 		List<BloodComponent> result = new ArrayList<>();
 		try {
 			if (orderId != 0) {
-				result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findComponentsByOrder(orderId);
+				result = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).findComponentsByOrder(orderId);
 			}
 		}
 		catch (Exception e) {
@@ -87,7 +88,7 @@ public class BloodComponentListHolderBean extends AbstractDocumentListHolderBean
 		List<BloodComponent> result = new ArrayList<>();
 		try {
 			if (phenotypes != null) {
-				result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findComponentsByPhenotypes(
+				result = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).findComponentsByPhenotypes(
 						phenotypes, searchBloodGroup, bloodGroup, searchRhesus, rhesusFactor, "parentNumber,number", true);
 			}
 			else {

@@ -1,16 +1,8 @@
 package ru.efive.medicine.niidg.trfu.data.entity;
 
-import java.util.*;
-
-import javax.persistence.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
+import org.hibernate.annotations.*;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.data.AbstractRequest;
@@ -21,6 +13,12 @@ import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAppointment;
 import ru.efive.medicine.niidg.trfu.data.entity.operational.OperationalRoom;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ProcessedData;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.*;
+import javax.persistence.Table;
+import java.util.*;
 
 /**
  * Донация

@@ -4,7 +4,7 @@ import ru.efive.dao.sql.dao.user.RoleDAOHibernate;
 import ru.efive.dao.sql.entity.enums.RoleType;
 import ru.efive.dao.sql.entity.user.Role;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 
@@ -32,7 +32,7 @@ public class RoleHolderBean extends AbstractDocumentHolderBean<Role, Integer> im
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO).delete(getDocument());
+			sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO).delete(getDocument());
 			result = true;
 		}
 		catch (Exception e) {
@@ -55,7 +55,7 @@ public class RoleHolderBean extends AbstractDocumentHolderBean<Role, Integer> im
 	
 	@Override
 	protected void initDocument(Integer id) {
-		setDocument(sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO).get(id));
+		setDocument(sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO).get(id));
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
 		}
@@ -70,7 +70,7 @@ public class RoleHolderBean extends AbstractDocumentHolderBean<Role, Integer> im
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			Role role = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO).update(getDocument());
+			Role role = sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO).update(getDocument());
 			if (role == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -95,7 +95,7 @@ public class RoleHolderBean extends AbstractDocumentHolderBean<Role, Integer> im
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			Role role = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO).save(getDocument());
+			Role role = sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO).save(getDocument());
 			if (role == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,

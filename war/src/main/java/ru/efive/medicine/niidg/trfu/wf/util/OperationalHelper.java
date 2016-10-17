@@ -14,7 +14,6 @@ import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationEntry;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
 import ru.efive.medicine.niidg.trfu.data.entity.PheresisReport;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ActionResult;
 
 import javax.faces.context.FacesContext;
@@ -22,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
 
 public final class OperationalHelper {
 	
@@ -58,7 +60,7 @@ public final class OperationalHelper {
 					result.setDescription("Фактический объем донации не может быть отрицательным");
 				}
 				else {
-					final BloodComponentDAOImpl componentDao = (BloodComponentDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.BLOOD_COMPONENT_DAO);
+					final BloodComponentDAOImpl componentDao = (BloodComponentDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(BLOOD_COMPONENT_DAO);
 					BloodComponent component = new BloodComponent();
 					component.setDonationId(request.getId());
 					Date created = new Date();
@@ -85,7 +87,7 @@ public final class OperationalHelper {
 					
 					component.setMaker(maker);
 					
-					List<BloodComponentType> list = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).findComponentTypeByValue("01.03.001 Кровь консервированная");
+					List<BloodComponentType> list = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO)).findComponentTypeByValue("01.03.001 Кровь консервированная");
 					if (list.size() > 0) {
 						component.setComponentType(list.get(0));
 						HistoryEntry historyEntry = new HistoryEntry();
@@ -139,7 +141,7 @@ public final class OperationalHelper {
 	public static ActionResult checkOperationalReject(BloodDonationRequest request) {
 		ActionResult result = new ActionResult();
 		try {
-			List<BloodComponent> components = ((BloodComponentDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.BLOOD_COMPONENT_DAO)).findComponentsByDonation(request.getId());
+			List<BloodComponent> components = ((BloodComponentDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(BLOOD_COMPONENT_DAO)).findComponentsByDonation(request.getId());
 			BloodComponent component = null;
 			for (BloodComponent c: components) {
 				if (c != null && c.getComponentType() != null && StringUtils.equals(c.getComponentType().toString(), "01.03.001 Кровь консервированная")) {
@@ -182,8 +184,8 @@ public final class OperationalHelper {
 			PheresisReport report = request.getReport();
 			
 			if (report.getTotalPltVolume() > 0 || report.getPlasmaVolume() > 0 || report.getErVolume() > 0) {
-				final DictionaryDAOImpl dictionaryDao = (DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO);
-				final BloodComponentDAOImpl componentDao = (BloodComponentDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.BLOOD_COMPONENT_DAO);
+				final DictionaryDAOImpl dictionaryDao = (DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO);
+				final BloodComponentDAOImpl componentDao = (BloodComponentDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(BLOOD_COMPONENT_DAO);
 				final Date created = new Date();
                 //Создаваемый КК
                 BloodComponent component = new BloodComponent();

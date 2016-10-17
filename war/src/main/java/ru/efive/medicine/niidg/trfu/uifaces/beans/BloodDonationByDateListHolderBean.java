@@ -2,7 +2,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -29,7 +29,7 @@ public class BloodDonationByDateListHolderBean extends AbstractDocumentListHolde
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			return new Long(sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).countDocument(filter, false)).intValue();
+			return new Long(sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, DONATION_DAO).countDocument(filter, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -41,7 +41,7 @@ public class BloodDonationByDateListHolderBean extends AbstractDocumentListHolde
 	protected List<BloodDonationRequest> loadDocuments() {
 		List<BloodDonationRequest> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).findDocuments(filter, false,
+			result = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, DONATION_DAO).findDocuments(filter, false,
 				getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {

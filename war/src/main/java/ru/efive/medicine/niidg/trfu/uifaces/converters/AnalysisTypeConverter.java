@@ -10,7 +10,7 @@ import javax.faces.convert.FacesConverter;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.AnalysisType;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @FacesConverter("AnalysisTypeConverter")
 public class AnalysisTypeConverter implements Converter {
@@ -21,7 +21,7 @@ public class AnalysisTypeConverter implements Converter {
 			SessionManagementBean sessionManagement = 
 				(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
 						SessionManagementBean.class);
-			List<AnalysisType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByValue(AnalysisType.class, value);
+			List<AnalysisType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByValue(AnalysisType.class, value);
 			if (list.size() > 0) {
 				result = list.get(0);
 			}

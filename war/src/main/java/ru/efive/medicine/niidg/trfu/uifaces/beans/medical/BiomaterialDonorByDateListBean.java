@@ -3,7 +3,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans.medical;
 import ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -30,7 +30,7 @@ public class BiomaterialDonorByDateListBean extends AbstractDocumentListHolderBe
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			long count = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).countDonors(filter, false);
+			long count = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).countDonors(filter, false);
 			return new Long(count).intValue();
 		}
 		catch (Exception e) {
@@ -43,7 +43,7 @@ public class BiomaterialDonorByDateListBean extends AbstractDocumentListHolderBe
 	protected List<BiomaterialDonor> loadDocuments() {
 		List<BiomaterialDonor> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findDonors(filter, false,
+			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).findDonors(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {

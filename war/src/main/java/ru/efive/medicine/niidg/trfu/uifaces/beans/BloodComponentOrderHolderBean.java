@@ -1,15 +1,6 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.*;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
-
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentOrderRequestDAOImpl;
@@ -18,7 +9,6 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.AnalysisType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
 import ru.efive.medicine.niidg.trfu.data.entity.*;
-import ru.efive.medicine.niidg.trfu.uifaces.converters.ClassifierConverter;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
@@ -26,6 +16,15 @@ import ru.efive.uifaces.bean.ModalWindowHolderBean;
 import ru.efive.wf.core.ActionResult;
 import ru.efive.wf.core.activity.EditableProperty;
 import ru.efive.wf.core.util.EngineHelper;
+
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.*;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @Named("bloodComponentOrder")
 @ConversationScoped
@@ -35,7 +34,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
     public String edit() {
         final String result = super.edit();
         final BloodComponentOrderRequest bloodComponentOrder = getDocument();
-        final List<AnalysisType> analysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
+        final List<AnalysisType> analysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
         if (bloodComponentOrder.getPhenotypeList().size() != analysisTypes.size()) {
             for (AnalysisType currentAnalysisType : analysisTypes) {
                 boolean exists = false;
@@ -57,7 +56,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
     protected boolean deleteDocument() {
         boolean result = false;
         try {
-            sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO).delete(getDocument());
+            sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, COMPONENT_ORDER_DAO).delete(getDocument());
             result = true;
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
@@ -79,7 +78,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
 
     @Override
     protected void initDocument(Integer id) {
-        setDocument(sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO).get(id));
+        setDocument(sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, COMPONENT_ORDER_DAO).get(id));
         if (getDocument() == null) {
             setState(STATE_NOT_FOUND);
         }
@@ -93,7 +92,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
         bloodComponentOrder.setCreated(created);
         bloodComponentOrder.setStaffNurse(sessionManagement.getLoggedUser());
 
-        final List<AnalysisType> analysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
+        final List<AnalysisType> analysisTypes = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
         for (AnalysisType currentAnalysisType : analysisTypes) {
             bloodComponentOrder.addToPhenotypeList(new BloodComponentOrderPhenotype(bloodComponentOrder, currentAnalysisType, "-"));
         }
@@ -119,7 +118,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
     protected boolean saveDocument() {
         boolean result = false;
         try {
-            BloodComponentOrderRequest bloodComponentOrder = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO).update(getDocument());
+            BloodComponentOrderRequest bloodComponentOrder = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, COMPONENT_ORDER_DAO).update(getDocument());
             if (bloodComponentOrder == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_ERROR,
@@ -142,7 +141,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
     protected boolean saveNewDocument() {
         boolean result = false;
         try {
-            BloodComponentOrderRequestDAOImpl dao = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, ApplicationHelper.COMPONENT_ORDER_DAO);
+            BloodComponentOrderRequestDAOImpl dao = sessionManagement.getDAO(BloodComponentOrderRequestDAOImpl.class, COMPONENT_ORDER_DAO);
             BloodComponentOrderRequest bloodComponentOrder = dao.save(getDocument());
             if (bloodComponentOrder == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
@@ -197,7 +196,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
         @Override
         protected void doSave() {
             super.doSave();
-            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
             for (BloodComponent component : components) {
                 if(component.getOrderId() != getDocumentId()) {
                     component.setOrderId(getDocumentId());
@@ -209,7 +208,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
         @Override
         protected void doShow() {
             super.doShow();
-            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
             components = dao.findComponentsByOrder(getDocumentId());
         }
 
@@ -313,7 +312,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
         @Override
         protected void doSave() {
             super.doSave();
-            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
             for (BloodComponent component : components) {
                 component.setOrderId(getDocumentId());
                 dao.save(component);
@@ -323,10 +322,10 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
         @Override
         protected void doShow() {
             super.doShow();
-            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+            BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
             components = dao.findComponentsByOrder(getDocumentId());
 
-            List<AnalysisType> types = sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
+            List<AnalysisType> types = sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnalysisTypes("Иммуносерология", false);
             criteriaList = new ArrayList<>();
 
             for (AnalysisType type : types) {
@@ -456,7 +455,7 @@ public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<Bl
     };
 
     public void deleteBloodComponent(BloodComponent row) {
-        BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO);
+        BloodComponentDAOImpl dao = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO);
         row.setOrderId(0);
         dao.save(row);
     }

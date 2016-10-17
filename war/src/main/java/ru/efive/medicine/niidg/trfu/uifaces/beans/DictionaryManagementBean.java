@@ -34,7 +34,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.QualityControlMappingEntry;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Recommendation;
 import ru.efive.medicine.niidg.trfu.data.dictionary.TransfusionType;
 import ru.efive.medicine.niidg.trfu.data.entity.Division;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @Named("dictionaryManagement")
 @RequestScoped
@@ -43,7 +43,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<BloodGroup> getBloodGroups() {
 		List<BloodGroup> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodGroups(false, null, false);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodGroups(false, null, false);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -57,7 +57,7 @@ public class DictionaryManagementBean implements Serializable {
 		bloodGroup.setValue("");
 		result.add(bloodGroup);
 		try {
-			result.addAll(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodGroups(false, null, false));
+			result.addAll(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodGroups(false, null, false));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -68,7 +68,7 @@ public class DictionaryManagementBean implements Serializable {
 	public BloodGroup getBloodGroupByNumber(int number) {
 		BloodGroup result = null;
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodGroupByNumber(number);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodGroupByNumber(number);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -79,7 +79,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<Anticoagulant> getAnticoagulants() {
 		List<Anticoagulant> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findAnticoagulants(false, null, false);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findAnticoagulants(false, null, false);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -101,7 +101,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<ExaminationEntryType> getExaminationEntryTypes() {
 		List<ExaminationEntryType> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findExaminationEntryTypes(false, null, false);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findExaminationEntryTypes(false, null, false);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -115,7 +115,7 @@ public class DictionaryManagementBean implements Serializable {
 		entryType.setValue("");
 		result.add(entryType);
 		try {
-			result.addAll(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findExaminationEntryTypes(false, null, false));
+			result.addAll(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findExaminationEntryTypes(false, null, false));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -126,7 +126,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<BloodComponentType> getBloodComponentTypes() {
 		List<BloodComponentType> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodComponentTypes(false, "code", true);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodComponentTypes(false, "code", true);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -137,7 +137,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<BloodComponentType> getBloodComponentTypes(String filter) {
 		List<BloodComponentType> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodComponentTypes(filter, false, "code", true);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodComponentTypes(filter, false, "code", true);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -148,7 +148,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<BloodComponentType> getUsedBloodComponentTypes() {
 		List<BloodComponentType> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findUsedBloodComponentTypes(false, "code", true);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findUsedBloodComponentTypes(false, "code", true);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -163,7 +163,7 @@ public class DictionaryManagementBean implements Serializable {
 		componentType.setValue("");
 		result.add(componentType);
 		try {
-			result.addAll(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findUsedBloodComponentTypes(false, "code", true));
+			result.addAll(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findUsedBloodComponentTypes(false, "code", true));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -174,7 +174,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<ProcessingType> getProcessingTypes() {
 		List<ProcessingType> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findProcessingTypes(false, null, false);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findProcessingTypes(false, null, false);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -185,7 +185,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<BloodDonationType> getBloodDonationTypes() {
 		List<BloodDonationType> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findBloodDonationTypes(false, null, false);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findBloodDonationTypes(false, null, false);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -196,7 +196,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<DonorType> getDonorTypes() {
 		List<DonorType> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findDonorTypes(false, null, false);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findDonorTypes(false, null, false);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -207,7 +207,7 @@ public class DictionaryManagementBean implements Serializable {
 	public QualityControlMappingEntry getQualityControlMappingEntry(BloodComponentType componentType) {
 		QualityControlMappingEntry result = null;
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findQualityControlMappingEntries(componentType, false);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findQualityControlMappingEntries(componentType, false);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -218,7 +218,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<Recommendation> getRecommendations() {
 		List<Recommendation> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findRecommendations(false, null, false);
+			result = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findRecommendations(false, null, false);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -227,11 +227,11 @@ public class DictionaryManagementBean implements Serializable {
 	}
 	
 	public List<Classifier> getByCategory(String category) {
-		return sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByCategory(Classifier.class, category, false);
+		return sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByCategory(Classifier.class, category, false);
 	}
 
     public List<Classifier> getByCategoryOrderAlphabetically(String category) {
-        final List<Classifier> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByCategory(Classifier.class, category, false);
+        final List<Classifier> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByCategory(Classifier.class, category, false);
         Collections.sort(list, new Comparator<Classifier>() {
                     @Override
                     public int compare(Classifier o1, Classifier o2) {
@@ -248,7 +248,7 @@ public class DictionaryManagementBean implements Serializable {
 		classifier.setValue("");
 		result.add(classifier);
 		try {
-			result.addAll(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByCategory(Classifier.class, category, false));
+			result.addAll(sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByCategory(Classifier.class, category, false));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -259,7 +259,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<String> getValuesByCategory(String category) {
 		List<String> result = new ArrayList<>();
 		try {
-			List<Classifier> list =  sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByCategory(Classifier.class, category, false);
+			List<Classifier> list =  sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByCategory(Classifier.class, category, false);
 			for (Classifier classifier: list) {
 				result.add(classifier.getValue());
 			}
@@ -286,7 +286,7 @@ public class DictionaryManagementBean implements Serializable {
 	public List<String> getClassifierCategories() {
 		List<String> result = new ArrayList<>();
 		try {
-			result =  sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findClassifierCategories();
+			result =  sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findClassifierCategories();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -336,7 +336,7 @@ public class DictionaryManagementBean implements Serializable {
 			emptyDivision.setName("");
 			divisions.add(emptyDivision);
 			//добавить весь список отделений
-			divisions.addAll(sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findByName("", false));
+			divisions.addAll(sessionManagement.getDAO(DivisionDAOImpl.class, DIVISION_DAO).findByName("", false));
 		}		
 		return divisions;
 	}
@@ -429,7 +429,7 @@ public class DictionaryManagementBean implements Serializable {
 	 * @return DAO для работы со справочной информацией.
 	 */
 	protected DictionaryDAOImpl getDictionaryDAO() {
-		return sessionManagement.getDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO);
+		return sessionManagement.getDAO(DictionaryDAOImpl.class, DICTIONARY_DAO);
 	}
 
 	/**
@@ -438,7 +438,7 @@ public class DictionaryManagementBean implements Serializable {
 	 * @return список контрагентов.
 	 */
 	public List<Contragent> getContragents() {
-		ContragentDAOHibernate dao = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO);
+		ContragentDAOHibernate dao = sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO);
 		return dao.getContragents(false);
 	}
 	
@@ -448,7 +448,7 @@ public class DictionaryManagementBean implements Serializable {
 	 * @return список контрагентов.
 	 */
 	public List<Contragent> getContragentsWithDeleted() {
-		ContragentDAOHibernate dao = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO);
+		ContragentDAOHibernate dao = sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO);
 		return dao.getContragents(true);
 	}
 }

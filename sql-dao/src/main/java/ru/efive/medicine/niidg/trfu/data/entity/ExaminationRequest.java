@@ -1,26 +1,8 @@
 package ru.efive.medicine.niidg.trfu.data.entity;
 
-import java.util.*;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
+import org.hibernate.annotations.*;
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.data.AbstractRequest;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Recommendation;
@@ -28,6 +10,12 @@ import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAnalysisResu
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalAppointment;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ProcessedData;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.*;
+import javax.persistence.Table;
+import java.util.*;
 
 /**
  * Обращение на обследование

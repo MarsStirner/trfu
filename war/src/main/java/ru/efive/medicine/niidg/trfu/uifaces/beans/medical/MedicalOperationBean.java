@@ -1,34 +1,12 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.medical;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
-
 import ru.efive.dao.sql.dao.user.RoleDAOHibernate;
 import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.enums.RoleType;
-import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.EritrocyteMass;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.Hemodynamics;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.LaboratoryMeasure;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.LiquidBalance;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.OperationParameters;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.OperationReport;
-import ru.efive.medicine.niidg.trfu.data.entity.medical.Supply;
+import ru.efive.medicine.niidg.trfu.data.entity.medical.*;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.AbstractUserSelectModalBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.DictionaryManagementBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.ProcessorModalBean;
@@ -44,6 +22,17 @@ import ru.efive.wf.core.ActionResult;
 import ru.efive.wf.core.activity.EditableProperty;
 import ru.efive.wf.core.util.EngineHelper;
 
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Calendar;
+import java.util.Date;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+
 @Named("medicalOperation")
 @ConversationScoped
 public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, Integer> {
@@ -52,7 +41,7 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).delete(getDocument());
+			sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).delete(getDocument());
 			result = true;
 		}
 		catch (Exception e) {
@@ -75,7 +64,7 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 	
 	@Override
 	protected void initDocument(Integer id) {
-		setDocument(sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).get(Operation.class, id));
+		setDocument(sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).get(Operation.class, id));
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
 		} 
@@ -91,7 +80,7 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 		operation.setOperationType(1);
 		String parentId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("parentId");
 		if (parentId != null && !parentId.equals("")) {
-			operation.setDonor(sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).get(
+			operation.setDonor(sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).get(
 					BiomaterialDonor.class, Integer.parseInt(parentId)));
 		}
 		OperationReport report = new OperationReport();
@@ -135,7 +124,7 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			Operation operation = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).update(Operation.class, getDocument());
+			Operation operation = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).update(Operation.class, getDocument());
 			if (operation == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -160,7 +149,7 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			MedicalOperationDAOImpl dao = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO);
+			MedicalOperationDAOImpl dao = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO);
 			Operation operation = dao.save(Operation.class, getDocument());
 			if (operation == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
@@ -326,8 +315,8 @@ public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, 
 		@Override
 		public UserListByRoleTypeHolderBean getUserList() {
 			if (transfusiologistUserListBean == null) {
-				UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
-				RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO);
+				UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO);
+				RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO);
 				transfusiologistUserListBean = new UserListByRoleTypeHolderBean(RoleType.THERAPIST, userDAO, roleDAO);
 			}
 			return transfusiologistUserListBean;

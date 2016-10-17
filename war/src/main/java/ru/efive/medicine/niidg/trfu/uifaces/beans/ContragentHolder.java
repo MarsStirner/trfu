@@ -11,7 +11,7 @@ import javax.inject.Named;
 import ru.efive.crm.dao.ContragentDAOHibernate;
 import ru.efive.crm.data.Contragent;
 import ru.efive.crm.data.ContragentNomenclature;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
@@ -24,7 +24,7 @@ public class ContragentHolder extends AbstractDocumentHolderBean<Contragent, Int
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			result = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).delete(getDocumentId());
+			result = sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO).delete(getDocumentId());
 			if (!result) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -53,7 +53,7 @@ public class ContragentHolder extends AbstractDocumentHolderBean<Contragent, Int
 	@Override
 	protected void initDocument(Integer id) {
 		try {
-			setDocument(sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).get(id));
+			setDocument(sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO).get(id));
 			if (getDocument() == null) {
 				setState(STATE_NOT_FOUND);
 			}
@@ -78,7 +78,7 @@ public class ContragentHolder extends AbstractDocumentHolderBean<Contragent, Int
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).save(getDocument());
+			Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO).save(getDocument());
 			if (contragent == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -99,7 +99,7 @@ public class ContragentHolder extends AbstractDocumentHolderBean<Contragent, Int
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).save(getDocument());
+			Contragent contragent = sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO).save(getDocument());
 			if (contragent == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,

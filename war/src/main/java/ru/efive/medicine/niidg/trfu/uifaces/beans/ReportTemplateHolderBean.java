@@ -1,19 +1,5 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import ru.efive.dao.sql.entity.document.ReportTemplate;
 import ru.efive.medicine.niidg.trfu.dao.ReportDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentOrderRequest;
@@ -23,6 +9,16 @@ import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
 
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.*;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.REPORT_DAO;
+
 @Named("reportTemplate")
 @ConversationScoped
 public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportTemplate, Integer> implements Serializable {
@@ -31,7 +27,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).delete(getDocument());
+			sessionManagement.getDAO(ReportDAOImpl.class, REPORT_DAO).delete(getDocument());
 			result = true;
 		}
 		catch (Exception e) {
@@ -52,7 +48,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 	
 	@Override
 	protected void initDocument(Integer id) {
-		ReportTemplate reportTemplate = sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).get(id);
+		ReportTemplate reportTemplate = sessionManagement.getDAO(ReportDAOImpl.class, REPORT_DAO).get(id);
 		reportTemplate.setStartDate(new Date());
 		reportTemplate.setEndDate(new Date());
 		setDocument(reportTemplate);
@@ -69,7 +65,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 		consumableMaterial = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("consumableMaterial");
 		String templateName = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("templateName");
 		if (templateName != null && !templateName.equals("")) {
-			ReportTemplate reportTemplate = sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).findTemplateByName(templateName);
+			ReportTemplate reportTemplate = sessionManagement.getDAO(ReportDAOImpl.class, REPORT_DAO).findTemplateByName(templateName);
 			if (reportTemplate != null) {
 				reportTemplate.setStartDate(Calendar.getInstance(ApplicationHelper.getLocale()).getTime());
 				try {
@@ -99,7 +95,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			ReportTemplate template = sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).save(getDocument());
+			ReportTemplate template = sessionManagement.getDAO(ReportDAOImpl.class, REPORT_DAO).save(getDocument());
 			if (template == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка при сохранении документа", ""));
 			}
@@ -120,7 +116,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			ReportTemplate template = sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).save(getDocument());
+			ReportTemplate template = sessionManagement.getDAO(ReportDAOImpl.class, REPORT_DAO).save(getDocument());
 			if (template == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка при сохранении документа", ""));
 			}
@@ -140,7 +136,7 @@ public class ReportTemplateHolderBean extends AbstractDocumentHolderBean<ReportT
 	public boolean saveReport() {
 		boolean result = false;
 		try {
-			ReportTemplate template = sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).save(getDocument());
+			ReportTemplate template = sessionManagement.getDAO(ReportDAOImpl.class, REPORT_DAO).save(getDocument());
 			if (template == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка при сохранении документа", ""));
 			}

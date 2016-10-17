@@ -2,7 +2,6 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import org.apache.commons.lang.StringUtils;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -15,6 +14,7 @@ import java.util.Date;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static javax.faces.application.FacesMessage.SEVERITY_WARN;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
 
 /**
  * Author: Upatov Egor <br>
@@ -79,7 +79,7 @@ public class PurchasedBloodComponentRegistrationBean implements Serializable {
             }
             final String componentNumber = StringUtils.right(fullNumber, 2);
             final String parentNumber = StringUtils.substring(fullNumber, fullNumber.length() - 8, fullNumber.length() - 2);
-            if (!sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocumentsByFullNumber(
+            if (!sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).findDocumentsByFullNumber(
                     parentNumber, componentNumber, false
             ).isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage(

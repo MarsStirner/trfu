@@ -1,18 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.filters;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-
 import ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationType;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
@@ -21,6 +11,16 @@ import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.ExaminationRequ
 import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.ExaminationRequestsXlsGenerator;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.util.DateHelper;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.EXAMINATION_DAO;
 
 @Named("examinationRequestFilterableList")
 @SessionScoped
@@ -39,7 +39,7 @@ public class ExaminationRequestFilterableListHolderBean
 			ExaminationsFilter filter) {
 		try {
 			return sessionManagement.getDAO(ExaminationRequestDAOImpl.class,
-					ApplicationHelper.EXAMINATION_DAO).findDocuments(filter,
+					EXAMINATION_DAO).findDocuments(filter,
 					offset, pageSize, getSorting().getColumnId(),
 					getSorting().isAsc());
 		} catch (Exception e) {
@@ -90,8 +90,9 @@ public class ExaminationRequestFilterableListHolderBean
 									DateHelper.DATE_WITHOUT_TIME_PATTERN)));
 		}
 		if (statusId != ExaminationsFilter.EXAMINATION_STATUS_NULL_VALUE) {
-			String statusName = ApplicationHelper.getStatusName("Examination",
-					statusId);
+			String statusName = ApplicationHelper.getStatusName(
+					"Examination", statusId
+			);
 			parameters.add(new FilterParameter(ExaminationsFilter.STATUS_TITLE,
 					statusName));
 		}
@@ -146,7 +147,7 @@ public class ExaminationRequestFilterableListHolderBean
 		try {
 			long count = sessionManagement.getDAO(
 					ExaminationRequestDAOImpl.class,
-					ApplicationHelper.EXAMINATION_DAO).countDocument(
+					EXAMINATION_DAO).countDocument(
 					filter);
 			return new Long(count).intValue();
 		} catch (Exception e) {

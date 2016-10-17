@@ -2,7 +2,6 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import ru.efive.dao.sql.entity.document.ReportTemplate;
 import ru.efive.medicine.niidg.trfu.dao.ReportDAOImpl;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
 
@@ -11,6 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.REPORT_DAO;
 
 @Named("reportTemplateList")
 @SessionScoped
@@ -30,11 +31,11 @@ public class ReportTemplateListBean extends AbstractDocumentListHolderBean<Repor
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			if (sessionManagement.isAdmin()) {
-				result = new Long(sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).countDocument(false)).intValue();
+			if (sessionManagement.getAuthData().isAdministrator()) {
+				result = new Long(sessionManagement.getDAO(ReportDAOImpl.class, REPORT_DAO).countDocument(false)).intValue();
 			}
 			else {
-				result = new Long(sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).countDocument(sessionManagement.getCurrentRole(), false)).intValue();
+				result = new Long(sessionManagement.getDAO(ReportDAOImpl.class, REPORT_DAO).countDocument(sessionManagement.getCurrentRole(), false)).intValue();
 			}
 		}
 		catch (Exception e) {
@@ -47,12 +48,12 @@ public class ReportTemplateListBean extends AbstractDocumentListHolderBean<Repor
 	protected List<ReportTemplate> loadDocuments() {
 		List<ReportTemplate> result = new ArrayList<>();
 		try {
-			if (sessionManagement.isAdmin()) {
-				result = sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).findDocuments(false, 
+			if (sessionManagement.getAuthData().isAdministrator()) {
+				result = sessionManagement.getDAO(ReportDAOImpl.class, REPORT_DAO).findDocuments(false,
 						getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 			}
 			else {
-				result = sessionManagement.getDAO(ReportDAOImpl.class, ApplicationHelper.REPORT_DAO).findDocuments(sessionManagement.getCurrentRole(), false, 
+				result = sessionManagement.getDAO(ReportDAOImpl.class, REPORT_DAO).findDocuments(sessionManagement.getCurrentRole(), false,
 						getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 			}
 		}

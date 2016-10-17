@@ -3,7 +3,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans.medical;
 import ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -30,7 +30,7 @@ public class ProcessingReadyBiomaterialListBean extends AbstractDocumentListHold
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			result = new Long(sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).countBiomaterials(filter, 2, false)).intValue();
+			result = new Long(sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).countBiomaterials(filter, 2, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -42,7 +42,7 @@ public class ProcessingReadyBiomaterialListBean extends AbstractDocumentListHold
 	protected List<Biomaterial> loadDocuments() {
 		List<Biomaterial> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findBiomaterials(filter, 2, false,
+			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).findBiomaterials(filter, 2, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {

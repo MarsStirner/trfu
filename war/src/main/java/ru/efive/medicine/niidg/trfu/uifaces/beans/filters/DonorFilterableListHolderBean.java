@@ -1,18 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.filters;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
@@ -21,10 +11,18 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.DonorCategory;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Gender;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.DonorsXlsGenerator;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.DonorsDocxGenerator;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.DonorsXlsGenerator;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.util.DateHelper;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Named("donorFilterableList")
 @SessionScoped
@@ -137,8 +135,9 @@ public class DonorFilterableListHolderBean extends
 			}
 		}
 		if (statusId != DonorsFilter.DONOR_STATUS_NULL_VALUE) {
-			String statusName = ApplicationHelper.getStatusName("Donor",
-					statusId);
+			String statusName = ApplicationHelper.getStatusName(
+					"Donor", statusId
+			);
 			parameters.add(new FilterParameter(DonorsFilter.DONOR_STATUS_TITLE,
 					statusName));
 		}

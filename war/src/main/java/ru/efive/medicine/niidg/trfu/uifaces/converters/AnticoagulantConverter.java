@@ -10,7 +10,7 @@ import javax.faces.convert.FacesConverter;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Anticoagulant;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @FacesConverter("AnticoagulantConverter")
 public class AnticoagulantConverter implements Converter {
@@ -21,7 +21,7 @@ public class AnticoagulantConverter implements Converter {
 			SessionManagementBean sessionManagement = 
 				(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
 						SessionManagementBean.class);
-			List<Anticoagulant> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper.DICTIONARY_DAO).findByValue(Anticoagulant.class, value);
+			List<Anticoagulant> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByValue(Anticoagulant.class, value);
 			if (list.size() > 0) {
 				result = list.get(0);
 			}

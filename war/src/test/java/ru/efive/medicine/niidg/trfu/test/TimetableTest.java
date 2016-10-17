@@ -13,7 +13,7 @@ import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.dictionary.impl.OneDayTimesheetTemplate;
 import ru.efive.medicine.niidg.trfu.dictionary.impl.OnePlanTimesheetTemplate;
 import ru.efive.medicine.niidg.trfu.dictionary.impl.PeriodTimesheetTemplate;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 public class TimetableTest {
 	

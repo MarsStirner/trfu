@@ -10,7 +10,7 @@ import javax.faces.convert.FacesConverter;
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.Division;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @FacesConverter("DivisionConverter")
 public class DivisionConverter implements Converter {
@@ -21,7 +21,7 @@ public class DivisionConverter implements Converter {
 			SessionManagementBean sessionManagement = 
 				(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
 						SessionManagementBean.class);
-			List<Division> list = sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).findByName(value, true);
+			List<Division> list = sessionManagement.getDAO(DivisionDAOImpl.class, DIVISION_DAO).findByName(value, true);
 			if (list.size() > 0) {
 				result = list.get(0);
 			}

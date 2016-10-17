@@ -1,19 +1,6 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
-
 import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
@@ -25,6 +12,17 @@ import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 import ru.efive.wf.core.ActionResult;
 
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+
 @Named("donor")
 @ConversationScoped
 public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> {
@@ -33,7 +31,7 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).delete(getDocument());
+			sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO).delete(getDocument());
 			result = true;
 		}
 		catch (Exception e) {
@@ -56,7 +54,7 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
 	
 	@Override
 	protected void initDocument(Integer id) {
-		setDocument(sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).get(id));
+		setDocument(sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO).get(id));
 		
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
@@ -94,7 +92,7 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			Donor donor = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).update(getDocument());
+			Donor donor = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO).update(getDocument());
 			if (donor == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -119,7 +117,7 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO);
+			DonorDAOImpl dao = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO);
 			Donor donor = dao.save(getDocument());
 			if (donor == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
@@ -189,7 +187,7 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
     	String result = "";
     	try {
     		if (getDocument() != null && getDocument().getId() != 0) {
-    			if (sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).countDocumentsInQuarantineByDonor(getDocument(), null, false) > 0) {
+    			if (sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).countDocumentsInQuarantineByDonor(getDocument(), null, false) > 0) {
     				result = "Есть компоненты в карантине";
     			}
     		}
@@ -203,7 +201,7 @@ public class DonorHolderBean extends AbstractDocumentHolderBean<Donor, Integer> 
     public void setDonationToday() {
     	Donor donor = getDocument();
     	Date current = new Date();
-    	BloodDonationRequestDAOImpl dao = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO);
+    	BloodDonationRequestDAOImpl dao = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, DONATION_DAO);
     	List<BloodDonationRequest> donations = dao.findDonationRequestsByDonorIdAndDateCreated(false, donor.getId(), current, -1, -1, null, true);
     	if (donations.size() > 0) {
     		donationToday = true;

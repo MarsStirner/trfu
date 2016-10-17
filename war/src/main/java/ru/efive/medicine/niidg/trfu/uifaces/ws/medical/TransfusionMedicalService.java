@@ -33,6 +33,8 @@ import javax.xml.rpc.ServiceException;
 import java.rmi.RemoteException;
 import java.util.*;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+
 @WebService(name = "transfusionMedicalService", targetNamespace = "http://www.korusconsulting.ru", serviceName = "transfusion-medical-service", portName = "transfusionMedicalService")
 public class TransfusionMedicalService {
 
@@ -80,7 +82,7 @@ public class TransfusionMedicalService {
         }
         try {
             final BloodComponentOrderRequestDAOImpl dao = (BloodComponentOrderRequestDAOImpl) ApplicationContextHelper.getApplicationContext()
-                    .getBean(ApplicationHelper.COMPONENT_ORDER_DAO);
+                    .getBean(COMPONENT_ORDER_DAO);
 
             final BloodComponentOrderRequest byExternalNumber = dao.findComponentOrderRequestByExternalNumber(orderInformation.getId().toString());
             logger.warn(
@@ -120,7 +122,7 @@ public class TransfusionMedicalService {
 
             BloodGroup bg = null;
             if (patientCredentials.getBloodGroupId() != null) {
-                bg = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).
+                bg = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO)).
                         findBloodGroupByNumber(patientCredentials.getBloodGroupId());
             }
             if (bg == null) {
@@ -132,7 +134,7 @@ public class TransfusionMedicalService {
             request.setBloodGroup(bg);
             if (orderInformation.getBloodGroupId() != null) {
                 //Тут -1 означает -2 ибо так надо (разные справочники в МИС)
-                final BloodGroup bg_o = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).
+                final BloodGroup bg_o = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO)).
                         findBloodGroupByNumber(orderInformation.getBloodGroupId() == -1 ? -2 : orderInformation.getBloodGroupId());
                 if (bg_o != null) {
                     request.setOrderBloodGroup(bg_o);
@@ -142,7 +144,7 @@ public class TransfusionMedicalService {
 
             BloodComponentType bloodComponentType = null;
             if (orderInformation.getComponentTypeId() != null && orderInformation.getComponentTypeId() > 0) {
-                bloodComponentType = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).get(BloodComponentType.class, orderInformation.getComponentTypeId());
+                bloodComponentType = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO)).get(BloodComponentType.class, orderInformation.getComponentTypeId());
             }
             if (bloodComponentType == null) {
                 result.setResult(false);
@@ -152,7 +154,7 @@ public class TransfusionMedicalService {
             }
             request.setComponentType(bloodComponentType);
 
-            List<Classifier> rhList = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).findByCategory(Classifier.class, "Резус-фактор", false);
+            List<Classifier> rhList = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO)).findByCategory(Classifier.class, "Резус-фактор", false);
             String rhString;
 
             switch (patientCredentials.getRhesusFactorId()){
@@ -207,7 +209,7 @@ public class TransfusionMedicalService {
             request.setDiagnosis(orderInformation.getDiagnosis());
             Division ans = null;
             if (orderInformation.getDivisionId() != null && orderInformation.getDivisionId() > 0) {
-                ans = ((DivisionDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DIVISION_DAO)).findByExternalId(orderInformation.getDivisionId());
+                ans = ((DivisionDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DIVISION_DAO)).findByExternalId(orderInformation.getDivisionId());
             }
             if (ans == null) {
                 result.setResult(false);
@@ -233,7 +235,7 @@ public class TransfusionMedicalService {
             if (patientCredentials.getBloodPhenotype() != null && !patientCredentials.getBloodPhenotype().isEmpty()) {
                 //Получаем список фенотипов из классификатора "Иммуносерология"
                 final List<AnalysisType> phenotypeAnalysisTypeList =
-                        ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO))
+                        ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO))
                                 .findAnalysisTypes("Иммуносерология", false);
                 //Конвертируем полученые фенотипы во внутреннее представление
                 for (BloodPhenotype currentBloodPhenotype : patientCredentials.getBloodPhenotype()) {
@@ -256,7 +258,7 @@ public class TransfusionMedicalService {
             }
             //Установка Kell -антигена
             if (patientCredentials.getBloodKell() != null) {
-                final List<Classifier> list = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO))
+                final List<Classifier> list = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO))
                         .findByValueAndCategory (Classifier.class, patientCredentials.getBloodKell() ? "Положительный" : "Отрицательный", "Kell - антиген");
                 if (!list.isEmpty()) {
                     request.setKellAntigen(list.get(0));
@@ -316,7 +318,7 @@ public class TransfusionMedicalService {
 
             logParameters(donorInfo, patientCredentials, procedureInfo);
 
-            MedicalOperationDAOImpl dao = (MedicalOperationDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.MEDICAL_DAO);
+            MedicalOperationDAOImpl dao = (MedicalOperationDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(MEDICAL_DAO);
             if (patientCredentials == null) {
                 result.setResult(false);
                 result.setDescription("Не указана информация о пациенте");
@@ -342,7 +344,7 @@ public class TransfusionMedicalService {
             BloodGroup bg = null;
             Classifier rh = null;
             if (patientCredentials.getBloodGroupId() != null && patientCredentials.getBloodGroupId() > 0) {
-                bg = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).
+                bg = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO)).
                         findBloodGroupByNumber(patientCredentials.getBloodGroupId());
             }
             if (bg == null) {
@@ -352,7 +354,7 @@ public class TransfusionMedicalService {
                 return result;
             }
 
-            List<Classifier> rhList = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).findByCategory(Classifier.class, "Резус-фактор", false);
+            List<Classifier> rhList = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO)).findByCategory(Classifier.class, "Резус-фактор", false);
             String rhString = patientCredentials.getRhesusFactorId() == 1 ? "Отрицательный" : "Положительный";
             for (Classifier cand : rhList) {
                 if (cand.getValue().equals(rhString)) rh = cand;
@@ -366,7 +368,7 @@ public class TransfusionMedicalService {
 
             BiomaterialDonor donor = null;
             if (donorInfo != null && donorInfo.getId() != null && donorInfo.getId() > 0) {
-                donor = ((MedicalOperationDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.MEDICAL_DAO)).getDonorByExternalId(donorInfo.getId(), false);
+                donor = ((MedicalOperationDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(MEDICAL_DAO)).getDonorByExternalId(donorInfo.getId(), false);
                 if (donor == null) {
                     donor = new BiomaterialDonor();
                     initializeBiomaterialDonor(donor, donorInfo.getId());
@@ -413,7 +415,7 @@ public class TransfusionMedicalService {
 
             Classifier operationType = null;
             if (procedureInfo.getOperationType() != null && procedureInfo.getOperationType() > 0) {
-                operationType = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).get(Classifier.class, procedureInfo.getOperationType());
+                operationType = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO)).get(Classifier.class, procedureInfo.getOperationType());
             }
             if (operationType == null) {
                 result.setResult(false);
@@ -425,7 +427,7 @@ public class TransfusionMedicalService {
 
             Division ans = null;
             if (procedureInfo.getDivisionId() != null && procedureInfo.getDivisionId() > 0) {
-                ans = ((DivisionDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DIVISION_DAO)).findByExternalId(procedureInfo.getDivisionId());
+                ans = ((DivisionDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DIVISION_DAO)).findByExternalId(procedureInfo.getDivisionId());
             }
             if (ans == null) {
                 result.setResult(false);
@@ -467,7 +469,7 @@ public class TransfusionMedicalService {
     public List<ProcedureType> getProcedureTypes() {
         List<ProcedureType> result = new ArrayList<ProcedureType>();
         try {
-            List<Classifier> classifierList = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).findByCategory(Classifier.class, "Вид лечебной процедуры", false);
+            List<Classifier> classifierList = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO)).findByCategory(Classifier.class, "Вид лечебной процедуры", false);
             for (Classifier classifier : classifierList) {
                 ProcedureType procedureType = new ProcedureType();
                 procedureType.setId(classifier.getId());
@@ -484,7 +486,7 @@ public class TransfusionMedicalService {
     public List<LaboratoryMeasureType> getLaboratoryMeasureTypes() {
         List<LaboratoryMeasureType> result = new ArrayList<LaboratoryMeasureType>();
         try {
-            List<Classifier> classifierList = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DICTIONARY_DAO)).findByCategory(Classifier.class, "Тип лабораторных измерений", false);
+            List<Classifier> classifierList = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DICTIONARY_DAO)).findByCategory(Classifier.class, "Тип лабораторных измерений", false);
             for (Classifier classifier : classifierList) {
                 LaboratoryMeasureType laboratoryMeasureType = new LaboratoryMeasureType();
                 laboratoryMeasureType.setId(classifier.getId());
@@ -503,7 +505,7 @@ public class TransfusionMedicalService {
         List<ComponentType> result = new ArrayList<ComponentType>();
         try {
             List<BloodComponentType> bloodComponentTypes = ((DictionaryDAOImpl) ApplicationContextHelper.getApplicationContext()
-                    .getBean(ApplicationHelper.DICTIONARY_DAO)).findBloodComponentTypes(
+                    .getBean(DICTIONARY_DAO)).findBloodComponentTypes(
                     false, "code", true
             );
             for (BloodComponentType bloodComponentType : bloodComponentTypes) {

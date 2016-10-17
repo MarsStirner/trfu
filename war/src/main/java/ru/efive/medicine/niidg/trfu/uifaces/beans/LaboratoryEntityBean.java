@@ -13,7 +13,7 @@ import ru.efive.dao.sql.wf.entity.HistoryEntry;
 import ru.efive.medicine.niidg.trfu.dao.AnalysisDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 import ru.efive.wf.core.ActionResult;
@@ -39,7 +39,7 @@ public class LaboratoryEntityBean extends AbstractDocumentHolderBean<Examination
 	
 	@Override
 	protected void initDocument(Integer id) {
-		setDocument(sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).get(id));
+		setDocument(sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).get(id));
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
 		}
@@ -54,13 +54,13 @@ public class LaboratoryEntityBean extends AbstractDocumentHolderBean<Examination
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			ExaminationRequest examination = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).save(getDocument());
+			ExaminationRequest examination = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).save(getDocument());
 			if (examination == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, "Невозможно сохранить документ. Попробуйте повторить позже.", ""));
 			}
 			else {
-				AnalysisDAOImpl dao = sessionManagement.getDAO(AnalysisDAOImpl.class, ApplicationHelper.ANALYSIS_DAO);
+				AnalysisDAOImpl dao = sessionManagement.getDAO(AnalysisDAOImpl.class, ANALYSIS_DAO);
 				for (int i = 0; i < getDocument().getTestList().size();i++) {
 					dao.save(getDocument().getTestList().get(i));
 				}

@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
+
 @Named("bloodComponenFilterList")
 @ViewScoped
 public class BloodComponentFilterListHolderBean extends AbstractDocumentListHolderBean<BloodComponent> {
@@ -45,7 +47,7 @@ public class BloodComponentFilterListHolderBean extends AbstractDocumentListHold
 		logger.info("get count start");
 		int result = 0;
 		try {
-			result = new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).countDocument(in_filters, false)).intValue();
+			result = new Long(sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).countDocument(in_filters, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -59,7 +61,7 @@ public class BloodComponentFilterListHolderBean extends AbstractDocumentListHold
 		logger.info("load start");
 		List<BloodComponent> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, ApplicationHelper.BLOOD_COMPONENT_DAO).findDocuments(in_filters, false,
+			result = sessionManagement.getDAO(BloodComponentDAOImpl.class, BLOOD_COMPONENT_DAO).findDocuments(in_filters, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {

@@ -4,7 +4,6 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 import ru.efive.medicine.niidg.trfu.dao.BloodSystemTypeDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 
@@ -14,6 +13,8 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_SYSTEM_TYPE_DAO;
 
 @Named("bloodSystemType")
 @ConversationScoped
@@ -28,7 +29,7 @@ public class BloodSystemTypeHolderBean extends AbstractDocumentHolderBean<BloodS
     protected boolean deleteDocument() {
         boolean result = false;
         try {
-            sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_TYPE_DAO).delete(getDocument());
+            sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, BLOOD_SYSTEM_TYPE_DAO).delete(getDocument());
             result = true;
         }
         catch (Exception e) {
@@ -51,7 +52,7 @@ public class BloodSystemTypeHolderBean extends AbstractDocumentHolderBean<BloodS
 
     @Override
     protected void initDocument(Integer id) {
-        setDocument(sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_TYPE_DAO).get(id));
+        setDocument(sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, BLOOD_SYSTEM_TYPE_DAO).get(id));
         if (getDocument() == null) {
             setState(STATE_NOT_FOUND);
         }
@@ -61,7 +62,7 @@ public class BloodSystemTypeHolderBean extends AbstractDocumentHolderBean<BloodS
     protected boolean saveNewDocument() {
         boolean result = false;
         try {
-            BloodSystemType systemType = sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_TYPE_DAO).save(getDocument());
+            BloodSystemType systemType = sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, BLOOD_SYSTEM_TYPE_DAO).save(getDocument());
             if (systemType == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_ERROR,
@@ -86,7 +87,7 @@ public class BloodSystemTypeHolderBean extends AbstractDocumentHolderBean<BloodS
     protected boolean saveDocument() {
         boolean result = false;
         try {
-            BloodSystemType systemType = sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_TYPE_DAO).update(getDocument());
+            BloodSystemType systemType = sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, BLOOD_SYSTEM_TYPE_DAO).update(getDocument());
             if (systemType == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_ERROR,

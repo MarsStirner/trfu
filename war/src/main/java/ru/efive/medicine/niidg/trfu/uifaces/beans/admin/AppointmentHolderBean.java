@@ -13,7 +13,7 @@ import org.apache.axis.utils.StringUtils;
 import ru.efive.dao.sql.dao.user.AppointmentDAOHibernate;
 import ru.efive.dao.sql.entity.user.Appointment;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 
@@ -25,7 +25,7 @@ public class AppointmentHolderBean extends AbstractDocumentHolderBean<Appointmen
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			sessionManagement.getDAO(AppointmentDAOHibernate.class, ApplicationHelper.APPOINTMENT_DAO).delete(getDocument());
+			sessionManagement.getDAO(AppointmentDAOHibernate.class, APPOINTMENT_DAO).delete(getDocument());
 			result = true;
 		}
 		catch (Exception e) {
@@ -46,7 +46,7 @@ public class AppointmentHolderBean extends AbstractDocumentHolderBean<Appointmen
 	
 	@Override
 	protected void initDocument(Integer id) {
-		setDocument(sessionManagement.getDAO(AppointmentDAOHibernate.class, ApplicationHelper.APPOINTMENT_DAO).get(id));
+		setDocument(sessionManagement.getDAO(AppointmentDAOHibernate.class, APPOINTMENT_DAO).get(id));
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
 		}
@@ -63,7 +63,7 @@ public class AppointmentHolderBean extends AbstractDocumentHolderBean<Appointmen
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			AppointmentDAOHibernate dao = sessionManagement.getDAO(AppointmentDAOHibernate.class, ApplicationHelper.APPOINTMENT_DAO);
+			AppointmentDAOHibernate dao = sessionManagement.getDAO(AppointmentDAOHibernate.class, APPOINTMENT_DAO);
 			if (StringUtils.isEmpty(getDocument().getName())) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не указано название должности", ""));
 				return false;
@@ -96,7 +96,7 @@ public class AppointmentHolderBean extends AbstractDocumentHolderBean<Appointmen
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			AppointmentDAOHibernate dao = sessionManagement.getDAO(AppointmentDAOHibernate.class, ApplicationHelper.APPOINTMENT_DAO);
+			AppointmentDAOHibernate dao = sessionManagement.getDAO(AppointmentDAOHibernate.class, APPOINTMENT_DAO);
 			if (StringUtils.isEmpty(getDocument().getName())) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не указано название должности", ""));
 				return false;

@@ -7,7 +7,6 @@ import ru.efive.medicine.niidg.trfu.dao.BloodSystemTypeDAOImpl;
 import ru.efive.medicine.niidg.trfu.dao.OperationalDaoImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.data.entity.operational.OperationalRoom;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -18,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @Named("operationalSession")
 @SessionScoped
@@ -67,23 +68,23 @@ public class OperationalSessionBean implements java.io.Serializable {
      * @return список доступных операционых
      */
     public List<OperationalRoom> getRoomList(final Date checkDate) {
-        return sessionManagement.getDAO(OperationalDaoImpl.class, ApplicationHelper.OPERATIONAL_DAO).getRoomList
+        return sessionManagement.getDAO(OperationalDaoImpl.class, OPERATIONAL_DAO).getRoomList
                 (checkDate);
     }
 
 
     public List<BloodSystemType> getOperationalBloodSystemTypes() {
-        return sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_TYPE_DAO)
+        return sessionManagement.getDAO(BloodSystemTypeDAOImpl.class, BLOOD_SYSTEM_TYPE_DAO)
                 .getByMnem("oper");
     }
 
     public List<User> getTransfusiologistList() {
-        final UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+        final UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO);
         return userDAO.getUsersByAppointment("Врач-Трансфузиолог", null, false, -1, -1, "lastName", false);
     }
 
     public List<User> getOperationalNursesList() {
-        final UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+        final UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO);
         return userDAO.getUsersByAppointment("Операционная сестра", null, false, -1, -1, "lastName", false);
     }
 
@@ -111,7 +112,7 @@ public class OperationalSessionBean implements java.io.Serializable {
         if (editor != null) {
             if (editor.validate()) {
                 final OperationalRoom toCreate = editor.createRoom(sessionManagement.getLoggedUser());
-                sessionManagement.getDAO(OperationalDaoImpl.class, ApplicationHelper.OPERATIONAL_DAO).save(toCreate);
+                sessionManagement.getDAO(OperationalDaoImpl.class, OPERATIONAL_DAO).save(toCreate);
                 createNewEditor();
                 RequestContext rc = RequestContext.getCurrentInstance();
                 rc.execute("PF('" + OperationalEditor.DIALOG_WIDGET_VAR + "').hide();");

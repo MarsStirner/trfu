@@ -33,21 +33,11 @@ public class AuthorizationData implements Serializable {
 
 
     /**
-     * Список замещаемых пользователей
-     */
-    private final Set<User> substitutedUsers = new HashSet<>(0);
-    private final Set<Integer> userIds = new HashSet<>(1);
-
-    //Замещает ли текущий пользователь кого-либо
-    private boolean isSubstitution = false;
-
-    /**
      * Создаем данные авторизации (авторизованный пользователь и его группы + роли и уровни допуска)
      * @param authorized авторизованный пользователь
      */
     public AuthorizationData(final User authorized){
-        this.authorized = authorized;
-        this.userIds.add(authorized.getId());
+        this.authorized = authorized;             
         final Set<Role> authorizedRoles = authorized.getRoles();
         this.roles = new HashSet<>(authorizedRoles.size());
         this.roleIds = new HashSet<>(authorizedRoles.size());
@@ -65,15 +55,8 @@ public class AuthorizationData implements Serializable {
     public Set<Role> getRoles() {
         return roles;
     }
-
-    public Set<User> getSubstitutedUsers() {
-        return substitutedUsers;
-    }
-
-    public boolean isSubstitution() {
-        return isSubstitution;
-    }
-
+    
+    
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Списки идентификаторов
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,22 +65,25 @@ public class AuthorizationData implements Serializable {
         return roleIds;
     }
 
-    public Set<Integer> getUserIds() {
-        return userIds;
-    }
-
-
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Флаги ролей
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public boolean isAdministrator() {
+        return hasRole(RoleType.ENTERPRISE_ADMINISTRATION);
+    }
+
+    private boolean hasRole(final RoleType roleType) {
         for (Role role : roles) {
-            if (RoleType.ENTERPRISE_ADMINISTRATION.equals(role.getRoleType())) {
+            if (roleType.equals(role.getRoleType())) {
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean isOperational() {
+        return hasRole(RoleType.OPERATIONAL);
     }
 
 
@@ -111,15 +97,6 @@ public class AuthorizationData implements Serializable {
     public String toString() {
         final StringBuilder sb = new StringBuilder("AuthorizationData[");
         sb.append("\n\t AuthorizedUser: [").append(authorized.getId()).append("] ").append(authorized.getDescription());
-        sb.append("\n\t SubstitutedUsers: ");
-        if(isSubstitution){
-            sb.append(substitutedUsers.size()).append(" substitutions");
-            for(User current : substitutedUsers){
-                sb.append("\n\t\t\t[").append(current.getId()).append("] ").append(current.getDescription());
-            }
-        } else {
-            sb.append("NO substitutions");
-        }
         sb.append("\n\t Roles: ").append(roles.size());
         for(Role current : roles){
             sb.append("\n\t\t\t").append(current.getRoleType());
@@ -127,4 +104,43 @@ public class AuthorizationData implements Serializable {
         sb.append("\n]");
         return sb.toString();
     }
+
+    public String getDefaultPage() {
+        final RoleType currentRoleType = authorized.getSelectedRole().getRoleType();
+        switch (currentRoleType){
+            case REGISTRATOR:
+                return "/component/filter/donors.xhtml";
+            case THERAPIST:
+                return "/component/personal_requests.xhtml";
+            case OPERATIONAL:
+                return "/component/blood_donations_operational.xhtml";
+            case RECTIFICATION:
+                return "/component/blood_donations_rectification.xhtml";
+            case DRAFT_OUT:
+                return "/component/blood_components.xhtml";
+            case LABELING:
+                return "/component/blood_components.xhtml";
+            case EXPEDITION:
+                return "/component/blood_components_ready.xhtml";
+            case QUARANTINE:
+                return "/component/blood_components_in_quarantine.xhtml";
+            case LABORATORY:
+                return "/component/laboratory.xhtml";
+            case MEDICAL:
+                return "/component/medical/donors.xhtml";
+            case IN_CONTROL:
+                return "/component/blood_components_in_control.xhtml";
+            case HEAD_NURSE:
+                return "/component/blood_components_quarantined.xhtml";
+            case DIVISION_SUPERINTENDENT:
+                return "/component/filter/donors.xhtml";
+            case ENTERPRISE_ADMINISTRATION:
+                return "/component/admin/settings.xhtml";
+            case SECONDARY_PROCESSING:
+                return "/component/secondary_processing.xhtml";
+        }
+        return "/component/filter/donors.xhtml";
+    }
+
+
 }

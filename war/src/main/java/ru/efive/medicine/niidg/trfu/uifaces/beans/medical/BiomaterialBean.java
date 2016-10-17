@@ -28,6 +28,8 @@ import javax.inject.Named;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.MEDICAL_DAO;
+
 @Named("biomaterial")
 @ConversationScoped
 public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Integer> {
@@ -36,7 +38,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).delete(getDocument());
+			sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).delete(getDocument());
 			result = true;
 		}
 		catch (Exception e) {
@@ -59,7 +61,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
 	
 	@Override
 	protected void initDocument(Integer id) {
-		setDocument(sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).get(Biomaterial.class, id));
+		setDocument(sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).get(Biomaterial.class, id));
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
 		}
@@ -78,7 +80,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
 		biomaterial.setAuthor(sessionManagement.getLoggedUser());
 		String parentId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("parentId");
 		if (parentId != null && !parentId.equals("")) {
-			biomaterial.setOperation(sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).get(
+			biomaterial.setOperation(sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).get(
 					Operation.class, Integer.parseInt(parentId)));
 		}
 		
@@ -130,7 +132,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
 				received = null;
 			}
 			biomaterial.setReceived(received == null? null: received.getTime());
-			biomaterial = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).update(Biomaterial.class, biomaterial);
+			biomaterial = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).update(Biomaterial.class, biomaterial);
 			if (biomaterial == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -155,7 +157,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			MedicalOperationDAOImpl dao = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO);
+			MedicalOperationDAOImpl dao = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO);
 			Biomaterial biomaterial = getDocument();
 			if (biomaterial.getOperation() != null && biomaterial.getNumber() == null) {
 				int count = new Long(dao.countBiomaterialsByOperation(biomaterial.getOperation(), "", false)).intValue() + 1;
@@ -347,7 +349,7 @@ public class BiomaterialBean extends AbstractDocumentHolderBean<Biomaterial, Int
     			}
     		}
     		if (sum == getDocument().getVolume()) {
-    			MedicalOperationDAOImpl dao = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO);
+    			MedicalOperationDAOImpl dao = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO);
     			int count = 1;
     			for (VolumeEntry volume: volumeList) {
     				Biomaterial biomaterial = getDocument().cloneComponent();

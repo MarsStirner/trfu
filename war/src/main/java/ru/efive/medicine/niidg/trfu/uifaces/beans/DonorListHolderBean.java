@@ -3,7 +3,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -30,7 +30,7 @@ public class DonorListHolderBean extends AbstractDocumentListHolderBean<Donor> {
     protected int getTotalCount() {
         int result = 0;
         try {
-            long count = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).countDocument(filter, false);
+            long count = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO).countDocument(filter, false);
             return new Long(count).intValue();
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,7 +42,7 @@ public class DonorListHolderBean extends AbstractDocumentListHolderBean<Donor> {
     protected List<Donor> loadDocuments() {
         List<Donor> result = new ArrayList<>();
         try {
-            result = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).findDocuments(filter,
+            result = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO).findDocuments(filter,
 					false, getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(),
 					getSorting().isAsc());
         } catch (Exception e) {
@@ -69,11 +69,11 @@ public class DonorListHolderBean extends AbstractDocumentListHolderBean<Donor> {
         List<Donor> result = new ArrayList<>();
         try {
             if (phenotypes != null && !phenotypes.isEmpty()) {
-                result = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO)
+                result = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO)
 						.findComponentsByPhenotypes(phenotypes, searchBloodGroup, bloodGroup, searchRhesus,
                                 rhesusFactor, "lastName,firstName,middleName", true);
             } else {
-                result = sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO)
+                result = sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO)
 						.findDonorsByBloodGroupAndRh(
                                 searchBloodGroup, bloodGroup, searchRhesus, rhesusFactor, "lastName,firstName,middleName", true
                 );

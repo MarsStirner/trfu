@@ -1,18 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.filters;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentOrderRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
@@ -23,8 +13,17 @@ import ru.efive.medicine.niidg.trfu.filters.AbstractFilter;
 import ru.efive.medicine.niidg.trfu.filters.BloodComponentOrdersFilter;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.BloodComponentOrdersDocxGenerator;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.BloodComponentOrdersXlsGenerator;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.util.DateHelper;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.COMPONENT_ORDER_DAO;
 
 @Named("bloodComponentOrderFilterableList")
 @SessionScoped
@@ -166,7 +165,7 @@ public class BloodComponentOrderFilterableListHolderBean
 		try {
 			return sessionManagement.getDAO(
 					BloodComponentOrderRequestDAOImpl.class,
-					ApplicationHelper.COMPONENT_ORDER_DAO).findDocuments(
+					COMPONENT_ORDER_DAO).findDocuments(
 					filter, offset, pageSize, getSorting().getColumnId(),
 					getSorting().isAsc());
 		} catch (Exception e) {
@@ -209,7 +208,7 @@ public class BloodComponentOrderFilterableListHolderBean
 		try {
 			long count = sessionManagement.getDAO(
 					BloodComponentOrderRequestDAOImpl.class,
-					ApplicationHelper.COMPONENT_ORDER_DAO).countDocument(
+					COMPONENT_ORDER_DAO).countDocument(
 					filter);
 			return new Long(count).intValue();
 		} catch (Exception e) {

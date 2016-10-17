@@ -2,7 +2,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -24,7 +24,7 @@ public class LaboratoryBean extends AbstractDocumentListHolderBean<ExaminationRe
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			long count = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).countRequestsForLaboratory(filter, false);
+			long count = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).countRequestsForLaboratory(filter, false);
 			return new Long(count).intValue();
 		}
 		catch (Exception e) {
@@ -37,7 +37,7 @@ public class LaboratoryBean extends AbstractDocumentListHolderBean<ExaminationRe
 	protected List<ExaminationRequest> loadDocuments() {
 		List<ExaminationRequest> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).findRequestsForLaboratory(filter, false,
+			result = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).findRequestsForLaboratory(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), "created", false);
 		}
 		catch (Exception e) {

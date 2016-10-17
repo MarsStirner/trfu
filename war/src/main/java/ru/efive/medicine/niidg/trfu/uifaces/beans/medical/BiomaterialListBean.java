@@ -4,7 +4,7 @@ import ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Biomaterial;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.Operation;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -31,7 +31,7 @@ public class BiomaterialListBean extends AbstractDocumentListHolderBean<Biomater
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			result = new Long(sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).countBiomaterials(filter, false)).intValue();
+			result = new Long(sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).countBiomaterials(filter, false)).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -43,7 +43,7 @@ public class BiomaterialListBean extends AbstractDocumentListHolderBean<Biomater
 	protected List<Biomaterial> loadDocuments() {
 		List<Biomaterial> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findBiomaterials(filter, false,
+			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).findBiomaterials(filter, false,
 					getPagination().getOffset(), getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
@@ -60,7 +60,7 @@ public class BiomaterialListBean extends AbstractDocumentListHolderBean<Biomater
 	public List<Biomaterial> getBiomaterialsByOperation(Operation operation) {
 		List<Biomaterial> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, ApplicationHelper.MEDICAL_DAO).findBiomaterialsByOperation(operation,
+			result = sessionManagement.getDAO(MedicalOperationDAOImpl.class, MEDICAL_DAO).findBiomaterialsByOperation(operation,
 					"", false, -1, -1, "number", false);
 		}
 		catch (Exception e) {

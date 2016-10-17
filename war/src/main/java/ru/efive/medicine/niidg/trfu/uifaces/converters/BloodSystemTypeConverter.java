@@ -4,13 +4,14 @@ import org.apache.axis.utils.StringUtils;
 import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
 
 /**
  * Author: Upatov Egor <br>
@@ -28,8 +29,7 @@ public class BloodSystemTypeConverter implements Converter {
             }
             SessionManagementBean sessionManagement = (SessionManagementBean) facesContext.getApplication()
                     .evaluateExpressionGet(facesContext, "#{sessionManagement}", SessionManagementBean.class);
-            List<BloodSystemType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, ApplicationHelper
-                    .DICTIONARY_DAO).findByValue(BloodSystemType.class, value);
+            List<BloodSystemType> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByValue(BloodSystemType.class, value);
             if (list.size() > 0) {
                 return list.get(0);
             } else {

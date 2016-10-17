@@ -23,6 +23,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.DONOR_DAO;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.INFORMATION_DAO;
+
 @Named("information")
 @ConversationScoped
 public class InformationEntryHolderBean extends AbstractDocumentHolderBean<InformationEntry, Integer> {
@@ -31,7 +34,7 @@ public class InformationEntryHolderBean extends AbstractDocumentHolderBean<Infor
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			sessionManagement.getDAO(InformationEntryDaoImpl.class, ApplicationHelper.INFORMATION_DAO).delete(getDocument());
+			sessionManagement.getDAO(InformationEntryDaoImpl.class, INFORMATION_DAO).delete(getDocument());
 			result = true;
 		}
 		catch (Exception e) {
@@ -54,7 +57,7 @@ public class InformationEntryHolderBean extends AbstractDocumentHolderBean<Infor
 	@Override
 	protected void initDocument(Integer id) {
 		try {
-			InformationEntry entry = sessionManagement.getDAO(InformationEntryDaoImpl.class, ApplicationHelper.INFORMATION_DAO).get(id);
+			InformationEntry entry = sessionManagement.getDAO(InformationEntryDaoImpl.class, INFORMATION_DAO).get(id);
 			if (entry == null) {
 				setState(STATE_NOT_FOUND);
 			}
@@ -89,7 +92,7 @@ public class InformationEntryHolderBean extends AbstractDocumentHolderBean<Infor
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			InformationEntry entry = sessionManagement.getDAO(InformationEntryDaoImpl.class, ApplicationHelper.INFORMATION_DAO).save(getDocument());
+			InformationEntry entry = sessionManagement.getDAO(InformationEntryDaoImpl.class, INFORMATION_DAO).save(getDocument());
 			if (entry == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка при сохранении документа", ""));
 			}
@@ -109,7 +112,7 @@ public class InformationEntryHolderBean extends AbstractDocumentHolderBean<Infor
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			InformationEntry entry = sessionManagement.getDAO(InformationEntryDaoImpl.class, ApplicationHelper.INFORMATION_DAO).save(getDocument());
+			InformationEntry entry = sessionManagement.getDAO(InformationEntryDaoImpl.class, INFORMATION_DAO).save(getDocument());
 			if (entry == null) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ошибка при сохранении документа", ""));
 			}
@@ -147,7 +150,7 @@ public class InformationEntryHolderBean extends AbstractDocumentHolderBean<Infor
 		try {
 			InformationEntry entry = getDocument();
 			
-			List<String> addresses = ((DonorDAOImpl) sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO)).findDonorsForNewsletter();
+			List<String> addresses = ((DonorDAOImpl) sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO)).findDonorsForNewsletter();
 			
 			if (addresses == null || addresses.isEmpty()) {
 				logger.warn("Empty newsletter list");

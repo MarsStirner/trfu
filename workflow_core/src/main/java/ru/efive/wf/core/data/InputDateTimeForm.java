@@ -1,18 +1,17 @@
 package ru.efive.wf.core.data;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.wf.core.ActionResult;
 import ru.efive.wf.core.activity.EditableProperty;
 import ru.efive.wf.core.activity.LocalBackingBean;
 import ru.efive.wf.core.activity.enums.EditablePropertyScope;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class InputDateTimeForm implements LocalBackingBean {
 

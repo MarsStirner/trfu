@@ -29,6 +29,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.DIVISION_DAO;
+
 public class IntegrationHelper {
 
     private static final Logger logger = LoggerFactory.getLogger("LIS");
@@ -716,7 +718,7 @@ public class IntegrationHelper {
             if (process) {
                 TransfusionServiceImpl medicalService = new TransfusionServiceImpl(new java.net.URL(serviceAddress.toString()));
                 List<DivisionInfo> divisionsInfo = medicalService.getPortTransfusion().getDivisions();
-                DivisionDAOImpl dao = (DivisionDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(ApplicationHelper.DIVISION_DAO);
+                DivisionDAOImpl dao = (DivisionDAOImpl) ApplicationContextHelper.getApplicationContext().getBean(DIVISION_DAO);
                 for (DivisionInfo divisionInfo : divisionsInfo) {
                     Division division = dao.findByExternalId(divisionInfo.getId());
                     if (division == null) {

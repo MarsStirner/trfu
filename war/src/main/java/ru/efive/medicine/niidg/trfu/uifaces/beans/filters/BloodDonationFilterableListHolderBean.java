@@ -1,18 +1,8 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.filters;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-
 import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationType;
 import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
@@ -22,6 +12,16 @@ import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.BloodDonationsD
 import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.export.BloodDonationsXlsGenerator;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.medicine.niidg.trfu.util.DateHelper;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.DONATION_DAO;
 
 @Named("bloodDonationFilterableList")
 @SessionScoped
@@ -61,7 +61,8 @@ public class BloodDonationFilterableListHolderBean
 		}
 		if (statusId != BloodDonationsFilter.BLOOD_DONATION_STATUS_NULL_VALUE) {
 			String statusName = ApplicationHelper.getStatusName(
-					"BloodDonation", statusId);
+					"BloodDonation", statusId
+			);
 			parameters.add(new FilterParameter(
 					BloodDonationsFilter.STATUS_TITLE, statusName));
 		}
@@ -92,7 +93,7 @@ public class BloodDonationFilterableListHolderBean
 			BloodDonationsFilter filter) {
 		try {
 			return sessionManagement.getDAO(BloodDonationRequestDAOImpl.class,
-					ApplicationHelper.DONATION_DAO).findDocuments(filter,
+					DONATION_DAO).findDocuments(filter,
 					offset, pageSize, getSorting().getColumnId(),
 					getSorting().isAsc());
 		} catch (Exception e) {
@@ -134,7 +135,7 @@ public class BloodDonationFilterableListHolderBean
 		try {
 			long count = sessionManagement.getDAO(
 					BloodDonationRequestDAOImpl.class,
-					ApplicationHelper.DONATION_DAO).countDocument(filter);
+					DONATION_DAO).countDocument(filter);
 			return new Long(count).intValue();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,22 +1,21 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.util.Calendar;
-
-import javax.enterprise.context.ConversationScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.axis.utils.StringUtils;
-
 import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.Division;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
+
+import javax.enterprise.context.ConversationScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Calendar;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.DIVISION_DAO;
 
 @Named("division")
 @ConversationScoped
@@ -27,7 +26,7 @@ public class DivisionHolderBean extends AbstractDocumentHolderBean<Division, Int
 	protected boolean deleteDocument() {
 		boolean result = false;
 		try {
-			sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).delete(getDocument());
+			sessionManagement.getDAO(DivisionDAOImpl.class, DIVISION_DAO).delete(getDocument());
 			result = true;
 		}
 		catch (Exception e) {
@@ -48,7 +47,7 @@ public class DivisionHolderBean extends AbstractDocumentHolderBean<Division, Int
 	
 	@Override
 	protected void initDocument(Integer id) {
-		setDocument(sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO).get(id));
+		setDocument(sessionManagement.getDAO(DivisionDAOImpl.class, DIVISION_DAO).get(id));
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
 		}
@@ -66,7 +65,7 @@ public class DivisionHolderBean extends AbstractDocumentHolderBean<Division, Int
 	protected boolean saveDocument() {
 		boolean result = false;
 		try {
-			DivisionDAOImpl dao = sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO);
+			DivisionDAOImpl dao = sessionManagement.getDAO(DivisionDAOImpl.class, DIVISION_DAO);
 			
 			if (StringUtils.isEmpty(getDocument().getName())) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не указано название отделения", ""));
@@ -98,7 +97,7 @@ public class DivisionHolderBean extends AbstractDocumentHolderBean<Division, Int
 	protected boolean saveNewDocument() {
 		boolean result = false;
 		try {
-			DivisionDAOImpl dao = sessionManagement.getDAO(DivisionDAOImpl.class, ApplicationHelper.DIVISION_DAO);
+			DivisionDAOImpl dao = sessionManagement.getDAO(DivisionDAOImpl.class, DIVISION_DAO);
 			
 			if (StringUtils.isEmpty(getDocument().getName())) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Не указано название отделения", ""));

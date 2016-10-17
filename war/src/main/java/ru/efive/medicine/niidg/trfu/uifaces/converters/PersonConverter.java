@@ -4,13 +4,13 @@ import org.apache.commons.lang.StringUtils;
 import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import java.util.List;
+
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.USER_DAO;
 
 /**
  * Author: Upatov Egor <br>
@@ -28,8 +28,7 @@ public class PersonConverter implements Converter {
             }
             SessionManagementBean sessionManagement = (SessionManagementBean) facesContext.getApplication()
                     .evaluateExpressionGet(facesContext, "#{sessionManagement}", SessionManagementBean.class);
-            User result = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper
-                    .USER_DAO).get(Integer.valueOf(value));
+            User result = sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO).get(Integer.valueOf(value));
             if (result != null) {
                 return result;
             } else {

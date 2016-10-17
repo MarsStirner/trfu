@@ -10,7 +10,7 @@ import javax.faces.convert.FacesConverter;
 import ru.efive.dao.sql.dao.user.RoleDAOHibernate;
 import ru.efive.dao.sql.entity.user.Role;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 @FacesConverter("RoleConverter")
 public class RoleConverter implements Converter {
@@ -21,7 +21,7 @@ public class RoleConverter implements Converter {
 			SessionManagementBean sessionManagement = 
 				(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
 						SessionManagementBean.class);
-			List<Role> list = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO).findByValue(value);
+			List<Role> list = sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO).findByValue(value);
 			if (list.size() > 0) {
 				result = list.get(0);
 			}

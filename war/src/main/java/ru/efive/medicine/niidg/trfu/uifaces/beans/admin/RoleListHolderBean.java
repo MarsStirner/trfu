@@ -3,7 +3,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 import ru.efive.dao.sql.dao.user.RoleDAOHibernate;
 import ru.efive.dao.sql.entity.user.Role;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -30,7 +30,7 @@ public class RoleListHolderBean extends AbstractDocumentListHolderBean<Role> {
 	protected int getTotalCount() {
 		int result = 0;
 		try {
-			result = new Long(sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO).countRoles()).intValue();
+			result = new Long(sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO).countRoles()).intValue();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -42,7 +42,7 @@ public class RoleListHolderBean extends AbstractDocumentListHolderBean<Role> {
 	protected List<Role> loadDocuments() {
 		List<Role> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO).findRoles(getPagination().getOffset(), 
+			result = sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO).findRoles(getPagination().getOffset(),
 					getPagination().getPageSize(), getSorting().getColumnId(), getSorting().isAsc());
 		}
 		catch (Exception e) {
@@ -54,7 +54,7 @@ public class RoleListHolderBean extends AbstractDocumentListHolderBean<Role> {
 	public List<Role> getAvailableRoles() {
 		List<Role> result = new ArrayList<>();
 		try {
-			result = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO).findRoles(-1, -1, "name", true);
+			result = sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO).findRoles(-1, -1, "name", true);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

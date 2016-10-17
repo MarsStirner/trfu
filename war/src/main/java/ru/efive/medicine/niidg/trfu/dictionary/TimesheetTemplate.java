@@ -1,16 +1,16 @@
 package ru.efive.medicine.niidg.trfu.dictionary;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.faces.context.FacesContext;
-
-//import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.user.User;
-//import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 import ru.efive.medicine.niidg.trfu.data.entity.TimeTableEntry;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+
+import javax.faces.context.FacesContext;
+import java.util.Calendar;
+import java.util.Date;
+
+//import ru.efive.dao.sql.dao.user.UserDAOHibernate;
+//import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
 
 public class TimesheetTemplate {
 	

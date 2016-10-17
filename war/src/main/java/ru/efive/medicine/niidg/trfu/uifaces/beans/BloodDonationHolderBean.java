@@ -35,6 +35,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+
 @Named("bloodDonation")
 @ConversationScoped
 public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDonationRequest, Integer> {
@@ -54,7 +56,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
             isEqIds = sessionManagement.getLoggedUser().getId() == document.getTransfusiologist().getId();
         }
 
-        final boolean isOperational = sessionManagement.isOperational();
+        final boolean isOperational = sessionManagement.getAuthData().isOperational();
         if (isOperational) {
             final OperationalRoom currentOperationalRoom = operational.getCurrentOperationalRoom();
             if (currentOperationalRoom != null) {
@@ -113,7 +115,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
     protected boolean deleteDocument() {
         boolean result = false;
         try {
-            sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).delete(getDocument());
+            sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, DONATION_DAO).delete(getDocument());
             result = true;
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
@@ -135,8 +137,8 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
 
     @Override
     protected void initDocument(Integer id) {
-        BloodDonationRequest request = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).get(id);
-        DonorRejectionDAOImpl dao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, ApplicationHelper.REJECTION_DAO);
+        BloodDonationRequest request = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, DONATION_DAO).get(id);
+        DonorRejectionDAOImpl dao = sessionManagement.getDAO(DonorRejectionDAOImpl.class, REJECTION_DAO);
         List<DonorRejection> list = dao.findDocumentsByRequestId("d_" + id);
 
         if (request != null) {
@@ -164,11 +166,11 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
         document.setTherapist(sessionManagement.getLoggedUser());
         final String parentId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("parentId");
         if (StringUtils.isNotEmpty(parentId)) {
-            document.setDonor(sessionManagement.getDAO(DonorDAOImpl.class, ApplicationHelper.DONOR_DAO).get(Integer.parseInt(parentId)));
+            document.setDonor(sessionManagement.getDAO(DonorDAOImpl.class, DONOR_DAO).get(Integer.parseInt(parentId)));
         }
         final String examinationId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("examinationID");
         if (StringUtils.isNotEmpty(examinationId)) {
-            final ExaminationRequest examination = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, ApplicationHelper.EXAMINATION_DAO).get(Integer.parseInt(examinationId));
+            final ExaminationRequest examination = sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).get(Integer.parseInt(examinationId));
             if (examination != null) {
                 document.setExamination(examination);
                 document.setDonor(examination.getDonor());
@@ -177,7 +179,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
         }
         //TRFU-16 Установка типа донора по-умолчанию в "110 - безвозмездный донор крови"
         final List<Classifier> defaultDonorType = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class,
-                ApplicationHelper.DICTIONARY_DAO).findByValueAndCategory(Classifier.class, DEFAULT_DONOR_TYPE,
+                DICTIONARY_DAO).findByValueAndCategory(Classifier.class, DEFAULT_DONOR_TYPE,
                 CLASSIFIER_DONOR_CATEGORY);
         if(!defaultDonorType.isEmpty()){
             document.setDonorType(defaultDonorType.get(0));
@@ -206,22 +208,22 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
         boolean result = false;
         try {
             if (getDocument().getReport() != null && getDocument().getReport().getId() == 0) {
-                sessionManagement.getDAO(PheresisDAOImpl.class, ApplicationHelper.PHERESIS_DAO).save(getDocument().getReport());
+                sessionManagement.getDAO(PheresisDAOImpl.class, PHERESIS_DAO).save(getDocument().getReport());
             }
             if (!(getDocument().getBloodSystems() == null) && !getDocument().getBloodSystems().isEmpty()) {
-                BloodSystemDAOImpl systemDAO = sessionManagement.getDAO(BloodSystemDAOImpl.class, ApplicationHelper.BLOOD_SYSTEM_DAO);
+                BloodSystemDAOImpl systemDAO = sessionManagement.getDAO(BloodSystemDAOImpl.class, BLOOD_SYSTEM_DAO);
                 systemDAO.save(getDocument().getBloodSystems());
             }
-            BloodDonationRequest bloodDonation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO).update(getDocument());
+            BloodDonationRequest bloodDonation = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, DONATION_DAO).update(getDocument());
             if (bloodDonation == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
                         FacesMessage.SEVERITY_ERROR,
                         "Невозможно сохранить документ. Попробуйте повторить позже.", ""));
             } else {
                 if (bloodDonation.getReport() != null) {
-                    sessionManagement.getDAO(PheresisDAOImpl.class, ApplicationHelper.PHERESIS_DAO).save(bloodDonation.getReport());
+                    sessionManagement.getDAO(PheresisDAOImpl.class, PHERESIS_DAO).save(bloodDonation.getReport());
                 }
-                AnalysisDAOImpl dao = sessionManagement.getDAO(AnalysisDAOImpl.class, ApplicationHelper.ANALYSIS_DAO);
+                AnalysisDAOImpl dao = sessionManagement.getDAO(AnalysisDAOImpl.class, ANALYSIS_DAO);
                 for (int i = 0; i < getDocument().getTestList().size(); i++) {
                     dao.save(getDocument().getTestList().get(i));
                 }
@@ -244,7 +246,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
     protected boolean saveNewDocument() {
         boolean result = false;
         try {
-            BloodDonationRequestDAOImpl dao = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, ApplicationHelper.DONATION_DAO);
+            BloodDonationRequestDAOImpl dao = sessionManagement.getDAO(BloodDonationRequestDAOImpl.class, DONATION_DAO);
             BloodDonationRequest bloodDonation = dao.save(getDocument());
             if (bloodDonation == null) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
@@ -381,7 +383,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
                 }
                 final String fullNameContragent = (String) propertiesEditorBean.getSelectedProperties().getProperty("reports.institution.name");
                 final Contragent currentContragent = sessionManagement.getDAO(ContragentDAOHibernate.class,
-                        ApplicationHelper.CONTRAGENT_DAO).getByFullName(fullNameContragent);
+                        CONTRAGENT_DAO).getByFullName(fullNameContragent);
                 if (currentContragent != null) {
                     System.out.println("No one maker founded by:" + fullNameContragent);
                 }
@@ -419,7 +421,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
         try {
             final String fullNameContragent = (String) propertiesEditorBean.getSelectedProperties().getProperty("reports.institution.name");
             final Contragent currentContragent = sessionManagement.getDAO(ContragentDAOHibernate.class,
-                    ApplicationHelper.CONTRAGENT_DAO).getByFullName(fullNameContragent);
+                    CONTRAGENT_DAO).getByFullName(fullNameContragent);
             if (currentContragent != null) {
                 System.out.println("No one maker founded by:" + fullNameContragent);
             }
@@ -605,8 +607,8 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
         @Override
         public UserListByRoleTypeHolderBean getUserList() {
             if (registratorUserListBean == null) {
-                UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
-                RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO);
+                UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO);
+                RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO);
                 registratorUserListBean = new UserListByRoleTypeHolderBean(RoleType.REGISTRATOR, userDAO, roleDAO);
             }
             return registratorUserListBean;
@@ -630,8 +632,8 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
         @Override
         public UserListByRoleTypeHolderBean getUserList() {
             if (transfusiologistUserListBean == null) {
-                UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
-                RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ApplicationHelper.ROLE_DAO);
+                UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO);
+                RoleDAOHibernate roleDAO = sessionManagement.getDAO(RoleDAOHibernate.class, ROLE_DAO);
                 transfusiologistUserListBean = new UserListByRoleTypeHolderBean(RoleType.THERAPIST, userDAO, roleDAO);
             }
             return transfusiologistUserListBean;
@@ -655,7 +657,7 @@ public class BloodDonationHolderBean extends AbstractDocumentHolderBean<BloodDon
         @Override
         public UserListByAppointmentHolderBean getUserList() {
             if (staffUserListBean == null) {
-                UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, ApplicationHelper.USER_DAO);
+                UserDAOHibernate userDAO = sessionManagement.getDAO(UserDAOHibernate.class, USER_DAO);
                 staffUserListBean = new UserListByAppointmentHolderBean("Операционная сестра", userDAO);
             }
             return staffUserListBean;

@@ -1,17 +1,16 @@
 package ru.efive.medicine.niidg.trfu.dao;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
-
 import ru.efive.dao.sql.dao.GenericDAOHibernate;
 import ru.efive.dao.sql.entity.user.User;
 import ru.efive.medicine.niidg.trfu.data.entity.TimeTableEntry;
 import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class TimeTableDAOImpl extends GenericDAOHibernate<TimeTableEntry> {
 	

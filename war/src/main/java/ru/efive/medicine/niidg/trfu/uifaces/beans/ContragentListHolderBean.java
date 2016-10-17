@@ -2,7 +2,7 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import ru.efive.crm.dao.ContragentDAOHibernate;
 import ru.efive.crm.data.Contragent;
-import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
+import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -24,7 +24,7 @@ public class ContragentListHolderBean extends AbstractDocumentListHolderBean<Con
     protected int getTotalCount() {
         int result = 0;
         try {
-            result = new Long(sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).countDocument(filter, false)).intValue();
+            result = new Long(sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO).countDocument(filter, false)).intValue();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -35,7 +35,7 @@ public class ContragentListHolderBean extends AbstractDocumentListHolderBean<Con
     protected List<Contragent> loadDocuments() {
         List<Contragent> result = new ArrayList<>();
         try {
-            result = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).
+            result = sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO).
                     findDocuments(filter, false, getPagination().getOffset(), getPagination().getPageSize(), "fullName", true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,7 +58,7 @@ public class ContragentListHolderBean extends AbstractDocumentListHolderBean<Con
         contragent.setShortName("");
         result.add(contragent);
         try {
-            result.addAll(sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO).findDocuments(false, -1, -1, "fullName", true));
+            result.addAll(sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO).findDocuments(false, -1, -1, "fullName", true));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -66,7 +66,7 @@ public class ContragentListHolderBean extends AbstractDocumentListHolderBean<Con
     }
 
     public void saveDeletions() {
-        final ContragentDAOHibernate contragentDAO = sessionManagement.getDAO(ContragentDAOHibernate.class, ApplicationHelper.CONTRAGENT_DAO);
+        final ContragentDAOHibernate contragentDAO = sessionManagement.getDAO(ContragentDAOHibernate.class, CONTRAGENT_DAO);
         if (contragentDAO != null) {
             for (Contragent currentContragent : getDocuments()) {
                 if (currentContragent.isDeleted()) {
