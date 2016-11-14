@@ -1,17 +1,16 @@
 package ru.efive.medicine.niidg.trfu.uifaces.converters;
 
-import java.util.List;
+import ru.efive.dao.sql.dao.user.AppointmentDAOHibernate;
+import ru.efive.dao.sql.entity.user.Appointment;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import java.util.List;
 
-import ru.efive.dao.sql.dao.user.AppointmentDAOHibernate;
-import ru.efive.dao.sql.entity.user.Appointment;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.APPOINTMENT_DAO;
 @FacesConverter("AppointmentConverter")
 public class AppointmentConverter implements Converter {
 

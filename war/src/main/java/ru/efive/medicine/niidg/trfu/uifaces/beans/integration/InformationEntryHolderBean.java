@@ -23,8 +23,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.DONOR_DAO;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.INFORMATION_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DONOR_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.INFORMATION_DAO;
 
 @Named("information")
 @ConversationScoped

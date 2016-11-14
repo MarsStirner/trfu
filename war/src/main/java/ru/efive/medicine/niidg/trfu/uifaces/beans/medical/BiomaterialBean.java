@@ -28,7 +28,7 @@ import javax.inject.Named;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.MEDICAL_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.MEDICAL_DAO;
 
 @Named("biomaterial")
 @ConversationScoped

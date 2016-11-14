@@ -49,7 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
 
 @Named("reports")
 @RequestScoped

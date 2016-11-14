@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
 
 @Named("bloodComponenFilterList")
 @ViewScoped

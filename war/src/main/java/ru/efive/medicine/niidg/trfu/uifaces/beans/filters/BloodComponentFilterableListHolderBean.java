@@ -26,8 +26,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("bloodComponentFilterableList")
 @SessionScoped
 public class BloodComponentFilterableListHolderBean extends AbstractFilterableListHolderBean<BloodComponent, BloodComponentsFilter> {

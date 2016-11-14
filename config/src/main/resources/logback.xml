@@ -91,10 +91,10 @@
     </appender>
     <!--LOGGERS-->
 
-    <!--Логгеры для документов-->
-    <!-- базовый -->
-    <logger name="DOCUMENT" level="${logs.document.level}" additivity="${logs.document.additivity}">
-        <appender-ref ref="APPENDER_DOC"/>
+    <!--Логгеры -->
+    <!-- TODO -->
+    <logger name="ru.efive.medicine.niidg.trfu.uifaces.beans" level="${logs.document.level}" additivity="${logs.document.additivity}">
+        <appender-ref ref="APPENDER_DAO"/>
     </logger>
     <!--Конец логгеров для документов-->
 

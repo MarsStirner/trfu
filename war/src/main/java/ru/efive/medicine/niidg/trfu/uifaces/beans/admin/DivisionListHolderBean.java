@@ -1,7 +1,10 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.util.ArrayList;
-import java.util.List;
+import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.entity.Division;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
+import ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper;
+import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -9,14 +12,10 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
 
-import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.entity.Division;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-import ru.efive.medicine.niidg.trfu.wf.util.IntegrationHelper;
-import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DIVISION_DAO;
 @ManagedBean(name="divisionList")
 @ViewScoped
 public class DivisionListHolderBean extends AbstractDocumentListHolderBean<Division> {

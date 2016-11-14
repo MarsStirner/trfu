@@ -14,7 +14,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.DonorCategory;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.DonorFilterableListHolderBean;
-
+          /*
 public class DonorsXlsGenerator extends
 		BaseXlsGenerator<DonorFilterableListHolderBean, DonorsFilter> {
 
@@ -74,3 +74,5 @@ public class DonorsXlsGenerator extends
 				getColumnCount() - 1));
 	}
 }
+
+		  		  */

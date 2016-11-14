@@ -11,7 +11,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
 
 /**
  * Author: Upatov Egor <br>

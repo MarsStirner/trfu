@@ -3,7 +3,6 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans.medical;
 import ru.efive.medicine.niidg.trfu.dao.medical.MedicalOperationDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.medical.BiomaterialDonor;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -12,6 +11,7 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("biomaterialDonorByNumberList")
 @SessionScoped
 public class BiomaterialDonorByNumberListBean extends AbstractDocumentListHolderBean<BiomaterialDonor> {

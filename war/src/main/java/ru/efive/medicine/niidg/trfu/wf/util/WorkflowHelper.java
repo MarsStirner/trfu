@@ -17,8 +17,7 @@ import ru.efive.wf.core.util.EngineHelper;
 import javax.faces.context.FacesContext;
 import java.util.*;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 public final class WorkflowHelper {
 	
 	public static boolean initializeExamination(ExaminationRequest examination) {

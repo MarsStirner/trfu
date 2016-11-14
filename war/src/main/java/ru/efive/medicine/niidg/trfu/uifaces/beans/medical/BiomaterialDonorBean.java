@@ -19,7 +19,7 @@ import javax.inject.Named;
 import java.util.Calendar;
 import java.util.Date;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.MEDICAL_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.MEDICAL_DAO;
 
 @Named("biomaterialDonor")
 @ConversationScoped

@@ -1,21 +1,20 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.io.Serializable;
+import ru.efive.crm.dao.ContragentDAOHibernate;
+import ru.efive.crm.data.Contragent;
+import ru.efive.crm.data.ContragentNomenclature;
+import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
+import ru.efive.uifaces.bean.FromStringConverter;
+import ru.efive.uifaces.bean.ModalWindowHolderBean;
 
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 
-import ru.efive.crm.dao.ContragentDAOHibernate;
-import ru.efive.crm.data.Contragent;
-import ru.efive.crm.data.ContragentNomenclature;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
-import ru.efive.uifaces.bean.FromStringConverter;
-import ru.efive.uifaces.bean.ModalWindowHolderBean;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.CONTRAGENT_DAO;
 @Named("contragent")
 @ConversationScoped
 public class ContragentHolder extends AbstractDocumentHolderBean<Contragent, Integer> implements Serializable {

@@ -1,41 +1,23 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
+import ru.efive.crm.dao.ContragentDAOHibernate;
+import ru.efive.crm.data.Contragent;
+import ru.efive.crm.data.ContragentNomenclature;
+import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
+import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.dictionary.*;
+import ru.efive.medicine.niidg.trfu.data.entity.Division;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import ru.efive.crm.dao.ContragentDAOHibernate;
-import ru.efive.crm.data.Contragent;
-import ru.efive.crm.data.ContragentNomenclature;
-import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.DivisionDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.dictionary.Anticoagulant;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentStatus;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationStatus;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodDonationType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
-import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
-import ru.efive.medicine.niidg.trfu.data.dictionary.DonorCategory;
-import ru.efive.medicine.niidg.trfu.data.dictionary.DonorStatus;
-import ru.efive.medicine.niidg.trfu.data.dictionary.DonorType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationEntryType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationStatus;
-import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.Gender;
-import ru.efive.medicine.niidg.trfu.data.dictionary.ProcessingType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.QualityControlMappingEntry;
-import ru.efive.medicine.niidg.trfu.data.dictionary.Recommendation;
-import ru.efive.medicine.niidg.trfu.data.dictionary.TransfusionType;
-import ru.efive.medicine.niidg.trfu.data.entity.Division;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("dictionaryManagement")
 @RequestScoped
 public class DictionaryManagementBean implements Serializable {

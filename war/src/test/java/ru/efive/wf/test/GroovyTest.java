@@ -1,17 +1,6 @@
 package ru.efive.wf.test;
 
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.SimpleScriptContext;
-
 import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 public class GroovyTest {
 	

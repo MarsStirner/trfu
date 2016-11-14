@@ -1,0 +1,41 @@
+body {margin:0; padding:0; font-size:12px;}
+.viewtitle {padding:1px; float:left; font-weight: bold;}
+
+.ui-layout-unit-content {
+    overflow-x: hidden !important;
+    padding: 0 !important;
+}
+.ui-layout-toggler-west-closed {
+    height:100% !important;
+}
+
+.ui-panel .ui-panel-content {
+    padding: 0 !important;
+}
+
+.leafIcon {
+    background: url("/resources/images/leaf.gif") no-repeat !important;
+    height:16px;
+    width:16px;
+}
+
+.menuItem {
+    padding: 0 !important;
+    white-space: normal !important;
+    border-radius:5px !important;
+}
+
+.selectedMenuItem {
+    background: #E0FFDB !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    border-radius:5px !important;
+}
+
+.ui-menu .ui-menuitem-text {
+    float: none !important;
+}
+
+.ui-datatable-resizable tbody td {
+    white-space: normal !important;
+}

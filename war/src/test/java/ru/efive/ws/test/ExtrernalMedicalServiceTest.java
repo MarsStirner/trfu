@@ -19,8 +19,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.COMPONENT_ORDER_DAO;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.DIVISION_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.COMPONENT_ORDER_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DIVISION_DAO;
 
 public class ExtrernalMedicalServiceTest {
 	ClassPathXmlApplicationContext ctx;

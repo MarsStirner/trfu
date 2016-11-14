@@ -2,18 +2,9 @@ package ru.efive.medicine.niidg.trfu.test;
 
 import java.text.SimpleDateFormat;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.user.User;
-import ru.efive.medicine.niidg.trfu.context.ApplicationContextHelper;
-import ru.efive.medicine.niidg.trfu.dictionary.impl.OneDayTimesheetTemplate;
-import ru.efive.medicine.niidg.trfu.dictionary.impl.OnePlanTimesheetTemplate;
-import ru.efive.medicine.niidg.trfu.dictionary.impl.PeriodTimesheetTemplate;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 public class TimetableTest {
 	

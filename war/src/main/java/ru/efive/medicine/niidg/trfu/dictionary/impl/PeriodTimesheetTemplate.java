@@ -8,7 +8,7 @@ import ru.efive.medicine.niidg.trfu.util.ApplicationHelper;
 
 import java.util.Calendar;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.TIMETABLE_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.TIMETABLE_DAO;
 
 /**
  * График x через y дней

@@ -1,13 +1,6 @@
 package ru.efive.medicine.niidg.trfu.test;
 
-import java.util.List;
-
 import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 public class SplitComponentFix {
 	

@@ -2,7 +2,6 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -11,6 +10,7 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("examinationByDateList")
 @SessionScoped
 public class ExaminationByDateListHolderBean extends AbstractDocumentListHolderBean<ExaminationRequest> {

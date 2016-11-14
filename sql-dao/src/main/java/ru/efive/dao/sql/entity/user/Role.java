@@ -3,14 +3,17 @@ package ru.efive.dao.sql.entity.user;
 import ru.efive.dao.sql.entity.IdentifiedEntity;
 import ru.efive.dao.sql.entity.enums.RoleType;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
 
 /**
  * Роль пользователя системы
  */
 @Entity
 @Table(name = "roles")
-public class Role extends IdentifiedEntity {
+public class Role extends IdentifiedEntity implements Comparable<Role>{
 
 	public String getName() {
 		return name;
@@ -53,4 +56,10 @@ public class Role extends IdentifiedEntity {
 	
 	
 	private static final long serialVersionUID = -4121985925621903659L;
+
+
+	@Override
+	public int compareTo(final Role o) {
+		return this.getName() == null ? -1 : this.getName().compareToIgnoreCase(o.getName());
+	}
 }

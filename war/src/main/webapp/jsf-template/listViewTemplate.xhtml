@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+        >
+
+<h:head>
+    <h:outputScript library="js" name="goToFunctionsAndRemoveSelection.js"/>
+    <h:outputStylesheet library="css" name="listView.css"/>
+    <ui:insert name="headContent"/>
+    <ui:insert name="pageTitle">
+        <title>ТРФУ ФНКЦ ДГОИ</title>
+    </ui:insert>
+</h:head>
+
+<h:body id="pageBody">
+    <!-- Блок объявления параметров -->
+    <ui:param name="currentView" value="#{facesContext.viewRoot.viewId}"/>
+    <ui:param name="isAdministrator" value="#{sessionManagement.authData.administrator}"/>
+    <ui:param name="isTherapist" value="#{sessionManagement.authData.therapist}"/>
+    <ui:param name="isRegistrator" value="#{sessionManagement.authData.registrator}"/>
+    <ui:param name="isExpedition" value="#{sessionManagement.authData.expedition}"/>
+    <ui:param name="isOperational" value="#{sessionManagement.authData.operational}"/>
+    <ui:param name="isRectification" value="#{sessionManagement.authData.rectification}"/>
+    <ui:param name="isDraftOut" value="#{sessionManagement.authData.draftOut}"/>
+    <ui:param name="isLabeling" value="#{sessionManagement.authData.labeling}"/>
+    <ui:param name="isQuarantine" value="#{sessionManagement.authData.quarantine}"/>
+    <ui:param name="isMedical" value="#{sessionManagement.authData.medical}"/>
+    <ui:param name="isInControl" value="#{sessionManagement.authData.inControl}"/>
+    <ui:param name="isHeadNurse" value="#{sessionManagement.authData.headNurse}"/>
+    <ui:param name="isDivisionSuperintendent" value="#{sessionManagement.authData.divisionSuperintendent}"/>
+    <ui:param name="isSecondaryProcessing" value="#{sessionManagement.authData.secondaryProcessing}"/>
+    <!-- Блок настройки верстки -->
+    <p:layout fullPage="true" collapseTitle="Скрыть" expandTitle="Показать">
+        <p:layoutUnit position="west" size="12.5%" collapsible="true" collapseSize="30" effect="drop" gutter="3" style="width:100%; padding:0; margin:0; border:0; border-radius:0;">
+            <f:facet name="header">
+                <div style="display:inline; margin-right:16px;">Трансфузиология</div>
+            </f:facet>
+            <!-- Левое меню -->
+            <ui:insert name="leftMenu">
+                <ui:include src="/jsf-template/leftMenu.xhtml"/>
+            </ui:insert>
+        </p:layoutUnit>
+        <!-- Центральный блок с информацией -->
+        <p:layoutUnit position="center" gutter="0" style="padding:0; margin:0; border:0; border-radius:0;">
+            <h:form id="pageForm">
+                <ui:insert name="content">
+                    <p:toolbar id="contentHeader" >
+                        <p:toolbarGroup>
+                            <div class="viewtitle">
+                                <ui:insert name="contentLabel"/>
+                            </div>
+                        </p:toolbarGroup>
+                        <p:toolbarGroup align="right">
+                            <p:menuButton value="#{sessionManagement.loggedUser.getDescription()}" style="float:right; width:10em;">
+                                <p:menuitem value="Выход" action="#{sessionManagement.logOut}"/>
+                            </p:menuButton>
+                            <p:selectOneMenu id="roleSelect" value="#{sessionManagement.currentRole}" converter="RoleConverter">
+                                <f:selectItems value="#{sessionManagement.authData.roles}"/>
+                                <p:ajax event="change" listener="#{sessionManagement.redirectToBackUrl}"/>
+                            </p:selectOneMenu>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                    <p:toolbar id="contentButtons">
+                        <ui:insert name="contentButtonsPanel"/>
+                    </p:toolbar>
+                    <div id="tableWrapper">
+                        <ui:insert name="contentTable">
+                            contentTable
+                        </ui:insert>
+                    </div>
+                    <script type="text/javascript">
+                        console.log("Bind resizeFunction to calculate height");
+                        var $window = $(window).on('resize', function(){
+                            console.log("window:"+$(window).height());
+                            console.log("contentHeader:"+document.getElementById("pageForm:contentHeader").offsetHeight || 0);
+                            console.log("contentButtons:"+document.getElementById("pageForm:contentButtons").offsetHeight || 0);
+                            var height = $(window).height() - (document.getElementById("pageForm:contentHeader").offsetHeight || 0) - (document.getElementById("pageForm:contentButtons").offsetHeight||0) - 1;
+                            console.log("tableHeight:"+ height);
+                            $('#tableWrapper').height(height);
+                        }).trigger('resize');
+                    </script>
+                </ui:insert>
+            </h:form>
+        </p:layoutUnit>
+    </p:layout>
+
+    <!-- Диалоговое окошко ожидания -->
+    <ui:insert name="waitDialog">
+        <p:ajaxStatus onstart="PF('statusDialog').show()" oncomplete="PF('statusDialog').hide()"/>
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false"
+                  showHeader="false" position="center center">
+            Пожалуйста, подождите...
+        </p:dialog>
+    </ui:insert>
+</h:body>
+
+</html>

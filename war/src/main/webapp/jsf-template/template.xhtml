@@ -11,7 +11,7 @@
 
 <h:head>
     <h:outputStylesheet library="css" name="menu.css"/>
-    <!--<h:outputScript library="js" name="goToFunctionsAndRemoveSelection.js"/>-->
+    <h:outputScript library="js" name="goToFunctionsAndRemoveSelection.js"/>
     <title>ТРФУ ФНКЦ ДГОИ</title>
 </h:head>
 
@@ -25,17 +25,24 @@
             <!-- Блок объявления параметров -->
             <ui:param name="currentView" value="#{facesContext.viewRoot.viewId}"/>
             <ui:param name="isAdministrator" value="#{sessionManagement.authData.administrator}"/>
-            <ui:param name="isRecorder" value="#{sessionManagement.isRecorder()}"/>
-            <ui:param name="isOfficeManager" value="#{sessionManagement.isOfficeManager()}"/>
-            <ui:param name="isRequestManager" value="#{sessionManagement.isRequestManager()}"/>
-            <ui:param name="canViewRequestDocuments" value="#{sessionManagement.isCanViewRequestDocuments()}"/>
-            <ui:param name="isOuter" value="#{sessionManagement.isOuter()}"/>
-            <ui:param name="isHr" value="#{sessionManagement.isHr()}"/>
-            <ui:param name="isFilling" value="#{sessionManagement.isFilling()}"/>
+            <ui:param name="isTherapist" value="#{sessionManagement.authData.therapist}"/>
+            <ui:param name="isRegistrator" value="#{sessionManagement.authData.registrator}"/>
+            <ui:param name="isExpedition" value="#{sessionManagement.authData.expedition}"/>
+            <ui:param name="isOperational" value="#{sessionManagement.authData.operational}"/>
+            <ui:param name="isRectification" value="#{sessionManagement.authData.rectification}"/>
+            <ui:param name="isDraftOut" value="#{sessionManagement.authData.draftOut}"/>
+            <ui:param name="isLabeling" value="#{sessionManagement.authData.labeling}"/>
+            <ui:param name="isQuarantine" value="#{sessionManagement.authData.quarantine}"/>
+            <ui:param name="isMedical" value="#{sessionManagement.authData.medical}"/>
+            <ui:param name="isInControl" value="#{sessionManagement.authData.inControl}"/>
+            <ui:param name="isHeadNurse" value="#{sessionManagement.authData.headNurse}"/>
+            <ui:param name="isDivisionSuperintendent" value="#{sessionManagement.authData.divisionSuperintendent}"/>
+            <ui:param name="isSecondaryProcessing" value="#{sessionManagement.authData.secondaryProcessing}"/>
+
 
             <ui:insert name="left_menu">
                 <div id="leftMenu">
-                    <div id="leftMenuTiltle">Трансфузиология ФНКЦ ДГОИ</div>
+                    <div id="leftMenuTitle">Трансфузиология ФНКЦ ДГОИ</div>
                     <div id="leftMenuHolder">
                         <ui:include src="leftMenu.xhtml"/>
                     </div>
@@ -49,11 +56,12 @@
                         <div class="menu">
                             <ui:insert name="header_top"/>
                             <p:menuButton value="#{sessionManagement.loggedUser.getDescription()}" style="float:right; width:10em;">
-                                <p:menuitem value="Выход" action="#{sessionManagement.logOut}" />
+                                <p:menuitem value="Выход" action="#{sessionManagement.logOut}"/>
                             </p:menuButton>
-                           <p:selectOneMenu id="roleSelect" value="#{sessionManagement.currentRole}">
-                               <f:selectItems value="#{sessionManagement.authData.roles}" var="role" itemLabel="#{role.name}" itemValue="#{role}"/>
-                           </p:selectOneMenu>
+                            <p:selectOneMenu id="roleSelect" value="#{sessionManagement.currentRole}" converter="RoleConverter">
+                                <f:selectItems value="#{sessionManagement.authData.roles}"/>
+                                <p:ajax event="change" listener="#{sessionManagement.redirectToBackUrl}"/>
+                            </p:selectOneMenu>
                         </div>
                     </div>
                     <div class="actionbar">

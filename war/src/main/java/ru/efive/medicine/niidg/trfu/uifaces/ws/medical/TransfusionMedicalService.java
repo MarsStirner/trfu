@@ -33,8 +33,7 @@ import javax.xml.rpc.ServiceException;
 import java.rmi.RemoteException;
 import java.util.*;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @WebService(name = "transfusionMedicalService", targetNamespace = "http://www.korusconsulting.ru", serviceName = "transfusion-medical-service", portName = "transfusionMedicalService")
 public class TransfusionMedicalService {
 

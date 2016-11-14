@@ -1,388 +1,171 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:e5ui="http://efive.ru/uitemplates"
-	xmlns:e5ui-comp="http://efive.ru/uitemplates/composite"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-        >
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
 
-<ui:composition template="#{sessionManagement.templateName}">
-	
-	<ui:define name="running_head">
-		<h:outputScript name="jsf.js" library="javax.faces" target="head" />
-		<h:outputScript library="js" name="views_with_filters.js" target="head" />
-		<h:outputScript library="js" name="donors_filter.js" target="head" />
-	</ui:define>
-	
-	<ui:define name="header_top">
-		<div id="viewtitle">Доноры</div>
-	</ui:define>
-	
-	<ui:define name="header_buttons">
-		<div class="defbutton">
-			<h:outputLink value="/component/donor.xhtml" target="_blank">
-				<h:graphicImage value="#{resource['images:newf_buttn_icon.png']}" />
-            	Новый донор
-            	<f:param name="docAction" value="create" />
-			</h:outputLink>
-		</div>
-		<div class="defbutton">
-			<h:commandLink action="#{donorFilterableList.pressRefresh()}">
-				<h:graphicImage value="#{resource['images:button-refresh.png']}" />
-				<f:ajax render="main_data_tbl main_data_paging"/>
-            	Обновить
-           	</h:commandLink>
-		</div>
-		<div class="top" style="height: 27px;">
-        	<h:commandLink styleClass="top_link" onclick="return false;">
-            	<h:graphicImage value="#{resource['images:button-print.png']}" />
-				Печать
-			</h:commandLink>
-			<div class="sub">
-            	<div class="item">
-					<h:outputLink value="/component/print/donors.xhtml" target="_blank">
-		            	<h:graphicImage value="#{resource['images:blank.png']}" />
-						Печать из браузера
-					</h:outputLink>	
-				</div>
-				<div class="item">
-					<h:outputLink value="/filter-results-export">
-						<h:graphicImage value="#{resource['images:button-export.png']}" />
-						<f:param name="bean" value="donorFilterableList" />
-						<f:param name="ext" value="docx" />
-						Экспорт в Word
-					</h:outputLink>	
-				</div>
-				<div class="item">
-					<h:outputLink value="/filter-results-export">
-						<h:graphicImage value="#{resource['images:button-export.png']}" />
-						<f:param name="bean" value="donorFilterableList" />
-						<f:param name="ext" value="xlsx" />
-						Экспорт в Excel
-					</h:outputLink>
-				</div>
-			</div>
-		</div>
-		<div class="defbutton" id="hide_filter_div" style="display: none;">
-			<h:commandLink action="#{donorFilterableList.hideFilterPanel()}" onclick="hideFilter();">
-				<h:graphicImage value="#{resource['images:filter-delete-icon_16.png']}" />
-            	Скрыть фильтр
-           	</h:commandLink>
-		</div>
-		<div class="defbutton" id="show_filter_div" style="display: none;">
-			<h:commandLink action="#{donorFilterableList.showFilterPanel()}" onclick="showFilter();">
-				<h:graphicImage value="#{resource['images:filter-add-icon_16.png']}" />
-            	Показать фильтр
-           	</h:commandLink>
-		</div>
-	</ui:define>
+<ui:composition template="/jsf-template/listViewTemplate.xhtml">
 
-	<ui:define name="content">
-		<script type="text/javascript">
-			document.ondblclick = function DoubleClick(evt) {
-				if (window.getSelection)
-					window.getSelection().removeAllRanges();
-				else if (document.selection)
-					document.selection.empty();
-			}
-		</script>
-		<h:outputScript>
-        	function goToDocument(id) {
-        		if (id != 0) {
-        			window.open('/component/donor.xhtml?docId=' + id,'_blank');
-				}
-			}
-        </h:outputScript>
-		<e5ui:formPart id="main_table_part">
-			<div id="main_table">
-				<div class="wrap_main" id="table_wrap" style="float: right;">
-					<div class="inner" id="table_inner">
-						<e5ui:dataTable border="0" cellpadding="0" cellspacing="0" id="main_data_tbl"
-									value="#{donorFilterableList.documents}" var="row" grouping="false">
-							<e5ui:row ondblclick="goToDocument('#{row.id}');" />
-							<e5ui:column style="min-width:10em">
-								<f:facet name="header">
-									<h:commandLink action="#{donorFilterableList.sort('lastName,firstName,middleName')}">
-			                        	ФИО
-			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging"/>
-			                        </h:commandLink>
-			                    </f:facet>
-								<h:outputText value="#{row.descriptionShort}" />
-							</e5ui:column>
-							<e5ui:column style="min-width:5em">
-								<f:facet name="header">
-									<h:commandLink action="#{donorFilterableList.sort('number')}">
-			                        	Номер
-			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging"/>
-			                        </h:commandLink>
-			                    </f:facet>
-								<h:outputText value="#{row.number}" />
-							</e5ui:column>
-							<e5ui:column style="min-width:8em">
-								<f:facet name="header">
-									<h:commandLink action="#{donorFilterableList.sort('category')}">
-			                        	Категория
-			                        	<f:ajax render="main_data_tbl :main_content_form:main_data_paging"/>
-			                        </h:commandLink>
-			                    </f:facet>
-								<h:outputText value="#{row.category eq 0? 'Первичный': row.category eq 1? 'Кадровый': 'Повторный'}" />
-							</e5ui:column>
-							<e5ui:column style="min-width:7em">
-								<f:facet name="header">
-			                        <p>Группа крови</p>
-			                    </f:facet>
-								<h:outputText value="#{row.bloodGroup.value}" /> <h:outputText style="margin-left:5px;" value="#{row.rhesusFactor}" converter="ClassifierConverter" />
-							</e5ui:column>
-							<e5ui:column style="min-width:10em">
-								<f:facet name="header">
-			                        <p>Статус</p>
-			                    </f:facet>
-								<h:outputText value="#{row.statusName}" />
-							</e5ui:column>
-							<e5ui:column style="min-width:12em">
-								<f:facet name="header">
-			                        <p>Комментарии</p>
-			                    </f:facet>
-								<h:outputText value="#{row.commentary}" />
-							</e5ui:column>
-						</e5ui:dataTable>
-					</div>
-				</div>
+    <ui:define name="contentLabel"><h:outputText value="Доноры"/></ui:define>
 
+    <ui:define name="contentButtonsPanel">
+        <p:toolbarGroup align="left">
+            <p:button value="Новый донор" outcome="/component/donor.xhtml" target="_blank" icon="ui-icon-plusthick">
+                <f:param name="docAction" value="create"/>
+            </p:button>
+            <p:commandButton value="Обновить" update="documentTable" icon="ui-icon-refresh" ajax="true"/>
+            <p:menuButton value="Печать" id="printButton">
+                <p:menuitem value="Печать из браузера" url="/component/print/donors.xhtml" target="_blank"/>
+                <p:menuitem value="Экспорт в Excel всех страниц" ajax="false">
+                    <p:dataExporter type="xlsx" target="documentTable" fileName="donors"/>
+                </p:menuitem>
+                <p:menuitem value="Экспорт в Excel текущей страницы" ajax="false">
+                    <p:dataExporter type="xlsx" target="documentTable" fileName="donors" pageOnly="true"/>
+                </p:menuitem>
+            </p:menuButton>
+        </p:toolbarGroup>
+    </ui:define>
 
-			 	<div id="filter_panel" style="display: none; float: left;">
-					<div id="filter_panel_buttons">
-						<div class="defbutton">
-						</div>
-				  		<div class="defbutton">
-							<h:commandLink action="#{donorFilterableList.applyFilter()}">
-								<h:graphicImage value="#{resource['images:button-search.png']}" />
-           						Применить фильтр
-							</h:commandLink>
-						</div>
-				  		<div class="defbutton">
-							<h:commandLink action="#{donorFilterableList.resetFilter()}">
-								<h:graphicImage value="#{resource['images:button-reject.png']}" />
-								Очистить фильтр
-							</h:commandLink>
-						</div>
-					</div>
-						
-					<div id="filter_panel_parameters">
-						<table id="filter_panel_parameters_table">
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.numberTitle}" />:
-								</td>
-								<td>
-									<h:inputText size="25" maxlength="10" value="#{donorFilterableList.currentFilter.number}" styleClass="filterPanelParameter" />
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.createdTitle}" />:
-								</td>
-								<td><e5ui-comp:inputDate id="donors_filter_created_parameter" value="#{donorFilterableList.currentFilter.created}" lang="ru" /></td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.lastNameTitle}" />:
-								</td>
-								<td>
-									<h:inputText size="25" maxlength="25" value="#{donorFilterableList.currentFilter.lastName}" styleClass="filterPanelParameter" />
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.firstNameTitle}" />:
-								</td>
-								<td>
-									<h:inputText size="25" maxlength="25" value="#{donorFilterableList.currentFilter.firstName}" styleClass="filterPanelParameter" />
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.middleNameTitle}" />:
-								</td>
-								<td>
-									<h:inputText size="25" maxlength="25" value="#{donorFilterableList.currentFilter.middleName}" styleClass="filterPanelParameter" />
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.birthTitle}" />:
-								</td>
-								<td><e5ui-comp:inputDate id="donors_filter_birth_parameter" value="#{donorFilterableList.currentFilter.birth}" lang="ru" /></td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.genderTitle}" />:
-								</td>
-								<td>
-									<h:selectOneMenu id="donors_filter_gender_parameter" value="#{donorFilterableList.currentFilter.genderId}" styleClass="filterPanelParameter">
-										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.genderNullValue}" />
-										<f:selectItems value="#{dictionaryManagement.genders}" 
-												var="gender" 
-												itemLabel="#{gender.value}" 
-												itemValue="#{gender.id}" />
-									</h:selectOneMenu>
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.documentTypeTitle}" />:
-								</td>
-								<td>
-									<h:selectOneMenu id="donors_filter_document_type_parameter" value="#{donorFilterableList.currentFilter.documentTypeId}" styleClass="filterPanelParameter" onchange="changeDocumentTypeParameter(this);">
-										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.documentTypeNullValue}" />
-										<f:selectItems value="#{donorFilterableList.documentTypes}" 
-												var="documentType" 
-												itemLabel="#{documentType.value}" 
-												itemValue="#{documentType.id}" />
-									</h:selectOneMenu>
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.documentSeriesTitle}" />:
-								</td>
-								<td>
-									<h:inputText id="donors_filter_document_series_parameter" 
-											size="25" 
-											maxlength="25" 
-											value="#{donorFilterableList.currentFilter.documentSeries}" 
-											styleClass="filterPanelParameter" />
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.documentNumberTitle}" />:
-								</td>
-								<td>
-									<h:inputText id="donors_filter_document_number_parameter" 
-											size="25" 
-											maxlength="25" 
-											value="#{donorFilterableList.currentFilter.documentNumber}" 
-											styleClass="filterPanelParameter" />
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.externalNumberTitle}" />:
-								</td>
-								<td>
-									<h:inputText size="25" maxlength="25" value="#{donorFilterableList.currentFilter.externalNumber}" styleClass="filterPanelParameter" />
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.factAddressTitle}" escape="false" />:
-								</td>
-								<td style="vertical-align: middle;">
-									<h:inputText size="25" maxlength="25" value="#{donorFilterableList.currentFilter.factAddress}" styleClass="filterPanelParameter" />
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.donorCategoryTitle}" />:
-								</td>
-								<td>
-									<h:selectOneMenu id="donors_filter_category_id_parameter" value="#{donorFilterableList.currentFilter.categoryId}" styleClass="filterPanelParameter">
-										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.categoryNullValue}" />
-										<f:selectItems value="#{dictionaryManagement.donorCategories}" 
-												var="donorCategory" 
-												itemLabel="#{donorCategory.value}" 
-												itemValue="#{donorCategory.id}" />
-									</h:selectOneMenu>
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.donorStatusTitle}" />:
-								</td>
-								<td>
-									<h:selectOneMenu id="donors_filter_status_id_parameter" value="#{donorFilterableList.currentFilter.statusId}" styleClass="filterPanelParameter">
-										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.statusNullValue}" />
-										<f:selectItems value="#{dictionaryManagement.donorStatuses}" 
-												var="donorStatus" 
-												itemLabel="#{donorStatus.value}" 
-												itemValue="#{donorStatus.id}" />
-									</h:selectOneMenu>
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.bloodGroupTitle}" />:
-								</td>
-								<td>
-									<h:selectOneMenu id="donors_filter_blood_group_id_parameter" value="#{donorFilterableList.currentFilter.bloodGroupId}" styleClass="filterPanelParameter">
-										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.bloodGroupNullValue}" />  
-										<f:selectItems value="#{dictionaryManagement.bloodGroups}" 
-												var="bloodGroup" 
-												itemLabel="#{bloodGroup.value}" 
-												itemValue="#{bloodGroup.id}" />
-									</h:selectOneMenu>
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.rhesusFactorTitle}" />:
-								</td>
-								<td>
-									<h:selectOneMenu id="donors_filter_rhesus_factor_id_parameter" value="#{donorFilterableList.currentFilter.rhesusFactorId}" styleClass="filterPanelParameter">
-										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.rhesusFactorNullValue}" />  
-										<f:selectItems value="#{dictionaryManagement.getByCategory('Резус-фактор')}" 
-												var="rhesusFactor" 
-												itemLabel="#{rhesusFactor.value}" 
-												itemValue="#{rhesusFactor.id}" />
-									</h:selectOneMenu>
-								</td>
-							</tr>
-							<tr>
-								<td class="filterPanelParameterTitle">
-									<h:outputText value="#{donorFilterableList.currentFilter.pastQuarantineTitle}" escape="false" />:
-								</td>
-								<td style="vertical-align: middle;">
-									<h:selectOneMenu id="donors_filter_past_quarantine_parameter" value="#{donorFilterableList.currentFilter.pastQuarantineId}" styleClass="filterPanelParameter">
-										<f:selectItem itemLabel="" itemValue="#{donorFilterableList.currentFilter.pastQuarantineNullValue}" />
-										<f:selectItems value="#{donorFilterableList.pastQuarantineObjects}" 
-												var="pastQuarantineObject" 
-												itemLabel="#{pastQuarantineObject.value}" 
-												itemValue="#{pastQuarantineObject.id}" />
-									</h:selectOneMenu>
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
+    <ui:define name="contentTable">
+        <div class="ui-q ui-g-nopad" style="height:100%">
+            <div class="ui-g-3 ui-g-nopad" style="height:100%">
+                <p:panelGrid style="width:100%">
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="number" value="Номер:"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputMask id="number" value="#{donorFilterableList.filter['NUMBER']}" mask="99999"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="startCreationDate" value="Дата создания от:"/>
+                        </p:column>
+                        <p:column>
+                            <p:calendar id="startCreationDate" value="#{donorFilterableList.filter['START_CREATE_DATE']}"
+                                        lang="ru" locale="ru" pattern="dd.MM.yyyy" showOn="both"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="endCreationDate" value="Дата создания до:"/>
+                        </p:column>
+                        <p:column>
+                            <p:calendar id="endCreationDate" value="#{donorFilterableList.filter['END_CREATION_DATE']}"
+                                        lang="ru" locale="ru" pattern="dd.MM.yyyy" showOn="both"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="lastName" value="Фамилия:"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="lastName" value="#{donorFilterableList.filter['LAST_NAME']}"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="firstName" value="Имя:"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="firstName" value="#{donorFilterableList.filter['FIRST_NAME']}"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="patrName" value="Отчество:"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="patrName" value="#{donorFilterableList.filter['PATR_NAME']}"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="birthDate" value="Дата рождения:"/>
+                        </p:column>
+                        <p:column>
+                            <p:calendar id="birthDate" value="#{donorFilterableList.filter['BIRTH_DATE']}"
+                                        lang="ru" locale="ru" pattern="dd.MM.yyyy" showOn="both"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="sex" value="Пол:"/>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneButton id="sex" value="#{donorFilterableList.filter['SEX']}">
+                                <f:selectItem itemLabel="М" itemValue="MALE" />
+                                <f:selectItem itemLabel="Ж" itemValue="FEMALE" />
+                                <f:selectItem itemLabel="Любой" itemValue="ALL" />
+                            </p:selectOneButton>
 
-				<div id="table_paging">
-					<h:panelGroup id="main_data_paging">
-						<e5ui-comp:tablePager documentListHolder="#{donorFilterableList}" style="display:inline;" />
-						<e5ui-comp:tablePageSizeSelector documentListHolder="#{donorFilterableList}" style="display:inline;float:right;" pageSizes="10,25,50,100" />
-					</h:panelGroup>
-				</div>
-			</div>
-		</e5ui:formPart>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel for="bloodGroup" value="Группа крови:"/>
+                        </p:column>
+                        <p:column>
+                          <p:selectOneMenu
 
-		<h:outputScript rendered="#{donorFilterableList.isFilterPanelActive()}">
-			showFilter();
-		</h:outputScript>
-		<h:outputScript rendered="#{not donorFilterableList.isFilterPanelActive()}">
-			hideFilter();
-		</h:outputScript>
-
-		<h:outputScript rendered="#{donorFilterableList.currentFilter.documentTypeId == 0}">
-			disableDocumentParameters();
-		</h:outputScript>
-		<h:outputScript rendered="#{not (donorFilterableList.currentFilter.documentTypeId == 0)}">
-			enableDocumentParameters();
-		</h:outputScript>
-	</ui:define>
-	
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </div>
+            <div class="ui-g-9 ui-g-nopad" style="height:100%">
+                <p:dataTable id="documentTable"
+                             paginator="true"
+                             rows="100"
+                             currentPageReportTemplate="#{props['CURRENT_PAGE_PAGINATOR_TEMPLATE']}"
+                             paginatorTemplate="#{props['PAGINATOR_TEMPLATE']}"
+                             rowsPerPageTemplate="#{props['ROWS_PER_PAGE_DROPDOWN']}"
+                             paginatorPosition="#{props['PAGINATOR_POSITION']}"
+                             emptyMessage="#{props['EMPTY_RESULT']}"
+                             value="#{donorFilterableList}"
+                             var="row"
+                             lazy="true"
+                             widgetVar="documentTableWidget"
+                             scrollable="true" scrollHeight="100%"
+                             selectionMode="single"
+                             sortBy="#{row.lastName}" sortField="lastName" sortOrder="ascending"
+                             resizableColumns="true" liveResize="true"
+                        >
+                    <p:column headerText="Фамилия" style="width:8.5em;" sortBy="#{row.lastName}" field="lastName">
+                        <h:outputText value="#{row.lastName}"/>
+                    </p:column>
+                    <p:column headerText="Имя" style="width:6em;" sortBy="#{row.firstName}" field="firstName">
+                        <h:outputText value="#{row.firstName}"/>
+                    </p:column>
+                    <p:column headerText="Отчество" style="width:9em;" sortBy="#{row.patrName}" field="patrName">
+                        <h:outputText value="#{row.middleName}"/>
+                    </p:column>
+                    <p:column headerText="Номер" style="width:4em; text-align: right;" sortBy="#{row.number}" field="number">
+                        <h:outputText value="#{row.number}"/>
+                    </p:column>
+                    <p:column headerText="Категория" style="width:6em;" sortBy="#{row.category}" field="category" priority="6">
+                        <h:outputText value="#{row.category}" converter="DonorCategoryConverter"/>
+                    </p:column>
+                    <p:column headerText="Группа крови" style="width:8em; text-align: right;" sortBy="#{row.bloodGroup.value}"
+                              field="bloodGroup.value">
+                        <h:outputText value="#{row.bloodGroup.value}"/>
+                    </p:column>
+                    <p:column headerText="Резус-Фактор" style="width:8em;" sortBy="#{row.rhesusFactor}" field="rhesusFactor">
+                        <h:outputText value="#{row.rhesusFactor}"/>
+                    </p:column>
+                    <p:column headerText="Статус" style="width:10em;" sortBy="#{row.statusName}" field="statusName">
+                        <h:outputText value="#{row.statusName}"/>
+                    </p:column>
+                    <p:column headerText="Комментарий" priority="6">
+                        <h:outputText value="#{row.commentary}"/>
+                    </p:column>
+                    <p:ajax event="rowSelect" onstart="goToDonor(PrimeFaces.widgets.documentTableWidget.selection); return false;"/>
+                </p:dataTable>
+            </div>
+        </div>
+    </ui:define>
 </ui:composition>
 
 </html>

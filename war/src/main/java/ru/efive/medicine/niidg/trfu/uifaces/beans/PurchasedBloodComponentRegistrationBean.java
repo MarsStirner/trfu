@@ -14,7 +14,7 @@ import java.util.Date;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static javax.faces.application.FacesMessage.SEVERITY_WARN;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
 
 /**
  * Author: Upatov Egor <br>

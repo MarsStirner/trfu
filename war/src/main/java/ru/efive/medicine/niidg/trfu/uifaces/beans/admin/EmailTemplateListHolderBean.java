@@ -11,7 +11,7 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.EMAIL_TEMPLATE_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.EMAIL_TEMPLATE_DAO;
 
 @Named("emailTemplateList")
 @SessionScoped

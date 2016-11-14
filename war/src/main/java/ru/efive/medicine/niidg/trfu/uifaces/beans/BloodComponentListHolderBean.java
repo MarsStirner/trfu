@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
 
 @Named("bloodComponentList")
 @SessionScoped

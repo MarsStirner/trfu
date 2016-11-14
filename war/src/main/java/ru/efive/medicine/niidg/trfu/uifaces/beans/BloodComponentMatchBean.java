@@ -20,7 +20,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
 
 //import ru.efive.medicine.niidg.trfu.dao.BloodComponentMatchDAOImpl;
 

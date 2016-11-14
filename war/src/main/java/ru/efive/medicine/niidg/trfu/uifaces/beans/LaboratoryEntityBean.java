@@ -1,7 +1,11 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.util.HashSet;
-import java.util.Set;
+import ru.efive.medicine.niidg.trfu.dao.AnalysisDAOImpl;
+import ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
+import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
+import ru.efive.uifaces.bean.FromStringConverter;
+import ru.efive.wf.core.ActionResult;
 
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
@@ -9,14 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import ru.efive.dao.sql.wf.entity.HistoryEntry;
-import ru.efive.medicine.niidg.trfu.dao.AnalysisDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
-import ru.efive.uifaces.bean.FromStringConverter;
-import ru.efive.wf.core.ActionResult;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 
 @Named("laboratoryEntity")
 @ConversationScoped
@@ -39,7 +36,7 @@ public class LaboratoryEntityBean extends AbstractDocumentHolderBean<Examination
 	
 	@Override
 	protected void initDocument(Integer id) {
-		setDocument(sessionManagement.getDAO(ExaminationRequestDAOImpl.class, EXAMINATION_DAO).get(id));
+		setDocument(sessionManagement.getDAO(ExaminationRequestDAOImpl.class,  EXAMINATION_DAO).get(id));
 		if (getDocument() == null) {
 			setState(STATE_NOT_FOUND);
 		}

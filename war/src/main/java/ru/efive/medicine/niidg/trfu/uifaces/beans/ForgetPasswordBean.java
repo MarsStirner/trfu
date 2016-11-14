@@ -1,31 +1,27 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Properties;
+import org.apache.axis.utils.StringUtils;
+import ru.efive.dao.sql.dao.GenericDAO;
+import ru.efive.dao.sql.dao.user.UserDAO;
+import ru.efive.dao.sql.entity.user.User;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
+import ru.efive.wf.core.activity.MailMessage;
+import ru.efive.wf.core.activity.SendMailActivity;
 
-import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.FaceletContext;
-import javax.inject.Named;
 import javax.inject.Inject;
 import javax.mail.Authenticator;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Properties;
 
-import org.apache.axis.utils.StringUtils;
-import ru.efive.dao.sql.dao.GenericDAO;
-import ru.efive.dao.sql.dao.user.UserDAO;
-import ru.efive.dao.sql.entity.user.User;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-import ru.efive.wf.core.activity.SendMailActivity;
-import ru.efive.wf.core.activity.MailMessage;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.USER_DAO;
 @ManagedBean( name = "forgetPass")
 @ViewScoped
 public class ForgetPasswordBean implements Serializable {

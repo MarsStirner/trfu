@@ -24,8 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("bloodComponentOrder")
 @ConversationScoped
 public class BloodComponentOrderHolderBean extends AbstractDocumentHolderBean<BloodComponentOrderRequest, Integer> {

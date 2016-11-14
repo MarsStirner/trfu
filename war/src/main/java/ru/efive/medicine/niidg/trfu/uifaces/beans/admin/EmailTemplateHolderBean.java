@@ -16,8 +16,8 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.EMAIL_TEMPLATE_DAO;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.TEXT_TEMPLATE_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.EMAIL_TEMPLATE_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.TEXT_TEMPLATE_DAO;
 
 @Named("emailTemplate")
 @ConversationScoped

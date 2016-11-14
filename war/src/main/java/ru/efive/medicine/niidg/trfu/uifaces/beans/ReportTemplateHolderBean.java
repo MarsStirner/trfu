@@ -17,7 +17,7 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.*;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.REPORT_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.REPORT_DAO;
 
 @Named("reportTemplate")
 @ConversationScoped

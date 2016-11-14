@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("virusinactivationComponentList")
 @SessionScoped
 public class VirusinactivationBloodComponetsBean extends AbstractDocumentListHolderBean<BloodComponent> {

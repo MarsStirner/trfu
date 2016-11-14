@@ -1,37 +1,6 @@
 package ru.efive.medicine.niidg.trfu.test;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import ru.efive.dao.sql.dao.user.UserDAOHibernate;
-import ru.efive.dao.sql.entity.user.User;
-import ru.efive.medicine.niidg.trfu.dao.AnalysisDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.DonorDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.ExaminationEntryDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.ExaminationRequestDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.PheresisDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.dictionary.AnalysisType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
-import ru.efive.medicine.niidg.trfu.data.dictionary.Classifier;
-import ru.efive.medicine.niidg.trfu.data.dictionary.ExaminationEntryType;
-import ru.efive.medicine.niidg.trfu.data.entity.Analysis;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodDonationRequest;
-import ru.efive.medicine.niidg.trfu.data.entity.Donor;
-import ru.efive.medicine.niidg.trfu.data.entity.ExaminationEntry;
-import ru.efive.medicine.niidg.trfu.data.entity.ExaminationRequest;
-import ru.efive.medicine.niidg.trfu.data.entity.PheresisReport;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 public class DonorDAOTest {
 	

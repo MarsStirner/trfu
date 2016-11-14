@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.DONATION_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DONATION_DAO;
 
 @Named("bloodDonationFilterableList")
 @SessionScoped

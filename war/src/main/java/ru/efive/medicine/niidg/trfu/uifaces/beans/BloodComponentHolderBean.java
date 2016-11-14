@@ -34,8 +34,7 @@ import javax.inject.Named;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("bloodComponent")
 @ConversationScoped
 public class BloodComponentHolderBean extends AbstractDocumentHolderBean<BloodComponent, Integer> {

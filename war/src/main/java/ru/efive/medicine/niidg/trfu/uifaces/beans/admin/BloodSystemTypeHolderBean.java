@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_SYSTEM_TYPE_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.BLOOD_SYSTEM_TYPE_DAO;
 
 @Named("bloodSystemType")
 @ConversationScoped

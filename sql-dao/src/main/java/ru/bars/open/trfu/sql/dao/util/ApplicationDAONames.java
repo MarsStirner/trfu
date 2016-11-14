@@ -1,4 +1,4 @@
-package ru.bars.open.sql.dao.util;
+package ru.bars.open.trfu.sql.dao.util;
 /**
  * Author: Upatov Egor <br>
  * Date: 17.10.2016, 13:44 <br>

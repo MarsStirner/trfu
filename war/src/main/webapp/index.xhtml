@@ -26,7 +26,6 @@
                 <div class="main_content">
                     <h:panelGroup rendered="#{not(sessionManagement.loggedIn)}">
                         <h2>Вход в систему</h2>
-
                         <div>Логин</div>
                         <div>
                             <p:inputText value="#{sessionManagement.userName}" styleClass="inp"/>
@@ -37,11 +36,10 @@
                         </div>
                         <div>
                             <p:commandButton styleClass="but" type="submit" value="Войти" ajax="false" action="#{sessionManagement.logIn}"/></div>
-                        <div class="forget"><a href="/forget/enter_email.xhtml">Забыли пароль?</a></div>
                     </h:panelGroup>
                     <c:if test="#{sessionManagement.loggedIn}">
                         <h:outputScript>
-                            location.href = "/component/role_select.xhtml";
+                            location.href = "#{sessionManagement.backUrl}";
                         </h:outputScript>
                    </c:if>
                     <div>

@@ -28,7 +28,7 @@ import ru.efive.wf.core.util.GroovyProcessor;
 
 import java.util.*;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 
 public final class ProcessFactory {
 

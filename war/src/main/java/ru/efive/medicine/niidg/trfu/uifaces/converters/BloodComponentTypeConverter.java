@@ -1,19 +1,17 @@
 package ru.efive.medicine.niidg.trfu.uifaces.converters;
 
-import java.util.List;
+import org.apache.axis.utils.StringUtils;
+import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import java.util.List;
 
-import org.apache.axis.utils.StringUtils;
-
-import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodComponentType;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
 @FacesConverter("BloodComponentTypeConverter")
 public class BloodComponentTypeConverter implements Converter {
 

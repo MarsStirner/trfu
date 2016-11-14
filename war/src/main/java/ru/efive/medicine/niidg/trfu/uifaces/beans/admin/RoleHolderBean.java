@@ -4,7 +4,6 @@ import ru.efive.dao.sql.dao.user.RoleDAOHibernate;
 import ru.efive.dao.sql.entity.enums.RoleType;
 import ru.efive.dao.sql.entity.user.Role;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
 import ru.efive.uifaces.bean.FromStringConverter;
 
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("role")
 @ConversationScoped
 public class RoleHolderBean extends AbstractDocumentHolderBean<Role, Integer> implements Serializable {

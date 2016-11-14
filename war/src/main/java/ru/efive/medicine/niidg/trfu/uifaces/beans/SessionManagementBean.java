@@ -3,13 +3,13 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.bars.open.trfu.sql.dao.util.AuthorizationData;
 import ru.efive.dao.sql.dao.DictionaryDAO;
 import ru.efive.dao.sql.dao.GenericDAO;
 import ru.efive.dao.sql.dao.user.UserDAO;
 import ru.efive.dao.sql.dao.user.UserDAOHibernate;
 import ru.efive.dao.sql.entity.user.Role;
 import ru.efive.dao.sql.entity.user.User;
-import ru.hitsl.helper.AuthorizationData;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
@@ -17,9 +17,10 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.IOException;
 import java.io.Serializable;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.USER_DAO;
 import static ru.efive.medicine.niidg.trfu.uifaces.beans.utils.MessageHolder.*;
 
 @Named("sessionManagement")
@@ -133,7 +134,7 @@ public class SessionManagementBean implements Serializable {
             ExternalContext externalContext = facesContext.getExternalContext();
             externalContext.invalidateSession();
         }
-        return "/index?faces-redirect=true";
+        return "/index.xhtml?faces-redirect=true";
     }
 
     @PreDestroy
@@ -151,11 +152,13 @@ public class SessionManagementBean implements Serializable {
     }
 
     public void setCurrentRole(final Role role) {
-        authData.getAuthorized().setSelectedRole(role);
-        getDAO(UserDAOHibernate.class, USER_DAO).save(authData.getAuthorized());
+        if(role != null && !role.getRoleType().equals(authData.getAuthorized().getSelectedRole().getRoleType())) {
+            authData.getAuthorized().setSelectedRole(role);
+            getDAO(UserDAOHibernate.class, USER_DAO).save(authData.getAuthorized());
+        }
     }
 
-    private String getBackUrl() {
+    public String getBackUrl() {
         final StringBuilder result = new StringBuilder(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath());
         if (StringUtils.isEmpty(backUrl)) {
             result.append(authData.getDefaultPage());
@@ -166,6 +169,10 @@ public class SessionManagementBean implements Serializable {
         }
         LOGGER.info("redirectUrl: \'{}\'", result.toString());
         return result.toString();
+    }
+
+    public void redirectToBackUrl() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect(getBackUrl());
     }
 
     public AuthorizationData getAuthData() {

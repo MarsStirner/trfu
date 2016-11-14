@@ -18,8 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("operationalSession")
 @SessionScoped
 public class OperationalSessionBean implements java.io.Serializable {

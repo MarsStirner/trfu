@@ -31,8 +31,7 @@ import javax.inject.Named;
 import java.util.Calendar;
 import java.util.Date;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("medicalOperation")
 @ConversationScoped
 public class MedicalOperationBean extends AbstractDocumentHolderBean<Operation, Integer> {

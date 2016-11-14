@@ -2,7 +2,6 @@ package ru.efive.medicine.niidg.trfu.uifaces.beans;
 
 import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.faces.bean.ManagedBean;
@@ -12,6 +11,7 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @ManagedBean(name="bloodComponentInControlList")
 @ViewScoped
 public class BloodComponentsInControlBean extends AbstractDocumentListHolderBean<BloodComponent> {

@@ -8,13 +8,13 @@ import ru.efive.medicine.niidg.trfu.dao.BloodDonationRequestDAOImpl;
 import ru.efive.medicine.niidg.trfu.data.dictionary.BloodSystemType;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.ApplicationPropertiesHolder;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.properties.util.PropertyTypeNotSupported;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 public class SimpleTest {
     private PharmacyExchangeUtils utils;
     private ClassPathXmlApplicationContext ctx;

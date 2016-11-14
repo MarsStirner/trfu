@@ -8,7 +8,6 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.*;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.ExternalIndicator;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.DictionaryManagementBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 import ru.efive.uifaces.bean.ModalWindowHolderBean;
 
@@ -20,6 +19,7 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("settings")
 @SessionScoped
 public class SettingsListHolderBean extends AbstractDocumentListHolderBean<DictionaryEntity> {

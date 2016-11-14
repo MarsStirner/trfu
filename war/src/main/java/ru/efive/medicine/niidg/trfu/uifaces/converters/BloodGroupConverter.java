@@ -1,18 +1,17 @@
 package ru.efive.medicine.niidg.trfu.uifaces.converters;
 
-import java.util.List;
+import org.apache.axis.utils.StringUtils;
+import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
+import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import java.util.List;
 
-import org.apache.axis.utils.StringUtils;
-
-import ru.efive.medicine.niidg.trfu.dao.DictionaryDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.dictionary.BloodGroup;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
 
 @FacesConverter("BloodGroupConverter")
 public class BloodGroupConverter implements Converter {
@@ -26,7 +25,7 @@ public class BloodGroupConverter implements Converter {
 			SessionManagementBean sessionManagement = 
 				(SessionManagementBean) context.getApplication().evaluateExpressionGet(context, "#{sessionManagement}",
 						SessionManagementBean.class);
-			List<BloodGroup> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class, DICTIONARY_DAO).findByValue(BloodGroup.class, value);
+			List<BloodGroup> list = sessionManagement.getDictionaryDAO(DictionaryDAOImpl.class,  DICTIONARY_DAO).findByValue(BloodGroup.class, value);
 			if (list.size() > 0) {
 				result = list.get(0);
 			}

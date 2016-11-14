@@ -1,17 +1,16 @@
 package ru.efive.medicine.niidg.trfu.uifaces.converters;
 
+import org.apache.axis.utils.StringUtils;
+import ru.efive.crm.dao.ContragentDAOHibernate;
+import ru.efive.crm.data.Contragent;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-import org.apache.axis.utils.StringUtils;
-
-import ru.efive.crm.dao.ContragentDAOHibernate;
-import ru.efive.crm.data.Contragent;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.CONTRAGENT_DAO;
 @FacesConverter("ContragentConverter")
 public class ContragentConverter implements Converter {
 

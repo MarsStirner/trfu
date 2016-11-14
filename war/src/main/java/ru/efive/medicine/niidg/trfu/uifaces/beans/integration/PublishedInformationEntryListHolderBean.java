@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import ru.efive.medicine.niidg.trfu.dao.InformationEntryDaoImpl;
 import ru.efive.medicine.niidg.trfu.data.entity.integration.InformationEntry;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.enterprise.context.SessionScoped;
@@ -16,6 +15,7 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("publishedInformationList")
 @SessionScoped
 public class PublishedInformationEntryListHolderBean extends AbstractDocumentListHolderBean<InformationEntry> {

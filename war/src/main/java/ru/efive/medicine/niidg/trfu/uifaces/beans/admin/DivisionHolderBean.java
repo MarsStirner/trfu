@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Calendar;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.DIVISION_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DIVISION_DAO;
 
 @Named("division")
 @ConversationScoped

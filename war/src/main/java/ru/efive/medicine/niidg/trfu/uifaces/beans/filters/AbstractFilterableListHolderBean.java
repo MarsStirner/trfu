@@ -7,7 +7,6 @@ import ru.efive.medicine.niidg.trfu.filters.AbstractFilter;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.print.FilterParametersPair;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.print.PrintHelper;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 import ru.efive.uifaces.bean.AbstractDocumentListHolderBean;
 
 import javax.faces.context.FacesContext;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 public abstract class AbstractFilterableListHolderBean<T extends Serializable, F extends AbstractFilter<F>>
 		extends AbstractDocumentListHolderBean<T> {
 	private static final long serialVersionUID = 4901127386797242470L;

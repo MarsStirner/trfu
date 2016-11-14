@@ -14,7 +14,7 @@ import ru.efive.medicine.niidg.trfu.data.dictionary.DonorCategory;
 import ru.efive.medicine.niidg.trfu.data.entity.Donor;
 import ru.efive.medicine.niidg.trfu.filters.DonorsFilter;
 import ru.efive.medicine.niidg.trfu.uifaces.beans.filters.DonorFilterableListHolderBean;
-
+     /*
 public class DonorsDocxGenerator extends
 		BaseDocxGenerator<DonorFilterableListHolderBean, DonorsFilter> {
 
@@ -62,4 +62,4 @@ public class DonorsDocxGenerator extends
 				"Итого: " + count);
 		contentTable.getEGContentRowContent().add(p);
 	}
-}
+} */

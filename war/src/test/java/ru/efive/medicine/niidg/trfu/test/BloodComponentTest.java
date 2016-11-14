@@ -1,21 +1,6 @@
 package ru.efive.medicine.niidg.trfu.test;
 
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import ru.efive.dao.sql.dao.user.UserDAOHibernate;
-import ru.efive.dao.sql.entity.user.User;
-import ru.efive.dao.sql.wf.entity.HistoryEntry;
-import ru.efive.medicine.niidg.trfu.dao.BloodComponentDAOImpl;
-import ru.efive.medicine.niidg.trfu.dao.BloodComponentOrderRequestDAOImpl;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodComponent;
-import ru.efive.medicine.niidg.trfu.data.entity.BloodComponentOrderRequest;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
 
 public class BloodComponentTest {
 	

@@ -10,7 +10,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.USER_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.USER_DAO;
 
 /**
  * Author: Upatov Egor <br>

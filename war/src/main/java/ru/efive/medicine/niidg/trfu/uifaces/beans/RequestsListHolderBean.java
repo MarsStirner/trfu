@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.REQUEST_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.REQUEST_DAO;
 
 @Named("requests")
 @SessionScoped

@@ -22,8 +22,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.BLOOD_COMPONENT_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DICTIONARY_DAO;
 
 public final class OperationalHelper {
 	

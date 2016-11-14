@@ -15,7 +15,7 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Calendar;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.USER_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.USER_DAO;
 
 @Named("user")
 @ViewScoped

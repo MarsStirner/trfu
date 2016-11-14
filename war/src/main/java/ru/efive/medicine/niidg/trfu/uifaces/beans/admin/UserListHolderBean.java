@@ -11,8 +11,7 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("userList")
 @SessionScoped
 public class UserListHolderBean extends AbstractDocumentListHolderBean<User> {

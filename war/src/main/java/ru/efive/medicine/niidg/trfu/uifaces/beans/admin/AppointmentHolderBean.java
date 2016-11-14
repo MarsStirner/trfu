@@ -1,22 +1,20 @@
 package ru.efive.medicine.niidg.trfu.uifaces.beans.admin;
 
-import java.io.Serializable;
+import org.apache.axis.utils.StringUtils;
+import ru.efive.dao.sql.dao.user.AppointmentDAOHibernate;
+import ru.efive.dao.sql.entity.user.Appointment;
+import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
+import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
+import ru.efive.uifaces.bean.FromStringConverter;
 
 import javax.enterprise.context.ConversationScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 
-import org.apache.axis.utils.StringUtils;
-
-import ru.efive.dao.sql.dao.user.AppointmentDAOHibernate;
-import ru.efive.dao.sql.entity.user.Appointment;
-import ru.efive.medicine.niidg.trfu.uifaces.beans.SessionManagementBean;
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-import ru.efive.uifaces.bean.AbstractDocumentHolderBean;
-import ru.efive.uifaces.bean.FromStringConverter;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.APPOINTMENT_DAO;
 @Named("appointment")
 @ConversationScoped
 public class AppointmentHolderBean extends AbstractDocumentHolderBean<Appointment, Integer> implements Serializable {

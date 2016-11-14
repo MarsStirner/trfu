@@ -10,7 +10,7 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.COMPONENT_ORDER_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.COMPONENT_ORDER_DAO;
 
 @Named("bloodComponentOrderList")
 @SessionScoped

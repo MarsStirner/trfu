@@ -25,8 +25,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @WebService(name = "trfu-laboratory-integration", targetNamespace = "http://www.korusconsulting.ru", serviceName =
         "trfu-laboratory-integration", portName = "trfu-laboratory-integration")
 public class LaboratoryIntegration {

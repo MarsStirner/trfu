@@ -27,8 +27,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.*;
-
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.*;
 @Named("examination")
 @ConversationScoped
 public class ExaminationHolderBean extends AbstractDocumentHolderBean<ExaminationRequest, Integer> {

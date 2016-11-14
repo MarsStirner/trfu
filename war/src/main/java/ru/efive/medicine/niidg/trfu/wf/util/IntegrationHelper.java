@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ru.bars.open.sql.dao.util.ApplicationDAONames.DIVISION_DAO;
+import static ru.bars.open.trfu.sql.dao.util.ApplicationDAONames.DIVISION_DAO;
 
 public class IntegrationHelper {
 
